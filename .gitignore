@@ -12,6 +12,7 @@ ebin
 rel/example_project
 .concrete/DEV_MODE
 .rebar
+/website/nbproject/private/
 
 #NetBeans
 nbproject/private/
@@ -63,3 +64,4 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
+>>>>>>> e6d5b403f05bbae2e6222973183c2b697a53f168
