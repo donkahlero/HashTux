@@ -31,3 +31,9 @@
 * That's it. The project should show up now:
 <br>
 ![](https://github.com/TacoVox/HashTux/blob/master/repofiles/step_6.png)
+
+## Workflow:
+* Pull the newest changes
+* Work with NetBeans. -> When you safe - the file will be saved on your local disk as well as on the server
+* After you are done commit your changes to the development branch on GitHub (whichever it will be).
+* As soon as major features are done on the website - merge them to the website release branch. They will be autofetched to our three webservers and will be shown there.
