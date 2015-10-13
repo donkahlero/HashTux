@@ -16,11 +16,11 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body>
-    <h1 align="center">Hello HashTux!</h1>
-    
-    <input type="text" class="form-control" placeholder="#HashTux">
-    
+    <div class="me">
+      <h1 align="center">Hello HashTux!</h1>
+
+      <input type="text" class="form-control" placeholder="#HashTux" align="center">
+    </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
