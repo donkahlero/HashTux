@@ -5,8 +5,8 @@
  */
 
 /*!
- * Generated using the Bootstrap Customizer (http://getbootstrap.com/customize/?id=b2c2425527d79980f09c)
- * Config saved to config.json and https://gist.github.com/b2c2425527d79980f09c
+ * Generated using the Bootstrap Customizer (http://getbootstrap.com/customize/?id=dd83b979a50923bc5f06)
+ * Config saved to config.json and https://gist.github.com/dd83b979a50923bc5f06
  */
 /*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)
@@ -1088,11 +1088,11 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Lucida Console", Monaco, monospace;
   font-size: 14px;
   line-height: 1.42857143;
   color: #333333;
-  background-color: #ffffff;
+  background-color: #ddd;
 }
 input,
 button,
@@ -2562,7 +2562,7 @@ output {
   font-size: 14px;
   line-height: 1.42857143;
   color: #555555;
-  background-color: #000000;
+  background-color: #ffffff;
   background-image: none;
   border: 1px solid #cccccc;
   border-radius: 4px;
@@ -6799,4 +6799,17 @@ button.close {
   .hidden-print {
     display: none !important;
   }
+}
+.col-fill {
+    height: 100%
+}
+.search {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.header {
+    width: 100%;
+    position: absolute;
+    top: 0;
 }
