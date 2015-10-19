@@ -16,8 +16,8 @@ add_doc(DocName, Content) ->
 
 %% @doc Change conent of a document
 change_doc(DocName, Content) ->
-    Rev = ?MODULE:get_doc(DocName),
-    couch_connector:put_request(DocName, Rev ++ Content, "text/json").
+    Rev = jsx:decode(?MODULE:get_doc(DocName)).
+    %couch_connector:put_request(DocName, Rev ++ Content, "text/json").
 
 %% @doc Get a document from the database
 get_doc(DocName) ->
