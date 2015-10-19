@@ -2,8 +2,7 @@
     $search = $_GET['search'];
 ?>
 
-<!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         
         <title>HashTux</title>

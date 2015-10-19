@@ -24,13 +24,20 @@
               <div class="col-md-4 col-fill">
                   
                     <div class="search">
+                        
                         <p align="center">Please search for a hashtag!</p>
+                        
                         <div class="input-group">
                             <span class="input-group-addon">#</span>
-                            <form action="search.php" method="get">
+                            <form action="search.php" method="get" id="searchform" onsubmit="return checkInput()">
                                 <input type="text" class="form-control" name="search" />
                             </form>
                         </div>
+                        
+                        <div class="alert-warning fixalert" id="input-error">
+                            You did not enter a hashtag, please try again!
+                        </div>
+                        
                     </div>
               
               </div>
@@ -43,6 +50,28 @@
     
   </body>
 </html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script>
+    function checkInput()
+    {
+        var input = document.forms["searchform"]["search"].value;
+        
+        if(input == null || input == "")
+        {
+            $('#input-error').fadeTo(2000, 500).slideUp(500, function() {
+                $('#input-error').alert('close');
+            });
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+</script>
 
 <?php
 
