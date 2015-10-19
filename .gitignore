@@ -72,3 +72,5 @@ local.properties
 
 ##Rebar3
 _build/*
+_build/
+rebar.lock
