@@ -11,11 +11,11 @@
   
   <body>
       
-        <div class="header">
-            <h1 align="center">#hashtux</h1>
-        </div>
+    <div class="header">
+        <h1 align="center">#hashtux</h1>
+    </div>
         
-      <div class="container">
+    <div class="container">
 
           <div class="row">
               
@@ -27,9 +27,12 @@
                         <p align="center">Please search for a hashtag!</p>
                         <div class="input-group">
                             <span class="input-group-addon">#</span>
-                            <input type="text" class="form-control" />
+                            <form action="search.php" method="get">
+                                <input type="text" class="form-control" name="search" />
+                            </form>
                         </div>
                     </div>
+              
               </div>
               
               <div class="col-md-4"></div>
@@ -38,8 +41,13 @@
 
     </div>
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    
-    <script src="js/bootstrap.min.js"></script>
   </body>
 </html>
+
+<?php
+
+    if(isset($_GET['search']))
+    {
+        $search = $_GET['search'];
+        header("location: search.php search = $search");
+    }
