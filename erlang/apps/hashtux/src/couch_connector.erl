@@ -1,3 +1,4 @@
+%% @author Jonas Kahler jonas@derkahler.de [www.derkahler.de]
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% %% @doc CouchDB connector
 %% %% @version 0.1
@@ -11,7 +12,7 @@
 -define(PW, "grouptux").
 -define(ADDR,"http://" ++ ?URI ++ ":" ++ ?PORT ++ "/").
 
--export([get_info/0, put_request/3, get_request/1, delete_request/1, post_request/3]).
+-export([get_info/0, put_request/3, get_request/1, delete_request/1]).
  -version("0.1").
 
 %% @doc This function creates a header for the HTTP.
