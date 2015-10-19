@@ -69,3 +69,6 @@ local.properties
 ##VP
 *.vpp~*
 *.working
+
+##Rebar3
+_build/*
