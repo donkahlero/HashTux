@@ -1,11 +1,12 @@
 {application, 'hashtux',
- [{description, "An OTP application"},
+ [{description, "The HashTux backend"},
   {vsn, "0.1.0"},
   {registered, []},
   {mod, {'hashtux_app', []}},
   {applications,
    [kernel,
-    stdlib
+    stdlib,
+	cowboy
    ]},
   {env,[]},
   {modules, []},
