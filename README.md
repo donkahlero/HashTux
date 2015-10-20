@@ -1,10 +1,11 @@
 # HashTux
 ### SSH/SFTP access to the development server
-* Serveraddress: dev.hashtux.com
+* Server address: dev.hashtux.com
 * User: tux
 * Password: grouptux
 * Dev folder is here: /home/tux/hashtux/dev
--> Start developing like a maniac
+* Run "./pull_and_run_hashtux.sh" to automatically pull the latest Erlang application from GitHub and run it in an Erlang shell configured by Rebar (inside a screen session).
+* To watch debug output from the application, type "screen -r" to resume the screen session. To detatch, press Ctrl+A followed by D.
 
 ### How to work with your IDE:
 * [Setup NetBeans](https://github.com/TacoVox/HashTux/blob/master/NetBeansSetup.MD)
