@@ -28,15 +28,26 @@ handle(Req, State) ->
 	{Qs, _} = cowboy_req:qs(Req),
 	
 	% Qs_val: can be used with an atom to request a particular value
-	{QsVal, _} = cowboy_req:qs_val(<<"tag">>, Req),
+	{QsVal, _} = cowboy_req:qs_val(<<"option1">>, Req, <<"default">>),
 	
-	Path2 = Path,
+	% Remove the leading slash from the path
+	[_ | Path2] = binary:bin_to_list(Path),
 	
-	io:format("URL: ~p~nPath: ~p~nQs: ~p~nValue of tag: ~p~n~n", [URL, Path2, Qs, QsVal]),
+	% "Debug" output
+	io:format("~nURL requested: ~p~nPath: ~p~nQs: ~p~nValue of tag: ~p~n~n",
+			  [binary:bin_to_list(URL), Path2, binary:bin_to_list(Qs), 
+			   binary:bin_to_list(QsVal)]),
+	
+	% io_lib:format does about the same thing as io:format but returns a string
+	% instead of printing
+	Body = io_lib:format("Welcome to HashTux!~n~nURL requested: ~p~nHashtag for mining: ~p~nQs: ~p~nValue of option \"option1\": ~p~n~n",
+						 [binary:bin_to_list(URL), Path2, binary:bin_to_list(Qs), 
+			   				binary:bin_to_list(QsVal)]),
+	
 	
 	{ok, Req2} = cowboy_req:reply(200, [
         {<<"content-type">>, <<"text/plain">>}							
-    ], <<"dddd">>, Req),
+    ], binary:list_to_bin(Body), Req),
 	{ok, Req2, State}.
 
 
