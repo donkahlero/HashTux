@@ -38,7 +38,7 @@
         <h1 align="center">#hashtux</h1>
     </div>
         
-    <div class="container con-fill">
+    <div class="container">
 
           <div class="row">
               
@@ -53,9 +53,10 @@
                         <div class="input-group">
                             <span class="input-group-addon">#</span>
                             <form action="search.php" method="get" id="searchform" onsubmit="
-                                    if (checkInput() == true) {
+                                    if (checkInput() == true) 
+                                        {					
                                         window.location.replace(document.getElementById('search').value);
-                                    } return false; ">
+                                        } return false; ">
                                     
                                 <input type="text" class="form-control" id="search" name="search" />
                             </form>
@@ -69,12 +70,7 @@
               
               </div>
               
-              <div class="col-md-4">
-                  <button type="button" class="btn btn-default" style="float:right; margin-top: 15px;"
-                          onclick="window.location.replace('design.php');">
-                        Design
-                    </button>
-              </div>
+              <div class="col-md-4"></div>
               
           </div>
 
@@ -85,11 +81,6 @@
 
 
 
-
-<?php
-
-    if(isset($_GET['search']))
-    {
-        $search = $_GET['search'];
-        //header("location: search.php search = $search");
-    }
+    
+    
+    

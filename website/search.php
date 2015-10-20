@@ -1,7 +1,3 @@
-<?php 
-    $search = $_GET['search'];
-?>
-
 <html lang="en">
     <head>
         
@@ -18,8 +14,26 @@
     
     <body>
         
-        <p align="center">You searched for: <?php echo $search; ?></p>
+        <p align="center">You searched for:</p>
+
         
+        <?php 
+    $search = $_GET['search'];
+    if (!function_exists('curl_init')){
+    	die('Sorry cURL is not installed!');
+    }
+   
+    $ch = curl_init();
+    curl_setopt ($ch, CURLOPT_URL,"http://localhost:8080/" . $search);
+     
+    $output = curl_exec($ch);
+     
+    echo($output);
+     
+    curl_close($ch);
+    
+   
+   ?>
     </body>
 </html>
 
