@@ -19,6 +19,12 @@ init([]) ->
     io:format("db_serv started...", []),
     {ok, []}.
 
+handle_call({add_hash, Hashtag, Content}, From, State) ->
+    Spec = {hash_writeoperations, {hwops, hash_addHash, [Hashtag, Content, self(), From]},
+	    permanent, brutal_kill, worker, [hash_writeoperations]},
+    supervisor:start_child(db_write_sup, [Spec]),
+    {reply, State, State};
+
 handle_call(state, _From, State) ->
     {reply, State, State};
 
