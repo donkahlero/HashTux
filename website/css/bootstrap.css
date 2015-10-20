@@ -6803,6 +6803,9 @@ button.close {
 .col-fill {
     height: 100%
 }
+.con-fill {
+    width: 100%;
+}
 .search {
     position: relative;
     top: 50%;

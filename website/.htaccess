@@ -4,6 +4,7 @@ RewriteCond %{REQUEST_URI} !^/$
 RewriteCond %{REQUEST_URI} !^/index.php$ 
 RewriteCond %{REQUEST_URI} !^/css/(.+)$ 
 RewriteCond %{REQUEST_URI} !^/js/(.+)$
+RewriteCond %{REQUEST_URI} !^/design.php$
 
 RewriteRule ^(.+)$ search.php?search=$1 [QSA,L]
 

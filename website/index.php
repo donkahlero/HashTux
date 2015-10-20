@@ -6,7 +6,30 @@
     
     <title>HashTux</title>
     
-    <link href="css/bootstrap.css" rel="stylesheet">  
+    <link href="css/bootstrap.css" rel="stylesheet">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>  
+    
+    <script>
+    function checkInput()
+    {
+        var input = document.forms["searchform"]["search"].value;
+        
+        if(input == null || input == "")
+        {
+            $('#input-error').fadeTo(2000, 500).slideUp(500, function() {
+                $('#input-error').alert('close');
+            });
+            return false;
+        }
+        else
+        {  
+            return true;
+        }
+    }
+    </script>
+    
   </head>
   
   <body>
@@ -15,7 +38,7 @@
         <h1 align="center">#hashtux</h1>
     </div>
         
-    <div class="container">
+    <div class="container con-fill">
 
           <div class="row">
               
@@ -29,8 +52,12 @@
                         
                         <div class="input-group">
                             <span class="input-group-addon">#</span>
-                            <form action="search.php" method="get" id="searchform" onsubmit="return checkInput()">
-                                <input type="text" class="form-control" name="search" />
+                            <form action="search.php" method="get" id="searchform" onsubmit="
+                                    if (checkInput() == true) {
+                                        window.location.replace(document.getElementById('search').value);
+                                    } return false; ">
+                                    
+                                <input type="text" class="form-control" id="search" name="search" />
                             </form>
                         </div>
                         
@@ -42,7 +69,12 @@
               
               </div>
               
-              <div class="col-md-4"></div>
+              <div class="col-md-4">
+                  <button type="button" class="btn btn-default" style="float:right; margin-top: 15px;"
+                          onclick="window.location.replace('design.php');">
+                        Design
+                    </button>
+              </div>
               
           </div>
 
@@ -51,32 +83,13 @@
   </body>
 </html>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
 
-<script>
-    function checkInput()
-    {
-        var input = document.forms["searchform"]["search"].value;
-        
-        if(input == null || input == "")
-        {
-            $('#input-error').fadeTo(2000, 500).slideUp(500, function() {
-                $('#input-error').alert('close');
-            });
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-</script>
+
 
 <?php
 
     if(isset($_GET['search']))
     {
         $search = $_GET['search'];
-        header("location: search.php search = $search");
+        //header("location: search.php search = $search");
     }
