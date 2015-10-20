@@ -10,9 +10,8 @@
 
 
 %% @doc This adds a new Hash to the DB with the content.
-hash_addHash(Hash, Content, Caller, For) ->
-       	couch_operations:doc_add(Hash, Content), 
-	Caller ! {For, couch_operations}.
+hash_addHash(Hash, Content) ->
+       	couch_operations:doc_add(Hash, Content).
 
 %% @doc This overwrite a Hash to all the new content
 hash_overwrHash(Hash, Content) ->
