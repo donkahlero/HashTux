@@ -8,7 +8,7 @@
 -define(DB, "hashtux/").
 
 %% Document operations
--export([doc_add/2, doc_change/2, doc_get/1, doc_delete/1, doc_append/2, doc_rmval/2]).
+-export([doc_add/2, doc_change/2, doc_get/1, doc_delete/1, doc_append/2, doc_rmval/2, doc_exist/1]).
 
 %% @doc Method to initially add a document to the database.
 %% Encodes the erlang JSon representation to valid JSon.
@@ -17,7 +17,7 @@ doc_add(DocName, Content) ->
 
 %% @doc Overwrite content of a document.
 doc_change(DocName, Content) ->
-    Rev = get_tupp(jsx:decode(?MODULE:get_doc(DocName)), "_rev"),
+    Rev = get_tupp(jsx:decode(?MODULE:doc_get(DocName)), "_rev"),
     couch_connector:put_request(?DB ++ DocName, binary_to_list(jsx:encode([Rev | Content])), "text/json").
 
 %% @doc Fetches a document from the database.
@@ -28,7 +28,7 @@ doc_get(DocName) ->
 
 %% @doc Deletes a document from the database.
 doc_delete(DocName) ->
-    Rev = get_val(jsx:decode((?MODULE:get_doc(DocName))), "_rev"),
+    Rev = get_val(jsx:decode((?MODULE:doc_get(DocName))), "_rev"),
     couch_connector:delete_request(?DB ++ DocName ++ "?rev=" ++ Rev).
 
 %% @doc Appends field(s) to an existing document in the database.
@@ -53,3 +53,9 @@ get_tupp(L, Field) ->
 get_val(Json, Field) ->
     {_ID, Val} = get_tupp(Json, Field),
     binary_to_list(Val).
+
+doc_exist(DocName) ->
+	case hd(jsx:decode(doc_get(DocName))) of
+		{<<"error">>, <<"not_found">>} -> false;
+		_default -> true
+	end.
