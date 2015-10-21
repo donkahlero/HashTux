@@ -12,19 +12,56 @@
         
         <script type='text/javascript'>
             
+            var pic = {url:"", shown:false, frozen:false};
+            
+            var images = ["http://i.imgur.com/JfKwovX.jpg", "http://i.imgur.com/PLehguA.jpg", 
+                        "http://i.imgur.com/bHkmaqm.jpg", "http://i.imgur.com/DfjlogK.jpg",
+                        "http://i.imgur.com/JgNFQlc.jpg", "http://i.imgur.com/0OYdzge.jpg",
+                        "http://i.imgur.com/iBnXFAA.jpg", "http://i.imgur.com/HiqYpKC.jpg",
+                        "http://i.imgur.com/aFvyTTp.jpg", "http://i.imgur.com/fDutob0.jpg",
+                        "http://i.imgur.com/xx7hFLa.jpg", "http://i.imgur.com/rRK1c1O.jpg",
+                        "http://i.imgur.com/JfKwovX.jpg", "http://i.imgur.com/PLehguA.jpg", 
+                        "http://i.imgur.com/bHkmaqm.jpg", "http://i.imgur.com/DfjlogK.jpg",
+                        "http://i.imgur.com/JgNFQlc.jpg", "http://i.imgur.com/0OYdzge.jpg",
+                        "http://i.imgur.com/iBnXFAA.jpg", "http://i.imgur.com/HiqYpKC.jpg",
+                        "http://i.imgur.com/aFvyTTp.jpg", "http://i.imgur.com/fDutob0.jpg",
+                        "http://i.imgur.com/xx7hFLa.jpg", "http://i.imgur.com/rRK1c1O.jpg"];
+            
             window.onload = function() {
-                for(i = 0; i < 4; i++) {
-                    var $rowID = "row" + i;
-                    var $row = document.getElementById($rowID);
                 
+                var $grid = document.getElementById('grid');
+                var $row = "<div class='row-grid-3'>";
+                var $rowend = "</div>";
+                var $colstart = "<div class='col-xs-2 col-fill griditem' style='background-image:url(";
+                var $colmid = ");' id='col";
+                var $colend = "'></div>";
+                var $count = 0;
+                
+                for(i = 0; i < 4; i++) {
+                    
+                    var $cols = "";
+                    
                     for(j = 0; j < 6; j++) {
-                        $row.innerHTML = $row.innerHTML + '<div class="col-sm-2 col-fill griditem"></div>';
+                        $cols = $cols + $colstart + images[$count] + $colmid + $count + $colend;
+                        $count++;
                     }
-                }
+                    $grid.innerHTML = $grid.innerHTML + $row + $cols + $rowend;
+                }                
+                
+            };
+            
+            function refresh() {
+                var url = images[Math.floor((Math.random() * 23))];
+                
+                var $randomcol = "col" + Math.floor((Math.random() * 23));
+                
+                $(document.getElementById($randomcol)).fadeOut(500);
+                document.getElementById($randomcol).style.backgroundImage = 'url(' + url + ')';
+                $(document.getElementById($randomcol)).fadeIn(500);
             }
             
             function showField() {
-                $(document.getElementById('sField')).show();
+                $(document.getElementById('sField')).fadeIn(500);
                 $(document.getElementById('searchBtn')).hide();
                 
                 $(document.getElementById('sField')).click(function() {
@@ -35,23 +72,20 @@
             }
             
             $('html').click(function() {
-                $(document.getElementById('sField')).hide();
+                $(document.getElementById('sField')).fadeOut(500);
                 $(document.getElementById('searchBtn')).show();
+                refresh();
             });
             
         </script>    
         
     </head>
     
-    <body>
+    <body style="background-color: #FFF">
         
         <div class="container con-fill">
             
-            <div class="container con-fill header">
-                <div class="row-grid-3" id='row0'></div>
-                <div class="row-grid-3" id='row1'></div>
-                <div class="row-grid-3" id='row2'></div>
-                <div class="row-grid-3" id='row3'></div>
+            <div class="container con-fill header" id="grid">
             </div>
         
             <div class="container con-fill-hor">
