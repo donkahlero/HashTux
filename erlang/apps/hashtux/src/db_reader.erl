@@ -3,7 +3,6 @@
 %% %% @doc Initial database actions module
 %% %% @version 0.1
 
-
 -module(db_reader).
 
 -behaviour(gen_server).
@@ -14,9 +13,11 @@
 
 %% Public API
 
+%% @doc Starts the server
 start_link() ->
 	gen_server:start_link(?MODULE, [], []).
 
+%% @doc Calls a stop tp the server
 stop(Module) ->
 	gen_server:call(Module, stop).
 
@@ -34,12 +35,15 @@ state() ->
 init([]) ->
 	{ok, []}.
 
-
+%% @doc Handles the calls
 handle_call(stop, _From, _State) ->
 	{stop, normal, stopped, _State};
 
+%% @doc Catches all calls
 handle_call(_, _, _) ->
 	error(badarth).
+
+%% %% @doc Handels the cast which is the messages where we doing operations on.
 
 handle_cast({get_hash, Hash, Rec}, State) ->
 	Result = jsx:decode(couch_operations:doc_get(Hash)),
@@ -56,9 +60,11 @@ handle_cast({hash_exist, Hash, Rec}, State) ->
 	Rec ! {self(), Result},
 	{stop, normal, State}.
 
+%% @doc Handels the info (not used)
 handle_info(_Info, _State) ->
 	{noreply, _State}.
 
+%% @doc Terminates the server
 terminate(_Reason, _State) ->
 	ok.
 
