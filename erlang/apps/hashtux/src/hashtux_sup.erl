@@ -28,7 +28,11 @@ start_link() ->
 
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
-    {ok, { {one_for_all, 0, 1}, []} }.
+	%%
+	%% Here we can start the mining and DB servers and/or their 
+	%% supervisors
+	%%
+	{ok, { {one_for_all, 0, 1}, []} }.
 
 %%====================================================================
 %% Internal functions
