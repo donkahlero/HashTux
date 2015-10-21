@@ -33,16 +33,17 @@ handle(Req, State) ->
 	% Remove the leading slash from the path
 	[_ | Path2] = binary:bin_to_list(Path),
 	
+	Reply = gen_server:call(main_flow, {search, Path2}),
+
 	% "Debug" output
-	io:format("~nURL requested: ~p~nPath: ~p~nQs: ~p~nValue of tag: ~p~n~n",
-			  [binary:bin_to_list(URL), Path2, binary:bin_to_list(Qs), 
+	io:format("~nURL requested: ~p~nPath: ~p~nQs: ~p~nResult: ~p~nValue of option1: ~p~n~n",
+			  [binary:bin_to_list(URL), Path2, binary:bin_to_list(Qs), Reply, 
 			   binary:bin_to_list(QsVal)]),
 	
 	% io_lib:format does about the same thing as io:format but returns a string
 	% instead of printing
-	Body = io_lib:format("Welcome to HashTux!~n~nURL requested: ~p~nHashtag for mining: ~p~nQs: ~p~nValue of option \"option1\": ~p~n~n",
-						 [binary:bin_to_list(URL), Path2, binary:bin_to_list(Qs), 
-			   				binary:bin_to_list(QsVal)]),
+	Body = io_lib:format("Welcome to HashTux!~n~nURL requested: ~p~nHashtag for mining: ~p~nQs: ~p~nResult: ~p~n~n",
+						 [binary:bin_to_list(URL), Path2, binary:bin_to_list(Qs), Reply]),
 	
 	
 	{ok, Req2} = cowboy_req:reply(200, [
