@@ -8,13 +8,13 @@
 
 -behaviour(gen_server).
 
--export([start/0, stop/0, state/0]).
+-export([start_link/0, stop/0, state/0]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2]).
 
 %% Public API
 
-start() ->
+start_link() ->
 	gen_server:start_link(?MODULE, [], []).
 
 stop(Module) ->
@@ -34,28 +34,27 @@ state() ->
 init([]) ->
 	{ok, []}.
 
-handle_call({getHash, Hash, Rec}, _From, _State) ->
-	Result = jsx:decode(couch_operations:doc_get(Hash)),
-	{reply, Result, _State};
-
-handle_call({getCont, Hash}, _From, _State) ->
-	Result =  [{Field, Val} || {Field, Val} <- jsx:decode(couch_operations:doc_get(Hash)), Field =/= <<"_id">>, Field =/= <<"_rev">>],
-	{reply, Result, _State};
-
-handle_call({hashExist, Hash}, _From, _State) ->
-	Result = couch_operations:doc_exist(Hash),
-	{reply, Result, _State};
 
 handle_call(stop, _From, _State) ->
-	{stop, normal, stopped, _State}.
+	{stop, normal, stopped, _State};
 
-handle_cast({getHash, Hash, Rec}, _State) ->
+handle_call(_, _, _) ->
+	error(badarth).
+
+handle_cast({get_hash, Hash, Rec}, State) ->
 	Result = jsx:decode(couch_operations:doc_get(Hash)),
-	Rec ! Result,
-	{noreply, _State};
+	Rec ! {self(), Result},
+	{stop, normal, State};
 
-handle_cast(_Msg, _State) ->
-	{noreply, _State}.
+handle_cast({get_cont, Hash, Rec}, State) ->
+	Result =  [{Field, Val} || {Field, Val} <- jsx:decode(couch_operations:doc_get(Hash)), Field =/= <<"_id">>, Field =/= <<"_rev">>],
+	Rec ! {self(), Result},
+	{stop, normal, State};
+
+handle_cast({hash_exist, Hash, Rec}, State) ->
+	Result = couch_operations:doc_exist(Hash),
+	Rec ! {self(), Result},
+	{stop, normal, State}.
 
 handle_info(_Info, _State) ->
 	{noreply, _State}.
