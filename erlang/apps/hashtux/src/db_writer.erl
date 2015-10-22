@@ -4,7 +4,7 @@
 %% %% %% @doc Initial database actions module
 %% %% %% @version 0.1
 
--module(db_write).
+-module(db_writer).
 
 -behavior(gen_server).
 
