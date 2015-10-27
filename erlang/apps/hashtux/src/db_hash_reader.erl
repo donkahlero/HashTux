@@ -3,7 +3,7 @@
 %% %% @doc Initial database actions module
 %% %% @version 0.1
 
--module(db_reader).
+-module(db_hash_reader).
 
 -behaviour(gen_server).
 
