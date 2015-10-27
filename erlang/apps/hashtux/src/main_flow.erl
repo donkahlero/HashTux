@@ -11,6 +11,10 @@ init(_Args) ->
 	io:format("Started the main flow controller.~n~n"),
     {ok, []}.
 
+
+handle_info(_Msg, State) -> {noreply, State}.
+
+
 handle_call({search, Term}, From, State) -> 
 	io:format("Term: ~p~n", [Term]),
 	
@@ -26,9 +30,9 @@ handle_call({search, Term}, From, State) ->
 	%end.
 	
 	% Make a miner call for the term
-	{ok, Pid2, Ref2, News2} = miner_server:search(Term, none),
+	{ok, MinerPid} = miner_server:search(Term, none),
 	receive 
-		{Pid2, Y, Z} ->
+		{MinerPid, Y, Z} ->
 			{reply, Y, State}
 		after 1000 ->
 			{reply, "Miner timeout!", State}
