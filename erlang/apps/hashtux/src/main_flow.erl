@@ -13,17 +13,21 @@ init(_Args) ->
 
 handle_call({search, Term}, From, State) -> 
 	io:format("Term: ~p~n", [Term]),
-	Ref = gen_server:call(db_serv, {get_cont, Term}),
 	
-	%MSG = miner_server:search(Term, none),
-	%io:format("MSG: ~p~n", [MSG]),
+	% Make a database call for the term
+	%Ref = gen_server:call(db_serv, {get_cont, Term}),
+	%receive 
+	%	{Ref, [{<<"error">>,<<"not_found">>},{<<"reason">>,<<"missing">>}]} ->
+	%		{reply, "Nothing found!", State};
+	%	{Ref, Res} ->
+	%		{reply, Res, State}
+	%	after 1000 ->
+	%		{reply, "DB timeout!", State}
+	%end.
 	
-	receive 
-		{Ref, [{<<"error">>,<<"not_found">>},{<<"reason">>,<<"missing">>}]} ->
-			{reply, "Nothing found!", State};
-		{Ref, Res} ->
-			{reply, Res, State}
-		after 1000 ->
-			{reply, "DB timeout!", State}
-	end.
+	% Make a miner call for the term
+	MSG = miner_server:search(Term, none),
+	io:format("MSG: ~p~n", [MSG]),
+	{reply, ok, State}.
+
 				
