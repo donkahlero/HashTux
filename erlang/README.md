@@ -27,6 +27,6 @@ receive {Ref, Res} -> Res end.
 * Hashtag is a String! => in Erlang a list
 * Content is of the JSX Erlang JSON representation:
 ```JSX
-[{<<"name">>, <<"Jerker">>}, {<<"lastname">>, <<"Ericsson">>"}]
+[{<<"name">>, <<"Jerker">>}, {<<"lastname">>, <<"Ericsson">>}]
 ```
 * Field is a String - like "name"
