@@ -13,10 +13,10 @@ shell_start() ->
     unlink(Pid).
 
 init([]) ->
-    ReadSup = {db_read_sup, {db_read_sup, start_link, []},
-	      temporary, 5000, supervisor, [db_read_sup]},
-    WriteSup = {db_write_sup, {db_write_sup, start_link, []},
-	      temporary, 5000, supervisor, [db_write_sup]},
+    HashReadSup = {db_hash_read_sup, {db_hash_read_sup, start_link, []},
+	      temporary, 5000, supervisor, [db_hash_read_sup]},
+    HashWriteSup = {db_hash_write_sup, {db_hash_write_sup, start_link, []},
+	      temporary, 5000, supervisor, [db_hash_write_sup]},
     DBServ = {db_serv, {db_serv, start_link, []},
 	      permanent, 5000, worker, [db_serv]},
-    {ok, {{one_for_one, 1, 10}, [ReadSup, WriteSup, DBServ]}}.
+    {ok, {{one_for_one, 1, 10}, [HashReadSup, HashWriteSup, DBServ]}}.
