@@ -3,12 +3,16 @@
 %% @doc Dispenser Server for all calls to the database. Outsources
 %% all work to worker processes which will be added to the responsible
 %% supervisor. Is part of the db_sup tree.
-%% @version 0.1
+%% @version 0.2
 %% -----------------------------------------------------------------------------
 %% | Sprint 1 // v0.1:                                                         |
 %% | Initial version. Is able to start workers with unique id an append        |
 %% | them to the responsible supervisor. Is able to handle simple calls - more |
 %% | will be added in later sprints/interations.                               |
+%% -----------------------------------------------------------------------------
+%% | Sprint 2 // v0.2:                                                         |
+%% | Several name changes to more descriptive worker names.                    |
+%% | Added support for userstats workers.                                      |
 %% -----------------------------------------------------------------------------
 -module(db_serv).
 
