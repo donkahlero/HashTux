@@ -28,7 +28,7 @@ handle_call({search, Term}, From, State) ->
 	% Make a miner call for the term
 	Ref = miner_server:search(Term, none),
 	receive 
-		X ->
+		{Ref, X} ->
 			{reply, X, State}
 		after 1000 ->
 			{reply, "DB timeout!", State}
