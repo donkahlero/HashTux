@@ -12,6 +12,7 @@
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2]).
 
+-define(DB, "hashtux/").
 
 %% Public API
 
@@ -48,27 +49,27 @@ handle_call(_, _, _) ->
 %% %% @doc These handels the messages coming in and do the operations
 
 handle_cast({add_hash, Hash, Content, Rec}, State) ->
-	couch_operations:doc_add(Hash, Content),
+	couch_operations:doc_add(Hash, Content, ?DB),
         Rec ! {self(), true},	
 	{stop, normal, State};
 
 handle_cast({overwr_hash, Hash, Content, Rec}, State) ->
-	couch_operations:doc_change(Hash, Content),
+	couch_operations:doc_change(Hash, Content, ?DB),
 	Rec ! {self(), true},
 	{stop, normal, State};
 
 handle_cast({add_cont, Hash, Content, Rec}, State) ->
-	couch_operations:doc_append(Hash, Content),
+	couch_operations:doc_append(Hash, Content, ?DB),
 	Rec ! {self(), true},
 	{stop, normal, State};
 
 handle_cast({remove_val, Hash, Field, Rec}, State) ->
-	couch_operations:doc_rmval(Hash, Field),
+	couch_operations:doc_rmval(Hash, Field, ?DB),
 	Rec ! {self(), true},
 	{stop, normal, State};
 
 handle_cast({delete_hash, Hash, Rec}, State) ->
-	couch_operations:doc_delete(Hash),
+	couch_operations:doc_delete(Hash, ?DB),
 	Rec ! {self(), true},
 	{stop, normal, State}.
 

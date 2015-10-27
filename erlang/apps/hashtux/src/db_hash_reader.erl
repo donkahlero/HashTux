@@ -11,6 +11,8 @@
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2]).
 
+-define(DB, "hashtux/").
+
 %% Public API
 
 %% @doc Starts the server
@@ -46,17 +48,17 @@ handle_call(_, _, _) ->
 %% %% @doc Handels the cast which is the messages where we doing operations on.
 
 handle_cast({get_hash, Hash, Rec}, State) ->
-	Result = jsx:decode(couch_operations:doc_get(Hash)),
+	Result = jsx:decode(couch_operations:doc_get(Hash, ?DB)),
 	Rec ! {self(), Result},
 	{stop, normal, State};
 
 handle_cast({get_cont, Hash, Rec}, State) ->
-	Result =  [{Field, Val} || {Field, Val} <- jsx:decode(couch_operations:doc_get(Hash)), Field =/= <<"_id">>, Field =/= <<"_rev">>],
+	Result =  [{Field, Val} || {Field, Val} <- jsx:decode(couch_operations:doc_get(Hash, ?DB)), Field =/= <<"_id">>, Field =/= <<"_rev">>],
 	Rec ! {self(), Result},
 	{stop, normal, State};
 
 handle_cast({hash_exist, Hash, Rec}, State) ->
-	Result = couch_operations:doc_exist(Hash),
+	Result = couch_operations:doc_exist(Hash, ?DB),
 	Rec ! {self(), Result},
 	{stop, normal, State}.
 
