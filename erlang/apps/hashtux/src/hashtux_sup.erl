@@ -38,6 +38,9 @@ init([]) ->
 	%% Start the DB supervisor
 	db_sup:start_link(),
 	
+	%% Start the miner supervisor
+	miner_sup:start_link(),
+	
 	%% Start the main flow supervisor
 	main_flow_sup:start_link(),
 	

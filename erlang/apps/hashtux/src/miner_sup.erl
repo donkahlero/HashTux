@@ -17,7 +17,7 @@
 %% ===================================================================
 
 start_link() ->
-	io:format("starting miner_sup~n"),
+	io:format("Started the miner_sup~n"),
   supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 
