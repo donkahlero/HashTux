@@ -13,10 +13,11 @@ init(_Args) ->
 
 handle_call({search, Term}, From, State) -> 
 	io:format("Term: ~p~n", [Term]),
-	if (Term == "help") ->
-		   {reply, "There is no help for a lost soul like yours.", State};
-		true ->
-			{reply, lists:reverse(Term), State}
-	end.
-%handle_call({search, luke}, From, State) -> {reply, "skywalker", State}.
+	Ref = gen_server:call(db_serv, {get_cont, Term}),
+	receive {Ref, Res} -> {reply, Res} end.
+	%if (Term == "help") ->
+	%	   {reply, "There is no help for a lost soul like yours.", State};
+	%	true ->
+	%		{reply, lists:reverse(Term), State}
+	%end.
 				

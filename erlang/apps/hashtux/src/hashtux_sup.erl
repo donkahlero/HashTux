@@ -34,8 +34,13 @@ init([]) ->
 	%%
 	%% Here we can start supervisors responsible for the sub-task
 	%% data fetching, DB servers and main program flow
-	%%
+	
+	%% Start the DB supervisor
+	db_sup:start_link(),
+	
+	%% Start the main flow supervisor
 	main_flow_sup:start_link(),
+	
 	{ok, { {one_for_all, 0, 1}, []} }.
 
 %%====================================================================
