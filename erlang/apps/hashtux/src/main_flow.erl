@@ -26,8 +26,15 @@ handle_call({search, Term}, From, State) ->
 	%end.
 	
 	% Make a miner call for the term
-	MSG = miner_server:search(Term, none),
-	io:format("MSG: ~p~n", [MSG]),
+	Ref = miner_server:search(Term, none),
+	receive 
+		X ->
+			{reply, X, State}
+		after 1000 ->
+			{reply, "DB timeout!", State}
+	end,
+	
+	%io:format("MSG: ~p~n", [X]),
 	{reply, ok, State}.
 
 				
