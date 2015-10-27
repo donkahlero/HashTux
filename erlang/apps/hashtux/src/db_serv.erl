@@ -124,7 +124,7 @@ code_change(_OldVsn, State, _Extra) ->
 start_ww() ->
     ChildSpecs = {erlang:unique_integer(), {db_hash_writer, start_link, []},
 		  temporary, 5000, worker, [db_hash_writer]},
-    supervisor:start_child(db_read_sup, ChildSpecs).
+    supervisor:start_child(db_hash_write_sup, ChildSpecs).
 
 %% @doc Function which starts a reader worker.
 %% This reader worker gets appended to the reader 
@@ -132,4 +132,4 @@ start_ww() ->
 start_rw() ->
     ChildSpecs = {erlang:unique_integer(), {db_hash_reader, start_link, []},
                   temporary, 5000, worker, [db_hash_reader]},
-    supervisor:start_child(db_read_sup, ChildSpecs).
+    supervisor:start_child(db_hash_read_sup, ChildSpecs).
