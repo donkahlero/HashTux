@@ -15,15 +15,18 @@ handle_call({search, Term}, From, State) ->
 	io:format("Term: ~p~n", [Term]),
 	Ref = gen_server:call(db_serv, {get_cont, Term}),
 	
-	miner_server:search(Term, none),
-	receive 
+	MSG = miner_server:search(Term, none),
+	io:format("MSG: ~p~n", [MSG]),
+	{reply, Term, State}.
+	%receive 
 		%{Ref, [{<<"error">>,<<"not_found">>},{<<"reason">>,<<"missing">>}]}
 		  
-		{Ref, Res} ->
-			{reply, Res, State}
-		after 1000 ->
-			{reply, "DB timeout!", State}
-	end.
+	%	{Ref, Res} ->
+	%		{reply, Res, State}
+	%	after 1000 ->
+	%		{reply, "DB timeout!", State}
+	%end.
+	
 	%if (Term == "help") ->
 	%	   {reply, "There is no help for a lost soul like yours.", State};
 	%	true ->
