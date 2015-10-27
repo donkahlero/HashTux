@@ -15,9 +15,10 @@ handle_call({search, Term}, From, State) ->
 	io:format("Term: ~p~n", [Term]),
 	Ref = gen_server:call(db_serv, {get_cont, Term}),
 	
-	MSG = miner_server:search(Term, none),
-	io:format("MSG: ~p~n", [MSG]),
-	{reply, Term, State}.
+	%MSG = miner_server:search(Term, none),
+	%io:format("MSG: ~p~n", [MSG]),
+	{reply, Ref, State}.
+	
 	%receive 
 		%{Ref, [{<<"error">>,<<"not_found">>},{<<"reason">>,<<"missing">>}]}
 		  
