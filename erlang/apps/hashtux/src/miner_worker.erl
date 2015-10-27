@@ -12,8 +12,7 @@
 %%% =======================================================
 
 start_link() ->
-	io:format("starting miner_worker~n"),
-%	process_flag(trap_exit, true),	
+	io:format("STARTING:miner_worker [~p]~n", [self()]),
 	gen_server:start_link(?MODULE, [], []).
 
 
@@ -41,16 +40,14 @@ code_change(_PrevVersion, _State, _Extra) ->
 
 
 %% ========================================================
-handle_info(Msg, S) ->
-	io:format("unknown message: ~p~n", [Msg]),
+handle_info(_Msg, S) ->
 	{noreply, S}.
 
 
 %% ========================================================
 handle_cast({{Pid, _Ref}, Term, Options}, State) ->
-	timer:sleep(10000),
 	Pid ! {self(), Term, Options},
-	io:format("stopping worker ~p~n", [self()]),
+	io:format("FINISHED:worker [~p]~n", [self()]),
 	{stop, normal, State}.	
 
 
