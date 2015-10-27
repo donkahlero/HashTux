@@ -6,7 +6,7 @@
 
 
 %% Document operations
--export([doc_add/2, doc_change/2, doc_get/1, doc_delete/1, doc_append/2, doc_rmval/2, doc_exist/1]).
+-export([doc_add/3, doc_change/3, doc_get/2, doc_delete/2, doc_append/3, doc_rmval/3, doc_exist/2]).
 
 %% @doc Method to initially add a document to the database.
 %% Encodes the erlang JSon representation to valid JSon.
