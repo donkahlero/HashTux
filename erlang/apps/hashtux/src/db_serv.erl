@@ -67,22 +67,22 @@ handle_call({add_hash, Hashtag, Content}, {From, _Ref}, State) ->
     {reply, Ref, State};
 %%% Overwrite a hashtag document
 handle_call({overwr_hash, Hashtag, Content}, {From, _Ref}, State) ->
-    {ok, Ref} =start_ww(),
+    {ok, Ref} = start_ww(),
     gen_server:cast(Ref, {overwr_hash, Hashtag, Content, From}),
     {reply, Ref, State};
 %%% Add content to a hashtag document
 handle_call({add_content, Hashtag, Content}, {From, _Ref}, State) ->
-    {ok, Ref} =start_ww(),
+    {ok, Ref} = start_ww(),
     gen_server:cast(Ref, {add_cont, Hashtag, Content, From}),
     {reply, Ref, State};
 %%% Remove an entry from a hashtag document
 handle_call({remove_val, Hashtag, Field}, {From, _Ref}, State) ->
-    {ok, Ref} =start_ww(),
+    {ok, Ref} = start_ww(),
     gen_server:cast(Ref, {remove_val, Hashtag, Field, From}),
     {reply, Ref, State};
 %%% Delete a hashtag document in the database.
 handle_call({delete_hash, Hashtag}, {From, _Ref}, State) ->
-    {ok, Ref} =start_ww(),
+    {ok, Ref} = start_ww(),
     gen_server:cast(Ref, {delete_hash, Hashtag, From}),
     {reply, Ref, State};
 %%% Get the current server state.
@@ -122,14 +122,14 @@ code_change(_OldVsn, State, _Extra) ->
 %% @doc Function which starts a writer worker.
 %% This type of worker performs WRITE ONLY stuff.
 start_ww() ->
-    ChildSpecs = {erlang:unique_integer(), {db_writer, start_link, []},
-		  temporary, 5000, worker, [db_reader]},
+    ChildSpecs = {erlang:unique_integer(), {db_hash_writer, start_link, []},
+		  temporary, 5000, worker, [db_hash_writer]},
     supervisor:start_child(db_read_sup, ChildSpecs).
 
 %% @doc Function which starts a reader worker.
 %% This reader worker gets appended to the reader 
 %% supervisor. 
 start_rw() ->
-    ChildSpecs = {erlang:unique_integer(), {db_reader, start_link, []},
-                  temporary, 5000, worker, [db_reader]},
+    ChildSpecs = {erlang:unique_integer(), {db_hash_reader, start_link, []},
+                  temporary, 5000, worker, [db_hash_reader]},
     supervisor:start_child(db_read_sup, ChildSpecs).
