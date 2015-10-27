@@ -49,27 +49,27 @@ handle_call(_, _, _) ->
 
 handle_cast({add_hash, Hash, Content, Rec}, State) ->
 	couch_operations:doc_add(Hash, Content),
-        Rec ! true,	
+        Rec ! {self(), true},	
 	{stop, normal, State};
 
 handle_cast({overwr_hash, Hash, Content, Rec}, State) ->
 	couch_operations:doc_change(Hash, Content),
-	Rec ! true,
+	Rec ! {self(), true},
 	{stop, normal, State};
 
 handle_cast({add_cont, Hash, Content, Rec}, State) ->
 	couch_operations:doc_append(Hash, Content),
-	Rec ! true,
+	Rec ! {self(), true},
 	{stop, normal, State};
 
 handle_cast({remove_val, Hash, Field, Rec}, State) ->
 	couch_operations:doc_rmval(Hash, Field),
-	Rec ! true,
+	Rec ! {self(), true},
 	{stop, normal, State};
 
 handle_cast({delete_hash, Hash, Rec}, State) ->
 	couch_operations:doc_delete(Hash),
-	Rec ! true,
+	Rec ! {self(), true},
 	{stop, normal, State}.
 
 %% @doc Handles Info (not used) 
