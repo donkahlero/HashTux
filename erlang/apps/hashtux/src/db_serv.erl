@@ -47,42 +47,42 @@ init([]) ->
 %%  lead in an error.
 %%% Get the complete content of a hashtag document from the database.
 handle_call({get_hash, Hashtag}, {From, _Ref}, State) ->
-    {ok, Ref} = start_rw(),
+    {ok, Ref} = start_hrw(),
     gen_server:cast(Ref, {get_hash, Hashtag, From}),
     {reply, Ref, State};
 %%% Get the content of a hashtag document without the id an rev.
 handle_call({get_cont, Hashtag}, {From, _Ref}, State) ->
-    {ok, Ref} = start_rw(),
+    {ok, Ref} = start_hrw(),
     gen_server:cast(Ref, {get_cont, Hashtag, From}),
     {reply, Ref, State};
 %%% Check if a document for a hashtag exists.
 handle_call({hash_exist, Hashtag}, {From, _Ref}, State) ->
-    {ok, Ref} = start_rw(),
+    {ok, Ref} = start_hrw(),
     gen_server:cast(Ref, {hash_exist, Hashtag, From}),
     {reply, Ref, State};
 %%% Add a hashtag document to the database.
 handle_call({add_hash, Hashtag, Content}, {From, _Ref}, State) ->
-    {ok, Ref} = start_ww(),
+    {ok, Ref} = start_hww(),
     gen_server:cast(Ref, {add_hash, Hashtag, Content, From}),
     {reply, Ref, State};
 %%% Overwrite a hashtag document
 handle_call({overwr_hash, Hashtag, Content}, {From, _Ref}, State) ->
-    {ok, Ref} = start_ww(),
+    {ok, Ref} = start_hww(),
     gen_server:cast(Ref, {overwr_hash, Hashtag, Content, From}),
     {reply, Ref, State};
 %%% Add content to a hashtag document
 handle_call({add_content, Hashtag, Content}, {From, _Ref}, State) ->
-    {ok, Ref} = start_ww(),
+    {ok, Ref} = start_hww(),
     gen_server:cast(Ref, {add_cont, Hashtag, Content, From}),
     {reply, Ref, State};
 %%% Remove an entry from a hashtag document
 handle_call({remove_val, Hashtag, Field}, {From, _Ref}, State) ->
-    {ok, Ref} = start_ww(),
+    {ok, Ref} = start_hww(),
     gen_server:cast(Ref, {remove_val, Hashtag, Field, From}),
     {reply, Ref, State};
 %%% Delete a hashtag document in the database.
 handle_call({delete_hash, Hashtag}, {From, _Ref}, State) ->
-    {ok, Ref} = start_ww(),
+    {ok, Ref} = start_hww(),
     gen_server:cast(Ref, {delete_hash, Hashtag, From}),
     {reply, Ref, State};
 %%% Get the current server state.
@@ -119,17 +119,24 @@ code_change(_OldVsn, State, _Extra) ->
 %% | Part which handles worker starts. The methods will create unique IDs as   |
 %% | well as appending them to the supervisors.                                |
 %% -----------------------------------------------------------------------------
-%% @doc Function which starts a writer worker.
+%% @doc Function which starts a hashtag writer worker.
 %% This type of worker performs WRITE ONLY stuff.
-start_ww() ->
+start_hww() ->
     ChildSpecs = {erlang:unique_integer(), {db_hash_writer, start_link, []},
 		  temporary, 5000, worker, [db_hash_writer]},
     supervisor:start_child(db_hash_write_sup, ChildSpecs).
 
-%% @doc Function which starts a reader worker.
-%% This reader worker gets appended to the reader 
+%% @doc Function which starts a hashtag reader worker.
+%% This reader worker gets appended to the ht reader 
 %% supervisor. 
-start_rw() ->
+start_hrw() ->
     ChildSpecs = {erlang:unique_integer(), {db_hash_reader, start_link, []},
                   temporary, 5000, worker, [db_hash_reader]},
     supervisor:start_child(db_hash_read_sup, ChildSpecs).
+
+%% @doc Function which starts a userstats writer worker.
+start_usww() ->
+    ChildSpecs = {erlang:unique_integer(), {db_userstats_writer, start_link,
+					    []},
+                  temporary, 5000, worker, [db_userstats_writer]},
+    supervisor:start_child(db_stats_write_sup, ChildSpecs).
