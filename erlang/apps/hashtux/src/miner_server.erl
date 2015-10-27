@@ -22,8 +22,7 @@
 
 %% for now register as local -> change later
 %% no arguments passed here to callback function init/1
-start_link() ->
-	io:format("starting miner_server~n"),	
+start_link() ->	
 	gen_server:start_link({local, miner_server}, ?MODULE, [], []).
 
 
@@ -55,7 +54,7 @@ init([]) ->
 
 %% for abnormal termination
 terminate(Reason, _State) ->
-	io:format("server stopping for reason: ~p~n", [Reason]),
+	io:format("STOPPING:miner_server, REASON:~p~n", [Reason]),
 	ok.
 
 
@@ -75,18 +74,15 @@ code_change(_PrevVersion, _State, _Extra) ->
 %% state record
 handle_info({'DOWN', Ref, process, _Pid, _}, 
 						S=#state{limit=N, refs=Refs}) ->
-	io:format("received down message~n"),
 	case gb_sets:is_element(Ref, Refs) of
 		true ->
 			NewRefs = gb_sets:delete(Ref, Refs),
 			NewS = S#state{limit=N+1, refs=NewRefs},
-			io:format("state: ~p~n", [NewS]),
 			{noreply, NewS};
 		false ->
 			{noreply, S}
 	end;
-handle_info(Msg, S) ->
-	io:format("unknown message: ~p~n", [Msg]),
+handle_info(_Msg, S) ->
 	{noreply, S}.
 
 
@@ -102,7 +98,7 @@ handle_call({search, Term, Options}, From,
 	Ref = erlang:monitor(process, Pid),
 	gen_server:cast(Pid, {From, Term, Options}),
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
-	{reply, {ok, Pid, Ref, NewS}, NewS}.
+	{reply, {ok, Pid}, NewS}.
 
 
 %% starts a worker and attaches it to the worker supervisor
