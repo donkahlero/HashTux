@@ -1,4 +1,4 @@
--module(db_read_sup).
+-module(db_hash_read_sup).
 
 -behavior(supervisor).
 
