@@ -1,4 +1,4 @@
--module(db_write_sup).
+-module(db_hash_write_sup).
 
 -behavior(supervisor).
 
