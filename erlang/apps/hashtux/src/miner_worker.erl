@@ -48,7 +48,7 @@ handle_info(Msg, S) ->
 
 %% ========================================================
 handle_cast({{Pid, _Ref}, Term, Options}, State) ->
-	timer:sleep(10000),
+	timer:sleep(10),
 	Pid ! {self(), Term, Options},
 	io:format("stopping worker ~p~n", [self()]),
 	{stop, normal, State}.	
