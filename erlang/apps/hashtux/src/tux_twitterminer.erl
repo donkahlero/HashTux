@@ -1,6 +1,6 @@
 -module(tux_twitterminer).
 
--export([search_hash_tag/1]).
+-export([search_hash_tag/2]).
 
 -record(account_keys, {api_key, api_secret,
                        access_token, access_token_secret}).
@@ -21,7 +21,7 @@ get_account_keys(AccountName) ->
 
 
 %% @doc This function WILL search for a given HashTag and print some data
-search_hash_tag(HashTag) -> 
+search_hash_tag(Pid, HashTag) -> 
 
 	URL = "https://api.twitter.com/1.1/search/tweets.json", 
 
@@ -41,11 +41,14 @@ search_hash_tag(HashTag) ->
     %%=================================================================%%
 
   	% Use oauth:sign/6 to generate a list of signed OAuth parameters, 
-	SignedParams = oauth:sign("GET", URL, [{q, HashTag}], Consumer, AccessToken, AccessTokenSecret),
+		SignedParams = oauth:sign("GET", URL, [{q, HashTag}], Consumer, AccessToken, AccessTokenSecret),
+		
+		ParsedURI = oauth:uri(URL, SignedParams),
+		io:format("PARSED URI: ~p~n", [ParsedURI]),
 
     % Send authorized GET request and get result as binary
-    Res = ibrowse:send_req(oauth:uri(URL,SignedParams), [], get,[], [{response_format, binary}]),
-
+    Res = ibrowse:send_req(Pid, oauth:uri(URL,SignedParams), [], get,[], [{response_format, binary}]),
+		io:format("RES is : ~p~n", [Res]),
     io:format("Res is-JSON : ~p~n", [jsx:is_json(Res)]),
     io:format("Res is-TERM : ~p~n", [jsx:is_term(Res)]),
 
