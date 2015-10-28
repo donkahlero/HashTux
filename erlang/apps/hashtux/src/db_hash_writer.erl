@@ -50,14 +50,16 @@ handle_call(_, _, _) ->
 
 handle_cast({add_doc, Content, Rec}, State) ->
 	UUID = couch_operations:get_uuid(),
-	couch_operations:doc_add(UUID, Content, ?DB),
+	couch_operations:doc_add([?DB | [UUID]], Content),
         Rec ! {self(), true},	
 	{stop, normal, State};
 
 %% Rewrite this later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-handle_cast({delete_hash, Hash, Rec}, State) ->
-	couch_operations:doc_delete(Hash, ?DB),
-	Rec ! {self(), true},
+handle_cast({delete_hash, Hashtag, Rec}, State) ->
+	L = couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
+	{A, After} = lists:keyfind(<<"rows">>, 1, L),
+	L = [Content || {ID, Content} <- lists:flatten(After), ID == <<"value">>],
+	Rec ! {self(), L},
 	{stop, normal, State}.
 
 %% @doc Handles Info (not used) 

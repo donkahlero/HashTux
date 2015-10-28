@@ -6,39 +6,39 @@
 
 
 %% Document operations
--export([doc_add/3, doc_change/3, doc_get/2, doc_delete/2, doc_append/3, doc_rmval/3, doc_exist/2]).
+-export([doc_add/2, doc_change/2, doc_get/1, doc_delete/1, doc_append/2, doc_rmval/2, doc_exist/1]).
 -export([get_uuid/0]).
 
 %% @doc Method to initially add a document to the database.
 %% Encodes the erlang JSon representation to valid JSon.
-doc_add(DocName, Content, DB) ->
-    couch_connector:put_request(DB ++ DocName, jsx:encode(Content), "text/json").
+doc_add(Addr, Content) ->
+    couch_connector:put_request(Addr, jsx:encode(Content), "text/json").
 
 %% @doc Overwrite content of a document.
-doc_change(DocName, Content, DB) ->
-    Rev = get_tupp(jsx:decode(?MODULE:doc_get(DocName, DB)), "_rev"),
-    couch_connector:put_request(DB ++ DocName, binary_to_list(jsx:encode([Rev | Content])), "text/json").
+doc_change(Addr, Content) ->
+    Rev = get_tupp(jsx:decode(?MODULE:doc_get(Addr)), "_rev"),
+    couch_connector:put_request(Addr, binary_to_list(jsx:encode([Rev | Content])), "text/json").
 
 %% @doc Fetches a document from the database.
 %% Returns just the content of this document. HTML header + info are ignored.
-doc_get(DocName, DB) ->
-    {ok, {_HTTP, _Info, Res}} = couch_connector:get_request(DB ++ DocName),
-    Res.
+doc_get(Addr) ->
+    {ok, {_HTTP, _Info, Res}} = couch_connector:get_request(Addr),
+    jsx:decode(Res).
 
 %% @doc Deletes a document from the database.
-doc_delete(DocName, DB) ->
-    Rev = get_val(jsx:decode((?MODULE:doc_get(DocName, DB))), "_rev"),
-    couch_connector:delete_request(DB ++ DocName ++ "?rev=" ++ Rev).
+doc_delete(Addr) ->
+    Rev = get_val(jsx:decode((?MODULE:doc_get(Addr))), "_rev"),
+    couch_connector:delete_request(Addr ++ "?rev=" ++ Rev).
 
 %% @doc Appends field(s) to an existing document in the database.
-doc_append(DocName, Content, DB) ->
-    Doc = jsx:decode(doc_get(DocName, DB)),
-    couch_connector:put_request(DB ++ DocName, binary_to_list(jsx:encode(Doc ++ Content)), "text/json").
+doc_append(Addr, Content) ->
+    Doc = jsx:decode(doc_get(Addr)),
+    couch_connector:put_request(Addr, binary_to_list(jsx:encode(Doc ++ Content)), "text/json").
 
 %% @doc Removes a value/field from a document.
-doc_rmval(DocName, Name, DB) ->
-    Doc = remove_val(jsx:decode(doc_get(DocName, DB)), Name),
-    couch_connector:put_request(DB ++ DocName, binary_to_list(jsx:encode(Doc)), "text/json").
+doc_rmval(Addr, Name) ->
+    Doc = remove_val(jsx:decode(doc_get(Addr)), Name),
+    couch_connector:put_request(Addr, binary_to_list(jsx:encode(Doc)), "text/json").
 
 %% @doc Helperfunction to remove a value from a JSon document.
 remove_val(Origin, Name) ->
@@ -59,8 +59,8 @@ get_uuid() ->
     [{<<"uuids">>, [UUID]}] = jsx:decode(Res),
     binary_to_list(UUID).
 
-doc_exist(DocName, DB) ->
-	case hd(jsx:decode(doc_get(DocName, DB))) of
+doc_exist(Addr) ->
+	case hd(jsx:decode(doc_get(Addr))) of
 		{<<"error">>, <<"not_found">>} -> false;
 		_default -> true
 	end.

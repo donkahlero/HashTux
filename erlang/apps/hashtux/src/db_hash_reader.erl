@@ -47,26 +47,14 @@ handle_call(_, _, _) ->
 
 %% %% @doc Handels the cast which is the messages where we doing operations on.
 
-handle_cast({get_hash, Hash, Rec}, State) ->
-	Result = jsx:decode(couch_operations:doc_get(Hash, ?DB)),
-	case hd(Result) of
-		{<<"error">>, <<"not_found">>} -> Rec ! {self(), nothing_found};
-		_defualt ->
-			Rec ! {self(), Result}
-		end,
+handle_cast({get_posts, Hashtag, Rec}, State) ->
+	Result =  [{Field, Val} || {Field, Val} <-
+			jsx:decode(couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""))], 
+	Rec ! {self(), Result},
 	{stop, normal, State};
 
-handle_cast({get_cont, Hash, Rec}, State) ->
-	Result =  [{Field, Val} || {Field, Val} <- jsx:decode(couch_operations:doc_get(Hash, ?DB)), Field =/= <<"_id">>, Field =/= <<"_rev">>],
-	case hd(Result) of
-		{<<"error">>, <<"not_found">>} -> Rec ! {self(), nothing_found};
-		_defualt ->
-			Rec ! {self(), Result}
-	end,
-	{stop, normal, State};
-
-handle_cast({hash_exist, Hash, Rec}, State) ->
-	Result = couch_operations:doc_exist(Hash, ?DB),
+handle_cast({hash_exists, Hashtag, Rec}, State) ->
+	Result = couch_operations:doc_exist(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
 	Rec ! {self(), Result},
 	{stop, normal, State}.
 
