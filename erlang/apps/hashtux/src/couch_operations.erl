@@ -27,7 +27,7 @@ doc_get(Addr) ->
 
 %% @doc Deletes a document from the database.
 doc_delete(Addr) ->
-    Rev = get_val(jsx:decode((?MODULE:doc_get(Addr))), "_rev"),
+    Rev = get_val(?MODULE:doc_get(Addr), "_rev"),
     couch_connector:delete_request(Addr ++ "?rev=" ++ Rev).
 
 %% @doc Appends field(s) to an existing document in the database.
