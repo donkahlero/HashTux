@@ -12,52 +12,94 @@
         
         <script type='text/javascript'>
             
-            var pic = {url:"", shown:false, frozen:false};
+            function item(type, content, frozen, displayed) {
+                this.type = type;
+                this.content = content;
+                this.frozen = frozen;
+                this.displayed = displayed;
+            }
             
-            var images = ["http://i.imgur.com/JfKwovX.jpg", "http://i.imgur.com/PLehguA.jpg", 
-                        "http://i.imgur.com/bHkmaqm.jpg", "http://i.imgur.com/DfjlogK.jpg",
-                        "http://i.imgur.com/JgNFQlc.jpg", "http://i.imgur.com/0OYdzge.jpg",
-                        "http://i.imgur.com/iBnXFAA.jpg", "http://i.imgur.com/HiqYpKC.jpg",
-                        "http://i.imgur.com/aFvyTTp.jpg", "http://i.imgur.com/fDutob0.jpg",
-                        "http://i.imgur.com/xx7hFLa.jpg", "http://i.imgur.com/rRK1c1O.jpg",
-                        "http://i.imgur.com/JfKwovX.jpg", "http://i.imgur.com/PLehguA.jpg", 
-                        "http://i.imgur.com/bHkmaqm.jpg", "http://i.imgur.com/DfjlogK.jpg",
-                        "http://i.imgur.com/JgNFQlc.jpg", "http://i.imgur.com/0OYdzge.jpg",
-                        "http://i.imgur.com/iBnXFAA.jpg", "http://i.imgur.com/HiqYpKC.jpg",
-                        "http://i.imgur.com/aFvyTTp.jpg", "http://i.imgur.com/fDutob0.jpg",
-                        "http://i.imgur.com/xx7hFLa.jpg", "http://i.imgur.com/rRK1c1O.jpg"];
+            /*
+             * Images!
+             * 
+             * http://i.imgur.com/JfKwovX.jpg
+             * http://i.imgur.com/z9DY7ev.jpg
+             * http://i.imgur.com/bHkmaqm.jpg
+             * http://i.imgur.com/DfjlogK.jpg
+             * http://i.imgur.com/JgNFQlc.jpg
+             * http://i.imgur.com/0OYdzge.jpg
+             * http://i.imgur.com/iBnXFAA.jpg
+             * http://i.imgur.com/HiqYpKC.jpg
+             * http://i.imgur.com/aFvyTTp.jpg
+             * http://i.imgur.com/fDutob0.jpg
+             * http://i.imgur.com/xx7hFLa.jpg
+             * http://i.imgur.com/rRK1c1O.jpg
+             * 
+             */
+            
+            var items = [new item("tweet", "This is a motherfucking tweet! Is it not beautiful?! I think yes.", false, false),
+                         new item("img", "http://i.imgur.com/z9DY7ev.jpg", false, false),
+                         new item("img", "http://i.imgur.com/bHkmaqm.jpg", false, false),
+                         new item("tweet", "This is a motherfucking tweet! Is it not beautiful?! I think yes.", false, false),
+                         new item("img", "http://i.imgur.com/JgNFQlc.jpg", false, false),
+                         new item("img", "http://i.imgur.com/0OYdzge.jpg", false, false),
+                         new item("tweet", "This is a motherfucking tweet! Is it not beautiful?! I think yes.", false, false),
+                         new item("img", "http://i.imgur.com/HiqYpKC.jpg", false, false),
+                         new item("tweet", "This is a motherfucking tweet! Is it not beautiful?! I think yes.", false, false),
+                         new item("img", "http://i.imgur.com/fDutob0.jpg", false, false),
+                         new item("img", "http://i.imgur.com/xx7hFLa.jpg", false, false),
+                         new item("img", "http://i.imgur.com/rRK1c1O.jpg", false, false)];
             
             window.onload = function() {
                 
                 var $grid = document.getElementById('grid');
-                var $row = "<div class='row-grid-3'>";
+                var $row = "<div class='row-grid-4'>";
                 var $rowend = "</div>";
-                var $colstart = "<div class='col-xs-2 col-fill griditem' style='background-image:url(";
+                var $colstart = "<div class='col-xs-3 col-fill imageitem' style='background-image:url(";
                 var $colmid = ");' id='col";
                 var $colend = "'></div>";
                 var $count = 0;
                 
-                for(i = 0; i < 4; i++) {
+                var $tweetcolstart = "<div class='col-xs-3 col-fill twitteritem' id='col";
+                var $tweetcolmid = "'>";
+                var $tweetcolend = "</div>";
+                
+                for(i = 0; i < 3; i++) {
                     
                     var $cols = "";
                     
-                    for(j = 0; j < 6; j++) {
-                        $cols = $cols + $colstart + images[$count] + $colmid + $count + $colend;
-                        $count++;
+                    for(j = 0; j < 4; j++) {
+                        
+                        if(items[$count].type === "img") {                        
+                            $cols = $cols + $colstart + items[$count].content + $colmid + $count + $colend;
+                            items[$count].displayed = true;
+                            $count++;
+                        }
+                        else if(items[$count].type === "tweet")
+                        {
+                            $cols = $cols + $tweetcolstart + $count + $tweetcolmid +
+                                "<div class='twittertext'><p>" +
+                                items[$count].content +
+                                "</p><p class='username'>@hashtux</p></div>" + 
+                                $tweetcolend;
+                            items[$count].displayed = true;
+                            $count++;
+                        }
                     }
+                    
                     $grid.innerHTML = $grid.innerHTML + $row + $cols + $rowend;
                 }                
                 
             };
             
             function refresh() {
-                var url = images[Math.floor((Math.random() * 23))];
+                var url = items[Math.floor((Math.random() * 11))];
                 
-                var $randomcol = "col" + Math.floor((Math.random() * 23));
+                var $randomcol = "col" + Math.floor((Math.random() * 11));
                 
-                $(document.getElementById($randomcol)).fadeOut(500);
+                $(document.getElementById($randomcol)).fadeOut(600);
                 document.getElementById($randomcol).style.backgroundImage = 'url(' + url + ')';
-                $(document.getElementById($randomcol)).fadeIn(500);
+                $(document.getElementById($randomcol)).fadeIn(300);
             }
             
             function showField() {
@@ -72,8 +114,8 @@
             }
             
             $('html').click(function() {
-                $(document.getElementById('sField')).fadeOut(500);
-                $(document.getElementById('searchBtn')).show();
+                $(document.getElementById('sField')).hide();
+                $(document.getElementById('searchBtn')).fadeIn(500);
                 refresh();
             });
             

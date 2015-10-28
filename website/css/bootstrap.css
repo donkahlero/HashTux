@@ -6840,6 +6840,30 @@ button.close {
 .row-grid-2 { height: 16.666666666666664%; }
 .row-grid-1 { height: 8.333333333333332%; }
 
-.griditem {
+.imageitem {
+    background-size: cover;
+}
+
+.twitteritem {
+    text-align: center;
+    background-color: #3d3d3d;
     background-size: 100% 100%;
+}
+
+.twittertext {
+    font-size: 12px;
+    color: #ebebeb;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.username {
+    position: relative;
+    top: 50%;
+    color: #cccccc;
+    font-size: 8px;
+    font-style: italic;
 }
