@@ -49,12 +49,20 @@ handle_call(_, _, _) ->
 
 handle_cast({get_hash, Hash, Rec}, State) ->
 	Result = jsx:decode(couch_operations:doc_get(Hash, ?DB)),
-	Rec ! {self(), Result},
+	case hd(Result) of
+		{<<"error">>, <<"not_found">>} -> Rec ! {self(), nothing_found};
+		_defualt ->
+			Rec ! {self(), Result}
+		end,
 	{stop, normal, State};
 
 handle_cast({get_cont, Hash, Rec}, State) ->
 	Result =  [{Field, Val} || {Field, Val} <- jsx:decode(couch_operations:doc_get(Hash, ?DB)), Field =/= <<"_id">>, Field =/= <<"_rev">>],
-	Rec ! {self(), Result},
+	case hd(Result) of
+		{<<"error">>, <<"not_found">>} -> Rec ! {self(), nothing_found};
+		_defualt ->
+			Rec ! {self(), Result}
+	end,
 	{stop, normal, State};
 
 handle_cast({hash_exist, Hash, Rec}, State) ->
