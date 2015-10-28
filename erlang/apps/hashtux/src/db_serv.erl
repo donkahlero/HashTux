@@ -54,35 +54,15 @@ handle_call({get_hash, Hashtag}, {From, _Ref}, State) ->
     {ok, Ref} = start_hrw(),
     gen_server:cast(Ref, {get_hash, Hashtag, From}),
     {reply, Ref, State};
-%%% Get the content of a hashtag document without the id an rev.
-handle_call({get_cont, Hashtag}, {From, _Ref}, State) ->
-    {ok, Ref} = start_hrw(),
-    gen_server:cast(Ref, {get_cont, Hashtag, From}),
-    {reply, Ref, State};
 %%% Check if a document for a hashtag exists.
 handle_call({hash_exist, Hashtag}, {From, _Ref}, State) ->
     {ok, Ref} = start_hrw(),
     gen_server:cast(Ref, {hash_exist, Hashtag, From}),
     {reply, Ref, State};
 %%% Add a hashtag document to the database.
-handle_call({add_hash, Hashtag, Content}, {From, _Ref}, State) ->
+handle_call({add_hashtag_doc, Content}, {From, _Ref}, State) ->
     {ok, Ref} = start_hww(),
-    gen_server:cast(Ref, {add_hash, Hashtag, Content, From}),
-    {reply, Ref, State};
-%%% Overwrite a hashtag document
-handle_call({overwr_hash, Hashtag, Content}, {From, _Ref}, State) ->
-    {ok, Ref} = start_hww(),
-    gen_server:cast(Ref, {overwr_hash, Hashtag, Content, From}),
-    {reply, Ref, State};
-%%% Add content to a hashtag document
-handle_call({add_content, Hashtag, Content}, {From, _Ref}, State) ->
-    {ok, Ref} = start_hww(),
-    gen_server:cast(Ref, {add_cont, Hashtag, Content, From}),
-    {reply, Ref, State};
-%%% Remove an entry from a hashtag document
-handle_call({remove_val, Hashtag, Field}, {From, _Ref}, State) ->
-    {ok, Ref} = start_hww(),
-    gen_server:cast(Ref, {remove_val, Hashtag, Field, From}),
+    gen_server:cast(Ref, {add_doc, Content, From}),
     {reply, Ref, State};
 %%% Delete a hashtag document in the database.
 handle_call({delete_hash, Hashtag}, {From, _Ref}, State) ->
