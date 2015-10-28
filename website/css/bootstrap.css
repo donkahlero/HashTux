@@ -6801,7 +6801,7 @@ button.close {
   }
 }
 .col-fill {
-    height: 100%
+    height: 100%;
 }
 .con-fill {
     width: 100%;
@@ -6811,6 +6811,7 @@ button.close {
 }
 .con-fill-hor {
     width: 100%;
+    padding: 0;
 }
 .search {
     position: relative;
@@ -6866,4 +6867,31 @@ button.close {
     color: #cccccc;
     font-size: 8px;
     font-style: italic;
+}
+
+.tophoverarea {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 20%;
+}
+
+.midhoverarea {
+    position: absolute;
+    top: 20%;
+    width: 100%;
+    height: 60%;
+}
+
+.bothoverarea {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 20%;
+}
+
+.topbar {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin: 0;
 }

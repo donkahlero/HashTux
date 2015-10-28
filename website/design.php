@@ -53,7 +53,8 @@
             window.onload = function() {
                 
                 var $grid = document.getElementById('grid');
-                var $row = "<div class='row-grid-4'>";
+                var $row = "<div class='row-grid-4' id='row";
+                var $rowmid = "'>";
                 var $rowend = "</div>";
                 var $colstart = "<div class='col-xs-3 col-fill imageitem' style='background-image:url(";
                 var $colmid = ");' id='col";
@@ -87,13 +88,15 @@
                         }
                     }
                     
-                    $grid.innerHTML = $grid.innerHTML + $row + $cols + $rowend;
-                }                
+                    $grid.innerHTML = $grid.innerHTML + $row + i + $rowmid + $cols + $rowend;
+                }
                 
             };
             
+            setInterval(refresh, 10000);
+            
             function refresh() {
-                var url = items[Math.floor((Math.random() * 11))];
+                var url = items[Math.floor((Math.random() * 11))].content;
                 
                 var $randomcol = "col" + Math.floor((Math.random() * 11));
                 
@@ -113,11 +116,20 @@
                 event.stopPropagation();
             }
             
-            $('html').click(function() {
+            function showOptions() {
+                $(document.getElementById('optionsMenu')).fadeIn(500);
+            }
+            
+            function hideOptions() {
+                $(document.getElementById('sField')).hide();
+                $(document.getElementById('optionsMenu')).fadeOut(500);
+                $(document.getElementById('searchBtn')).show();
+            }
+            
+            function hideSearchField() {
                 $(document.getElementById('sField')).hide();
                 $(document.getElementById('searchBtn')).fadeIn(500);
-                refresh();
-            });
+            }
             
         </script>    
         
@@ -131,16 +143,20 @@
             </div>
         
             <div class="container con-fill-hor">
-                <div class="row">
-                    <div class="col-md-4"></div>
-                    <div class="col-md-4"></div>
+                
+                <div class="tophoverarea" onmouseover="showOptions()" onclick="hideSearchField()"></div>
+                <div class="midhoverarea" onmouseover="hideOptions()"></div>
+                <div class="bothoverarea" onmouseover=""></div>
+                
+                <div class="row topbar" id="optionsMenu">
+                    <div class="col-md-8"></div>
                     <div class="col-md-4">
-                        <div class="input-group" style="display: none; margin-top: 15px;" id="sField">
+                        <div class="input-group" style="display: none;" id="sField">
                             <span class="input-group-addon">#</span>
                             <input type="text" class="form-control" name="sField">
                         </div>
                         <button type="button" class="btn btn-default btn-md" id="searchBtn"
-                                style="float:right; margin-top: 15px;" onclick="showField()">
+                                style="float:right;" onclick="showField()">
                             Search
                         </button>
                     </div>
