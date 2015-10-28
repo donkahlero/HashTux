@@ -46,8 +46,6 @@ handle_cast({add_content, Session, Content, Rec}, State) ->
 	couch_operations:doc_append(Session, [{<<"timestamp">>, Date}] ++ Content, ?DB),
 	{stop, normal, State}.
 
-handle_cast()
-
 handle_info(_Info, State) ->
 	{noreply, State}.
 
