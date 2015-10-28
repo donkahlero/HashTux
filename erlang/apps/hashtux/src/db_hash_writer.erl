@@ -56,10 +56,10 @@ handle_cast({add_doc, Content, Rec}, State) ->
 
 %% Rewrite this later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 handle_cast({delete_hash, Hashtag, Rec}, State) ->
-	L = couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
-	{A, After} = lists:keyfind(<<"rows">>, 1, L),
-	L = [Content || {ID, Content} <- lists:flatten(After), ID == <<"value">>],
-	Rec ! {self(), L},
+	Results = couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
+	{_, Posts} = lists:keyfind(<<"rows">>, 1, Results),
+	[couch_operations:doc_delete(?DB ++ binary_to_list(ID)) || {<<"_id">>, ID} <- lists:flatten([Content || {<<"value">>, Content} <- lists:flatten(Posts)])],
+        Rec ! {self(), true},
 	{stop, normal, State}.
 
 %% @doc Handles Info (not used) 
