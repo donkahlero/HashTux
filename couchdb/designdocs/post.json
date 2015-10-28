@@ -1,0 +1,15 @@
+{
+  "_id":"_design/post",
+  "language": "javascript",
+  "views":
+  {
+    "all": {
+      "map": "function(doc) { if (doc.search_term)  emit(null, doc) }"
+    },
+    "by_hashtag": {
+    }
+    "by_lastname": {
+      "map": "function(doc) { if (doc.Type == 'customer')  emit(doc.LastName, doc) }"
+    }
+  }
+}
