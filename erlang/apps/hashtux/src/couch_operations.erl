@@ -7,6 +7,7 @@
 
 %% Document operations
 -export([doc_add/3, doc_change/3, doc_get/2, doc_delete/2, doc_append/3, doc_rmval/3, doc_exist/2]).
+-export([get_uuid/0]).
 
 %% @doc Method to initially add a document to the database.
 %% Encodes the erlang JSon representation to valid JSon.
@@ -51,6 +52,12 @@ get_tupp(L, Field) ->
 get_val(Json, Field) ->
     {_ID, Val} = get_tupp(Json, Field),
     binary_to_list(Val).
+
+%% @doc Function getting a UUID from the CouchDB
+get_uuid() ->
+    {ok, {_HTTP, _Info, Res}} = couch_connector:get_request("_uuids"),
+    [{<<"uuids">>, [UUID]}] = jsx:decode(Res),
+    binary_to_list(UUID).
 
 doc_exist(DocName, DB) ->
 	case hd(jsx:decode(doc_get(DocName, DB))) of
