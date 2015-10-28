@@ -50,17 +50,17 @@ init([]) ->
 %%  @doc handles all kinds of calls to the server. Not supported calls will
 %%  lead in an error.
 %%% Get the complete content of a hashtag document from the database.
-handle_call({get_hash, Hashtag}, {From, _Ref}, State) ->
+handle_call({get_posts, Hashtag}, {From, _Ref}, State) ->
     {ok, Ref} = start_hrw(),
-    gen_server:cast(Ref, {get_hash, Hashtag, From}),
+    gen_server:cast(Ref, {get_posts, Hashtag, From}),
     {reply, Ref, State};
 %%% Check if a document for a hashtag exists.
-handle_call({hash_exist, Hashtag}, {From, _Ref}, State) ->
+handle_call({posts_exist, Hashtag}, {From, _Ref}, State) ->
     {ok, Ref} = start_hrw(),
-    gen_server:cast(Ref, {hash_exist, Hashtag, From}),
+    gen_server:cast(Ref, {posts_exist, Hashtag, From}),
     {reply, Ref, State};
 %%% Add a hashtag document to the database.
-handle_call({add_hashtag_doc, Content}, {From, _Ref}, State) ->
+handle_call({add_doc, Content}, {From, _Ref}, State) ->
     {ok, Ref} = start_hww(),
     gen_server:cast(Ref, {add_doc, Content, From}),
     {reply, Ref, State};
