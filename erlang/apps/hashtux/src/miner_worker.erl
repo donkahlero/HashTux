@@ -46,7 +46,7 @@ handle_info(_Msg, S) ->
 
 %% ========================================================
 handle_cast({{Pid, _Ref}, Term, Options}, State) ->
-	tux_twitterminer:search(Term),
+	tux_twitterminer:search_hash_tag(Term),
 	Pid ! {self(), Term, Options},
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	{stop, normal, State}.	
