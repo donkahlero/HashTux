@@ -25,12 +25,20 @@ search_hash_tag(HashTag) ->
 
 	URL = "https://api.twitter.com/1.1/search/tweets.json", 
 
-	Keys = get_account_keys(account1),
-  
+	%Keys = get_account_keys(account1),
+
+    %% TEMP: hardcoded until we restore get_env from config file
+    Consumer = {"8zASL19iVZ6IpMa0imBbRDJlo", "u4BL8BIGb6NllmZJwlnO2zpf0H5vzv2wMP4s5aYquZvBFEd0ux", hmac_sha1},
+    AccessToken = "3947085676-R5GaAeZAz2ns7wEcfZZ9Fw4Npt62kS4irnkgHcT",
+    AccessTokenSecret = "W1raFk3kqVEj38QFjDus2qCfk8IU8ilWgfTqAgk3T5Lv6",
+
+    %%=================================================================%%
+    %% UNCOMMENT following lines
 	%% Check OAUTH for search request
-	Consumer = {Keys#account_keys.api_key, Keys#account_keys.api_secret, hmac_sha1},
-	AccessToken = Keys#account_keys.access_token,
-	AccessTokenSecret = Keys#account_keys.access_token_secret,
+	% Consumer = {Keys#account_keys.api_key, Keys#account_keys.api_secret, hmac_sha1},
+	% AccessToken = Keys#account_keys.access_token,
+	% AccessTokenSecret = Keys#account_keys.access_token_secret,
+    %%=================================================================%%
 
   	% Use oauth:sign/6 to generate a list of signed OAuth parameters, 
 	SignedParams = oauth:sign("GET", URL, [{q, HashTag}], Consumer, AccessToken, AccessTokenSecret),
