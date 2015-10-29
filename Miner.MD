@@ -1,6 +1,6 @@
 # Miners
 =================================================================
-##To start the entire tree for the miner (supervisor + workers)
+##To start the entire tree for the miner (supervisors + workers)
 ```erlang
 miner_sup:start_link().
 ```
