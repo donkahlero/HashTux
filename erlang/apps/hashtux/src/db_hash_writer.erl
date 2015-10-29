@@ -4,6 +4,19 @@
 %% %% %% @doc Initial database actions module
 %% %% %% @version 0.1
 
+%% -----------------------------------------------------------------------------
+%% | Sprint 1 // v0.1                                                          |
+%% | Created first as a normal module where the diffrent write operations was  |
+%% | functions. Then made it into a gen_server which handled a lot of calls.   |
+%% | It used every write operation defind in couch_operation.                  |
+%% -----------------------------------------------------------------------------
+%% -----------------------------------------------------------------------------
+%% | Sprint 2 // v0.2                                                          |
+%% | Changed how many operations to include because of changes in how data is  |
+%% | stored in the database. Only keept the operations which was needed for now|
+%% | add_doc, and delete_hash.                                                 |
+%% -----------------------------------------------------------------------------
+
 -module(db_hash_writer).
 
 -behavior(gen_server).

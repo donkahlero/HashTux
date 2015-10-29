@@ -3,6 +3,19 @@
 %% %% @doc Initial database actions module
 %% %% @version 0.1
 
+%% -----------------------------------------------------------------------------
+%% | Sprint 1 // v0.1                                                          |
+%% | Created first as a normal module where the diffrent write operations was  |
+%% | functions. Then made it into a gen_server which handled a lot of calls.   |
+%% | It used every write operation defind in couch_operation.                  |
+%% -----------------------------------------------------------------------------
+%% -----------------------------------------------------------------------------
+%% | Sprint 2 // v0.2                                                          |
+%% | Changed the module to only do two different operations, get_posts and     |
+%% | hash_exists to fit the new changes on how we will store data and what to  |
+%% | get from the database.                                                    |
+%% -----------------------------------------------------------------------------
+
 -module(db_hash_reader).
 
 -behaviour(gen_server).
