@@ -18,6 +18,11 @@ handle_info(_Msg, State) -> {noreply, State}.
 handle_call({search, Term}, From, State) -> 
 	io:format("Term: ~p~n", [Term]),
 	
+	% Update the database with search term / session data for this request
+	% ...
+	% ...
+	% ...
+	
 	% Make a database call for the term
 	%Ref = gen_server:call(db_serv, {get_cont, Term}),
 	%receive 
@@ -28,6 +33,10 @@ handle_call({search, Term}, From, State) ->
 	%	after 1000 ->
 	%		{reply, "DB timeout!", State}
 	%end.
+	
+	%
+	% Decide on some way to forward the cache to the request / miner code
+	%
 	
 	% Make a miner call for the term
 	{ok, MinerPid} = miner_server:search(Term, none),
