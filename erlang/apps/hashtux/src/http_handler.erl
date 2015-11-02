@@ -27,24 +27,40 @@ handle(Req, State) ->
 	% QueryString: all the query stuff after the ?
 	{Qs, _} = cowboy_req:qs(Req),
 	
+	% The PHP document has supplied a number of details about
+	% the user, session and client options:
+	%	Session ID
+	%	IP address
+	% 	Language (hmm is this a part of user agent or not? hmmm)
+	%	User agent
+	%	Limit (post count in response)
+	%	Services (t, i, y)
+
 	% Qs_val: can be used with an atom to request a particular value
-	{QsVal, _} = cowboy_req:qs_val(<<"option1">>, Req, <<"default">>),
+	{SessionID, _} = cowboy_req:qs_val(<<"session_id">>, Req, <<"unknown">>),
+	{IPAddress, _} = cowboy_req:qs_val(<<"ip_address">>, Req, <<"unknown">>),
+	{Language, _} = cowboy_req:qs_val(<<"language">>, Req, <<"unknown">>),
+	{UserAgent, _} = cowboy_req:qs_val(<<"user_agent">>, Req, <<"unknown">>),
+	{Limit, _} = cowboy_req:qs_val(<<"limit">>, Req, <<"unknown">>),
+	{Services, _} = cowboy_req:qs_val(<<"services">>, Req, <<"unknown">>),
 	
 	% Remove the leading slash from the path
-	[_ | Path2] = binary:bin_to_list(Path),
+	[_ | Term] = binary:bin_to_list(Path),
 	
-	Reply = gen_server:call(main_flow, {search, Path2}),
+	% 
+	% Send the search term and the options to the main flow
+	% 
+	Reply = gen_server:call(main_flow, {search, Term}),
 
 	% "Debug" output
-	io:format("~nURL requested: ~p~nPath: ~p~nQs: ~p~nResult: ~p~nValue of option1: ~p~n~n",
-			  [binary:bin_to_list(URL), Path2, binary:bin_to_list(Qs), Reply, 
-			   binary:bin_to_list(QsVal)]),
+	io:format("~nURL requested: ~p~nPath: ~p~nQs: ~p~nSessionID: ~p~nResult: ~p~n~n",
+			  [binary:bin_to_list(URL), Term, binary:bin_to_list(Qs), Reply, 
+			   binary:bin_to_list(SessionID)]),
 	
 	% io_lib:format does about the same thing as io:format but returns a string
 	% instead of printing
-	Body = io_lib:format("Welcome to HashTux!~n~nURL requested: ~p~nHashtag for mining: ~p~nQs: ~p~nResult: ~p~n~n",
-						 [binary:bin_to_list(URL), Path2, binary:bin_to_list(Qs), Reply]),
-	
+	Body = io_lib:format("Welcome to HashTux!~n~nURL requested: ~p~nHashtag for mining: ~p~nQs: ~p~nSessionID: ~p~nResult: ~p~n~n",
+						 [binary:bin_to_list(URL), Term, binary:bin_to_list(Qs), SessionID, Reply]),	
 	
 	{ok, Req2} = cowboy_req:reply(200, [
         {<<"content-type">>, <<"text/plain">>}							
