@@ -27,6 +27,13 @@ handle(Req, State) ->
 	% QueryString: all the query stuff after the ?
 	{Qs, _} = cowboy_req:qs(Req),
 	
+	%
+	%
+	%	TODO: Create a module that takes req as an argument,
+	%	extracts the relevant data, packs it into a jsx object
+	%	and sends it to the DB for logging
+	%
+	%
 	% The PHP document has supplied a number of details about
 	% the user, session and client options:
 	%	Session ID
@@ -54,13 +61,19 @@ handle(Req, State) ->
 
 	% "Debug" output
 	io:format("~nURL requested: ~p~nPath: ~p~nQs: ~p~nSessionID: ~p~nResult: ~p~n~n",
-			  [binary:bin_to_list(URL), Term, binary:bin_to_list(Qs), Reply, 
-			   binary:bin_to_list(SessionID)]),
+			  [binary:bin_to_list(URL), Term, binary:bin_to_list(Qs),  
+			   binary:bin_to_list(SessionID), Reply]),
 	
 	% io_lib:format does about the same thing as io:format but returns a string
 	% instead of printing
-	Body = io_lib:format("Welcome to HashTux!~n~nHashtag for mining: ~p~nSessionID: ~p~nIP Address: ~p~nLanguage: ~p~nUser Agent: ~p~nResult: ~p~n~n",
-						 [Term, SessionID, IPAddress, Language, UserAgent, Reply]),	
+	%Body = io_lib:format("Welcome to HashTux!~n~nHashtag for mining: ~p~nSessionID: ~p~nIP Address: ~p~nLanguage: ~p~nUser Agent: ~p~nResult: ~p~n~n",
+	%					 [Term, SessionID, IPAddress, Language, UserAgent, Reply]),	
+	
+	%
+	% Let's just send the reply from the main flow call, which should in turn
+	% return the result of the search (as a json string)
+	%
+	Body = Reply,
 	
 	{ok, Req2} = cowboy_req:reply(200, [
         {<<"content-type">>, <<"text/plain">>}							
