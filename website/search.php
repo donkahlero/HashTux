@@ -55,26 +55,25 @@
    	
   		</div>
     </div>
-     
+
     <script type='text/javascript'>
     
-​   var base_url = 'http://localhost:8080/';
-
-function json_parsing()
+​  ​
+function json_parsing(search)
 {
-    var response = "";
+	var url = 'http://localhost:8080/ajax.php?search=' + encodeURI(search);
+	var response = "";
     var form_data = {
         username: username,
         resource_link: resource_link,
         text: text
     };
     $.ajax({
-        type: "POST", 
-        url: base_url + "http://localhost:8080/", 
+        type: "json", 
+        url:url, 
         data: form_data,
         success: function(response)
         {
-           response = '[{"username":"  ","resource_link":"  ","text":"  "}]'
 
             console.log(response);
             
@@ -91,8 +90,7 @@ function json_parsing()
         },
         dataType: "json"//set to JSON    
     })    
-}
-             
+}            
     </script>
     
     </body>

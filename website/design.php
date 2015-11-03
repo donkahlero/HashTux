@@ -173,19 +173,24 @@
                 <div class="bothoverarea" onmouseover=""></div>
                 
                 <div class="row topbar" id="optionsMenu">
-                    <div class="col-md-8"></div>
+                    <div class="col-md-8">
+                        <ol class="breadcrumb" style="background:none; margin: 0; padding: 0;">
+                            <li style="color: #ebebeb;">#jerk</li>
+                            <li style="font-weight: bold; color: #ebebeb;">#hashtux</li>
+                        </ol>
+                    </div>
                     <div class="col-md-4">
-                        <div class="input-group" style="display: none; width:inherit; float:right;" id="sField">
+                        <button type="button" class="btn btn-default btn-md" id="optionsBtn"
+                                style="float:right;" onclick="">
+                            O
+                        </button>
+                        <div class="input-group" style="display: none; float:right; width:inherit; margin-right: 15px;" id="sField">
                             <span class="input-group-addon">#</span>
                             <input type="text" class="form-control" name="sField">
                         </div>
                         <button type="button" class="btn btn-default btn-md" id="searchBtn"
-                                style="float:right;" onclick="showField()">
-                            Search
-                        </button>
-                        <button type="button" class="btn btn-default btn-md" id="optionsBtn"
-                                style="float:right; margin-right:15px;" onclick="">
-                            Options
+                                style="float:right; margin-right: 15px;" onclick="showField()">
+                            S
                         </button>
                     </div>
                 </div>

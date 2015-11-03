@@ -6895,3 +6895,7 @@ button.close {
     padding-bottom: 15px;
     margin: 0;
 }
+
+.crumbtext {
+    color: #1b6d85;
+}
