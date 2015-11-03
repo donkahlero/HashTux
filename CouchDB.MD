@@ -27,20 +27,13 @@ receive {Ref, Result} -> Result end.
 ```
 * "Hashtag" is the Hashtag you want to search for
 * Returns all available posts in a list of JSX JSON results
-* 
+
 ```erlang
-{get_posts, "Hashtag", Options}
+{get_posts, "Hashtag", [{option1, Value1}, {option2, Value2}, {option3, Value3}, {optionN, ValueN}]}
 ```
-* As above but with search options
+* As above but with search (multiple) options
 
 #### Search options
-```erlang
-[{option1, Value1}, {option2, Value2}, {option3, Value3}, {optionN, ValueN}]
-```
-* General usage.
-* optionN is an atom 
-* Value1 is always a Var
-
 ```erlang
 {limit, Amount}
 ```
