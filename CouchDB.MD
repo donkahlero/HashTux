@@ -30,6 +30,7 @@ receive {Ref, Result} -> Result end.
 {add_doc, Content}
 ```
 * Adds a document (which must be in JSX JSON representation) to the database
+* Content is a list of JSX JSON Obj. -> [[{<<"name">>, <<"jerker">>}, {<<"lastname">>, <<"ericsson">>}], [...]]
 * Returns a true or false atom
 
 ##ToDo
