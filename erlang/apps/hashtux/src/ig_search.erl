@@ -16,10 +16,10 @@ search(Term) ->
 	io:format("URL for IG: ~p~n", [Url]),
 	case httpc:request(Url) of
 		{ok, Result} -> 
-			io:format("RESULT RECEIVED FROM IG~n"),
+			%io:format("RESULT RECEIVED FROM IG~n"),
 			{_StatusLine, _Headers, Body} = Result,
 			DecodedRes = jsx:decode(list_to_binary(Body)),
-			io:format("DECODED RESULT from IG: ~p~n", [DecodedRes]),
+			%io:format("DECODED RESULT from IG: ~p~n", [DecodedRes]),
 			parse(Term, DecodedRes);
 		{error, Reason} ->
 			io:format("REQUEST FAILED for reason: ~p~n", [Reason])
