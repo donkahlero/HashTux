@@ -18,21 +18,22 @@ init(_Type, Req, []) ->
 
 
 handle(Req, State) ->
-	% URL: the full url, including http://
-	{URL, _} =  cowboy_req:url(Req),
-	
 	% Path: the path, starting with /
 	{Path, _} = cowboy_req:path(Req),
 	
+	% URL: the full url, including http://
+	%{URL, _} =  cowboy_req:url(Req),	
 	% QueryString: all the query stuff after the ?
-	{Qs, _} = cowboy_req:qs(Req),
+	%{Qs, _} = cowboy_req:qs(Req),
 	
-	%
+	
 	%
 	%	TODO: Create a module that takes req as an argument,
 	%	extracts the relevant data, packs it into a jsx object
 	%	and sends it to the DB for logging
 	%
+	% 	TODO: Create a FUNCTION that takes req as an argument
+	%	and returns an option tuple to be sent to main flow
 	%
 	% The PHP document has supplied a number of details about
 	% the user, session and client options:
@@ -44,12 +45,12 @@ handle(Req, State) ->
 	%	Services (t, i, y)
 
 	% Qs_val: can be used with an atom to request a particular value
-	{SessionID, _} = cowboy_req:qs_val(<<"session_id">>, Req, <<"unknown">>),
-	{IPAddress, _} = cowboy_req:qs_val(<<"ip_address">>, Req, <<"unknown">>),
-	{Language, _} = cowboy_req:qs_val(<<"language">>, Req, <<"unknown">>),
-	{UserAgent, _} = cowboy_req:qs_val(<<"user_agent">>, Req, <<"unknown">>),
-	{Limit, _} = cowboy_req:qs_val(<<"limit">>, Req, <<"unknown">>),
-	{Services, _} = cowboy_req:qs_val(<<"services">>, Req, <<"unknown">>),
+	%{SessionID, _} = cowboy_req:qs_val(<<"session_id">>, Req, <<"unknown">>),
+	%{IPAddress, _} = cowboy_req:qs_val(<<"ip_address">>, Req, <<"unknown">>),
+	%{Language, _} = cowboy_req:qs_val(<<"language">>, Req, <<"unknown">>),
+	%{UserAgent, _} = cowboy_req:qs_val(<<"user_agent">>, Req, <<"unknown">>),
+	%{Limit, _} = cowboy_req:qs_val(<<"limit">>, Req, <<"unknown">>),
+	%{Services, _} = cowboy_req:qs_val(<<"services">>, Req, <<"unknown">>),
 	
 	% Remove the leading slash from the path
 	[_ | Term] = binary:bin_to_list(Path),
@@ -60,9 +61,8 @@ handle(Req, State) ->
 	Reply = gen_server:call(main_flow, {search, Term}),
 
 	% "Debug" output
-	io:format("~nURL requested: ~p~nPath: ~p~nQs: ~p~nSessionID: ~p~nResult: ~p~n~n",
-			  [binary:bin_to_list(URL), Term, binary:bin_to_list(Qs),  
-			   binary:bin_to_list(SessionID), Reply]),
+	io:format("~nTerm: ~p~nResult: ~p~n~n",
+			  [Term, Reply]),
 	
 	% io_lib:format does about the same thing as io:format but returns a string
 	% instead of printing
@@ -76,7 +76,7 @@ handle(Req, State) ->
 	Body = Reply,
 	
 	{ok, Req2} = cowboy_req:reply(200, [
-        {<<"content-type">>, <<"text/plain">>}							
+        {<<"content-type">>, <<"application/json">>}							
     ], binary:list_to_bin(Body), Req),
 	{ok, Req2, State}.
 
