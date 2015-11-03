@@ -2,7 +2,7 @@
 -behaviour(gen_server).
 
 -export([start_link/0]).
--export([init/1, handle_call/3]).
+-export([init/1, handle_info/2, handle_call/3]).
 
 start_link() ->
     gen_server:start_link({local, main_flow}, main_flow, [], []).
@@ -43,7 +43,7 @@ handle_call({search, Term}, From, State) ->
 	receive 
 		{MinerPid, Y, Z} ->
 			{reply, Y, State}
-		after 1000 ->
+		after 5000 ->
 			{reply, "Miner timeout!", State}
 	end.
 	
