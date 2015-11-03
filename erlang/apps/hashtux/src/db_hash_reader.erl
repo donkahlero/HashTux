@@ -62,18 +62,23 @@ handle_call(_, _, _) ->
 
 handle_cast({get_posts, Hashtag, Rec}, State) ->
 	Result =  [{Field, Val} || {Field, Val} <-
-			jsx:decode(couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""))], 
+			couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\"")], 
 	Rec ! {self(), Result},
 	{stop, normal, State};
 
-handle_cast({getposts, Hashtag, Limit, Rec}, State) ->
-	L = binary_to_list(Limit),
+handle_cast({get_posts, Hashtag, [{limit, Num}], Rec}, State) ->
 	Result =  [{Field, Val} || {Field, Val} <-
-			jsx:decode(couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\"" ++ "&limit\"" ++ L ++ "\""))],
+			couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++  "\"" "&limit="  ++ integer_to_list(Num))],
 	        Rec ! {self(), Result},
 		        {stop, normal, State};
 
-handle_cast({hash_exists, Hashtag, Rec}, State) ->
+handle_cast({get_posts, Hashtag, [{time, Time}], Rec}, State) ->
+	Result =  [{Field, Val} || {Field, Val} <-
+			couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag_date?startkey=[\"" ++ Hashtag ++  "\"" ++  ",\""  ++ integer_to_list(Time) ++ "\"]")],
+	Rec ! {self(), Result},
+	{stop, normal, State};
+
+handle_cast({posts_exist, Hashtag, Rec}, State) ->
 	Result = couch_operations:doc_exist(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
 	Rec ! {self(), Result},
 	{stop, normal, State}.
@@ -86,6 +91,13 @@ handle_info(_Info, _State) ->
 terminate(_Reason, _State) ->
 	ok.
 
-
-
-
+options_gen(Opts) ->
+	options_gen(Opts, []).
+options_gen([], Opts) ->
+	Opts;
+options_gen([{limit, Num}|T], Opts) ->
+	Opt = Opts ++ "&limit=" ++ integer_to_list(Num),
+	options_gen(T, Opt);
+options_gen([{time, Time}|T], Opts) ->
+	Opt = Opts ++ "&time=\"" ++ integer_to_list(Time) ++ "\"",
+	options_gen(T, Opt).

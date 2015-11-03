@@ -60,7 +60,7 @@ get_uuid() ->
     binary_to_list(UUID).
 
 doc_exist(Addr) ->
-	case hd(jsx:decode(doc_get(Addr))) of
+	case hd(doc_get(Addr)) of
 		{<<"error">>, <<"not_found">>} -> false;
 		_default -> true
 	end.
