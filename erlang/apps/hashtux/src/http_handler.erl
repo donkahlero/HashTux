@@ -75,11 +75,15 @@ handle(Req, State) ->
 	%
 	Body = Reply,
 	
+	%{ok, Req2} = cowboy_req:reply(200, [
+    %    {<<"content-type">>, <<"application/json">>}							
+    %], binary:list_to_bin(Body), Req),
+	%{ok, Req2, State}.
+
 	{ok, Req2} = cowboy_req:reply(200, [
         {<<"content-type">>, <<"application/json">>}							
-    ], binary:list_to_bin(Body), Req),
+    ], binary:list_to_bin(jsx:encode(Body)), Req),
 	{ok, Req2, State}.
-
 
 terminate(_Reason, _Req, _State) ->
     ok.
