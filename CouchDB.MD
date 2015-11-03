@@ -15,7 +15,7 @@ receive {Ref, Result} -> Result end.
 ```
 
 ##Supported calls
-###Hashtag/Post operations
+###Read operations
 ```erlang
 {get_posts, "Hashtag"}
 ```
@@ -26,12 +26,25 @@ receive {Ref, Result} -> Result end.
 ```
 * Checks if there are any posts for a specific Hashtag
 * Returns a true or false atom
+
+###Write operations
 ```erlang
 {add_doc, Content}
 ```
-* Adds a document (which must be in JSX JSON representation) to the database
+* Adds document(s) (which must be in JSX JSON representation) to the database
 * Content is a list of JSX JSON Obj. -> [[{<<"search_term">>, <<"jerker">>}, {<<"lastname">>, <<"ericsson">>}], [...]]
 * Returns a true or false atom
+```erlang
+{add_doc, Content, Limit}
+```
+* Adds document(s) to the database (like the previous). 
+* Limit is the maximum amount of entries you want to receive from the database
+```erlang
+{add_doc, Content, StartTime, EndTime}
+```
+* Same as above
+* StartTime is the first date the data should come from (UNIX epoch time)
+* EndTime is the last date the data should come from (UNIX epoch time)
 
 ##ToDo
 * Support for more specific searches (limit amount of posts, service [Twitter, Insta, YT], timestamp, etc.)
