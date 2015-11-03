@@ -66,6 +66,13 @@ handle_cast({get_posts, Hashtag, Rec}, State) ->
 	Rec ! {self(), Result},
 	{stop, normal, State};
 
+handle_cast({getposts, Hashtag, Limit, Rec}, State) ->
+	L = binary_to_list(Limit),
+	Result =  [{Field, Val} || {Field, Val} <-
+			jsx:decode(couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\"" ++ "&limit\"" ++ L ++ "\""))],
+	        Rec ! {self(), Result},
+		        {stop, normal, State};
+
 handle_cast({hash_exists, Hashtag, Rec}, State) ->
 	Result = couch_operations:doc_exist(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
 	Rec ! {self(), Result},

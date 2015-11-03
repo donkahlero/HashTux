@@ -64,6 +64,10 @@ handle_call({add_doc, Content}, {From, _Ref}, State) ->
     {ok, Ref} = start_hww(),
     gen_server:cast(Ref, {add_doc, Content, From}),
     {reply, Ref, State};
+handle_call({add_doc, Content, Limit}, {From, _Ref}, State) ->
+	{ok, Ref} = start_hww(),
+	gen_server:cast(Ref, {add_doc, Content, Limit, From}),
+	{reply, Ref, State};
 %%% Delete a hashtag document in the database.
 handle_call({delete_hash, Hashtag}, {From, _Ref}, State) ->
     {ok, Ref} = start_hww(),
