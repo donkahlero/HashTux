@@ -12,7 +12,7 @@
 %%% =======================================================
 
 start_link() ->
-	io:format("STARTING:miner_worker [~p]~n", [self()]),
+	io:format("STARTING:miner_worker~n"),
 	gen_server:start_link(?MODULE, [], []).
 
 
@@ -46,7 +46,12 @@ handle_info(_Msg, S) ->
 
 %% ========================================================
 handle_cast({{Pid, _Ref}, Term, Options}, State) ->
-	Pid ! {self(), Term, Options},
+	io:format("SEARCH TERM in worker: ~p~n", [Term]),
+	Res = ig_search:search(Term),
+	io:format("RETURNED RESULT from insta parsing: ~p~n", [Res]),
+%	Res1 = twitter_search:search_hash_tag(Term, []),
+%	io:format("RETURNED RESULT from twitter parsing: ~p~n", [Res1]),
+	Pid ! {self(), Res, Options},
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	{stop, normal, State}.	
 
@@ -54,7 +59,6 @@ handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 %% ========================================================
 handle_call({Term, Options}, _From, S) -> 
 	{reply, {Term, Options}, S}.
-
 
 
 
