@@ -59,8 +59,8 @@ handle(Req, State) ->
 	
 	% io_lib:format does about the same thing as io:format but returns a string
 	% instead of printing
-	Body = io_lib:format("Welcome to HashTux!~n~nHashtag for mining: ~p~nQs: ~p~nSessionID: ~p~nIP Address: ~p~nLanguage: ~p~nUser Agent: ~p~nResult: ~p~n~n",
-						 [Term, binary:bin_to_list(Qs), SessionID, IPAddress, Language, UserAgent, Reply]),	
+	Body = io_lib:format("Welcome to HashTux!~n~nHashtag for mining: ~p~nSessionID: ~p~nIP Address: ~p~nLanguage: ~p~nUser Agent: ~p~nResult: ~p~n~n",
+						 [Term, SessionID, IPAddress, Language, UserAgent, Reply]),	
 	
 	{ok, Req2} = cowboy_req:reply(200, [
         {<<"content-type">>, <<"text/plain">>}							
