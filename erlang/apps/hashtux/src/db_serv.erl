@@ -54,20 +54,21 @@ handle_call({get_posts, Hashtag}, {From, _Ref}, State) ->
     {ok, Ref} = start_hrw(),
     gen_server:cast(Ref, {get_posts, Hashtag, From}),
     {reply, Ref, State};
+%%% Get content with some options
+handle_call({get_posts, Hashtag, Options}, {From, _Ref}, State) ->
+    {ok, Ref} = start_hrw(),
+    gen_server:cast(Ref, {get_posts, Hashtag, Options, From}),
+    {reply, Ref, State};
 %%% Check if a document for a hashtag exists.
 handle_call({posts_exist, Hashtag}, {From, _Ref}, State) ->
     {ok, Ref} = start_hrw(),
     gen_server:cast(Ref, {posts_exist, Hashtag, From}),
     {reply, Ref, State};
-%%% Add a hashtag document to the database.
+%%% Add hashtag documents to the database.
 handle_call({add_doc, Content}, {From, _Ref}, State) ->
     {ok, Ref} = start_hww(),
     gen_server:cast(Ref, {add_doc, Content, From}),
     {reply, Ref, State};
-handle_call({add_doc, Content, Limit}, {From, _Ref}, State) ->
-	{ok, Ref} = start_hww(),
-	gen_server:cast(Ref, {add_doc, Content, Limit, From}),
-	{reply, Ref, State};
 %%% Delete a hashtag document in the database.
 handle_call({delete_hash, Hashtag}, {From, _Ref}, State) ->
     {ok, Ref} = start_hww(),
