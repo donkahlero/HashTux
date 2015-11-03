@@ -62,9 +62,8 @@ handle_call(_, _, _) ->
 %% %% @doc These handels the messages coming in and do the operations
 
 handle_cast({add_doc, Content, Rec}, State) ->
-	UUID = couch_operations:get_uuid(),
-	couch_operations:doc_add([?DB | [UUID]], Content),
-        Rec ! {self(), true},	
+        add_docs(Content),
+	Rec ! {self(), true},	
 	{stop, normal, State};
 
 %% Rewrite this later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -83,3 +82,8 @@ handle_info(_Info, _State) ->
 terminate(_Reason, _State) -> 
   	ok.
 
+add_docs([]) -> ok;
+add_docs([H|T]) ->
+	UUID = couch_operations:get_uuid(),
+	couch_operations:doc_add([?DB | [UUID]], H),
+	add_docs(T).
