@@ -1,3 +1,7 @@
+<?php
+	/* Start a new session or resume if the client has a cookie ;) */
+	session_start();
+?>
 <html lang="en">
   <head>   
     <meta charset="utf-8">
@@ -68,10 +72,9 @@
                         
                     </div>
               
-              </div>
-              
-              <div class="col-md-4"></div>
-              
+              	</div>
+              	<div class="col-md-4" style="color: #bbbbbb; margin-top: 50px;">
+				</div>
           </div>
 
     </div>

@@ -96,13 +96,37 @@
             setInterval(refresh, 10000);
             
             function refresh() {
-                var url = items[Math.floor((Math.random() * 11))].content;
-                
-                var $randomcol = "col" + Math.floor((Math.random() * 11));
-                
-                $(document.getElementById($randomcol)).fadeOut(600);
-                document.getElementById($randomcol).style.backgroundImage = 'url(' + url + ')';
-                $(document.getElementById($randomcol)).fadeIn(300);
+            
+                for(i = 0; i < 5; i++) {
+                    var newitem = items[Math.floor((Math.random() * 12))];
+
+                    var $randomcol = "col" + Math.floor((Math.random() * 12));
+
+                    if(newitem.type === "img") 
+                    {
+                        $(document.getElementById($randomcol)).animate({height: "0", opacity: "0"}, 0);
+
+                        document.getElementById($randomcol).innerHTML = '';
+                        document.getElementById($randomcol).className = 'col-xs-3 col-fill imageitem';
+                        document.getElementById($randomcol).style.backgroundImage = 'url(' + newitem.content + ')';
+
+                        $(document.getElementById($randomcol)).animate({height: "100%", opacity: "1"}, 1000);
+                    }
+                    else if (newitem.type === "tweet")
+                    {
+                        $(document.getElementById($randomcol)).animate({height: "0", opacity: "0"}, 0);
+
+                        document.getElementById($randomcol).className = "col-xs-3 col-fill twitteritem";
+                        document.getElementById($randomcol).style.backgroundImage = '';
+                        document.getElementById($randomcol).innerHTML =
+                                "<div class='twittertext'><p>" +
+                                newitem.content +
+                                "</p><p class='username'>@hashtux</p></div>";
+
+                        $(document.getElementById($randomcol)).animate({height: "100%", opacity: "1"}, 1000);
+                    }
+                    
+                }
             }
             
             function showField() {
@@ -135,7 +159,7 @@
         
     </head>
     
-    <body style="background-color: #FFF">
+    <body style="background-color: #3d3d3d">
         
         <div class="container con-fill">
             
@@ -151,13 +175,17 @@
                 <div class="row topbar" id="optionsMenu">
                     <div class="col-md-8"></div>
                     <div class="col-md-4">
-                        <div class="input-group" style="display: none;" id="sField">
+                        <div class="input-group" style="display: none; width:inherit; float:right;" id="sField">
                             <span class="input-group-addon">#</span>
                             <input type="text" class="form-control" name="sField">
                         </div>
                         <button type="button" class="btn btn-default btn-md" id="searchBtn"
                                 style="float:right;" onclick="showField()">
                             Search
+                        </button>
+                        <button type="button" class="btn btn-default btn-md" id="optionsBtn"
+                                style="float:right; margin-right:15px;" onclick="">
+                            Options
                         </button>
                     </div>
                 </div>
