@@ -10,7 +10,7 @@
       "map": "function(doc) { if (doc.search_term)  emit(doc.search_term, doc) }"
     },
     "by_hashtag_date": {
-      "map": "function(doc) { if (doc.search_term, doc.timestamp)  emit(doc.search_term, doc.timestamp, doc) }"
+      "map": "function(doc) { if (doc.search_term && doc.timestamp)  emit([doc.search_term, doc.timestamp], doc) }"
     },
     "by_service": {
       "map": "function(doc) { if (doc.search_term, doc.service) emit(doc_search_term, doc.service, doc) }"
