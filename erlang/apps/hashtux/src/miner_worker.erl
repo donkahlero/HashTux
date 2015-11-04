@@ -51,7 +51,8 @@ handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 	io:format("RETURNED RESULT from insta parsing: ~p~n", [Res]),
 	Res1 = twitter_search:search_hash_tag(Term, []),
 	io:format("RETURNED RESULT from twitter parsing: ~p~n", [Res1]),
-	Pid ! {self(), Res, Options},
+	FinalRes = Res ++ Res1,								
+	Pid ! {self(), FinalRes, Options},
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	{stop, normal, State}.	
 
