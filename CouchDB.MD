@@ -53,6 +53,12 @@ receive {Ref, Result} -> Result end.
 * Content is a list of JSX JSON Obj. -> [[{<<"search_term">>, <<"jerker">>}, {<<"lastname">>, <<"ericsson">>}], [...]]
 * Returns a true or false atom
 
+```erlang
+{add_habit_doc, Content}
+```
+* Adds ONE document to the user habit data database
+* Content is a JSX JSON Obj.
+
 ##ToDo
 * Support for more specific searches (limit amount of posts, service [Twitter, Insta, YT], timestamp, etc.)
 * Add Userdata support
