@@ -30,7 +30,7 @@ store(Req) ->
 	%		ok
 	%end.
 
-extract(Req) ->
+extract(Req) ->	 
 	% Extract the relevant variables (as binaries) from the request
 	{TimeStamp, _} = cowboy_req:qs_val(<<"timestamp">>, Req, <<"unknown">>),
 	{SessionID, _} = cowboy_req:qs_val(<<"session_id">>, Req, <<"unknown">>),
