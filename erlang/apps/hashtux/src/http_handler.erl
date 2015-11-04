@@ -26,6 +26,7 @@ handle(Req, State) ->
 	% QueryString: all the query stuff after the ?
 	%{Qs, _} = cowboy_req:qs(Req),
 	
+	user_habits:store(Req),
 	
 	%
 	%	TODO: Create a module that takes req as an argument,
