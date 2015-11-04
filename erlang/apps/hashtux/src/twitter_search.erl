@@ -51,7 +51,7 @@ parse_response_body(HashTag, ResponseBody) ->
     case extract(<<"statuses">>, DecodedBody) of
         {found, StatusList} -> 
             parse_status_list(HashTag, StatusList, []);                                
-        not_found -> io:format("Status List NOT FOUND\n")                              % Return error if result was empty?!?!
+        not_found -> []
     end.
 
     
@@ -90,7 +90,11 @@ format_single_media(Media) ->
     end,
 
     Media_Type = case extract (<<"type">>, Media) of
-        {found, Type} -> Type;
+        {found, Type} -> 
+            case Type of
+                <<"photo">> -> <<"image">>;
+                _ -> <<"video">>
+            end;
         not_found -> null
     end,
 
@@ -178,7 +182,7 @@ parse_status_details(HashTag, Status) ->
         not_found -> 
             Tags = null,
             Media_URL = null,
-            Media_Type = null
+            Media_Type = <<"text">>
     end,
 
     %% ======== Parsing User details ==============
@@ -208,5 +212,5 @@ parse_status_details(HashTag, Status) ->
     end,
 
 
-    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"social_media">>, <<"Twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"date">>, Date}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"username">>, UserName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
+    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"social_media">>, <<"Twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"timestamp">>, Date}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Media_URL}, {<<"resource_link_low">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"username">>, UserName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
     clean_result(A).
