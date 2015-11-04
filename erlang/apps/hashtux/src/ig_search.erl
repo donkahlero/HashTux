@@ -17,7 +17,8 @@ search(Term) ->
 			DecodedRes = jsx:decode(list_to_binary(Body)),
 			parse(Term, DecodedRes);
 		{error, Reason} ->
-			io:format("REQUEST FAILED for reason: ~p~n", [Reason])
+			io:format("REQUEST FAILED for reason: ~p~n", [Reason]),
+			[]
 	end.
 
 
@@ -43,8 +44,7 @@ parse(Term, List) ->
 	case extract(<<"data">>, List) of
 		{found, DataList} -> 
 			parse_data(Term, DataList);
-		not_found -> 
-			not_found
+		not_found -> []
 	end.
 
 
