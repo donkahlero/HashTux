@@ -30,74 +30,63 @@
 
 %% @doc Starts the server
 start_link() ->
-	gen_server:start_link(?MODULE, [], []).
+    gen_server:start_link(?MODULE, [], []).
 
 %% @doc Calls a stop tp the server
 stop(Module) ->
-	gen_server:call(Module, stop).
+    gen_server:call(Module, stop).
 
 stop() ->
-	stop(self()).
+    stop(self()).
 
 state(Module) ->
-	gen_server:call(Module, state).
+    gen_server:call(Module, state).
 
 state() ->
-	state(self()).
+    state(self()).
 
 %% Server implementation, a.k.a.: callbacks
 
 init([]) ->
-	{ok, []}.
+    {ok, []}.
 
 %% @doc Handles the calls
 handle_call(stop, _From, _State) ->
-	{stop, normal, stopped, _State};
+    {stop, normal, stopped, _State};
 
 %% @doc Catches all calls
 handle_call(_, _, _) ->
-	error(badarth).
+    error(badarth).
 
 %% %% @doc Handels the cast which is the messages where we doing operations on.
 
 handle_cast({get_posts, Hashtag, Rec}, State) ->
-	Result =  [{Field, Val} || {Field, Val} <-
-			couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\"")], 
-	Rec ! {self(), Result},
-	{stop, normal, State};
+    Result =  [{Field, Val} || {Field, Val} <-
+				   couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\"")], 
+    Rec ! {self(), Result},
+    {stop, normal, State};
 
 handle_cast({get_posts, Hashtag, [{limit, Num}], Rec}, State) ->
-	Result =  [{Field, Val} || {Field, Val} <-
-			couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++  "\"" "&limit="  ++ integer_to_list(Num))],
-	        Rec ! {self(), Result},
-		        {stop, normal, State};
+    Result =  [{Field, Val} || {Field, Val} <-
+				   couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++  "\"" "&limit="  ++ integer_to_list(Num))],
+    Rec ! {self(), Result},
+    {stop, normal, State};
 
 handle_cast({get_posts, Hashtag, [{time, Time}], Rec}, State) ->
-	Result =  [{Field, Val} || {Field, Val} <-
-			couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag_date?startkey=[\"" ++ Hashtag ++  "\"" ++  ",\""  ++ integer_to_list(Time) ++ "\"]")],
-	Rec ! {self(), Result},
-	{stop, normal, State};
+    Result =  [{Field, Val} || {Field, Val} <-
+				   couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag_date?startkey=[\"" ++ Hashtag ++  "\"" ++  ",\""  ++ integer_to_list(Time) ++ "\"]")],
+    Rec ! {self(), Result},
+    {stop, normal, State};
 
 handle_cast({posts_exist, Hashtag, Rec}, State) ->
-	Result = couch_operations:doc_exist(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
-	Rec ! {self(), Result},
-	{stop, normal, State}.
+    Result = couch_operations:doc_exist(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
+    Rec ! {self(), Result},
+    {stop, normal, State}.
 
 %% @doc Handels the info (not used)
 handle_info(_Info, _State) ->
-	{noreply, _State}.
+    {noreply, _State}.
 
 %% @doc Terminates the server
 terminate(_Reason, _State) ->
-	ok.
-
-options_gen(Opts) ->
-	options_gen(Opts, []).
-options_gen([], Opts) ->
-	Opts;
-options_gen([{limit, Num}|T], Opts) ->
-	Opt = Opts ++ "&limit=" ++ integer_to_list(Num),
-	options_gen(T, Opt);
-options_gen([{time, Time}|T], Opts) ->
-	Opt = Opts ++ "&time=\"" ++ integer_to_list(Time) ++ "\"",
-	options_gen(T, Opt).
+    ok.
