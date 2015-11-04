@@ -20,11 +20,20 @@ search_hash_tag(HashTag, _Options) ->
 
     {ok, Status, _ResponseHeaders, ResponseBody} = Res,
 
-    case Status of
-    	"200" -> io:format("Request was fulfilled\n");
-    	_Other -> io:format("Got non-200 response\n")
-    end,
+    print_response_info(Status),
 
+    parse_response_body(HashTag, ResponseBody).
+
+
+% Print request status information
+print_response_info(Status) ->
+    case Status of
+        "200" -> io:format("Request was fulfilled\n");
+        _Other -> io:format("Got non-200 response\n")
+    end.
+
+% Decode Response Body and parses result
+parse_response_body(HashTag, ResponseBody) ->
     DecodedBody = jsx:decode(ResponseBody),
 
     case extract(<<"search_metadata">>, DecodedBody) of
@@ -40,10 +49,11 @@ search_hash_tag(HashTag, _Options) ->
     end,
 
     case extract(<<"statuses">>, DecodedBody) of
-    	{found, StatusList} -> 
-            parse_status_list(HashTag, StatusList, []);                                % uncomment this!!!
-    	not_found -> io:format("Status List NOT FOUND\n")                          % Return error if result was empty?!?!
+        {found, StatusList} -> 
+            parse_status_list(HashTag, StatusList, []);                                
+        not_found -> io:format("Status List NOT FOUND\n")                              % Return error if result was empty?!?!
     end.
+
     
 % the value of a key from decoded JSON message.
 extract(K, L) ->
@@ -69,16 +79,9 @@ format_tags([H|T], Result) ->
 get_single_tag([{<<"text">>, A}, _]) -> A;
 get_single_tag([{_B, A}, _]) -> A.
 
-% Format array of MEDIA nodes
-% Returns a tuple of two lists: Media Resources Urls and types
-format_media_entity(Media_List) -> format_media_entity(Media_List, [], []).
-
-format_media_entity([], URL_List, Type_List) -> {URL_List, Type_List};
-format_media_entity([H|T], URL_List, Type_List) -> 
-    {Url, Type} = format_single_media(H),
-    New_URL_List = URL_List ++ [Url],
-    New_Type_List = Type_List ++ [Type],
-    format_media_entity(T, New_URL_List, New_Type_List).
+% Returns ONLY the first media element information (URL and Type).
+format_media_entity([]) -> {null, null};
+format_media_entity([H|_T]) -> format_single_media(H).          %% return info related to first media element
 
 format_single_media(Media) ->
     Media_Url = case extract (<<"media_url">>, Media) of
@@ -92,7 +95,6 @@ format_single_media(Media) ->
     end,
 
     {Media_Url, Media_Type}.
-    
 
 % Remove empty fields from Tweet Result (i.e. removes fields that returned null)
 clean_result(L) -> [X || X <- L, has_null_value(X) == false].
@@ -166,17 +168,17 @@ parse_status_details(HashTag, Status) ->
             % Parse 'Media' entity
             case extract(<<"media">>, Entities) of
                 {found, Media} -> 
-                    {Media_URLs, Media_Types} = format_media_entity(Media);
+                    {Media_URL, Media_Type} = format_media_entity(Media);
                 not_found -> 
-                    Media_URLs = null,
-                    Media_Types = null
+                    Media_URL = null,
+                    Media_Type = null
             end;
 
         %% ENTITIES not found
         not_found -> 
             Tags = null,
-            Media_URLs = null,
-            Media_Types = null
+            Media_URL = null,
+            Media_Type = null
     end,
 
     %% ======== Parsing User details ==============
@@ -206,8 +208,5 @@ parse_status_details(HashTag, Status) ->
     end,
 
 
-    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"social_media">>, <<"Twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"date">>, Date}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link">>, Media_URLs}, {<<"content_type">>, Media_Types}, {<<"username">>, UserName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
-    io:format("RAW Result is ~p~n", [A]),
-    B = clean_result(A),
-    io:format("Appending CLEAN Result: ~p~n", [B]),
-    B.
+    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"social_media">>, <<"Twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"date">>, Date}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"username">>, UserName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
+    clean_result(A).
