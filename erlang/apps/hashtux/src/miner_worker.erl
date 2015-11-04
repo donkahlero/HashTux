@@ -46,7 +46,7 @@ handle_info(_Msg, S) ->
 
 %% ========================================================
 handle_cast({{Pid, _Ref}, Term, Options}, State) ->
-	Res = ig_search:search(Term),
+	Res = ig_search:search(Term, Options),
 	Res1 = twitter_search:search_hash_tag(Term, []),
 	FinalRes = Res ++ Res1,								
 	Pid ! {self(), FinalRes, Options},
