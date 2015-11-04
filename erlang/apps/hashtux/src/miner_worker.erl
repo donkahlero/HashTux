@@ -51,6 +51,7 @@ handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 	FinalRes = Res ++ Res1,								
 	Pid ! {self(), FinalRes, Options},
 	io:format("FINISHED:worker [~p]~n", [self()]),
+	gen_server:call(db_serv, {add_doc, FinalRes}),
 	{stop, normal, State}.	
 
 
