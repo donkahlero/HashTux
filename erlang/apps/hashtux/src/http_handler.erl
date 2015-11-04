@@ -47,44 +47,32 @@ handle(Req, State) ->
 	%{URL, _} =  cowboy_req:url(Req),	
 	% QueryString: all the query stuff after the ?
 	%{Qs, _} = cowboy_req:qs(Req),
-	
-	user_habits:store(Req),
-	
+		
 	% Extract the path (the search term)
 	[_ | Term] = binary:bin_to_list(Path),
-	% "Debug" output
-	io:format("~nNow handling term: ~p~n",
-			  [Term]),
 	
-	% 
-	% Send the search term and the options to the main flow
-	% 
+	% "Debug" output
+	io:format("~nNow handling term: ~p~n", [Term]),
+	
+	% Store user habit data 	
+	user_habits:store(Term, Req),
+	
+	% Send the search term and the options to the main flow 
 	Reply = try gen_server:call(main_flow, {search, Term}, 20000)
 		catch _ -> []
 	end,
 	
-	io:format("Main flow returned from handling ~p~n",
-			  [Term]),
+	io:format("Main flow returned from handling ~p~n", [Term]),
 	
-	% io_lib:format does about the same thing as io:format but returns a string
-	% instead of printing
+	% io_lib:format does about the same thing as io:format but returns a string instead of printing
 	%Body = io_lib:format("Welcome to HashTux!~n~nHashtag for mining: ~p~nSessionID: ~p~nIP Address: ~p~nLanguage: ~p~nUser Agent: ~p~nResult: ~p~n~n",
 	%					 [Term, SessionID, IPAddress, Language, UserAgent, Reply]),	
 	
-	%
-	% Let's just send the reply from the main flow call, which should in turn
-	% return the result of the search (as a json string)
-	%
-	Body = Reply,
-	
-	%{ok, Req2} = cowboy_req:reply(200, [
-    %    {<<"content-type">>, <<"application/json">>}							
-    %], binary:list_to_bin(Body), Req),
-	%{ok, Req2, State}.
-
+	% Send the reply from the main flow call, which should be
+	% a list of social media posts. We encode it with jsx and send it out.
 	{ok, Req2} = cowboy_req:reply(200, [
         {<<"content-type">>, <<"application/json">>}							
-    ], jsx:encode(Body), Req),
+    ], jsx:encode(Reply), Req),
 	{ok, Req2, State}.
 
 terminate(_Reason, _Req, _State) ->
