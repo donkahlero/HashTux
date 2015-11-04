@@ -11,13 +11,6 @@
 
 %% @doc This function WILL search for a given HashTag and print some data
 search_hash_tag(HashTag, _Options) -> 
-    %%=================================================================%%
-    %% UNCOMMENT following lines
-	%% Check OAUTH for search request
-	% Consumer = {Keys#account_keys.api_key, Keys#account_keys.api_secret, hmac_sha1},
-	% AccessToken = Keys#account_keys.access_token,
-	% AccessTokenSecret = Keys#account_keys.access_token_secret,
-    %%=================================================================%%
 
   	% Use oauth:sign/6 to generate a list of signed OAuth parameters, 
 	SignedParams = oauth:sign("GET", ?URL, [{q, HashTag}], ?CONSUMER, ?ACCES_TOKEN, ?ACCES_TOKEN_SECRET),
@@ -34,26 +27,23 @@ search_hash_tag(HashTag, _Options) ->
 
     DecodedBody = jsx:decode(ResponseBody),
 
-    case extract(<<"statuses">>, DecodedBody) of
-    	{found, StatusList} -> 
-    		%io:format("Status List is ~p~n", [StatusList]),
-    		%print_status_list(StatusList);                        
-            parse_status_list(HashTag, StatusList);                                % uncomment this!!!
-    	not_found -> io:format("Status List NOT FOUND\n")
+    case extract(<<"search_metadata">>, DecodedBody) of
+        {found, SearchMetadata} -> 
+            % io:format("Search Metadata is ~p~n", [SearchMetadata]),
+            
+            case extract(<<"count">>, SearchMetadata) of
+                {found, SearchCount} -> io:format("Search Count is ~p~n", [SearchCount]);
+                not_found -> io:format("Search Count NOT FOUND\n")
+            end;
+
+        not_found -> io:format("Search Metadata NOT FOUND\n")
     end,
 
-    case extract(<<"search_metadata">>, DecodedBody) of
-    	{found, SearchMetadata} -> 
-    		% io:format("Search Metadata is ~p~n", [SearchMetadata]),
-			
-			case extract(<<"count">>, SearchMetadata) of
-    			{found, SearchCount} -> io:format("Search Count is ~p~n", [SearchCount]);
-    			not_found -> io:format("Search Count NOT FOUND\n")
-    		end;
-
-    	not_found -> io:format("Search Metadata NOT FOUND\n")
+    case extract(<<"statuses">>, DecodedBody) of
+    	{found, StatusList} -> 
+            parse_status_list(HashTag, StatusList, []);                                % uncomment this!!!
+    	not_found -> io:format("Status List NOT FOUND\n")                          % Return error if result was empty?!?!
     end.
-
     
 % the value of a key from decoded JSON message.
 extract(K, L) ->
@@ -61,101 +51,6 @@ extract(K, L) ->
     {_, M} -> {found, M};
     false  -> not_found
   end.
-
-%% Calls print_status_details on all statuses included in a given List
-print_status_list([]) -> ok;
-print_status_list([H|T]) -> 
-	print_status_details(H),
-	print_status_list(T).
-
-%% Prints details for a specific status
-print_status_details(Status) ->
-	
-    %% ===== extract TWEET information ================
-    case extract(<<"id">>, Status) of
-        {found, Tweet_ID} -> io:format("Tweet_ID : ~p~n", [Tweet_ID]);
-        not_found -> io:format("Tweet_ID NOT FOUND\n")
-    end,
-
-    case extract(<<"created_at">>, Status) of
-		{found, CreationDate} -> io:format("Creation Date : ~p~n", [binary:bin_to_list(CreationDate)]);
-		not_found -> io:format("Creation Date NOT FOUND\n")
-	end,
-
-	case extract(<<"text">>, Status) of
-		{found, StatusText} -> 
-			io:format("Text : ~p~n", [binary:bin_to_list(StatusText)]);
-		not_found -> io:format("Status Text NOT FOUND\n")
-	end,
-
-    case extract(<<"retweet_count">>, Status) of
-        {found, Retweet_Count} -> io:format("Retweet count : ~p~n", [Retweet_Count]);
-        not_found -> io:format("Retweet count NOT FOUND\n")
-    end,
-
-    case extract(<<"entities">>, Status) of
-        {found, Entities} -> 
-            io:format("ENTITIES Content:\n"),
-
-            case extract(<<"urls">>, Entities) of
-                {found, Urls} -> 
-                    io:format("Urls LIST : ~p~n", [Urls]);
-                not_found -> io:format("Urls LIST NOT FOUND\n")
-            end,
-
-            case extract(<<"hashtags">>, Entities) of
-                {found, HashTags} -> 
-                    io:format("HashTags List : ~p~n", [HashTags]);
-                not_found -> io:format("HashTags List LIST NOT FOUND\n")
-            end,
-
-            case extract(<<"user_mentions">>, Entities) of
-                {found, UserMentions} -> 
-                    io:format("User Mentions List : ~p~n", [UserMentions]);
-                not_found -> io:format("User Mentions List LIST NOT FOUND\n")
-            end;
-
-        not_found -> io:format("Entities NOT FOUND\n")
-    end,    
-
-    %% ===== extract USER information ================
-    case extract(<<"user">>, Status) of
-        {found, UserInfo} -> 
-            
-            case extract(<<"name">>, UserInfo) of
-                {found, UserName} -> io:format("Posted by : ~p~n", [binary:bin_to_list(UserName)]);
-                not_found -> io:format("User Name NOT FOUND\n")
-            end;
-
-        not_found -> io:format("User Info NOT FOUND\n")
-    end,
-
-    %% Print Empty line
-    io:format("\n").
-
-%% PARSING!!!!
-%% Calls print_status_details on all statuses included in a given List
-parse_status_list(_HashTag, []) -> ok;
-parse_status_list(HashTag, [H|T]) -> 
-    parse_status_details(HashTag, H),
-    parse_status_list(HashTag, T).
-
-% Gets expanded URL from URL list included in Entities in a Status Object
-get_expanded_urls([]) -> null;
-get_expanded_urls(List) ->
-    get_expanded_urls(List, []).
-
-get_expanded_urls([], Result) -> Result;
-get_expanded_urls([H|T], Result) -> 
-    New_Result = Result ++ [get_expanded_url(H)],
-    get_expanded_urls(T, New_Result).
-
-get_expanded_url([]) -> null;
-get_expanded_url(List) -> 
-    case extract(<<"expanded_url">>, List) of
-        {found, X} -> X;
-        not_found -> null
-    end.
 
 % Builds Profile URL for a given user screen_name
 build_profile_link(Screen_Name) -> 
@@ -174,12 +69,45 @@ format_tags([H|T], Result) ->
 get_single_tag([{<<"text">>, A}, _]) -> A;
 get_single_tag([{_B, A}, _]) -> A.
 
+% Format array of MEDIA nodes
+% Returns a tuple of two lists: Media Resources Urls and types
+format_media_entity(Media_List) -> format_media_entity(Media_List, [], []).
+
+format_media_entity([], URL_List, Type_List) -> {URL_List, Type_List};
+format_media_entity([H|T], URL_List, Type_List) -> 
+    {Url, Type} = format_single_media(H),
+    New_URL_List = URL_List ++ [Url],
+    New_Type_List = Type_List ++ [Type],
+    format_media_entity(T, New_URL_List, New_Type_List).
+
+format_single_media(Media) ->
+    Media_Url = case extract (<<"media_url">>, Media) of
+        {found, Url} -> Url;
+        not_found -> null
+    end,
+
+    Media_Type = case extract (<<"type">>, Media) of
+        {found, Type} -> Type;
+        not_found -> null
+    end,
+
+    {Media_Url, Media_Type}.
+    
+
 % Remove empty fields from Tweet Result (i.e. removes fields that returned null)
 clean_result(L) -> [X || X <- L, has_null_value(X) == false].
 
 has_null_value({_, null}) -> true;
 has_null_value({_, _}) -> false.
 
+%% PARSING!!!!
+%% Calls print_status_details on all statuses included in a given List
+parse_status_list(_HashTag, [], Result) -> Result;
+parse_status_list(HashTag, [H|T], Result) -> 
+    NewResult = Result ++ [parse_status_details(HashTag, H)],
+    parse_status_list(HashTag, T, NewResult).
+
+%% Convert single Tweet Object to internal representation form
 parse_status_details(HashTag, Status) ->
 
     %% ======== Parsing Tweet details ==============
@@ -226,6 +154,7 @@ parse_status_details(HashTag, Status) ->
         not_found -> null
     end,
 
+    %% Parse 'entities' node in Tweet Object
     case extract(<<"entities">>, Status) of
         {found, Entities} ->
             Tags = case extract(<<"hashtags">>, Entities) of
@@ -234,17 +163,21 @@ parse_status_details(HashTag, Status) ->
                 not_found -> null
             end,
 
-            Res_Links = case extract(<<"urls">>, Entities) of
-                {found, X9} -> get_expanded_urls(X9);
-                not_found -> null
+            % Parse 'Media' entity
+            case extract(<<"media">>, Entities) of
+                {found, Media} -> 
+                    {Media_URLs, Media_Types} = format_media_entity(Media);
+                not_found -> 
+                    Media_URLs = null,
+                    Media_Types = null
             end;
 
         %% ENTITIES not found
         not_found -> 
             Tags = null,
-            Res_Links = null
+            Media_URLs = null,
+            Media_Types = null
     end,
-
 
     %% ======== Parsing User details ==============
 
@@ -273,8 +206,8 @@ parse_status_details(HashTag, Status) ->
     end,
 
 
-    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"social_media">>, <<"Twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"date">>, Date}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link">>, Res_Links}, {<<"username">>, UserName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
+    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"social_media">>, <<"Twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"date">>, Date}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link">>, Media_URLs}, {<<"content_type">>, Media_Types}, {<<"username">>, UserName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
     io:format("RAW Result is ~p~n", [A]),
     B = clean_result(A),
-    io:format("Returning CLEAN Result: ~p~n", [B]),
+    io:format("Appending CLEAN Result: ~p~n", [B]),
     B.
