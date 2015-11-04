@@ -61,20 +61,17 @@ handle_call(_, _, _) ->
 %% %% @doc Handels the cast which is the messages where we doing operations on.
 
 handle_cast({get_posts, Hashtag, Rec}, State) ->
-    Result =  [{Field, Val} || {Field, Val} <-
-				   couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\"")], 
+    Result =  couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""), 
     Rec ! {self(), Result},
     {stop, normal, State};
 
 handle_cast({get_posts, Hashtag, [{limit, Num}], Rec}, State) ->
-    Result =  [{Field, Val} || {Field, Val} <-
-				   couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++  "\"" "&limit="  ++ integer_to_list(Num))],
+    Result =  couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++  "\"" "&limit="  ++ integer_to_list(Num)),
     Rec ! {self(), Result},
     {stop, normal, State};
 
 handle_cast({get_posts, Hashtag, [{time, Time}], Rec}, State) ->
-    Result =  [{Field, Val} || {Field, Val} <-
-				   couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag_date?startkey=[\"" ++ Hashtag ++  "\"" ++  ",\""  ++ integer_to_list(Time) ++ "\"]")],
+    Result = couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag_date?startkey=[\"" ++ Hashtag ++  "\"" ++  ",\""  ++ integer_to_list(Time) ++ "\"]"),
     Rec ! {self(), Result},
     {stop, normal, State};
 
