@@ -16,19 +16,19 @@ store(Req) ->
 	HabitData = extract(Req),
 	
 	% Send it to the DB server
-	Ref = gen_server:call(db_serv, {add_habit_doc, HabitData}),
-	receive 
-		{Ref, _} ->
-			% Regardless of what is returned from this DB worker, return ok
-			ok
-		after 1000 ->
+	%Ref = gen_server:call(db_serv, {add_habit_doc, HabitData}),
+	%receive 
+	%	{Ref, _} ->
+	%		% Regardless of what is returned from this DB worker, return ok
+	%		ok
+	%	after 1000 ->
 			% Timeout also means we move on.
 			% Is there a risk of messages clogging up? I could do a flush in
 			% this method but maybe that would affect usign code.
 			% Later it could be better to have this module as a server,
 			% right now it's very small though so let's wait with this
-			ok
-	end.
+	%		ok
+	%end.
 
 extract(Req) ->
 	% Extract the relevant variables (as binaries) from the request
