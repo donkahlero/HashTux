@@ -11,7 +11,8 @@
         <script src="js/bootstrap.min.js"></script>
         
         <script type='text/javascript'>
-            
+
+        
             function item(type, content, frozen, displayed) {
                 this.type = type;
                 this.content = content;
@@ -128,7 +129,22 @@
                     
                 }
             }
-            
+
+          
+            function add_google_logo() {
+                var src = "http://google.com/images/logo.gif";
+                show_image("http://google.com/images/logo.gif", 276,110, "Google Logo");
+            }
+
+
+            function show_image(src, width, height, alt) {
+                var img = document.createElement("img");
+                img.src = src;
+                img.width = width;
+                img.height = height;
+                img.alt = alt;
+                document.body.appendChild(img);
+            }
             function showField() {
                 $(document.getElementById('sField')).fadeIn(500);
                 $(document.getElementById('searchBtn')).hide();
@@ -181,7 +197,7 @@
                     </div>
                     <div class="col-md-4">
                         <button type="button" class="btn btn-default btn-md" id="optionsBtn"
-                                style="float:right;" onclick="">
+                                style="float:right;" onclick="add_google_logo()">
                             O
                         </button>
                         <div class="input-group" style="display: none; float:right; width:inherit; margin-right: 15px;" id="sField">

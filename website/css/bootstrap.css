@@ -6802,6 +6802,7 @@ button.close {
 }
 .col-fill {
     height: 100%;
+    padding: 0;
 }
 .con-fill {
     width: 100%;
@@ -6842,6 +6843,7 @@ button.close {
 .row-grid-1 { height: 8.333333333333332%; }
 
 .imageitem {
+    text-align: center;
     background-size: cover;
 }
 
@@ -6849,9 +6851,12 @@ button.close {
     text-align: center;
     background-color: #3d3d3d;
     background-size: 100% 100%;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .twittertext {
+    background-color: rgba(0, 0, 0, 0.5);
     font-size: 12px;
     color: #ebebeb;
     overflow: hidden;
@@ -6861,12 +6866,21 @@ button.close {
     transform: translateY(-50%);
 }
 
-.username {
+.usernametweet {
     position: relative;
     top: 50%;
     color: #cccccc;
     font-size: 8px;
     font-style: italic;
+}
+
+.usernameimage {
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: relative;
+    top: 90%;
+    color: #cccccc;
+    font-size: 10px;
 }
 
 .tophoverarea {

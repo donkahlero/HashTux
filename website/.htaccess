@@ -11,7 +11,7 @@ RewriteCond %{REQUEST_URI} !^/css/(.+)$
 RewriteCond %{REQUEST_URI} !^/js/(.+)$
 RewriteCond %{REQUEST_URI} !^/design.php$
 RewriteCond %{REQUEST_URI} !^/ajax.php$
-
+RewriteCond %{REQUEST_URI} !^/favicon.ico$
 
 #
 # All other requests are handled by search.php, the requested path is appended as a parameter

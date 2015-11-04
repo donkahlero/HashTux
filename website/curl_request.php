@@ -11,7 +11,8 @@ function curl_request($search) {
     curl_setopt ($ch, CURLOPT_RETURNTRANSFER, TRUE);
 	
 	// Set up the parameter array
-	$params = array('session_id' => session_id(), 
+	$params = array('timestamp' => time(),
+                        'session_id' => session_id(), 
 			'ip_address' => $_SERVER['REMOTE_ADDR'],
 			'language' => $_SERVER['HTTP_ACCEPT_LANGUAGE'],
 			'user_agent' => $_SERVER['HTTP_USER_AGENT']);
