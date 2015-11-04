@@ -115,7 +115,7 @@ parse_details([{<<"videos">>, Value}|T]) ->
 		 {<<"resource_link_low">>, V2} | parse_details(T)];
 %% date source was created
 parse_details([{<<"created_time">>, Value}|T]) ->
-	  [{<<"date">>, Value} | parse_details(T)];
+	  [{<<"timestamp">>, Value} | parse_details(T)];
 %% text 
 parse_details([{<<"caption">>, [{_,_}, 
 																{<<"text">>, Value},
