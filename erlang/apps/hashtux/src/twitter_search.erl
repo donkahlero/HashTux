@@ -9,9 +9,40 @@
 -define(ACCES_TOKEN_SECRET, "W1raFk3kqVEj38QFjDus2qCfk8IU8ilWgfTqAgk3T5Lv6").
 
 
-%% @doc This function WILL search for a given HashTag and print some data
-search_hash_tag(HashTag, _Options) -> 
+search_hash_tag(HashTag, [Qty, Lang]) -> 
+    
+    Count = if 
+        (Qty < 0) -> 15;
+        (Qty > 100) -> 100;
+        true -> Qty
+    end,
 
+    Options = case Lang of
+        en -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        it -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        fr -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        es -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        bg -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        de -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        sv -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        am -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        _ -> [{q, HashTag}, {count, Count}]                    %% Catch all- do not filter for any language
+    end, 
+
+    % Use oauth:sign/6 to generate a list of signed OAuth parameters, 
+    SignedParams = oauth:sign("GET", ?URL, Options, ?CONSUMER, ?ACCES_TOKEN, ?ACCES_TOKEN_SECRET),
+
+    % Send authorized GET request and get result as binary
+    Res = ibrowse:send_req(oauth:uri(?URL,SignedParams), [], get,[], [{response_format, binary}]),
+
+    {ok, Status, _ResponseHeaders, ResponseBody} = Res,
+
+    print_response_info(Status),
+
+    parse_response_body(HashTag, ResponseBody);
+
+%% DEFAULT SEARCH: match all options
+search_hash_tag(HashTag, _Options) -> 
   	% Use oauth:sign/6 to generate a list of signed OAuth parameters, 
 	SignedParams = oauth:sign("GET", ?URL, [{q, HashTag}], ?CONSUMER, ?ACCES_TOKEN, ?ACCES_TOKEN_SECRET),
 
@@ -23,7 +54,6 @@ search_hash_tag(HashTag, _Options) ->
     print_response_info(Status),
 
     parse_response_body(HashTag, ResponseBody).
-
 
 % Print request status information
 print_response_info(Status) ->
@@ -175,7 +205,7 @@ parse_status_details(HashTag, Status) ->
                     {Media_URL, Media_Type} = format_media_entity(Media);
                 not_found -> 
                     Media_URL = null,
-                    Media_Type = null
+                    Media_Type = <<"text">>
             end;
 
         %% ENTITIES not found

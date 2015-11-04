@@ -1,6 +1,6 @@
 -module(ig_search).
 
--export([search/1]).
+-export([search/2]).
 
 -define(URL, "https://api.instagram.com/v1/tags/").
 -define(TAIL, "/media/recent?access_token=").
@@ -8,14 +8,16 @@
 
 
 
-search(Term) ->
+search(Term, _Options) ->
 	Token = get_token(),
 	Url = ?URL ++ Term ++ ?TAIL ++ Token,
 	case httpc:request(Url) of
 		{ok, Result} -> 
 			{_StatusLine, _Headers, Body} = Result,
-			DecodedRes = jsx:decode(list_to_binary(Body)),
-			parse(Term, DecodedRes);
+			try jsx:decode(list_to_binary(Body)) of
+				DecodedRes -> parse(Term, DecodedRes)
+			catch _ -> []
+			end;
 		{error, Reason} ->
 			io:format("REQUEST FAILED for reason: ~p~n", [Reason]),
 			[]
