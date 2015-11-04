@@ -11,9 +11,9 @@
 %% ====================================================================
 -export([store/1]).
 
-store(Req) ->
+store(Term, Req) ->
 	% Extract habit data
-	HabitData = extract(Req),
+	HabitData = extract(Term, Req),
 
 	% Send it to the DB server
 	Ref = gen_server:call(db_serv, {add_habit_doc, HabitData}),
@@ -30,7 +30,7 @@ store(Req) ->
 			ok
 	end.
 
-extract(Req) ->	 
+extract(Term, Req) ->	 
 	% Extract the relevant variables (as binaries) from the request
 	{TimeStamp, _} = cowboy_req:qs_val(<<"timestamp">>, Req, <<"unknown">>),
 	{SessionID, _} = cowboy_req:qs_val(<<"session_id">>, Req, <<"unknown">>),
@@ -46,7 +46,8 @@ extract(Req) ->
 	
 	% Put it together as a list of key-value pairs suitable for DB storage. 
 	% Return this
-	[{<<"timestamp">>, TimeStampInt},
+	[{<<"search_term">>, Term}
+	 	{<<"timestamp">>, TimeStampInt},
 	 	{<<"session_id">>, SessionID},
 		{<<"ip_address">>, IPAddress},
 		{<<"language">>, Language},
