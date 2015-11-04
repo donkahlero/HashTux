@@ -2,11 +2,8 @@
 
 -export([search/1]).
 
-
--define(ACCESS_TOKEN, "2253641420.43956b9.2ce7ad96329647ffa756501b24fbed3e").
-
 -define(URL, "https://api.instagram.com/v1/tags/").
--define(TAIL, "/media/recent?count=2&access_token=").
+-define(TAIL, "/media/recent?access_token=").
 -define(MEDIA, "Instagram").
 
 
@@ -14,13 +11,10 @@
 search(Term) ->
 	Token = get_token(),
 	Url = ?URL ++ Term ++ ?TAIL ++ Token,
-	io:format("URL for IG: ~p~n", [Url]),
 	case httpc:request(Url) of
 		{ok, Result} -> 
-			%io:format("RESULT RECEIVED FROM IG~n"),
 			{_StatusLine, _Headers, Body} = Result,
 			DecodedRes = jsx:decode(list_to_binary(Body)),
-			%io:format("DECODED RESULT from IG: ~p~n", [DecodedRes]),
 			parse(Term, DecodedRes);
 		{error, Reason} ->
 			io:format("REQUEST FAILED for reason: ~p~n", [Reason])
@@ -28,6 +22,9 @@ search(Term) ->
 
 
 
+%%
+%% @docGets the access token for instagram.
+%%
 get_token() ->
 	{ok, Account} = application:get_env(hashtux, instagram_account),
 	Key = case extract(access_token, Account) of
@@ -94,14 +91,28 @@ parse_details([{<<"link">>, Value}|T]) ->
 parse_details([{<<"likes">>, [{<<"count">>, Value},
 														 	{_,_}]}|T]) ->
 	  [{<<"likes">>, Value} | parse_details(T)];
-%% resource link
+%% resource link for images
 parse_details([{<<"images">>, Value}|T]) ->
-	  [{_,_}, 
+	  [{<<"low_resolution">>, [{<<"url">>, V1},
+													 {_, _},
+													 {_, _}]}, 
 		 {_,_}, 
-		 {<<"standard_resolution">>, [{<<"url">>, V}, 
+		 {<<"standard_resolution">>, [{<<"url">>, V2}, 
 																	{_, _}, 
 																	{_, _}]}] = Value,
-		[{<<"resourse_link">>, V} | parse_details(T)];
+		[{<<"resource_link_high">>, V2},
+		 {<<"resource_link_low">>, V1} | parse_details(T)];
+%% resource link for videos
+parse_details([{<<"videos">>, Value}|T]) ->
+	  [{_,_}, 
+		 {<<"standard_resolution">>, [{<<"url">>, V1},
+																 	{_, _},
+																 	{_, _}]}, 
+		 {<<"low_resolution">>, [{<<"url">>, V2}, 
+														 {_, _}, 
+														 {_, _}]}] = Value,
+		[{<<"resource_link_high">>, V1},
+		 {<<"resource_link_low">>, V2} | parse_details(T)];
 %% date source was created
 parse_details([{<<"created_time">>, Value}|T]) ->
 	  [{<<"date">>, Value} | parse_details(T)];
