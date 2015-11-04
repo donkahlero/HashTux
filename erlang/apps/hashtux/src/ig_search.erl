@@ -12,7 +12,8 @@
 
 
 search(Term) ->
-	Url = ?URL ++ Term ++ ?TAIL ++ ?ACCESS_TOKEN,
+	Token = get_token(),
+	Url = ?URL ++ Term ++ ?TAIL ++ Token,
 	io:format("URL for IG: ~p~n", [Url]),
 	case httpc:request(Url) of
 		{ok, Result} -> 
@@ -24,6 +25,16 @@ search(Term) ->
 		{error, Reason} ->
 			io:format("REQUEST FAILED for reason: ~p~n", [Reason])
 	end.
+
+
+
+get_token() ->
+	{ok, Account} = application:get_env(hashtux, instagram_account),
+	Key = case extract(access_token, Account) of
+					 	{found, K} -> K;
+						not_found  -> []
+				end,
+	Key.
 
 
 
