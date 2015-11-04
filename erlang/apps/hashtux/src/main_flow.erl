@@ -45,9 +45,9 @@ handle_call({search, Term}, From, State) ->
 	receive 
 		{MinerPid, Y, Z} ->
 			{reply, Y, State}
-		after 5000 ->
+		after 15000 ->
 			io:format("Miner timeout!", []),
-			{reply, "Miner timeout!", State}
+			{reply, [], State}
 	end.
 	
 	%io:format("MSG: ~p~n", [X]),

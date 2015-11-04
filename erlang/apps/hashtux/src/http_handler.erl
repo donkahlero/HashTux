@@ -63,8 +63,10 @@ handle(Req, State) ->
 	% 
 	% Send the search term and the options to the main flow
 	% 
-	Reply = gen_server:call(main_flow, {search, Term}),
-
+	Reply = try gen_server:call(main_flow, {search, Term}, 20000)
+		catch _ -> []
+	end,
+	
 	io:format("Main flow returned from handling ~p~n",
 			  [Term]),
 	
