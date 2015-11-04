@@ -12,7 +12,9 @@ init(_Args) ->
     {ok, []}.
 
 
-handle_info(_Msg, State) -> {noreply, State}.
+handle_info(_Msg, State) -> 
+	io:format("main_flow: received info too late."),
+	{noreply, State}.
 
 
 handle_call({search, Term}, From, State) -> 
@@ -44,10 +46,11 @@ handle_call({search, Term}, From, State) ->
 		{MinerPid, Y, Z} ->
 			{reply, Y, State}
 		after 5000 ->
+			io:format("Miner timeout!", []),
 			{reply, "Miner timeout!", State}
 	end.
 	
 	%io:format("MSG: ~p~n", [X]),
 	%{reply, ok, State}.
 
-				
+			
