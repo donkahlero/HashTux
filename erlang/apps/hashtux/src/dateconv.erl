@@ -1,4 +1,4 @@
-%% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
+≈ß%% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @doc Module for converting dates and times to other formats.
 %% @version 0.1
 %% -----------------------------------------------------------------------------
