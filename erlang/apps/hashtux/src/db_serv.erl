@@ -69,6 +69,11 @@ handle_call({add_doc, Content}, {From, _Ref}, State) ->
     {ok, Ref} = start_hww(),
     gen_server:cast(Ref, {add_doc, Content, From}),
     {reply, Ref, State};
+%%% Add userstats to the database.
+handle_call({add_habit_doc, Content}, {From, _Ref}, State) ->
+    {ok, Ref} = start_usww(),
+    gen_server:cast(Ref, {add_doc, Content, From}), 
+    {reply, Ref, State};
 %%% Delete a hashtag document in the database.
 handle_call({delete_hash, Hashtag}, {From, _Ref}, State) ->
     {ok, Ref} = start_hww(),
