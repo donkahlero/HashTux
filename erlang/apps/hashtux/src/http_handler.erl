@@ -56,14 +56,17 @@ handle(Req, State) ->
 	% Remove the leading slash from the path
 	[_ | Term] = binary:bin_to_list(Path),
 	
+	% "Debug" output
+	io:format("~nNow handling term: ~p~n",
+			  [Term]),
+	
 	% 
 	% Send the search term and the options to the main flow
 	% 
 	Reply = gen_server:call(main_flow, {search, Term}),
 
-	% "Debug" output
-	io:format("~nTerm: ~p~nResult: ~p~n~n",
-			  [Term, Reply]),
+	io:format("Main flow returned from handling ~p~n",
+			  [Term]),
 	
 	% io_lib:format does about the same thing as io:format but returns a string
 	% instead of printing

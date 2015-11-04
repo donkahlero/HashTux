@@ -40,9 +40,12 @@ extract(Req) ->
 	{Limit, _} = cowboy_req:qs_val(<<"limit">>, Req, <<"unknown">>),
 	{Services, _} = cowboy_req:qs_val(<<"services">>, Req, <<"unknown">>),
 	
+	% Convert binary representation of TimeStamp to int
+	TimeStampInt = binary:bin_to_int(TimeStamp),
+	
 	% Put it together as a list of key-value pairs suitable for DB storage. 
 	% Return this
-	[{<<"timestamp">>, TimeStamp},
+	[{<<"timestamp">>, TimeStampInt},
 	 	{<<"session_id">>, SessionID},
 		{<<"ip_address">>, IPAddress},
 		{<<"language">>, Language},
