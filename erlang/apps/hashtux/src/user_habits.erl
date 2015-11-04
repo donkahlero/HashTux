@@ -13,8 +13,8 @@
 
 store(Req) ->
 	% Extract habit data
-	HabitData = extract(Req),
-	
+	HabitData = extract(Req).
+
 	% Send it to the DB server
 	%Ref = gen_server:call(db_serv, {add_habit_doc, HabitData}),
 	%receive 
