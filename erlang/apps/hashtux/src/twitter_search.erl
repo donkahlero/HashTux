@@ -123,7 +123,7 @@ parse_status_details(HashTag, Status) ->
     end,
 
     Date = case extract(<<"created_at">>, Status) of
-        {found, X2} -> X2;
+        {found, X2} -> dateconv:twitter_to_epoch(binary_to_list(X2));
         not_found -> null
     end,
 
