@@ -13,21 +13,26 @@
 
 store(Req) ->
 	% Extract habit data
-	HabitData = extract(Req).
+	HabitData = extract(Req),
 	
-	% Send it to the server
-	%Ref = gen_server:call(db_serv, {get_cont, HabitData}),
-	%receive 
-	%	{Ref, [{<<"error">>,<<"not_found">>},{<<"reason">>,<<"missing">>}]} ->
-	%		{reply, "Nothing found!", State};
-	%	{Ref, Res} ->
-	%		{reply, Res, State}
-	%	after 1000 ->
-	%		{reply, "DB timeout!", State}
-	%end.
+	% Send it to the DB server
+	Ref = gen_server:call(db_serv, {add_habit_doc, HabitData}),
+	receive 
+		{Ref, _} ->
+			% Regardless of what is returned from this DB worker, return ok
+			ok
+		after 1000 ->
+			% Timeout also means we move on.
+			% Is there a risk of messages clogging up? I could do a flush in
+			% this method but maybe that would affect usign code.
+			% Later it could be better to have this module as a server,
+			% right now it's very small though so let's wait with this
+			ok
+	end.
 
 extract(Req) ->
 	% Extract the relevant variables (as binaries) from the request
+	{TimeStamp, _} = cowboy_req:qs_val(<<"timestamp">>, Req, <<"unknown">>),
 	{SessionID, _} = cowboy_req:qs_val(<<"session_id">>, Req, <<"unknown">>),
 	{IPAddress, _} = cowboy_req:qs_val(<<"ip_address">>, Req, <<"unknown">>),
 	{Language, _} = cowboy_req:qs_val(<<"language">>, Req, <<"unknown">>),
@@ -37,7 +42,8 @@ extract(Req) ->
 	
 	% Put it together as a list of key-value pairs suitable for DB storage. 
 	% Return this
-	[{<<"session_id">>, SessionID},
+	[{<<"timestamp">>, TimeStamp},
+	 	{<<"session_id">>, SessionID},
 		{<<"ip_address">>, IPAddress},
 		{<<"language">>, Language},
 		{<<"user_agent">>, UserAgent},
