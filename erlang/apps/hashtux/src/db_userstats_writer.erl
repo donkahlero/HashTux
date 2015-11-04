@@ -35,15 +35,10 @@ handle_call(_, _, _) ->
 	error(badarg).
 
 
-handle_cast({add_session, Session, Content, Rec}, State) ->
-	Date = binary:list_to_bin(integer_to_list(calendar:datetime_to_gregorian_seconds(calendar:now_to_universal_time( now()))-719528*24*3600)),
-	couch_operations:doc_add(Session, [{<<"timestamp">>, Date}] ++ Content, ?DB),
+handle_cast({add_doc, Content, Rec}, State) ->
+	UUID = couch_operations:get_uuid(),
+	couch_operations:doc_add(?DB ++ UUID, Content),
 	Rec ! {self(), true},
-	{stop, normal, State};
-
-handle_cast({add_content, Session, Content, Rec}, State) ->
-	Date = binary:list_to_bin(integer_to_list(calendar:datetime_to_gregorian_seconds(calendar:now_to_universal_time( now()))-719528*24*3600)),
-	couch_operations:doc_append(Session, [{<<"timestamp">>, Date}] ++ Content, ?DB),
 	{stop, normal, State}.
 
 handle_info(_Info, State) ->
