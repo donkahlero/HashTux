@@ -1,5 +1,27 @@
 %% @author jerker
-%% @doc @todo Add description to http_handler.
+%% @doc 
+%
+% The PHP request supplies a number of details about
+% the user, session and client options.
+% User habit related:
+% 	Timeout
+%	Session ID
+%	IP address
+% 	Language (hmm is this a part of user agent or not? hmmm)
+%	User agent
+% Technical:
+%	Limit (post count in response) (also stored as user habit right now)
+%	Services (t, i, y) (also stored as user habit right now)
+%	Resolution (high, low, default)
+%
+
+% 	TODO: Create a function that takes req as an argument
+%	and returns an option tuple to be sent to main flow
+% 	TODO: Handle resolution, with default value handled
+%	TODO: check cURL timeout / load balancing
+%	TODO: Check spaces in search terms
+%	TODO: rememeber client side option text above pic on/off - unrelated here but putting it down not to forget	
+	
 
 
 -module(http_handler).
@@ -28,34 +50,8 @@ handle(Req, State) ->
 	
 	user_habits:store(Req),
 	
-	%
-	%	TODO: Create a module that takes req as an argument,
-	%	extracts the relevant data, packs it into a jsx object
-	%	and sends it to the DB for logging
-	%
-	% 	TODO: Create a FUNCTION that takes req as an argument
-	%	and returns an option tuple to be sent to main flow
-	%
-	% The PHP document has supplied a number of details about
-	% the user, session and client options:
-	%	Session ID
-	%	IP address
-	% 	Language (hmm is this a part of user agent or not? hmmm)
-	%	User agent
-	%	Limit (post count in response)
-	%	Services (t, i, y)
-
-	% Qs_val: can be used with an atom to request a particular value
-	%{SessionID, _} = cowboy_req:qs_val(<<"session_id">>, Req, <<"unknown">>),
-	%{IPAddress, _} = cowboy_req:qs_val(<<"ip_address">>, Req, <<"unknown">>),
-	%{Language, _} = cowboy_req:qs_val(<<"language">>, Req, <<"unknown">>),
-	%{UserAgent, _} = cowboy_req:qs_val(<<"user_agent">>, Req, <<"unknown">>),
-	%{Limit, _} = cowboy_req:qs_val(<<"limit">>, Req, <<"unknown">>),
-	%{Services, _} = cowboy_req:qs_val(<<"services">>, Req, <<"unknown">>),
-	
-	% Remove the leading slash from the path
+	% Extract the path (the search term)
 	[_ | Term] = binary:bin_to_list(Path),
-	
 	% "Debug" output
 	io:format("~nNow handling term: ~p~n",
 			  [Term]),
