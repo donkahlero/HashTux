@@ -11,9 +11,9 @@
 		cowboy,
 		ibrowse
    ]},
-  {env,[]},
+  {env,[{instagram_account, [
+														 {access_token, "2253641420.43956b9.2ce7ad96329647ffa756501b24fbed3e"}]}]},
   {modules, []},
-
   {contributors, []},
   {licenses, []},
   {links, []}

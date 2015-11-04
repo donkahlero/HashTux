@@ -12,18 +12,29 @@
 
 
 search(Term) ->
-	Url = ?URL ++ Term ++ ?TAIL ++ ?ACCESS_TOKEN,
+	Token = get_token(),
+	Url = ?URL ++ Term ++ ?TAIL ++ Token,
 	io:format("URL for IG: ~p~n", [Url]),
 	case httpc:request(Url) of
 		{ok, Result} -> 
-			io:format("RESULT RECEIVED FROM IG~n"),
+			%io:format("RESULT RECEIVED FROM IG~n"),
 			{_StatusLine, _Headers, Body} = Result,
 			DecodedRes = jsx:decode(list_to_binary(Body)),
-			io:format("DECODED RESULT from IG: ~p~n", [DecodedRes]),
+			%io:format("DECODED RESULT from IG: ~p~n", [DecodedRes]),
 			parse(Term, DecodedRes);
 		{error, Reason} ->
 			io:format("REQUEST FAILED for reason: ~p~n", [Reason])
 	end.
+
+
+
+get_token() ->
+	{ok, Account} = application:get_env(hashtux, instagram_account),
+	Key = case extract(access_token, Account) of
+					 	{found, K} -> K;
+						not_found  -> []
+				end,
+	Key.
 
 
 
