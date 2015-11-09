@@ -70,15 +70,17 @@ handle_call({search, SourcePID, Term, _Options}, From, State) ->
 	%
 	
 	% Make a miner call for the term
-	%{ok, MinerPid} = miner_server:search(Term, none),
-	%receive 
-	%	{MinerPid, Y, Z} ->
-	%		{reply, {self(), Y}, State}
-	%	after 15000 ->
-	%		io:format("Miner timeout!", []),
-	%		{reply, {self(), []}, State}
-	%end.
-	SourcePID ! {reply, {self(), []}, State}.
+	{ok, MinerPid} = miner_server:search(Term, none),
+	receive 
+		{MinerPid, Y, Z} ->
+			SourcePID ! {self(), Y}
+		after 15000 ->
+			io:format("Miner timeout!", []),
+			SourcePID ! {self(), []}
+	end,
+	%SourcePID ! {self(), []},
+
+	{noreply, State}.
 	
 	%io:format("MSG: ~p~n", [X]),
 	%{reply, ok, State}.
