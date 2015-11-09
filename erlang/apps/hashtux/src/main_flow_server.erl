@@ -26,7 +26,7 @@
 %% for now register as local -> change later
 %% no arguments passed here to callback function init/1
 start_link() ->	
-	gen_server:start_link({local, miner_server}, ?MODULE, [], []).
+	gen_server:start_link({local, main_flow_server}, ?MODULE, [], []).
 
 
 %% for stopping the server - asynchronious call
@@ -52,7 +52,7 @@ init([]) ->
 
 %% for abnormal termination
 terminate(Reason, _State) ->
-	io:format("STOPPING:miner_server, REASON:~p~n", [Reason]),
+	io:format("Stopping main flow server, REASON:~p~n", [Reason]),
 	ok.
 
 
@@ -101,9 +101,9 @@ handle_call({search, Term, Options}, From,
 
 %% starts a worker and attaches it to the worker supervisor
 start_worker() ->
-	ChildSpec = {erlang:unique_integer(), {miner_worker, start_link, []},
-							temporary, 5000, worker, [miner_worker]},
-	supervisor:start_child(miner_worker_sup, ChildSpec).
+	ChildSpec = {erlang:unique_integer(), {main_flow_worker, start_link, []},
+							temporary, 5000, worker, [main_flow_worker]},
+	supervisor:start_child(main_flow_worker_sup, ChildSpec).
 
 
 
