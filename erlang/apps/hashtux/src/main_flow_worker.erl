@@ -3,7 +3,7 @@
 -behaviour(gen_server).
 
 -export([init/1, terminate/2, code_change/3,
-				handle_info/2, handle_call/3]).
+				handle_info/2, handle_cast/2]).
 -export([start_link/0]).
 
 
@@ -42,11 +42,11 @@ code_change(_PrevVersion, _State, _Extra) ->
 %% ========================================================
 
 handle_info(_Msg, State) -> 
-	io:format("Main_flow: received info too late."),
+	io:format("Main_flow worker: received info too late."),
 	{noreply, State}.
 
 
-handle_call({search, SourcePID, Term, _Options}, From, State) -> 
+handle_cast({search, SourcePID, Term, _Options}, State) -> 
 	io:format("Term: ~p~n", [Term]),
 	
 	% Update the database with search term / session data for this request
@@ -73,9 +73,10 @@ handle_call({search, SourcePID, Term, _Options}, From, State) ->
 	{ok, MinerPid} = miner_server:search(Term, none),
 	receive 
 		{MinerPid, Y, Z} ->
+			io:format("Miner reply~n", []),
 			SourcePID ! {self(), Y}
 		after 15000 ->
-			io:format("Miner timeout!", []),
+			io:format("Miner timeout!~n", []),
 			SourcePID ! {self(), []}
 	end,
 	%SourcePID ! {self(), []},
