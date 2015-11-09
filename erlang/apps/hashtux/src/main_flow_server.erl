@@ -1,3 +1,14 @@
+%% @author jerker
+%% @doc 
+%
+% The main flow server starts a new worker to handle each request.
+% The main flow workers are responsible for processing a request correctly once it is
+% received from the HTTP interface, by contacting the DB and miners as approperiate,
+% and then returning a response to the HTTP interface to be returned to the Apache
+% server. 
+% (Based the server-worker structure on Ivos structure for miner server and miner workers.)
+
+
 -module(main_flow_server).
 
 -behaviour(gen_server).
@@ -6,18 +17,14 @@
 				handle_info/2, handle_call/3, handle_cast/2]).
 -export([start_link/0, stop/0]).
 
-%%
-%% Comment: copied the server - worker structure from Ivos
-%% code - may require som cleanup // J
-%%
 %% keeps track of the supervisors started and their pids
 %% also have a queue to know which request to run next
 %% the limit is set to 100 -> after that probably request
 %% help from the other servers running
 %% the ref can be used to monitor any processes started
--record(state, {limit=100,
-							 	refs,
-							 	queue=queue:new()}).
+-record(state, {limit=100, refs, queue=queue:new()}).
+
+
 %%% ============================================================
 %%% PUBLIC API
 %%% ============================================================
@@ -93,17 +100,23 @@ handle_cast(Msg, State) ->
 handle_call({search, Term, Options}, From, 
 						S=#state{limit=N, refs=R}) when N > 0 ->
 	
+	% Start a new worker to handle the request.
 	io:format("Main flow server starting worker", []),
-	
 	{ok, Pid} = start_worker(),
 	Ref = erlang:monitor(process, Pid),
+	
+	% Send a message to the worker through cast.
+	% We include a reference to the PID that made the original call,
+	% so the worker can reply when finished.
 	{SourcePID, _} = From,
 	gen_server:cast(Pid, {search, SourcePID, Term, Options}),
+	
+	% Update the state of the main flow server.
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
 	{reply, {ok, Pid}, NewS}.
 
 
-%% starts a worker and attaches it to the worker supervisor
+%% Starts a worker and attaches it to the worker supervisor
 start_worker() ->
 	ChildSpec = {erlang:unique_integer(), {main_flow_worker, start_link, []},
 							temporary, 5000, worker, [main_flow_worker]},

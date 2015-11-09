@@ -1,3 +1,10 @@
+%% @author jerker
+%% @doc 
+%
+% Supervisor for the main flow workers. See the source files of main_flow_worker
+% and main_flow_server for more comments. 
+
+
 -module(main_flow_worker_sup).
 
 -behaviour(supervisor).

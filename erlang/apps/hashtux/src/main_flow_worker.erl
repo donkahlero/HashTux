@@ -1,3 +1,12 @@
+%% @author jerker
+%% @doc 
+%
+% The main flow workers are responsible for processing a request correctly once it is
+% received from the HTTP interface, by contacting the DB and miners as approperiate,
+% and then returning a response to the HTTP interface to be returned to the Apache
+% server. 
+% (Based the server-worker structure on Ivos structure for miner server and miner workers.)
+
 -module(main_flow_worker).
 
 -behaviour(gen_server).
