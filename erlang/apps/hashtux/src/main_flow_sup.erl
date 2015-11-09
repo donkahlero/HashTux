@@ -1,3 +1,9 @@
+%% @author jerker
+%% @doc 
+%
+% Supervisor for the main flow server. See the source files of main_flow_worker
+% and main_flow_server for more comments. 
+
 -module(main_flow_sup).
 
 -behaviour(supervisor).
@@ -26,6 +32,8 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
+	% Start the main flow server and the main flow worker supervisor
+	% for now. 
 	MainFlowServChild = {main_flow_server, 
 							 {main_flow_server, start_link, []},
 						 		permanent, 
