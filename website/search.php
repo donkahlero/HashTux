@@ -44,11 +44,20 @@
                 
                 var jsonobj = $.parseJSON(json);
                 
-                var test = "";
+//                var test = "";
+//                var test2 = "";
                 
                 for(var i in jsonobj) {
-                    items.push(new item(jsonobj[i].content_type, jsonobj[i].resource_link_low, jsonobj[i].text, jsonobj[i].username, false, false));
+//                    test += jsonobj[i].content_type + "\n" + jsonobj[i].resource_link_low + "\n" + jsonobj[i].text + "\n" + jsonobj[i].username + "\n\n";
+                    items.push(new item(jsonobj[i].content_type, jsonobj[i].resource_link_high, jsonobj[i].text, jsonobj[i].username, false, false));
                 }
+                
+//                for(j = 0; j < items.length; j++) {
+//                    test2 += items[j].type + "\n" + items[j].url + "\n" + items[j].username + "\n\n";
+//                }
+//                
+//                alert(test);
+//                alert(test2);
             }
             
             window.onload = function() {
@@ -56,30 +65,29 @@
                 fetch();
     
                 var $grid = document.getElementById('grid');
-                var $row = "<div class='row-grid-6' id='row";
+                var $row = "<div class='row-grid-4' id='row";
                 var $rowmid = "'>";
                 var $rowend = "</div>";
-                var $colstart = "<div class='col-xs-4 col-fill imageitem' style='background-image:url(";
+                var $colstart = "<div class='col-xs-3 col-fill imageitem' style='background-image:url(";
                 var $colid = ");' id='col";
                 var $colidend = "'>";
                 var $colend = "</div>";
                 var $count = 0;
                 
-                var $tweetcolstart = "<div class='col-xs-4 col-fill twitteritem' id='col";
+                var $tweetcolstart = "<div class='col-xs-3 col-fill twitteritem' id='col";
                 var $tweetcolmid = "'>";
                 var $tweetcolend = "</div>";
                 
-                for(i = 0; i < 2; i++) {
+                for(i = 0; i < 3; i++) {
                     
                     var $cols = "";
                     
-                    for(j = 0; j < 3; j++) {
+                    for(j = 0; j < 4; j++) {
                         
                         if($count >= items.length) {
-                            $cols = $cols + $colstart + $colmid + $count + $colend;
+                            $cols = $cols + $colstart + $colid + $count + $colidend + $colend;
                             $count++;
                         }
-                        
                         else if(items[$count].type === "image") {                        
                             $cols = $cols + $colstart + items[$count].url + $colid + $count + $colidend + "<p class='usernameimage'>@" + items[$count].username + "</p>" + $colend;
                             items[$count].displayed = true;
@@ -89,12 +97,17 @@
                         {
                             $cols = $cols + $tweetcolstart + $count + $tweetcolmid +
                                 "<div class='twittertext'><p>" +
-                                items[$count].content +
+                                items[$count].text +
                                 "</p><p class='usernametweet'>@" +
-                                images[$count].username +
+                                items[$count].username +
                                 "</p></div>" + 
                                 $tweetcolend;
                             items[$count].displayed = true;
+                            $count++;
+                        }
+                        else 
+                        {
+                            $cols = $cols + $colstart + $colid + $count + $colidend + "<p class='twittertext'>[INSERT VIDEO HERE]</p>" + $colend;
                             $count++;
                         }
                     }
@@ -111,14 +124,14 @@
                 for(i = 0; i < 5; i++) {
                     var newitem = items[Math.floor((Math.random() * items.length))];
 
-                    var $randomcol = "col" + Math.floor((Math.random() * 6));
+                    var $randomcol = "col" + Math.floor((Math.random() * 12));
 
                     if(newitem.type === "image") 
                     {
                         $(document.getElementById($randomcol)).animate({height: "0", opacity: "0"}, 0);
 
                         document.getElementById($randomcol).innerHTML = "<p class='usernameimage'>@" + newitem.username + "</p>";
-                        document.getElementById($randomcol).className = 'col-xs-4 col-fill imageitem';
+                        document.getElementById($randomcol).className = 'col-xs-3 col-fill imageitem';
                         document.getElementById($randomcol).style.backgroundImage = 'url(' + newitem.url + ')';
 
                         $(document.getElementById($randomcol)).animate({height: "100%", opacity: "1"}, 1000);
@@ -127,7 +140,7 @@
                     {
                         $(document.getElementById($randomcol)).animate({height: "0", opacity: "0"}, 0);
 
-                        document.getElementById($randomcol).className = "col-xs-4 col-fill twitteritem";
+                        document.getElementById($randomcol).className = "col-xs-3 col-fill twitteritem";
                         document.getElementById($randomcol).style.backgroundImage = '';
                         document.getElementById($randomcol).innerHTML =
                                 "<div class='twittertext'><p>" +
