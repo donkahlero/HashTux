@@ -73,10 +73,10 @@ handle_call({search, Term, _Options}, From, State) ->
 	{ok, MinerPid} = miner_server:search(Term, none),
 	receive 
 		{MinerPid, Y, Z} ->
-			{reply, Y, State}
+			{{self(), reply}, Y, State}
 		after 15000 ->
 			io:format("Miner timeout!", []),
-			{reply, [], State}
+			{{self(), reply}, [], State}
 	end.
 	
 	%io:format("MSG: ~p~n", [X]),
