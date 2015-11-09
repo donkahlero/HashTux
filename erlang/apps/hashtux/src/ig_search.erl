@@ -31,9 +31,9 @@ search(Term, _Options) ->
 get_token() ->
 	{ok, Account} = application:get_env(hashtux, instagram_account),
 	Key = case extract(access_token, Account) of
-					 	{found, K} -> K;
-						not_found  -> []
-				end,
+				{found, K} -> K;
+				not_found  -> []
+		  end,
 	Key.
 
 
@@ -56,8 +56,9 @@ parse(Term, List) ->
 %%
 append_details(_Term, []) 	-> [];
 append_details(Term, List) ->
-	Details = [{<<"search_term">>, list_to_binary(Term)}, 
- 		  	  	 {<<"social_media">>, list_to_binary(?MEDIA)}],
+	Details = [ {<<"search_term">>, list_to_binary(Term)}, 
+ 		  	   	{<<"social_media">>, list_to_binary(?MEDIA)},
+			   	{<<"insert_timestamp">>, dateconv:get_timestamp()} ],
 	lists:append(List, Details).
 
 
@@ -91,47 +92,48 @@ parse_details([{<<"link">>, Value}|T]) ->
 	  [{<<"profile_link">>, Value} | parse_details(T)];
 %% likes
 parse_details([{<<"likes">>, [{<<"count">>, Value},
-														 	{_,_}]}|T]) ->
+											 {_,_}]}|T]) ->
 	  [{<<"likes">>, Value} | parse_details(T)];
 %% resource link for images
 parse_details([{<<"images">>, Value}|T]) ->
-	  [{<<"low_resolution">>, [{<<"url">>, V1},
-													 {_, _},
-													 {_, _}]}, 
-		 {_,_}, 
-		 {<<"standard_resolution">>, [{<<"url">>, V2}, 
-																	{_, _}, 
-																	{_, _}]}] = Value,
+	  [ {<<"low_resolution">>, [{<<"url">>, V1},
+								{_, _},
+								{_, _}]}, 
+		{_,_}, 
+		{<<"standard_resolution">>, [{<<"url">>, V2}, 
+									 {_, _}, 
+									 {_, _}]} ] = Value,
 		[{<<"resource_link_high">>, V2},
 		 {<<"resource_link_low">>, V1} | parse_details(T)];
 %% resource link for videos
 parse_details([{<<"videos">>, Value}|T]) ->
 	  [{_,_}, 
 		 {<<"standard_resolution">>, [{<<"url">>, V1},
-																 	{_, _},
-																 	{_, _}]}, 
+									 	{_, _},
+									 	{_, _}]}, 
 		 {<<"low_resolution">>, [{<<"url">>, V2}, 
-														 {_, _}, 
-														 {_, _}]}] = Value,
+								 {_, _}, 
+								 {_, _}]}] = Value,
 		[{<<"resource_link_high">>, V1},
 		 {<<"resource_link_low">>, V2} | parse_details(T)];
 %% date source was created
 parse_details([{<<"created_time">>, Value}|T]) ->
-	  [{<<"timestamp">>, Value} | parse_details(T)];
+	  [{<<"timestamp">>, list_to_integer(binary:bin_to_list(Value))} | 
+															parse_details(T)];
 %% text 
 parse_details([{<<"caption">>, [{_,_}, 
-																{<<"text">>, Value},
-															  {_,_},
-															 	{_,_}]}|T]) ->
+								{<<"text">>, Value},
+								{_,_},
+								{_,_}]}|T]) ->
 	  [{<<"text">>, Value} | parse_details(T)];
 %% service id
 parse_details([{<<"id">>, Value}|T]) ->
 	  [{<<"service_id">>, Value} | parse_details(T)];
 %% user details
 parse_details([{<<"user">>, [{<<"username">>, Username},
-														 {_,_},
-														 {<<"id">>, Id},
-														 {_,_}]}|T]) ->
+							 {_, _},
+							 {<<"id">>, Id},
+							 {_,_}]}|T]) ->
 	[{<<"username">>, Username}, 
 	 {<<"user_id">>, Id} | parse_details(T)];
 %% if nothing matches -> continue
@@ -146,5 +148,5 @@ parse_details([{_, _}|T]) ->
 extract(Key, List) ->
 	case lists:keyfind(Key, 1, List) of
 		{_, TupleList} -> {found, TupleList};
-		false 				 -> not_found
+		false 		   -> not_found
 	end.
