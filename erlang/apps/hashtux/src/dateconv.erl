@@ -7,7 +7,7 @@
 %% -----------------------------------------------------------------------------
 -module(dateconv).
 
--export([twitter_to_epoch/1]).
+-export([twitter_to_epoch/1, get_timestamp/0]).
 
 %% @doc Function takes the twitter representation of time and converts it 
 %% to a UNIX epoch timestamp.
@@ -48,3 +48,6 @@ month_to_num ("Nov") ->
     11;
 month_to_num ("Dec") ->
     12.
+
+get_timestamp() ->
+    calendar:datetime_to_gregorian_seconds(calendar:now_to_universal_time(erlang:timestamp()))-719528*24*3600.
