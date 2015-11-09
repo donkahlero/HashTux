@@ -6,7 +6,7 @@
 
 
 %% Document operations
--export([doc_add/2, doc_get_cont/1, doc_change/2, doc_get/1, doc_delete/1, doc_append/2, doc_rmval/2, doc_exist/1]).
+-export([doc_add/2, doc_get_cont/1, doc_change/2, doc_get/1, doc_delete/2, doc_append/2, doc_rmval/2, doc_exist/1]).
 -export([get_uuid/0]).
 
 %% @doc Method to initially add a document to the database.
@@ -32,8 +32,7 @@ doc_get_cont(Addr) ->
     [Post || [{<<"_id">>, _ID}, {<<"_rev">>, _Rev} | Post] <- [Posts || {<<"value">>, Posts} <- lists:flatten(Rows)]].
 
 %% @doc Deletes a document from the database.
-doc_delete(Addr) ->
-    Rev = get_val(?MODULE:doc_get(Addr), "_rev"),
+doc_delete(Addr, Rev) ->
     couch_connector:delete_request(Addr ++ "?rev=" ++ Rev).
 
 %% @doc Appends field(s) to an existing document in the database.
