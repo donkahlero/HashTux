@@ -149,8 +149,6 @@ parse_status_details(HashTag, Status) ->
     %% Register the time the document was sent to DB
     Timestamp = dateconv:get_timestamp(),
 
-    io:format("TIMESTAMP is ~p~n", [Timestamp]),
-
     %% ======== Parsing Tweet details ==============
     Tweet_ID = case extract(<<"id">>, Status) of
         {found, X1} -> integer_to_binary(X1);
