@@ -94,7 +94,8 @@ handle_call({search, Term, Options}, From,
 						S=#state{limit=N, refs=R}) when N > 0 ->
 	{ok, Pid} = start_worker(),
 	Ref = erlang:monitor(process, Pid),
-	gen_server:call(Pid, {search, Term, Options}),
+	{SourcePID, _} = From,
+	gen_server:call(Pid, {search, SourcePID, Term, Options}),
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
 	{reply, {ok, Pid}, NewS}.
 

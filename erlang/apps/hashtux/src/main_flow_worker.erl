@@ -12,7 +12,7 @@
 %%% =======================================================
 
 start_link() ->
-	io:format("Started main flow_worker: ~p~n",  [self()]),
+	io:format("Started main flow_worker~n",  []),
 	gen_server:start_link(?MODULE, [], []).
 
 
@@ -46,7 +46,7 @@ handle_info(_Msg, State) ->
 	{noreply, State}.
 
 
-handle_call({search, Term, _Options}, From, State) -> 
+handle_call({search, SourcePID, Term, _Options}, From, State) -> 
 	io:format("Term: ~p~n", [Term]),
 	
 	% Update the database with search term / session data for this request
@@ -78,7 +78,7 @@ handle_call({search, Term, _Options}, From, State) ->
 	%		io:format("Miner timeout!", []),
 	%		{reply, {self(), []}, State}
 	%end.
-	{reply, {self(), []}, State}.
+	SourcePID ! {reply, {self(), []}, State}.
 	
 	%io:format("MSG: ~p~n", [X]),
 	%{reply, ok, State}.
