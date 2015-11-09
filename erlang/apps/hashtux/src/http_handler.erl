@@ -58,9 +58,20 @@ handle(Req, State) ->
 	user_habits:store(Term, Req),
 	
 	% Send the search term and the options to the main flow 
-	Reply = try gen_server:call(main_flow, {search, Term}, 20000)
-		catch _ -> []
-	end,
+	%Reply = try gen_server:call(main_flow, {search, Term}, 20000)
+	%	catch _ -> []
+	%end,
+
+	% Make a call to main flow server - get the PID of the worker back
+	% and wait for a reply from it
+	HandlerPid = gen_server:call(main_flow_server, {search, Term, none}, 20000),
+	
+	receive 
+		{HandlerPid, Reply} -> 
+			ok
+		after 20000 ->
+			Reply = []
+		end,
 	
 	io:format("Main flow returned from handling ~p~n", [Term]),
 	
