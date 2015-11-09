@@ -13,8 +13,8 @@
 %% help from the other servers running
 %% the ref can be used to monitor any processes started
 -record(state, {limit=100,
-							 	refs,
-							 	queue=queue:new()}).
+				 refs,
+				 queue=queue:new()}).
 %%% ============================================================
 %%% PUBLIC API
 %%% ============================================================
