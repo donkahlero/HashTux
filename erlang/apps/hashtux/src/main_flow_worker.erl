@@ -12,7 +12,7 @@
 %%% =======================================================
 
 start_link() ->
-	io:format("STARTING:miner_worker~n"),
+	io:format("Started main flow_worker: ~p~n",  [self()]),
 	gen_server:start_link(?MODULE, [], []).
 
 

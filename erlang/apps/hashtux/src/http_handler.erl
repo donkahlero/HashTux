@@ -67,12 +67,15 @@ handle(Req, State) ->
 
 	{ok, HandlerPid} = gen_server:call(main_flow_server, {search, Term, none}, 20000),
 	io:format("~nWorker PID: ~p~n", [HandlerPid]),
+	
 	receive 
 		{HandlerPid, Reply} -> 
 			io:format("~nReceved from worker~n", []),
-			ok
+			ok;
+		X -> 
+			io:format("~nReceved from ? ~p~n", [X])
 		after 20000 ->
-			io:format("~nTimeout from from worker~n", []),
+			io:format("~nTimeout from worker~n", []),
 			Reply = []
 		end,
 	
