@@ -73,7 +73,8 @@ handle(Req, State) ->
 			io:format("~nReceved from worker~n", []),
 			ok;
 		X -> 
-			io:format("~nReceved from ? ~p~n", [X])
+			io:format("~nReceved from ? ~p~n", [X]),
+			Reply = []
 		after 20000 ->
 			io:format("~nTimeout from worker~n", []),
 			Reply = []
