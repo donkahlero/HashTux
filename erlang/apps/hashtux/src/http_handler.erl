@@ -64,12 +64,15 @@ handle(Req, State) ->
 
 	% Make a call to main flow server - get the PID of the worker back
 	% and wait for a reply from it
+
 	{ok, HandlerPid} = gen_server:call(main_flow_server, {search, Term, none}, 20000),
-	
+	io:format("~nWorker PID: ~p~n", [HandlerPid]),
 	receive 
 		{HandlerPid, Reply} -> 
+			io:format("~nReceved from worker~n", []),
 			ok
 		after 20000 ->
+			io:format("~nTimeout from from worker~n", []),
 			Reply = []
 		end,
 	
