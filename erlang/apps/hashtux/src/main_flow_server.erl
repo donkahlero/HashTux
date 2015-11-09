@@ -92,10 +92,13 @@ handle_cast(Msg, State) ->
 %% handles synchronous messages
 handle_call({search, Term, Options}, From, 
 						S=#state{limit=N, refs=R}) when N > 0 ->
+	
+	io:format("Main flow server starting worker", []),
+	
 	{ok, Pid} = start_worker(),
 	Ref = erlang:monitor(process, Pid),
 	{SourcePID, _} = From,
-	gen_server:call(Pid, {search, SourcePID, Term, Options}),
+	gen_server:cast(Pid, {search, SourcePID, Term, Options}),
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
 	{reply, {ok, Pid}, NewS}.
 
