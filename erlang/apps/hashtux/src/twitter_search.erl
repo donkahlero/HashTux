@@ -18,22 +18,22 @@ search_hash_tag(HashTag, [Qty, Lang]) ->
     end,
 
     Options = case Lang of
-        en -> [{q, HashTag}, {lang, Lang}, {count, Count}];
-        it -> [{q, HashTag}, {lang, Lang}, {count, Count}];
-        fr -> [{q, HashTag}, {lang, Lang}, {count, Count}];
-        es -> [{q, HashTag}, {lang, Lang}, {count, Count}];
-        bg -> [{q, HashTag}, {lang, Lang}, {count, Count}];
-        de -> [{q, HashTag}, {lang, Lang}, {count, Count}];
-        sv -> [{q, HashTag}, {lang, Lang}, {count, Count}];
-        am -> [{q, HashTag}, {lang, Lang}, {count, Count}];
-        _ -> [{q, HashTag}, {count, Count}]                    %% Catch all- do not filter for any language
+        en -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
+        it -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
+        fr -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
+        es -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
+        bg -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
+        de -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
+        sv -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
+        am -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
+        _ -> [{q, HashTag}, {count, Count}, {response_format, binary}]                    %% Catch all- do not filter for any language
     end, 
 
     % Use oauth:sign/6 to generate a list of signed OAuth parameters, 
     SignedParams = oauth:sign("GET", ?URL, Options, ?CONSUMER, ?ACCES_TOKEN, ?ACCES_TOKEN_SECRET),
 
     % Send authorized GET request and get result as binary
-    Res = ibrowse:send_req(oauth:uri(?URL,SignedParams), [], get,[], [{response_format, binary}]),
+    Res = ibrowse:send_req(oauth:uri(?URL,SignedParams), [], get,[], Options),
 
     {ok, Status, _ResponseHeaders, ResponseBody} = Res,
 
@@ -146,6 +146,11 @@ parse_status_list(HashTag, [H|T], Result) ->
 %% Convert single Tweet Object to internal representation form
 parse_status_details(HashTag, Status) ->
 
+    %% Register the time the document was sent to DB
+    Timestamp = dateconv:get_timestamp(),
+
+    io:format("TIMESTAMP is ~p~n", [Timestamp]),
+
     %% ======== Parsing Tweet details ==============
     Tweet_ID = case extract(<<"id">>, Status) of
         {found, X1} -> integer_to_binary(X1);
@@ -242,5 +247,5 @@ parse_status_details(HashTag, Status) ->
     end,
 
 
-    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"social_media">>, <<"Twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"timestamp">>, Date}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Media_URL}, {<<"resource_link_low">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"username">>, UserName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
+    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"social_media">>, <<"Twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"timestamp">>, Date}, {<<"insert_timestamp">>, Timestamp}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Media_URL}, {<<"resource_link_low">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"username">>, UserName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
     clean_result(A).
