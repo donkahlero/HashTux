@@ -81,7 +81,7 @@ handle_cast({search, SourcePID, Term, Options}, State) ->
 	% Make a miner call for the term
 	{ok, MinerPid} = miner_server:search(Term, Options),
 	receive 
-		{MinerPid, Y, Z} ->
+		{MinerPid, Y} ->
 			io:format("Miner reply~n", []),
 			SourcePID ! {self(), Y}
 		after 15000 ->
