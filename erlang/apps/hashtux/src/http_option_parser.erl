@@ -12,6 +12,8 @@
 parse_options(Req) -> 
 	{ServicesJSON, _} = cowboy_req:qs_val(<<"services">>, Req, []),
 	io:format("ServicesJSON: ~p~n", [ServicesJSON]),
+	Services = jsx:decode(ServicesJSON, [{labels, atom}]),
+	io:format("Services: ~p~n", [Services]),
 	[].
 
 	
