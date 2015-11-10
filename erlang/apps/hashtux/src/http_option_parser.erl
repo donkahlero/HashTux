@@ -37,8 +37,11 @@ parse_options(Req) ->
 list_bins_to_list_atoms(List) -> list_bins_to_list_atoms([] , List).
 	
 % Then the actual implementation
-list_bins_to_list_atoms(List, []) -> List;
-list_bins_to_list_atoms(List, [CurrentBin | Rest]) -> 
-	BinAsList = binary:bin_to_list(CurrentBin),
+list_bins_to_list_atoms([], List) -> List;
+list_bins_to_list_atoms([CurrentBin | Rest], List) -> 
+	BinAsList = binary_to_list(CurrentBin),
 	BinAsAtom = list_to_atom(BinAsList),
-	list_bins_to_list_atoms(lists:append(List, BinAsAtom), Rest).
+	io:format("List: ~p~n ", [List]),
+	io:format("Current atom: ~p~n ", [BinAsAtom]),
+	io:format("Current string: ~p~n ", [BinAsList]),
+	list_bins_to_list_atoms(lists:append(BinAsAtom, List), Rest).
