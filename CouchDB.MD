@@ -44,6 +44,12 @@ receive {Ref, Result} -> Result end.
 ```
 * The services takes the different services we have in a list with atoms
 
+```erlang
+{language, ["en"]}
+```
+
+* The language is and list of strings
+
 ###Write operations
 ```erlang
 {add_doc, Content}
