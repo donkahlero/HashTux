@@ -41,4 +41,4 @@ list_bins_to_list_atoms(List, []) -> List;
 list_bins_to_list_atoms(List, [CurrentBin | Rest]) -> 
 	BinAsList = binary:bin_to_list(CurrentBin),
 	BinAsAtom = list_to_atom(BinAsList),
-	list_bins_to_list_atoms(List ++ BinAsAtom, Rest).
+	list_bins_to_list_atoms(lists:append(List, BinAsAtom), Rest).
