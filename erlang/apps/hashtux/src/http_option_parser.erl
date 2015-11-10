@@ -13,11 +13,11 @@ parse_options(Req) ->
 	% Get the services parameter, encoded by the client as a list of binaries
 	% we then want to convert this into a list of atoms for easier handling
 	% through our erlang application
-	{ServicesJSON, _} = cowboy_req:qs_val(<<"services">>, Req, []),
+	{ServicesJSON, _} = cowboy_req:qs_val(<<"services">>, Req, <<"[]">>),
 	ServicesBinList = jsx:decode(ServicesJSON),
 	ServicesAtomList = list_bins_to_list_atoms(ServicesBinList),
 	
-	{ContentTypeJSON, _} = cowboy_req:qs_val(<<"content_type">>, Req, []),
+	{ContentTypeJSON, _} = cowboy_req:qs_val(<<"content_type">>, Req, <<"[]">>),
 	ContentTypeBinList = jsx:decode(ContentTypeJSON),
 	ContentTypeAtomList = list_bins_to_list_atoms(ContentTypeBinList),
 	
