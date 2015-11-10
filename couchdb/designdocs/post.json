@@ -13,10 +13,10 @@
       "map": "function(doc) { if (doc.search_term && doc.timestamp)  emit([doc.search_term, doc.timestamp], doc) }"
     },
     "by_service": {
-      "map": "function(doc) { if (doc.search_term, doc.service) emit(doc_search_term, doc.service, doc) }"
+      "map": "function(doc) { if (doc.search_term && doc.social_media) emit([doc_search_term, doc.social_media], doc) }"
     },
-    "by_lastname": {
-      "map": "function(doc) { if (doc.Type == 'customer')  emit(doc.LastName, doc) }"
+    "by_insert_timestamp": {
+      "map": "function(doc) { if (doc.insert_timestamp) emit(doc.insert_timestamp, doc) }"
     }
   }
 }
