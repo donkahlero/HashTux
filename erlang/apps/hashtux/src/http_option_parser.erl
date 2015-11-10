@@ -10,16 +10,35 @@
 -export([parse_options/1]).
 
 parse_options(Req) -> 
+	% Get the services parameter, encoded by the client as a list of binaries
+	% we then want to convert this into a list of atoms for easier handling
+	% through our erlang application
 	{ServicesJSON, _} = cowboy_req:qs_val(<<"services">>, Req, []),
-	io:format("ServicesJSON: ~p~n", [ServicesJSON]),
-	Services = jsx:decode(ServicesJSON, [{labels, atom}]),
-	io:format("Services: ~p~n", [Services]),
+	ServicesBinList = jsx:decode(ServicesJSON),
+	ServicesAtomList = list_bins_to_list_atoms(ServicesBinList),
+	
+	
+	io:format("Services: ~p~n", [ServicesBinList]),
+	io:format("Services atoms: ~p~n", [ServicesAtomList]),
 	[].
 
 	
+
+
 
 %% ====================================================================
 %% Internal functions
 %% ====================================================================
 
-
+%
+% Convert a list of bins to a list of atoms, by recursively taking each
+% element and first turning it into a list, then an atom.
+% First the interface method
+list_bins_to_list_atoms(List) -> list_bins_to_list_atoms([] , List).
+	
+% Then the actual implementation
+list_bins_to_list_atoms(List, []) -> List;
+list_bins_to_list_atoms(List, [CurrentBin | Rest]) -> 
+	BinAsList = binary:bin_to_list(CurrentBin),
+	BinAsAtom = list_to_atom(BinAsList),
+	list_bins_to_list_atoms(List ++ BinAsAtom, Rest).
