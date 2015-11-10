@@ -17,10 +17,15 @@ parse_options(Req) ->
 	ServicesBinList = jsx:decode(ServicesJSON),
 	ServicesAtomList = list_bins_to_list_atoms(ServicesBinList),
 	
+	{ContentTypeJSON, _} = cowboy_req:qs_val(<<"content_type">>, Req, []),
+	ContentTypeBinList = jsx:decode(ContentTypeJSON),
+	ContentTypeAtomList = list_bins_to_list_atoms(ContentTypeBinList),
 	
-	io:format("Services: ~p~n", [ServicesBinList]),
-	io:format("Services atoms: ~p~n", [ServicesAtomList]),
-	[].
+	% Lets discuss tomorrow how the language should be handled!
+
+	% Return the list of options, as key-value pairs
+	[{service, ServicesAtomList},
+	 {content_type, ContentTypeAtomList}].
 
 	
 
@@ -41,8 +46,4 @@ list_bins_to_list_atoms([], List) -> List;
 list_bins_to_list_atoms([CurrentBin | Rest], List) -> 
 	BinAsList = binary_to_list(CurrentBin),
 	BinAsAtom = list_to_atom(BinAsList),
-	io:format("List: ~p~n ", [List]),
-	io:format("Rest: ~p~n ", [Rest]),
-	io:format("Current string: ~p~n ", [BinAsList]),
-	io:format("Current atom: ~p~n ", [BinAsAtom]),
 	list_bins_to_list_atoms(Rest, lists:append(List, [BinAsAtom])).

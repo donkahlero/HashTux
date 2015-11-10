@@ -46,7 +46,7 @@ extract(Term, Req) ->
 	
 	% Put it together as a list of key-value pairs suitable for DB storage. 
 	% Return this
-	[{<<"search_term">>, Term},
+	[{<<"search_term">>, list_to_binary(Term)},
 	 	{<<"timestamp">>, TimeStampInt},
 	 	{<<"session_id">>, SessionID},
 		{<<"ip_address">>, IPAddress},
