@@ -1,13 +1,9 @@
 <?php
-	/* Start a new session or resume if the client has a cookie ;) */
-	session_start();
-        
-        require_once("curl_request.php");
-        $search = $_GET['search'];
-
-        $output = curl_request($search);
-
-        $output = str_replace("\n", "<br />", $output);
+    require_once("curl_request.php");
+    
+    $search = $_GET['search'];
+    
+    $output = curl_request($search);
 ?>
 
 <!DOCTYPE html> 
@@ -25,162 +21,274 @@
         <script type="text/javascript">
             
             var items = [];
+            var displayed = [];
             
-            function item(type, url, text, username, frozen, displayed) {
+            var gridWidth = 4;
+            var gridHeight = 3;
+            var totalItems = gridWidth * gridHeight;
+            
+            function item(type, url, text, username, timestamp, frozen, tile) {
                 this.type = type;
                 this.url = url;
                 this.text = text;
                 this.username = username;
+                this.timestamp = timestamp;
                 this.frozen = frozen;
-                this.displayed = displayed;
+                this.tile = tile;
+            }
+            
+            function initialize() {
+                myjson = <?php echo json_encode($output);?>;
+                parse_to_items(myjson);
             }
             
             function fetch(){
-                myjson = <?php echo json_encode($output);?>;
-                parse_to_items(myjson);
+                
+                
+                
+                // NB RIGHT NOW THE SEARCH TERM IS "HARDCODED" BY PHP
+                $.ajax({
+                    url: "/ajax.php?search=<?php echo $search; ?>",
+                    type: "get",
+                    success: function (myString) {
+                        parse_to_items(myString);
+                    }
+                });
             }
 
             function parse_to_items(json) {
                 
                 var jsonobj = $.parseJSON(json);
                 
-//                var test = "";
-//                var test2 = "";
-                
                 for(var i in jsonobj) {
-//                    test += jsonobj[i].content_type + "\n" + jsonobj[i].resource_link_low + "\n" + jsonobj[i].text + "\n" + jsonobj[i].username + "\n\n";
-                    items.push(new item(jsonobj[i].content_type, jsonobj[i].resource_link_high, jsonobj[i].text, jsonobj[i].username, false, false));
+                    
+                    var incItem = new item(jsonobj[i].content_type, jsonobj[i].resource_link_high, jsonobj[i].text, jsonobj[i].username, json[i].timestamp, false, "");
+                    var ignore = false;
+                    
+                    for(j = 0; j < displayed.length; j++)
+                    {
+                        if(incItem.url === displayed[j].url || incItem.text === displayed[j].text)
+                        {
+                            ignore = true;
+                            break;
+                        }
+                    }
+                    
+                    for(k = 0; k < items.length; k++)
+                    {
+                        if(incItem.url === items[k].url || incItem.text === items[k].text)
+                        {
+                            ignore = true;
+                            break;
+                        }
+                    }
+                    
+                    if(ignore === false)
+                    {
+                        items.push(incItem);
+                    }
                 }
                 
-//                for(j = 0; j < items.length; j++) {
-//                    test2 += items[j].type + "\n" + items[j].url + "\n" + items[j].username + "\n\n";
-//                }
-//                
-//                alert(test);
-//                alert(test2);
+                alert(items.length);
             }
             
             window.onload = function() {
                 
-                fetch();
-    
-                var $grid = document.getElementById('grid');
-                var $row = "<div class='row-grid-4' id='row";
-                var $rowmid = "'>";
-                var $rowend = "</div>";
-                var $colstart = "<div class='col-xs-3 col-fill imageitem' style='background-image:url(";
-                var $colid = ");' id='col";
-                var $colidend = "'>";
-                var $colend = "</div>";
-                var $count = 0;
+                initialize();
                 
-                var $tweetcolstart = "<div class='col-xs-3 col-fill twitteritem' id='col";
-                var $tweetcolmid = "'>";
-                var $tweetcolend = "</div>";
+                var grid = $('#grid');
+                var count = 0;
                 
-                for(i = 0; i < 3; i++) {
+                for(k = 0; k < totalItems; k++) {
                     
-                    var $cols = "";
+                    if(items.length < 1)
+                        break;
                     
-                    for(j = 0; j < 4; j++) {
+                    var index = Math.floor((Math.random() * items.length));
+
+                    displayed.push(items[index]);
+                    items.splice(index, 1);
+                }
+                
+                for(i = 0; i < gridHeight; i++) {
+                    
+                    var cols = "";
+                    
+                    for(j = 0; j < gridWidth; j++) {
                         
-                        if($count >= items.length) {
-                            $cols = $cols + $colstart + $colid + $count + $colidend + $colend;
-                            $count++;
+                        if(count >= displayed.length) {
+                            
+                            cols = cols + 
+                                "<div class='col-xs-" +
+                                (12/gridWidth) + 
+                                " col-fill imageitem' style='background-image:url();' id='tile" +
+                                count +
+                                "'></div>";
+                        
+                            count++;
                         }
-                        else if(items[$count].type === "image") {                        
-                            $cols = $cols + $colstart + items[$count].url + $colid + $count + $colidend + "<p class='usernameimage'>@" + items[$count].username + "</p>" + $colend;
-                            items[$count].displayed = true;
-                            $count++;
+                        else if(displayed[count].type === "image") {
+                            
+                            cols = cols + 
+                                "<div class='col-xs-" +
+                                (12/gridWidth) + 
+                                " col-fill imageitem' style='background-image:url(" +
+                                displayed[count].url +
+                                ");' id='tile" +
+                                count + "'>" +
+                                "<p class='usernameimage'>@" +
+                                displayed[count].username + "</p>" +
+                                "</div>";
+                        
+                            displayed[count].tile = "tile" + count;
+                            count++;
                         }
-                        else if(items[$count].type === "text")
+                        else if(displayed[count].type === "text")
                         {
-                            $cols = $cols + $tweetcolstart + $count + $tweetcolmid +
+                            cols = cols +
+                                "<div class='col-xs-" +
+                                (12/gridWidth) + 
+                                " col-fill twitteritem' id='tile" +
+                                count + "'>" +
                                 "<div class='twittertext'><p>" +
-                                items[$count].text +
+                                displayed[count].text +
                                 "</p><p class='usernametweet'>@" +
-                                items[$count].username +
+                                displayed[count].username +
                                 "</p></div>" + 
-                                $tweetcolend;
-                            items[$count].displayed = true;
-                            $count++;
+                                "</div>";
+                        
+                            displayed[count].tile = "tile" + count;
+                            count++;
                         }
-                        else 
+                        else if(displayed[count].type === "video")
                         {
-                            $cols = $cols + $colstart + $colid + $count + $colidend + "<p class='twittertext'>[INSERT VIDEO HERE]</p>" + $colend;
-                            $count++;
+                            cols = cols +
+                                "<div class='col-xs-" + 
+                                (12/gridWidth) + 
+                                " col-fill imageitem' style='background-image:url('');' id='tile"+
+                                count + "'>" +
+                                "<p class='twittertext'>[INSERT VIDEO HERE]</p>" +
+                                "</div>";
+                        
+                            displayed[count].tile = "tile" + count;
+                            count++;
                         }
                     }
                     
-                    $grid.innerHTML = $grid.innerHTML + $row + i + $rowmid + $cols + $rowend;
+                    grid.html(grid.html() +
+                        "<div class='row-grid-" +
+                        (12/gridHeight) + "' id='row" +
+                        i + "'>" + cols + "</div>");
                 }
                 
             };
             
-            setInterval(refresh, 10000);
+            setInterval(refresh, 60000);
             
             function refresh() {
-            
-                for(i = 0; i < 5; i++) {
-                    var newitem = items[Math.floor((Math.random() * items.length))];
+                            
+                fetch();
+                
+                if(items.length > 0)
+                {
+                
+                    var newIndex = Math.floor((Math.random() * items.length));
+                    var newItem = items[newIndex];
+                    var randTileNum = Math.floor((Math.random() * totalItems));
+                    var randTile = "#tile" + randTileNum;
 
-                    var $randomcol = "col" + Math.floor((Math.random() * 12));
+                        if(newItem.type === "image") 
+                        {
+                            $(randTile).animate({height: "0", opacity: "0"}, 0);
 
-                    if(newitem.type === "image") 
-                    {
-                        $(document.getElementById($randomcol)).animate({height: "0", opacity: "0"}, 0);
+                            $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill imageitem');
+                            $(randTile).css('background-image', 'url(' + newItem.url + ')');
+                            $(randTile).html("<p class='usernameimage'>@" + newItem.username + "</p>");
 
-                        document.getElementById($randomcol).innerHTML = "<p class='usernameimage'>@" + newitem.username + "</p>";
-                        document.getElementById($randomcol).className = 'col-xs-3 col-fill imageitem';
-                        document.getElementById($randomcol).style.backgroundImage = 'url(' + newitem.url + ')';
+                            $(randTile).animate({height: "100%", opacity: "1"}, 1000);
+                        }
+                        else if(newItem.type === "text")
+                        {
+                            $(randTile).animate({height: "0", opacity: "0"}, 0);
 
-                        $(document.getElementById($randomcol)).animate({height: "100%", opacity: "1"}, 1000);
-                    }
-                    else if (newitem.type === "text")
-                    {
-                        $(document.getElementById($randomcol)).animate({height: "0", opacity: "0"}, 0);
+                            $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill twitteritem');
+                            $(randTile).css('background-image', '');
+                            $(randTile).html(
+                                    "<div class='twittertext'><p>" +
+                                    newItem.text +
+                                    "</p><p class='usernametweet'>@" +
+                                    newItem.username +
+                                    "</p></div>");
 
-                        document.getElementById($randomcol).className = "col-xs-3 col-fill twitteritem";
-                        document.getElementById($randomcol).style.backgroundImage = '';
-                        document.getElementById($randomcol).innerHTML =
-                                "<div class='twittertext'><p>" +
-                                newitem.text +
-                                "</p><p class='usernametweet'>@" +
-                                newitem.username +
-                                "</p></div>";
+                            $(randTile).animate({height: "100%", opacity: "1"}, 1000);
+                        }
+                        else if(newItem.type === "video")
+                        {
+                            $(randTile).animate({height: "0", opacity: "0"}, 0);
 
-                        $(document.getElementById($randomcol)).animate({height: "100%", opacity: "1"}, 1000);
-                    }
-                    
+                            $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill twitteritem');
+                            $(randTile).css('background-image', '');
+                            $(randTile).html(
+                                    "<div class='twittertext'><p>" +
+                                    "[INSERT VIDEO HERE]" +
+                                    "</p><p class='usernametweet'>@" +
+                                    newItem.username +
+                                    "</p></div>");
+
+                            $(randTile).animate({height: "100%", opacity: "1"}, 1000);
+                        }
+
+                        for(i = 0; i < displayed.length; i++)
+                        {
+                            if(displayed[i].tile === "tile" + randTileNum)
+                            {
+                                displayed[i].tile === "lawl";
+                                items.push(displayed[i]);
+                                displayed.splice(i, 1);
+
+                                break;
+                            }
+                        }
+
+                        newItem.tile = "tile" + randTileNum;
+                        displayed.push(newItem);
+                        items.splice(newIndex, 1);
                 }
             }
             
             function showField() {
-                $(document.getElementById('sField')).fadeIn(500);
-                $(document.getElementById('searchBtn')).hide();
+                $('#sField').fadeIn(500);
+                $('#searchBtn').hide();
                 
-                $(document.getElementById('sField')).click(function() {
+                $('#sField').click(function() {
                     event.stopPropagation();
                 });
                 
                 event.stopPropagation();
             }
             
-            function showOptions() {
-                $(document.getElementById('optionsMenu')).fadeIn(500);
+            function showMenu() {
+                $('#optionsMenu').fadeIn(500);
             }
             
-            function hideOptions() {
-                $(document.getElementById('sField')).hide();
-                $(document.getElementById('optionsMenu')).fadeOut(500);
-                $(document.getElementById('searchBtn')).show();
+            function hideMenu() {
+                $('#sField').hide();
+                $('#optionsMenu').fadeOut(500);
+                $('#searchBtn').show();
             }
             
             function hideSearchField() {
-                $(document.getElementById('sField')).hide();
-                $(document.getElementById('searchBtn')).fadeIn(500);
+                $('#sField').hide();
+                $('#searchBtn').fadeIn(500);
             }
-			
+            
+            function showOptions() {
+                $('#options').fadeIn(500);
+            }
+            
+            function hideOptions() {
+                $('#options').fadeOut(500);
+            }
 	</script>
 	          
     </head>
@@ -194,8 +302,8 @@
 
                 <div class="container con-fill-hor">
 
-                    <div class="tophoverarea" onmouseover="showOptions()" onclick="hideSearchField()"></div>
-                    <div class="midhoverarea" onmouseover="hideOptions()"></div>
+                    <div class="tophoverarea" onmouseover="showMenu()" onclick="hideSearchField()"></div>
+                    <div class="midhoverarea" onmouseover="hideMenu()"></div>
                     <div class="bothoverarea" onmouseover=""></div>
 
                     <div class="row topbar" id="optionsMenu">
@@ -206,7 +314,7 @@
                         </div>
                         <div class="col-md-4">
                             <button type="button" class="btn btn-default btn-md" id="optionsBtn"
-                                    style="float:right;" onclick="">
+                                    style="float:right;" onclick="showOptions()">
                                 O
                             </button>
                             <div class="input-group" style="display: none; float:right; width:inherit; margin-right: 15px;" id="sField">
@@ -219,6 +327,10 @@
                             </button>
                         </div>
                     </div>
+                </div>
+            
+                <div class="container con-fill header" id="options" onclick="hideOptions()" 
+                     style="background-color: rgba(0, 0, 0, 0.5); display: none;" >
                 </div>
 
             </div>

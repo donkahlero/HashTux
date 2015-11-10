@@ -15,7 +15,8 @@ function curl_request($search) {
                         'session_id' => session_id(), 
 			'ip_address' => $_SERVER['REMOTE_ADDR'],
 			'language' => $_SERVER['HTTP_ACCEPT_LANGUAGE'],
-			'user_agent' => $_SERVER['HTTP_USER_AGENT']);
+			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'services' => json_encode(["twitter", "instagram"]));
   
 	// Set the URL, including urlencoded (helps if there are special characters) search term
     curl_setopt ($ch, CURLOPT_URL, "http://localhost:8080/" 

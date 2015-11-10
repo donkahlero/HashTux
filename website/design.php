@@ -94,7 +94,7 @@
                 
             };
             
-            setInterval(refresh, 10000);
+           var	reff = setInterval(refresh, 10000);
             
             function refresh() {
             
@@ -129,22 +129,46 @@
                     
                 }
             }
+                 
+            function freeze(){
+                
+            	for(i = 0; i < items.length; i++) 
+               {
+         		   //alert(items[i].content);
+             	  
+             	 if(items[i].displayed === true){
+                    items[i].frozen = !items[i].frozen; 
+             		alert('frozen ' + items[i].frozen);
+             				}
+                 		}	
+                     }
+            
+           function unfreeze(){
+               
+        	   for(i = 0; i < items.length; i++) 
+            	{
+         		   //alert(items[i].content);
+             	  
+             	 if(items[i].displayed === false){
+                    items[i].frozen = !items[i].frozen; 
+             		alert('unfrozen '+ items[i].frozen);
+             	 			}
+                 		}	
+                     }
+           
+           $(document).ready(function(){
+               $("#searchBtn").click(function(){
+                   $("#col0").animate({padding:"50%"},"100");
+                   
+               });
+           });
+           function reload(){
 
-          
-            function add_google_logo() {
-                var src = "http://google.com/images/logo.gif";
-                show_image("http://google.com/images/logo.gif", 276,110, "Google Logo");
-            }
+           	$("#col0").animate({padding:"-50%"},"50");
+           	refresh();
+               }	
 
-
-            function show_image(src, width, height, alt) {
-                var img = document.createElement("img");
-                img.src = src;
-                img.width = width;
-                img.height = height;
-                img.alt = alt;
-                document.body.appendChild(img);
-            }
+           
             function showField() {
                 $(document.getElementById('sField')).fadeIn(500);
                 $(document.getElementById('searchBtn')).hide();
@@ -177,7 +201,7 @@
     
     <body style="background-color: #3d3d3d">
         
-        <div class="container con-fill">
+        <div  class="container con-fill">
             
             <div class="container con-fill header" id="grid">
             </div>
@@ -197,16 +221,20 @@
                     </div>
                     <div class="col-md-4">
                         <button type="button" class="btn btn-default btn-md" id="optionsBtn"
-                                style="float:right;" onclick="add_google_logo()">
-                            O
+                                style="float:right;" onclick="freeze()">
+                            Freeze
                         </button>
                         <div class="input-group" style="display: none; float:right; width:inherit; margin-right: 15px;" id="sField">
                             <span class="input-group-addon">#</span>
                             <input type="text" class="form-control" name="sField">
                         </div>
                         <button type="button" class="btn btn-default btn-md" id="searchBtn"
-                                style="float:right; margin-right: 15px;" onclick="showField()">
-                            S
+                                style="float:right; margin-right: 15px;" onclick="unfreeze()">
+                            zoom
+                        </button>
+                        <button type="button" class="btn btn-default btn-md" id="reload"
+                                style="float:right; margin-right: 15px;" onclick="reload()">
+                            refresh
                         </button>
                     </div>
                 </div>
