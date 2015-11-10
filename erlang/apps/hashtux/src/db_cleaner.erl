@@ -11,9 +11,12 @@
 
 -module(db_cleaner).
 
--export([cleanup/0, delete_entries/0]).
+-export([start_link/0]).
 
 -define(DB, "hashtux/").
+
+start_link() ->
+    {ok, spawn_link(fun() -> cleanup() end)}.
 
 cleanup() ->
     delete_entries(),
@@ -23,7 +26,7 @@ cleanup() ->
     cleanup().
 
 delete_entries() ->
-    Time = integer_to_list(calendar:datetime_to_gregorian_seconds(calendar:now_to_universal_time(erlang:timestamp()))-719528*24*3600-60),
+    Time = integer_to_list(calendar:datetime_to_gregorian_seconds(calendar:now_to_universal_time(erlang:timestamp()))-719528*24*3600-3600),
     Results = couch_operations:doc_get(?DB ++ "_design/post/_view/by_insert_timestamp?endkey=" ++  Time),
     {_, Posts} = lists:keyfind(<<"rows">>, 1, Results),
     [couch_operations:doc_delete(?DB ++ binary_to_list(ID), binary_to_list(Rev)) ||
