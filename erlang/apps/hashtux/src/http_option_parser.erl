@@ -42,6 +42,7 @@ list_bins_to_list_atoms([CurrentBin | Rest], List) ->
 	BinAsList = binary_to_list(CurrentBin),
 	BinAsAtom = list_to_atom(BinAsList),
 	io:format("List: ~p~n ", [List]),
-	io:format("Current atom: ~p~n ", [BinAsAtom]),
+	io:format("Rest: ~p~n ", [Rest]),
 	io:format("Current string: ~p~n ", [BinAsList]),
-	list_bins_to_list_atoms(lists:append(BinAsAtom, List), Rest).
+	io:format("Current atom: ~p~n ", [BinAsAtom]),
+	list_bins_to_list_atoms(Rest, lists:append(List, BinAsAtom)).
