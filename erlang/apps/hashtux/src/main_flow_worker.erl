@@ -55,7 +55,7 @@ handle_info(_Msg, State) ->
 	{noreply, State}.
 
 
-handle_cast({search, SourcePID, Term, _Options}, State) -> 
+handle_cast({search, SourcePID, Term, Options}, State) -> 
 	io:format("Term: ~p~n", [Term]),
 	
 	% Update the database with search term / session data for this request
@@ -79,7 +79,7 @@ handle_cast({search, SourcePID, Term, _Options}, State) ->
 	%
 	
 	% Make a miner call for the term
-	{ok, MinerPid} = miner_server:search(Term, none),
+	{ok, MinerPid} = miner_server:search(Term, Options),
 	receive 
 		{MinerPid, Y, Z} ->
 			io:format("Miner reply~n", []),
