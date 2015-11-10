@@ -55,9 +55,9 @@ handle_cast({{Pid, _Ref}, Term, []}, State) ->
 %% with options
 handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 	% get the options
-	Services = case lists:keyfind(services, 1, Options) of
+	Services = case lists:keyfind(service, 1, Options) of
 					{K1, V1} -> {K1, V1};
-					false  -> {services, []}
+					false  -> {service, []}
 			   end,
 	ContType = case lists:keyfind(content_type, 1, Options) of
 					{K2, V2} -> {K2, V2};
@@ -82,7 +82,7 @@ handle_call(_Request, _From, S) -> {noreply, S}.
 
 %%
 % search all services (twitter, instagram, etc.)
-search_services(Term, {services, []}, ContType, Lang) ->
+search_services(Term, {service, []}, ContType, Lang) ->
 	R = ig_search:search(Term, []),
 	{_, L} = ContType, 
 	IGRes = filter_insta(R, L),
@@ -91,7 +91,7 @@ search_services(Term, {services, []}, ContType, Lang) ->
 % search based on options
 search_services(Term, Services, ContType, Lang) ->
 	% get the list of services
-	{services, S} = Services,
+	{service, S} = Services,
 	% get instagram results
 	IGRes = case lists:member(instagram, S) of
 				true  -> 
