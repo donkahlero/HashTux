@@ -34,7 +34,7 @@ parse_options(Req) ->
 % Convert a list of bins to a list of atoms, by recursively taking each
 % element and first turning it into a list, then an atom.
 % First the interface method
-list_bins_to_list_atoms(List) -> list_bins_to_list_atoms([] , List).
+list_bins_to_list_atoms(List) -> list_bins_to_list_atoms(List, []).
 	
 % Then the actual implementation
 list_bins_to_list_atoms([], List) -> List;
