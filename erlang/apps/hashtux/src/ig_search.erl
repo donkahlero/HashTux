@@ -4,7 +4,7 @@
 
 -define(URL, "https://api.instagram.com/v1/tags/").
 -define(TAIL, "/media/recent?access_token=").
--define(MEDIA, "Instagram").
+-define(MEDIA, "instagram").
 
 
 
@@ -15,7 +15,10 @@ search(Term, _Options) ->
 		{ok, Result} -> 
 			{_StatusLine, _Headers, Body} = Result,
 			try jsx:decode(list_to_binary(Body)) of
-				DecodedRes -> parse(Term, DecodedRes)
+				DecodedRes -> 
+					Results = parse(Term, DecodedRes),
+					gen_server:call(db_serv, {add_doc, Results}),
+					Results
 			catch _ -> []
 			end;
 		{error, Reason} ->
@@ -57,7 +60,7 @@ parse(Term, List) ->
 append_details(_Term, []) 	-> [];
 append_details(Term, List) ->
 	Details = [ {<<"search_term">>, list_to_binary(Term)}, 
- 		  	   	{<<"social_media">>, list_to_binary(?MEDIA)},
+ 		  	   	{<<"service">>, list_to_binary(?MEDIA)},
 			   	{<<"insert_timestamp">>, dateconv:get_timestamp()} ],
 	lists:append(List, Details).
 
