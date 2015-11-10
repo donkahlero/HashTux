@@ -5,6 +5,15 @@
 %
 % The PHP request supplies a number of details about
 % the user, session and client options.
+%
+% (It would actually be possible to put most of this into JSON already in the 
+% PHP code, reducing the amount of logic around this on the erlang backend. 
+% This is a good candidate for refactoring later if we have time. However then
+% either the client would have to care about what we deem as user habit related
+% and what we see as only relevant as options, OR we would have to separate
+% into two lists on the server anyway, so it's not a magical wand solution that
+% instantly makes everything superbeautiful)
+%
 % User habit related:
 % 	Timeout
 %	Session ID
