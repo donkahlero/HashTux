@@ -35,15 +35,14 @@ receive {Ref, Result} -> Result end.
 
 #### Search options
 ```erlang
-{limit, Amount}
+{content_type, [image, text, video]}
 ```
-* Limits the amount of results you can get from the database
+* The content_type needs to be send as a list with atoms
 
 ```erlang
-{time, Time}
+{services, [twitter, instagram, youtube]}
 ```
-* The time where you want to start searching for items
-* The Time var should be an integer
+* The services takes the different services we have in a list with atoms
 
 ###Write operations
 ```erlang
