@@ -47,7 +47,7 @@ handle_cast({{Pid, _Ref}, Term, []}, State) ->
 	% concatenate final results
 	Results = IGRes ++ TWRes,
 	% send to original caller								
-	Pid ! {self(), Results, []},	
+	Pid ! {self(), Results},	
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	% stop this worker
 	{stop, normal, State};
