@@ -1,9 +1,12 @@
 %% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @doc Module for converting dates and times to other formats.
-%% @version 0.1
+%% @version 0.2
 %% -----------------------------------------------------------------------------
 %% | Sprint 2 // v0.1:                                                         |
 %% | Initially added this module to convert the twitter date.                  |
+%% -----------------------------------------------------------------------------
+%% | Sprint 4 // v.02:                                                         |
+%% | Added a function for getting UNIX epoch in seconds.                       |
 %% -----------------------------------------------------------------------------
 -module(dateconv).
 
