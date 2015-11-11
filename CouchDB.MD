@@ -33,6 +33,16 @@ receive {Ref, Result} -> Result end.
 ```
 * As above but with search (multiple) options
 
+```erlang
+{get_hash_count}
+```
+* Returning a (maybe huge) list of all searched hashtags with their count
+
+```erlang
+{get_popular_hash, Amount}
+```
+* List of the popular hashes (maximum as big as specified)
+
 #### Search options
 ```erlang
 {content_type, [image, text, video]}
