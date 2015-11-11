@@ -14,6 +14,9 @@
 %% | Several name changes to more descriptive worker names.                    |
 %% | Added support for userstats workers.                                      |
 %% -----------------------------------------------------------------------------
+%% | Sprint 4 // v.03:                                                         |
+%% | Added the db statistic reader functions                                   |
+%% -----------------------------------------------------------------------------
 -module(db_serv).
 
 -behavior(gen_server).
@@ -80,14 +83,14 @@ handle_call({delete_hash, Hashtag}, {From, _Ref}, State) ->
     gen_server:cast(Ref, {delete_hash, Hashtag, From}),
     {reply, Ref, State};
 %%% Getting the whole list of requested hashtags
-handle_call({get_hash_count}, {From, _Ref}, State) ->
+handle_call({get_stats}, {From, _Ref}, State) ->
     {ok, Ref} = start_usrw(),
     gen_server:cast(Ref, {get_hash_count, From}),
     {reply, Ref, State};
 %%% Getting and ordered list of requested hashtags
-handle_call({get_popular_hash, Num}, {From, _Ref}, State) ->
+handle_call({get_stats, Option}, {From, _Ref}, State) ->
     {ok, Ref} = start_usrw(),
-    gen_server:cast(Ref, {get_popular_hash, Num, From}),
+    gen_server:cast(Ref, {get_popular_hash, Option, From}),
     {reply, Ref, State};
 %%% Get the current server state.
 handle_call(state, _From, State) ->
