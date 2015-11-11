@@ -6,6 +6,6 @@
          
         /* Only handle if the search term is specified */
         if (isset($_GET['search']) && $_GET['search'] != "") {
-            echo curl_request($_GET['search']);
+            echo curl_request($_GET['search'], "update");
         } 
 ?>
