@@ -24,7 +24,7 @@ parse_options(Req) ->
 	
 	% Language - NOTE THIS SHOULD BE PROVIDED AS TWO CHARACTERS BY CLIENT
 	LanguageBin = cowboy_req:qs_val(<<"language">>, Req, list_to_binary("en")),
-	LanguageString = binary_to_list(LanguageBin),
+	LanguageString = binary_to_list(list_to_binary("en")),
 	LanguageAtom = list_to_atom(LanguageString),
 	
 	% Limit should be provided as an int
