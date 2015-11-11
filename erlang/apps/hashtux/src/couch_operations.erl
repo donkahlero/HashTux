@@ -6,7 +6,7 @@
 
 
 %% Document operations
--export([doc_add/2, doc_get_cont/1, doc_change/2, doc_get/1, doc_delete/2, doc_append/2, doc_rmval/2, doc_exist/1]).
+-export([doc_add/2, doc_get_map_cont/1, doc_get_mapreduce_cont/1, doc_change/2, doc_get/1, doc_delete/2, doc_append/2, doc_rmval/2, doc_exist/1]).
 -export([get_uuid/0]).
 
 %% @doc Method to initially add a document to the database.
@@ -26,10 +26,15 @@ doc_get(Addr) ->
     jsx:decode(Res).
 
 %% @doc Gets just objects from the database without anything else.
-doc_get_cont(Addr) ->
+doc_get_map_cont(Addr) ->
     Doc = doc_get(Addr),
     [_RowCount, _OffSet | [{_, Rows} | _]] = Doc,
     [Post || [{<<"_id">>, _ID}, {<<"_rev">>, _Rev} | Post] <- [Posts || {<<"value">>, Posts} <- lists:flatten(Rows)]].
+
+doc_get_mapreduce_cont(Addr) ->
+	Doc = doc_get(Addr),
+	[{_, List}] = Doc,
+	List.
 
 %% @doc Deletes a document from the database.
 doc_delete(Addr, Rev) ->
