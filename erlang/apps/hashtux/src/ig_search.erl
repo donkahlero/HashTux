@@ -1,6 +1,6 @@
 -module(ig_search).
 
--export([search/2]).
+-export([search/1]).
 
 -define(URL, "https://api.instagram.com/v1/tags/").
 -define(TAIL, "/media/recent?access_token=").
@@ -8,7 +8,7 @@
 
 
 
-search(Term, _Options) ->
+search(Term) ->
 	Token = get_token(),
 	Url = ?URL ++ Term ++ ?TAIL ++ Token,
 	case httpc:request(Url) of
