@@ -12,6 +12,7 @@
 %% -----------------------------------------------------------------------------
 %% | Sprint 4 // v.03                                                          |
 %% | Added the cleanup worker to the supervisor.                               |
+%% | Added supervisor for the DB Stats readers.                                |
 %% -----------------------------------------------------------------------------
 -module(db_sup).
 
@@ -34,8 +35,11 @@ init([]) ->
 		    temporary, 5000, supervisor, [db_worker_sup]},
     StatsWriteSup = {db_stats_write_sup, {db_worker_sup, start_link, [db_stats_write_sup]},
                     temporary, 5000, supervisor, [db_worker_sup]},
+    StatsReadSup = {db_stats_read_sup, {db_worker_sup, start_link, [db_stats_read_sup]},
+                    temporary, 5000, supervisor, [db_worker_sup]},
     DBCleaner = {db_cleaner, {db_cleaner, start_link, []},
               permanent, 5000, worker, [db_cleaner]},
     DBServ = {db_serv, {db_serv, start_link, []},
 	      permanent, 5000, worker, [db_serv]},
-    {ok, {{one_for_one, 1, 10}, [HashReadSup, HashWriteSup, StatsWriteSup, DBCleaner, DBServ]}}.
+    {ok, {{one_for_one, 1, 10}, [HashReadSup, HashWriteSup, StatsWriteSup, StatsReadSup,
+				 DBCleaner, DBServ]}}.
