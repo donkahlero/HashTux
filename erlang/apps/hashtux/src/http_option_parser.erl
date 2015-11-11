@@ -23,8 +23,8 @@ parse_options(Req) ->
 	ContentTypeAtomList = list_bins_to_list_atoms(ContentTypeBinList),
 	
 	% Language - NOTE THIS SHOULD BE PROVIDED AS TWO CHARACTERS BY CLIENT
-	LanguageBin = cowboy_req:qs_val(<<"language">>, Req, <<"en">>),
-	LanguageString = binary_to_list(<<"en">>),
+	LanguageBin = cowboy_req:qs_val(<<"language">>, Req, list_to_binary("en")),
+	LanguageString = binary_to_list(LanguageBin),
 	LanguageAtom = list_to_atom(LanguageString),
 	
 	% Limit should be provided as an int
