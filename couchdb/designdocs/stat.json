@@ -1,0 +1,42 @@
+{
+  "_id":"_design/stat",
+  "language": "javascript",
+  "views":
+  {
+    "all": {
+      "map": "function(doc) { if (doc.search_term)  emit(null, doc) }"
+    },
+    "by_search_term": {
+      "map": "function(doc) { if (doc.search_term)  emit(doc.search_term, 1) }",
+      "reduce": "function(keys, values, rereduce) { return sum(values) }"
+    },
+    "within_time": {
+      "map": "function(doc) {if (doc.search_term && doc.timestamp)  emit(doc.timestamp, 1, doc.search_term) }",
+      "reduce": "function(keys, values, rereduce) { return sum(values) }"
+    },
+    "by_browser": {
+      "map": "function(doc) { if (doc.browser)  emit(doc.browser, 1) }",
+      "reduce": "function(keys, values, rereduce) { return sum(values) }"
+    },
+    "by_language": {
+      "map": "function(doc) { if (doc.language)  emit(doc.language, 1) }",
+      "reduce": "function(keys, values, rereduce) { return sum(values) }"
+    },
+    "by_platform": {
+      "map": "function(doc) { if (doc.platform)  emit(doc.platform, 1) }",
+      "reduce": "function(keys, values, rereduce) { return sum(values) }"
+    },
+    "by_search_term": {
+      "map": "function(doc) { if (doc.search_term)  emit(doc.search_term, 1) }",
+      "reduce": "function(keys, values, rereduce) { return sum(values) }"
+    },
+    "by_browser_version": {
+      "map": "function(doc) { if (doc.browser && doc.browser_version)  emit([doc.browser, doc.browser_version], 1) }",
+      "reduce": "function(keys, values, rereduce) { return sum(values) }"
+    },
+    "by_platform_browser": {
+      "map": "function(doc) { if (doc.browser && doc.platform)  emit([doc.platform, doc.browser], 1) }",
+      "reduce": "function(keys, values, rereduce) { return sum(values) }"
+    }
+  }
+}
