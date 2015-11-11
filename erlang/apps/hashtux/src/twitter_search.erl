@@ -137,8 +137,11 @@ has_null_value({_, null}) -> true;
 has_null_value({_, _}) -> false.
 
 %% PARSING!!!!
-%% Calls print_status_details on all statuses included in a given List
-parse_status_list(_HashTag, [], Result) -> Result;
+%% Calls parse_status_details on all statuses included in a given List
+%% Sends the document to DB and returns it
+parse_status_list(_HashTag, [], Result) -> 
+    gen_server:call(db_serv, {add_doc, Result}),            %% Sends the document to DB
+    Result;                                                 %% return doc
 parse_status_list(HashTag, [H|T], Result) -> 
     NewResult = Result ++ [parse_status_details(HashTag, H)],
     parse_status_list(HashTag, T, NewResult).
@@ -228,6 +231,11 @@ parse_status_details(HashTag, Status) ->
                 not_found -> null
             end,
 
+            ScreenName = case extract(<<"screen_name">>, UserInfo) of
+                {found, Y4} -> Y4;
+                not_found -> null
+            end, 
+
             User_Profile_Link = case extract(<<"screen_name">>, UserInfo) of
                 {found, Y2} -> build_profile_link(Y2);
                 not_found -> null
@@ -240,10 +248,11 @@ parse_status_details(HashTag, Status) ->
 
         not_found -> 
             UserName = null,
+            ScreenName = null,
             User_Profile_Link = null,
             UserID = null
     end,
 
 
-    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"social_media">>, <<"Twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"timestamp">>, Date}, {<<"insert_timestamp">>, Timestamp}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Media_URL}, {<<"resource_link_low">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"username">>, UserName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
+    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"service">>, <<"twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"timestamp">>, Date}, {<<"insert_timestamp">>, Timestamp}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Media_URL}, {<<"resource_link_low">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"free_text_name">>, UserName}, {<<"username">>, ScreenName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
     clean_result(A).
