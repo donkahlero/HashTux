@@ -12,7 +12,7 @@
 %% -----------------------------------------------------------------------------
 -module(db_filter).
 
--export([content_type/2, language/2, service/2]).
+-export([content_type/2, language/2, service/2, order_by_value/1]).
 
 %% @doc Function filtering for the type of content.
 %% This can be image, video or text.
@@ -84,3 +84,10 @@ is_service([X|Xs], CurrentService) ->
         Service -> true;
         _ -> is_service(Xs, CurrentService)
     end.
+
+%% @doc Function ordering mapreduce results by their value
+order_by_value(L) ->
+    lists:reverse(lists:keysort(2,
+      [{Key, Value} || [{<<"key">>, Key}, {<<"value">>, Value}] <- L])).
+
+
