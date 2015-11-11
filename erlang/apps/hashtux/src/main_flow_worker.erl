@@ -56,7 +56,7 @@ handle_info(Msg, State) ->
 
 
 handle_cast({search, SourcePID, Term, Options}, State) -> 
-	io:format("Term: ~p~n", [Term]),
+	io:format("Term: ~p~nOptions:~p~n", [Term, Options]),
 	
 	% Update the database with search term / session data for this request
 	% ...
