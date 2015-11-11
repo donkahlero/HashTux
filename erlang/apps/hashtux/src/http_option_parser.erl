@@ -13,25 +13,22 @@ parse_options(Req) ->
 	% Get the services parameter, encoded by the client as a list of binaries
 	% we then want to convert this into a list of atoms for easier handling
 	% through our erlang application
-	{ServicesJSON, _} = cowboy_req:qs_val(<<"services">>, Req, 
-										  list_to_binary("[]")),
+	{ServicesJSON, _} = cowboy_req:qs_val(<<"services">>, Req, <<"[]">>),
 	ServicesBinList = jsx:decode(ServicesJSON),
 	ServicesAtomList = list_bins_to_list_atoms(ServicesBinList),
 	
 	% The same with content type
-	{ContentTypeJSON, _} = cowboy_req:qs_val(<<"content_type">>, Req, 
-											 list_to_binary("[]")),
+	{ContentTypeJSON, _} = cowboy_req:qs_val(<<"content_type">>, Req, <<"[]">>),
 	ContentTypeBinList = jsx:decode(ContentTypeJSON),
 	ContentTypeAtomList = list_bins_to_list_atoms(ContentTypeBinList),
 	
 	% Language - NOTE THIS SHOULD BE PROVIDED AS TWO CHARACTERS BY CLIENT
-	{LanguageBin, _} = cowboy_req:qs_val(<<"language">>, Req, 
-										 list_to_binary("en")),
+	{LanguageBin, _} = cowboy_req:qs_val(<<"language">>, Req, <<"en">>),
 	LanguageString = binary:bin_to_list(LanguageBin),
 	LanguageAtom = list_to_atom(LanguageString),
 	
 	% Limit should be provided as an int
-	{LimitBin, _} = cowboy_req:qs_val(<<"limit">>, Req, list_to_binary("100")),
+	{LimitBin, _} = cowboy_req:qs_val(<<"limit">>, Req, <<"100">>),
 	LimitString = binary:bin_to_list(LimitBin),
 	LimitInt = list_to_integer(LimitString),
 	
