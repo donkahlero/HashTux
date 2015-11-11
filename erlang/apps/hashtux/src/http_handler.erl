@@ -14,16 +14,25 @@
 % into two lists on the server anyway, so it's not a magical wand solution that
 % instantly makes everything superbeautiful)
 %
+
+% CHANGES: 
+% SPLIT USER AGENT INTO Platform AND Browser AND BrowserVersion
+% Supply a field request_type that says "search" or "update"
+
 % User habit related:
-% 	Timeout
-%	Session ID
-%	IP address
-% 	Language (hmm is this a part of user agent or not? hmmm)
-%	User agent
-% Technical:
-%	Limit (post count in response) (also stored as user habit right now)
-%	Services (t, i, y) (also stored as user habit right now)
-%	Resolution (high, low, default)
+% 	timetamp
+%	session_id
+%	ip_address
+%	platform
+%	browser
+%	browserversion
+
+% Options - appended at the end to user habit data as well
+% 	language
+%	limit (post count in response) (also stored as user habit right now)
+%	services (twitter, instagram, youtube) (also stored as user habit right now)
+%	content_type ()
+%	(Later: Resolution (high, low, default))
 %
 % Other notes:
 % URL: the full url, including http://
@@ -65,10 +74,11 @@ handle(Req, State) ->
 	% "Debug" output
 	io:format("~nNow handling term: ~p~n", [Term]),
 	
-	% Store user habit data 	
-	user_habits:store(Term, Req),
-	% Extract options
+	% Extract options from request
 	Options = http_option_parser:parse_options(Req),
+	
+	% Store user habit data - includes the options
+	user_habits:store(Term, Req, Options),
 	
 	% Send the search term and the options to the main flow by making a call to 
 	% main flow server - get the PID of the worker back and wait for a reply from it
