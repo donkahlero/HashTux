@@ -50,7 +50,7 @@ receive {Ref, Result} -> Result end.
 * The content_type needs to be send as a list with atoms
 
 ```erlang
-{services, [twitter, instagram, youtube]}
+{service, [twitter, instagram, youtube]}
 ```
 * The services takes the different services we have in a list with atoms
 
