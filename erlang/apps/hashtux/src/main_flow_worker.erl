@@ -50,8 +50,8 @@ code_change(_PrevVersion, _State, _Extra) ->
 
 %% ========================================================
 
-handle_info(_Msg, State) -> 
-	io:format("Main_flow worker: received info too late."),
+handle_info(Msg, State) -> 
+	io:format("Main_flow worker: received info too late: ~p~n", [Msg]),
 	{noreply, State}.
 
 

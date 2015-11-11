@@ -17,15 +17,26 @@ parse_options(Req) ->
 	ServicesBinList = jsx:decode(ServicesJSON),
 	ServicesAtomList = list_bins_to_list_atoms(ServicesBinList),
 	
+	% The same with content type
 	{ContentTypeJSON, _} = cowboy_req:qs_val(<<"content_type">>, Req, <<"[]">>),
 	ContentTypeBinList = jsx:decode(ContentTypeJSON),
 	ContentTypeAtomList = list_bins_to_list_atoms(ContentTypeBinList),
 	
-	% Lets discuss tomorrow how the language should be handled!
-
+	% Language - NOTE THIS SHOULD BE PROVIDED AS TWO CHARACTERS BY CLIENT
+	LanguageBin = cowboy_req:qs_val(<<"language">>, Req, <<"en">>),
+	LanguageString = binary_to_list(LanguageBin),
+	LanguageAtom = list_to_atom(LanguageString),
+	
+	% Limit should be provided as an int
+	LimitBin = cowboy_req:qs_val(<<"limit">>, Req, <<"100">>),
+	LimitString = binary_to_list(LimitBin),
+	LimitInt = list_to_integer(LimitString),
+	
 	% Return the list of options, as key-value pairs
 	[{service, ServicesAtomList},
-	 {content_type, ContentTypeAtomList}].
+	 {content_type, ContentTypeAtomList},
+	 {language, LanguageAtom},
+	 {limit, LimitInt}].
 
 	
 
