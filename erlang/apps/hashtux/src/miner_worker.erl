@@ -44,8 +44,10 @@ handle_cast({{Pid, _Ref}, Term, []}, State) ->
 	IGRes = ig_search:search(Term, []),
 	%get twitter results
 	TWRes = twitter_search:search_hash_tag(Term, []),
+	%get youtube results
+	YTRes = youtube_search:search(Term, []),
 	% concatenate final results
-	Results = IGRes ++ TWRes,
+	Results = IGRes ++ TWRes ++ YTRes,
 	% send to original caller								
 	Pid ! {self(), Results},	
 	io:format("FINISHED:worker [~p]~n", [self()]),
