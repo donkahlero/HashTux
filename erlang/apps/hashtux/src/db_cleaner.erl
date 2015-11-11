@@ -35,4 +35,6 @@ delete_entries() ->
 
 compact_db() ->
     couch_connector:post_request("hashtux/_compact", [], "application/json"),
-    couch_connector:post_request("hashtux_userstats/_compact", [], "application/json").
+    couch_connector:post_request("hashtux/_view_cleanup", [], "application/json"),
+    couch_connector:post_request("hashtux_userstats/_compact", [], "application/json"),
+    couch_connector:post_request("hashtux_userstats/_view_cleanup", [], "application/json").
