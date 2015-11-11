@@ -59,19 +59,12 @@ terminate(Reason, _State) ->
 
 
 %% for new version of the code
-code_change(_PrevVersion, _State, _Extra) ->
-	{ok}.
+code_change(_PrevVersion, State, _Extra) ->
+	{ok, State}.
 
 
-%% for handling messages sent directly with the
-%% ! operator, init/1's timeouts, monitor's 
-%% notifications and 'EXIT' signals
-%%
-%% when we get the call we send ourselves to start the 
-%% worker supervisor we call the top level sup (miner_module_sup)
-%% to dynamically add a child to its tree (in this case the worker 
-%% sup), then track the pid and add it to the sup reference in our 
-%% state record
+%% handles the down message received from the miner worker
+%% when it has finished with the task (or not)
 handle_info({'DOWN', Ref, process, _Pid, _}, 
 						S=#state{limit=N, refs=Refs}) ->
 	case gb_sets:is_element(Ref, Refs) of
@@ -82,6 +75,7 @@ handle_info({'DOWN', Ref, process, _Pid, _},
 		false ->
 			{noreply, S}
 	end;
+% all other messages -> ignored
 handle_info(_Msg, S) ->
 	{noreply, S}.
 
@@ -91,14 +85,17 @@ handle_cast(Msg, State) ->
 	{noreply, Msg, State}.	
 
 
-%% handles synchronous messages
+%% handles synchronous messages, search request
 handle_call({search, Term, Options}, From, 
 						S=#state{limit=N, refs=R}) when N > 0 ->
 	{ok, Pid} = start_worker(),
 	Ref = erlang:monitor(process, Pid),
 	gen_server:cast(Pid, {From, Term, Options}),
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
-	{reply, {ok, Pid}, NewS}.
+	{reply, {ok, Pid}, NewS};
+% all other calls
+handle_call(Request, _From, State) ->
+	{reply, {undef_call, Request}, State}.
 
 
 %% starts a worker and attaches it to the worker supervisor

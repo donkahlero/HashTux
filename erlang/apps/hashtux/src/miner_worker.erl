@@ -39,27 +39,35 @@ handle_info(_Msg, S) -> {noreply, S}.
 
 %%
 %% no options
-handle_cast({{Pid, _Ref}, Term, []}, State) ->
-	% get instagram results
-	IGRes = ig_search:search(Term, []),
-	%get twitter results
-	TWRes = twitter_search:search_hash_tag(Term, []),
-	%get youtube results
-	YTRes = youtube_search:search(Term, []),
-	% concatenate final results
-	Results = IGRes ++ TWRes ++ YTRes,
+handle_cast({{Pid, _Ref}, Term, Options}, State) ->
+	% get results
+	Results = run_search(Term, Options),
 	% send to original caller								
 	Pid ! {self(), Results},	
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	% stop this worker
 	{stop, normal, State};
+handle_cast(_Request, State) ->
+	{stop, normal, State}.
 
-%% with options
-handle_cast({{Pid, _Ref}, Term, Options}, State) ->
+
+%%
+handle_call(_Request, _From, S) -> {noreply, S}.
+
+
+%% 
+% no options
+run_search(Term, []) -> 
+	ContType = {content_type, []},
+	Lang = {language, []},
+	L = get_results(Term, get_services([]), ContType, Lang),
+	lists:append(L);
+% with options
+run_search(Term, Options) ->
 	% get the options
 	Services = case lists:keyfind(service, 1, Options) of
-					{K1, V1} -> {K1, V1};
-					false  -> {service, []}
+					{_K1, V1} -> get_services(V1);
+					false  -> get_services([])
 			   end,
 	ContType = case lists:keyfind(content_type, 1, Options) of
 					{K2, V2} -> {K2, V2};
@@ -69,68 +77,63 @@ handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 				{K3, V3} -> {K3, V3};
 				false  -> {language, []}
 		   end,
-	% get the search results
-	Results = search_services(Term, Services, ContType, Lang), 
-	% send to original caller								
-	Pid ! {self(), Results},
-	io:format("FINISHED:worker [~p]~n", [self()]),
-	% stop this worker
-	{stop, normal, State}.
+	L = get_results(Term, Services, ContType, Lang),
+	lists:append(L).
 
 
 %%
-handle_call(_Request, _From, S) -> {noreply, S}.
+get_results(Term, Services, ContType, Lang) ->
+	F = fun(Pid, X) -> spawn(fun() -> 
+									Pid ! {self(), 
+									search_services({X, {Term, ContType, Lang}})} 
+							  end) 
+		end,
+	[receive {R, X} -> X end || R <- [F(self(), N) || N <- Services]].
 
 
 %%
-% search all services (twitter, instagram, etc.)
-search_services(Term, {service, []}, ContType, Lang) ->
-	R = ig_search:search(Term, []),
-	{_, L} = ContType, 
-	IGRes = filter_insta(R, L),
-	TWRes = twitter_search:search_hash_tag(Term, [ContType, Lang]),
-	IGRes ++ TWRes;
-% search based on options
-search_services(Term, Services, ContType, Lang) ->
-	% get the list of services
-	{service, S} = Services,
-	% get instagram results
-	IGRes = case lists:member(instagram, S) of
-				true  -> 
-					R = ig_search:search(Term, []),
-					{_, L} = ContType,
-					filter_insta(R, L);
-				false -> []
-			end,
-	% get twitter results
-	TWRes = case lists:member(twitter, S) of
-				true  -> twitter_search:search_hash_tag(Term, [ContType, Lang]);
-				false -> []
-			end,
-	IGRes ++ TWRes.
+search_services({instagram, {Term, ContType, _Lang}}) ->
+	R = ig_search:search(Term),
+	{_, L} = ContType,
+	filter_insta(R, L);
+search_services({twitter, {Term, ContType, Lang}}) ->
+	twitter_search:search_hash_tag(Term, [ContType, Lang]).
+
+
+%%
+get_services([]) ->
+	[instagram, twitter];
+get_services(L)  -> 
+	L.
+
+
+%%
+
 
 
 %% 
 filter_insta(Res, []) -> Res;
 filter_insta(Res, L)  ->
 	case {lists:member(image, L), lists:member(video, L)} of
-		{true, true}  -> Res;
-		{true, false} -> filter_insta_res(Res, image);
-		{false, true} -> filter_insta_res(Res, video)
+		{true, true}   -> Res;
+ 		{true, false}  -> filter_insta_res(Res, image);
+		{false, true}  -> filter_insta_res(Res, video)
 	end.
 
 
 %%
 filter_insta_res([], _Key)	 -> [];
-filter_insta_res([H|T], Key) -> 
-	X = case lists:keyfind(<<"content_type">>, 1, H) of
+filter_insta_res(List, Key) ->
+	[N || N <- List, get_key_atom(N) == Key]. 
+
+
+%%
+get_key_atom(List) ->
+	X = case lists:keyfind(<<"content_type">>, 1, List) of
 			{_K, V} -> list_to_atom(binary_to_list(V));
-			false	-> false
+			false	-> no_atom
 		end,
-	if 
-		X == Key -> [H | filter_insta_res(T, Key)];
-		X /= Key -> filter_insta_res(T, Key)
-	end. 
+	X.
 
 
 
