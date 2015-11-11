@@ -49,6 +49,11 @@ receive {Ref, Result} -> Result end.
 ```
 * The language is a string
 
+```erlang
+{limit, Int}
+```
+* Gives you back as many result as you specified in the Int
+
 ###Write operations
 ```erlang
 {add_doc, Content}
