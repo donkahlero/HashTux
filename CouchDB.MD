@@ -15,7 +15,7 @@ receive {Ref, Result} -> Result end.
 ```
 
 ##Supported calls
-###Read operations
+###Read operations (for posts)
 ```erlang
 {posts_exist, "Hashtag"}
 ```
@@ -32,16 +32,6 @@ receive {Ref, Result} -> Result end.
 {get_posts, "Hashtag", [{option1, Value1}, {option2, Value2}, {option3, Value3}, {optionN, ValueN}]}
 ```
 * As above but with search (multiple) options
-
-```erlang
-{get_hash_count}
-```
-* Returning a (maybe huge) list of all searched hashtags with their count
-
-```erlang
-{get_popular_hash, Amount}
-```
-* List of the popular hashes (maximum as big as specified)
 
 #### Search options
 ```erlang
@@ -63,6 +53,36 @@ receive {Ref, Result} -> Result end.
 {limit, Int}
 ```
 * Gives you back as many result as you specified in the Int
+
+###Read operations (for stats)
+```erlang
+{get_stats}
+```
+* Returning a (maybe huge) list of all userstats
+
+```erlang
+{get_stats, Option}
+```
+* List of the popular hashes (maximum as big as specified)
+
+#### Stats options
+* For getting statistics you can online specify one Option
+* The following are supported:
+
+```erlang
+get_hash_count
+```
+* Returns a list of all hash searches (and their quantaty)
+
+```erlang
+{get_popular_hash, Limit}
+```
+* Returns an ordered list of hash searches - whiches max. lenght is limit
+
+```erlang
+{get_popular_within_time, StartTime, EndTime, Limit}
+```
+* Returns an ordere list of the most popular hashed within a timeframe
 
 ###Write operations
 ```erlang
