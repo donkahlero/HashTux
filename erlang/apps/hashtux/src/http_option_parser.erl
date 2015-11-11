@@ -24,6 +24,7 @@ parse_options(Req) ->
 	
 	% Language - NOTE THIS SHOULD BE PROVIDED AS TWO CHARACTERS BY CLIENT
 	LanguageBin = cowboy_req:qs_val(<<"language">>, Req, list_to_binary("en")),
+	io:format("LanguageBin: ~p~n", [LanguageBin]),
 	LanguageString = binary:bin_to_list(LanguageBin),
 	LanguageAtom = list_to_atom(LanguageString),
 	
