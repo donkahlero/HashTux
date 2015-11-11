@@ -12,7 +12,7 @@
 %% -----------------------------------------------------------------------------
 -module(db_filter).
 
--export([content_type/2, language/2, service/2, order_by_value/1]).
+-export([content_type/2, language/2, service/2, order_by_value/1, limit_result/2]).
 
 %% @doc Function filtering for the type of content.
 %% This can be image, video or text.
@@ -90,4 +90,7 @@ order_by_value(L) ->
     lists:reverse(lists:keysort(2,
       [{Key, Value} || [{<<"key">>, Key}, {<<"value">>, Value}] <- L])).
 
-
+%% @doc Limits a list to be as long as the Num says
+limit_result(Num, L) ->
+	{R, _} = lists:split(Num, L),
+	R.
