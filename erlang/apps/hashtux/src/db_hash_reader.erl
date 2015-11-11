@@ -67,18 +67,21 @@ handle_call(_, _, _) ->
 %% %% @doc Handels the cast which is the messages where we doing operations on.
 
 handle_cast({get_posts, Hashtag, Rec}, State) ->
-    Result =  couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++  "\""), 
+    Result =  couch_operations:doc_get_map_cont(
+		?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++  "\""), 
     Rec ! {self(), Result},
     {stop, normal, State};
 
 handle_cast({get_posts, Hashtag, Options, Rec}, State) ->
-	Hash_Result = couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
+	Hash_Result = couch_operations:doc_get_map_cont(
+			?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
 	Result = search_opt(order_options(Options), Hash_Result),
 	Rec ! {self(), Result},
 	{stop, normal, State};
 
 handle_cast({posts_exist, Hashtag, Rec}, State) ->
-    Result = couch_operations:doc_exist(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
+    Result = couch_operations:doc_exist(
+	       ?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
     Rec ! {self(), Result},
     {stop, normal, State}.
 
@@ -116,6 +119,6 @@ search_opt([{language, Langs}| T], L) ->
 	R = db_filter:language(L, Langs),
 	search_opt(T, R);
 search_opt([{limit, Num}| _], L) ->
-	{R, _} = lists:split(Num, L),
+	R = db_filter:limit_result(Num, L),
 	R.
 
