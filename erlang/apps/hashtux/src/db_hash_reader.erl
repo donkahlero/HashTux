@@ -113,7 +113,7 @@ search_opt([{content_type, CTs}| T], L) ->
 	R = db_filter:content_type(L, CTs),
 	search_opt(T, R);
 search_opt([{service, Services}| T], L) ->
-	R = db_filter:services(L, Services),
+	R = db_filter:service(L, Services),
 	search_opt(T, R);
 search_opt([{language, Langs}| T], L) ->
 	R = db_filter:language(L, Langs),
