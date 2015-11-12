@@ -56,33 +56,48 @@ receive {Ref, Result} -> Result end.
 
 ###Read operations (for stats)
 ```erlang
-{get_stats}
-```
-* Returning a (maybe huge) list of all userstats
-
-```erlang
-{get_stats, Option}
+{get_stats, SearchField, [Options]}
 ```
 * List of the popular hashes (maximum as big as specified)
 
+#### Stats Search Field
+* Is always an atom
+* The following atoms are possible
+
+```erlang 
+get_search_term
+```
+
+```erlang
+get_browser
+```
+
+```erlang
+get_platform
+```
+
+```erlang
+get_language
+```
+
+```erlang
+get_browser_version
+```
+```erlang
+get_platform_browser
+```
+
 #### Stats options
-* For getting statistics you can online specify one Option
+* For getting statistics you can online specify one Optiong
 * The following are supported:
 
 ```erlang
-get_hash_count
+{limit, Int}
 ```
-* Returns a list of all hash searches (and their quantaty)
 
 ```erlang
-{get_popular_hash, Limit}
+{time, StartTime, EndTime}
 ```
-* Returns an ordered list of hash searches - whiches max. lenght is limit
-
-```erlang
-{get_popular_within_time, StartTime, EndTime, Limit}
-```
-* Returns an ordere list of the most popular hashed within a timeframe
 
 ###Write operations
 ```erlang
