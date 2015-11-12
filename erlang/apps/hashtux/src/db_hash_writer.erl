@@ -70,7 +70,8 @@ handle_cast({add_doc, Content, Rec}, State) ->
 handle_cast({delete_hash, Hashtag, Rec}, State) ->
 	Results = couch_operations:doc_get(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
 	{_, Posts} = lists:keyfind(<<"rows">>, 1, Results),
-	[couch_operations:doc_delete(?DB ++ binary_to_list(ID)) || {<<"_id">>, ID} <- lists:flatten([Content || {<<"value">>, Content} <- lists:flatten(Posts)])],
+	[couch_operations:doc_delete(?DB ++ binary_to_list(ID), binary_to_list(Rev)) ||
+	    [{<<"_id">>, ID}, {<<"_rev">>, Rev} | _] <- [Content || {<<"value">>, Content} <- lists:flatten(Posts)]],
         Rec ! {self(), true},
 	{stop, normal, State}.
 

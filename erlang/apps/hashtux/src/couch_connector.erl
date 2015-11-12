@@ -7,6 +7,11 @@
 %% | Sprint 1 // v0.1                                                          |
 %% | Added all necessary REST operations to our CouchDB.                       |
 %% -----------------------------------------------------------------------------
+%% -----------------------------------------------------------------------------
+%% | Sprint 4 // v0.2                                                          |
+%% | Added a post_request to be used for compressing the DB                    |
+%% -----------------------------------------------------------------------------
+
 -module(couch_connector).
 
 %% These are macros describing the DB user, pass and address + port.
@@ -16,7 +21,7 @@
 -define(PW, "grouptux").
 -define(ADDR,"http://" ++ ?URI ++ ":" ++ ?PORT ++ "/").
 
--export([get_info/0, put_request/3, get_request/1, delete_request/1]).
+-export([get_info/0, put_request/3, get_request/1, delete_request/1, post_request/3]).
  -version("0.1").
 
 %% @doc Function creating a auth header for the HTTP request.
@@ -46,3 +51,8 @@ delete_request(DocAddr) ->
 	Headers = [auth_header(?USER, ?PW)],
 	Options = [{body_format, binary}],
 	httpc:request(delete, {?ADDR ++ DocAddr, Headers}, [], Options).
+
+post_request(DocAddr, Content, Type) ->
+	Headers = [auth_header(?USER, ?PW), {"Content-Type", Type}],
+	Options = [{body_format, string}],
+	httpc:request(post, {?ADDR ++ DocAddr, Headers, Type, Content}, [], Options).
