@@ -22,7 +22,8 @@ start_link() ->
 
 
 %%
-init([]) -> {ok, []}.
+init([]) -> 
+	{ok, []}.
 
 
 %%
@@ -30,11 +31,13 @@ terminate(_Reason, _State) -> ok.
 
 
 %% 
-code_change(_PrevVersion, _State, _Extra) -> ok.
+code_change(_PrevVersion, State, _Extra) -> 
+	{ok, State}.
 
 
 %%
-handle_info(_Msg, S) -> {noreply, S}.
+handle_info(_Msg, S) -> 
+	{noreply, S}.
 
 
 %%
@@ -52,8 +55,13 @@ handle_cast(_Request, State) ->
 
 
 %%
-handle_call(_Request, _From, S) -> {noreply, S}.
+handle_call(_Request, _From, S) -> 
+	{noreply, S}.
 
+
+%%% ============================================================================
+%%% PRIVATE FUNCTIONS
+%%% ============================================================================
 
 %% 
 % no options
@@ -97,12 +105,14 @@ search_services({instagram, {Term, ContType, _Lang}}) ->
 	{_, L} = ContType,
 	filter_insta(R, L);
 search_services({twitter, {Term, ContType, Lang}}) ->
-	twitter_search:search_hash_tag(Term, [ContType, Lang]).
+	twitter_search:search_hash_tag(Term, [ContType, Lang]);
+search_services({youtube, {Term, _ContType, _Lang}}) ->
+	youtube_search:search(Term, []).
 
 
 %%
 get_services([]) ->
-	[instagram, twitter];
+	[instagram, twitter, youtube];
 get_services(L)  -> 
 	L.
 
