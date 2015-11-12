@@ -8,7 +8,7 @@
 -define(ACCES_TOKEN, "3947085676-R5GaAeZAz2ns7wEcfZZ9Fw4Npt62kS4irnkgHcT").
 -define(ACCES_TOKEN_SECRET, "W1raFk3kqVEj38QFjDus2qCfk8IU8ilWgfTqAgk3T5Lv6").
 
-
+% OPTIONS: [Language, Content_type]
 search_hash_tag(HashTag, [Qty, Lang]) -> 
     
     Count = if 
@@ -18,22 +18,22 @@ search_hash_tag(HashTag, [Qty, Lang]) ->
     end,
 
     Options = case Lang of
-        en -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        it -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        fr -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        es -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        bg -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        de -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        sv -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        am -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        _ -> [{q, HashTag}, {count, Count}, {response_format, binary}]                    %% Catch all- do not filter for any language
+        en -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        it -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        fr -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        es -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        bg -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        de -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        sv -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        am -> [{q, HashTag}, {lang, Lang}, {count, Count}];
+        _ -> [{q, HashTag}, {count, Count}]                    %% Catch all- do not filter for any language
     end, 
 
     % Use oauth:sign/6 to generate a list of signed OAuth parameters, 
     SignedParams = oauth:sign("GET", ?URL, Options, ?CONSUMER, ?ACCES_TOKEN, ?ACCES_TOKEN_SECRET),
 
     % Send authorized GET request and get result as binary
-    Res = ibrowse:send_req(oauth:uri(?URL,SignedParams), [], get,[], Options),
+    Res = ibrowse:send_req(oauth:uri(?URL,SignedParams), [], get,[], [{response_format, binary}]),
 
     {ok, Status, _ResponseHeaders, ResponseBody} = Res,
 
