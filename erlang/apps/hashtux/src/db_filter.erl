@@ -13,6 +13,7 @@
 -module(db_filter).
 
 -export([content_type/2, language/2, service/2, order_by_value/1, limit_result/2]).
+-export([group_by_subkey/1]).
 
 %% @doc Function filtering for the type of content.
 %% This can be image, video or text.
@@ -94,3 +95,17 @@ order_by_value(L) ->
 limit_result(Num, L) ->
 	{R, _} = lists:split(Num, L),
 	R.
+
+%%
+group_by_subkey(L) ->
+    KVs = [{Key, Value} ||
+	  [{<<"key">>, [_Timestamp, Key]}, {<<"value">>, Value}] <- L],
+    [[{binary:list_to_bin("key"), Key}, {binary:list_to_bin("value"), Value}] ||
+    {Key, Value} <- sum_values(lists:keysort(1, KVs), [])].
+
+sum_values([], Res) ->
+    Res;
+sum_values([{X, N} | Xs], [{X, M} | Ys]) ->
+    sum_values(Xs, [{X, N+M} | Ys]);
+sum_values([{X, N} | Xs], Y) ->
+    sum_values(Xs, [{X, N} | Y]).
