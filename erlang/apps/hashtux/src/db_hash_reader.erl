@@ -15,7 +15,11 @@
 %% | hash_exists to fit the new changes on how we will store data and what to  |
 %% | get from the database.                                                    |
 %% -----------------------------------------------------------------------------
-
+%% -----------------------------------------------------------------------------
+%% | Sprint 4 // v0.3                                                          |
+%% | Added options to the advance search that will handle the different ones   |
+%% | that is sent. It fetch all the result from the DB and the filters it      |
+%% -----------------------------------------------------------------------------
 -module(db_hash_reader).
 
 -behaviour(gen_server).
@@ -23,6 +27,8 @@
 -export([start_link/0, stop/0, state/0]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2]).
+
+-export([search_opt/2, order_options/1]).
 
 -define(DB, "hashtux/").
 
@@ -61,19 +67,15 @@ handle_call(_, _, _) ->
 %% %% @doc Handels the cast which is the messages where we doing operations on.
 
 handle_cast({get_posts, Hashtag, Rec}, State) ->
-    Result =  couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""), 
+    Result =  couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++  "\""), 
     Rec ! {self(), Result},
     {stop, normal, State};
 
-handle_cast({get_posts, Hashtag, [{limit, Num}], Rec}, State) ->
-    Result =  couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++  "\"" "&limit="  ++ integer_to_list(Num)),
-    Rec ! {self(), Result},
-    {stop, normal, State};
-
-handle_cast({get_posts, Hashtag, [{time, Time}], Rec}, State) ->
-    Result = couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag_date?startkey=[\"" ++ Hashtag ++  "\"" ++  ",\""  ++ integer_to_list(Time) ++ "\"]"),
-    Rec ! {self(), Result},
-    {stop, normal, State};
+handle_cast({get_posts, Hashtag, Options, Rec}, State) ->
+	Hash_Result = couch_operations:doc_get_cont(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
+	Result = search_opt(order_options(Options), Hash_Result),
+	Rec ! {self(), Result},
+	{stop, normal, State};
 
 handle_cast({posts_exist, Hashtag, Rec}, State) ->
     Result = couch_operations:doc_exist(?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
@@ -87,3 +89,33 @@ handle_info(_Info, _State) ->
 %% @doc Terminates the server
 terminate(_Reason, _State) ->
     ok.
+
+
+%% @doc This orders the list of options so that the limit is last.
+order_options(Opt) ->
+	order_options(Opt, []).
+order_options([], L) ->
+	L;
+order_options([{limit, Lim}| T], L) ->
+	R = L ++ [{limit, Lim}],
+	order_options(T, R);
+order_options([H| T], L) -> 
+	R = [H] ++ L,
+	order_options(T, R).
+
+%% @doc This returns a new list of json objects from the differnt options.
+search_opt([], L) ->
+	L;
+search_opt([{content_type, CTs}| T], L) ->
+	R = db_filter:content_type(L, CTs),
+	search_opt(T, R);
+search_opt([{service, Services}| T], L) ->
+	R = db_filter:services(L, Services),
+	search_opt(T, R);
+search_opt([{language, Langs}| T], L) ->
+	R = db_filter:language(L, Langs),
+	search_opt(T, R);
+search_opt([{limit, Num}| _], L) ->
+	{R, _} = lists:split(Num, L),
+	R.
+

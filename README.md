@@ -1,4 +1,7 @@
 # HashTux
+### Module documentation
+* [CouchDB module](https://github.com/TacoVox/HashTux/blob/master/CouchDB.MD)
+
 ### SSH/SFTP access to the development server
 * Server address: dev.hashtux.com
 * User: tux
