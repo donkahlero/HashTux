@@ -88,8 +88,13 @@ get_platform_browser
 ```
 
 #### Stats options
-* For getting statistics you can online specify one Optiong
+* For getting statistics you can online specify one Option
 * The following are supported:
+
+```erlang
+[]
+```
+* Returns one tuple with the amount of requests there is in the DB
 
 ```erlang
 {limit, Int}
