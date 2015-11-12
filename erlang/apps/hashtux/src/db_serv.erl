@@ -85,12 +85,12 @@ handle_call({delete_hash, Hashtag}, {From, _Ref}, State) ->
 %%% Getting the whole list of requested hashtags
 handle_call({get_stats}, {From, _Ref}, State) ->
     {ok, Ref} = start_usrw(),
-    gen_server:cast(Ref, {get_hash_count, From}),
+    gen_server:cast(Ref, {get_stats, From}),
     {reply, Ref, State};
 %%% Getting and ordered list of requested hashtags
 handle_call({get_stats, Option}, {From, _Ref}, State) ->
     {ok, Ref} = start_usrw(),
-    gen_server:cast(Ref, {get_popular_hash, Option, From}),
+    gen_server:cast(Ref, {get_stats, Option, From}),
     {reply, Ref, State};
 %%% Get the current server state.
 handle_call(state, _From, State) ->
