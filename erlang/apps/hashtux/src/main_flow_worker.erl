@@ -51,12 +51,12 @@ code_change(_PrevVersion, _State, _Extra) ->
 %% ========================================================
 
 handle_info(Msg, State) -> 
-	io:format("Main_flow worker: received info too late: ~p~n", [Msg]),
+	io:format("main_flow_worker: received info too late: ~p~n", [Msg]),
 	{noreply, State}.
 
 
 handle_cast({search, SourcePID, Term, Options}, State) -> 
-	io:format("Term: ~p~nOptions:~p~n", [Term, Options]),
+	io:format("main_flow_worker: ~nTerm: ~p~nOptions:~p~n", [Term, Options]),
 	
 	% Structure:
 	% If search, treshold value is ~30 or so
@@ -88,10 +88,10 @@ handle_cast({search, SourcePID, Term, Options}, State) ->
 	% first place, presumably some process running the http_handler...
 	receive 
 		{MinerPid, Y} ->
-			io:format("Miner reply~n", []),
+			io:format("main_flow_worker: received reply from miner server~n", []),
 			SourcePID ! {self(), Y}
 		after 15000 ->
-			io:format("Miner timeout!~n", []),
+			io:format("main_flow_worker: miner timeout!~n", []),
 			SourcePID ! {self(), []}
 	end,
 
