@@ -55,40 +55,56 @@ handle_call(_, _, _) ->
 
 %% %% @doc Handels the cast which is the messages where we doing operations on.
 handle_cast({get_stats, get_search_term, Options, Rec}, State) ->
-	Result = couch_operations:doc_get_mapreduce_cont(
-		   ?DB ++ "_design/stat/_view/by_search_term?group=true" ),
-	Rec ! {self(), Result},
+	R = couch_operations:doc_get_mapreduce_cont(?DB ++ "_design/stat/_view/by_search_term?" ++	
+			   			    db_options_handler:pre_search_opt(db_options_handler:order_options(Options)) ++ "&group=true"),
+	Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
+	Opt = db_options_handler:order_options(Options),
+	LR = db_options_handler:search_opt([{limit, Limit} || {Atom, Limit}  <- Opt, {Atom, Limit} == {limit, Limit}], Result),
+	Rec ! {self(), LR},
 	{stop, normal, State};
 
 handle_cast({get_stats, get_browser, Options, Rec}, State) ->
-	R = couch_operations:doc_get_mapreduce_cont(?DB ++ "_design/stat/_view/within_time?" ++ 
-						    db_options_handler:pre_search_opt(db_options_handler:order_options(Options))),
-	Result = [{OS, Browser} || [{_, OS},{_, Browser}] <- R],
-	%%Result = db_filter:oder_by_value(db_filter:group_by_subkey(R)),
-	Rec ! {self(), Result},
+	R = couch_operations:doc_get_mapreduce_cont(?DB ++ "_design/stat/_view/by_browser?" ++
+						    db_options_handler:pre_search_opt(db_options_handler:order_options(Options)) ++ "&group=true"),
+	Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
+	Opt = db_options_handler:order_options(Options),
+	LR = db_options_handler:search_opt([{limit, Limit} || {Atom, Limit}  <- Opt, {Atom, Limit} == {limit, Limit}], Result),
+	Rec ! {self(), LR},
 	{stop, normal, State};
 
 handle_cast({get_stats, get_language, Options, Rec}, State) -> 
-	R = couch_operations:doc_get_mapreduce_cont(?DB ++ "_design/stat/_view/by_language?group=true"),
-	Result = [{Language, Value} || [{_, Language},{_, Value}] <- R],
+	R = couch_operations:doc_get_mapreduce_cont(?DB ++ "_design/stat/_view/by_language?" ++  
+						    db_options_handler:pre_search_opt(db_options_handler:order_options(Options)) ++ "&group=true"),
+	Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
+	Opt = db_options_handler:order_options(Options),
+	LR = db_options_handler:search_opt([{limit, Limit} || {Atom, Limit}  <- Opt, {Atom, Limit} == {limit, Limit}], Result),
 	Rec ! {self(), Result},
 	{stop, normal, State};
 
 handle_cast({get_stats, get_platform, Options, Rec}, State) ->
-	R = couch_operations:doc_get_mapreduce_cont(?DB ++ "_design/stat/_view/by_platform?group=true"),
-	Result = [{Platform, Value} || [{_, Platform},{_, Value}] <- R],
+	R = couch_operations:doc_get_mapreduce_cont(?DB ++ "_design/stat/_view/by_platform?" ++
+						   db_options_handler:pre_search_opt(db_options_handler:order_options(Options)) ++ "&group=true"),
+	Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
+	Opt = db_options_handler:order_options(Options),
+	LR = db_options_handler:search_opt([{limit, Limit} || {Atom, Limit}  <- Opt, {Atom, Limit} == {limit, Limit}], Result),
 	Rec ! {self(), Result},
 	{stop, normal, State};
 
 handle_cast({get_stats, get_browser_version, Options, Rec}, State) ->
-	R = couch_operations:doc_get_mapreduce_cont(?DB ++ "_design/stat/_view/by_browser_version?group=true"),
-	Result = [{Browser, Version, Value} || [{_, [Browser, Version]},{_, Value}] <- R],
+	R = couch_operations:doc_get_mapreduce_cont(?DB ++ "_design/stat/_view/by_browser_version?" ++ 
+						   db_options_handler:pre_search_opt(db_options_handler:order_options(Options)) ++ "&group=true"),
+	Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
+	Opt = db_options_handler:order_options(Options),
+	LR = db_options_handler:search_opt([{limit, Limit} || {Atom, Limit}  <- Opt, {Atom, Limit} == {limit, Limit}], Result),
 	Rec ! {self(), Result},
 	{stop, normal, State};
 
 handle_cast({get_stats, get_platform_browser, Options, Rec}, State) ->
-	R = couch_operations:doc_get_mapreduce_cont(?DB ++ "_design/stat/_view/by_platform_browser?group=true"),
-	Result = [{Platform, Browser, Value} || [{_, [Platform, Browser]},{_, Value}] <- R],
+	R = couch_operations:doc_get_mapreduce_cont(?DB ++ "_design/stat/_view/by_platform_browser?" ++ 
+						   db_options_handler:pre_search_opt(db_options_handler:order_options(Options)) ++ "&group=true"),
+	Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
+	Opt = db_options_handler:order_options(Options),
+	LR = db_options_handler:search_opt([{limit, Limit} || {Atom, Limit}  <- Opt, {Atom, Limit} == {limit, Limit}], Result),
 	Rec ! {self(), Result},
 	{stop, normal, State}.
 
