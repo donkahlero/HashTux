@@ -5,7 +5,7 @@ We usually pass several posts around at a time. Hence generally the posts need t
 ```erlang
 [[Document1], [Document2], [Document3], [DocumentN]].
 ```
-The format of the document is the following (written in PSX JSON):
+The format of the document is the following (written in Erlang compatible with PSX JSON):
 ```erlang
 [{<<"search_term">>, <<"The search term without a hashtag">>},
 {<<"service_id">>, <<"Post ID in external service">>},
@@ -39,14 +39,6 @@ Options:
  - content_type: a list, any combination of "image", "text", "video" or just [] for all.
  - language: two lowercase characters representation
 
-Example for options: 
-```json
-[{"request_type": "search"},
-  {"services": []},
-  {"content_type": []},
-  {"language": "en"}]
-```
- 
 User Habit Data:
  - timetamp: Unix epoch time, number
  - session_id: PHP session string
@@ -55,3 +47,15 @@ User Habit Data:
  - browser: Web browser, free text
  - browserversion: Web browser version, free text
 
+Example of the whole [options, user_habit_data] request body: 
+```json
+[{"request_type":"search","services":[],"content_type":[],"language":"en"},{"timestamp":1447435268,"session_id":"","ip_address":"178.174.190.192","browser":"Firefox","browser_version":"42.0","platform":"Windows"}] 
+```
+
+When decoded to erlang by JSX, the option part looks like this
+```erlang
+[{"request_type", "search"},
+  {"services", []},
+  {"content_type", []},
+  {"language", "en"}]
+```
