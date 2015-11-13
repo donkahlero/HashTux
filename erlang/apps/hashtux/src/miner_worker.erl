@@ -111,8 +111,8 @@ search_services({instagram, {Term, ContType, _Lang}}) ->
 	filter_insta(R, L);
 search_services({twitter, {Term, ContType, Lang}}) ->
 	twitter_search:search_hash_tag(Term, [ContType, Lang]);
-search_services({youtube, {Term, _ContType, _Lang}}) ->
-	youtube_search:search(Term, []).
+search_services({youtube, {Term, ContType, Lang}}) ->
+	youtube_search:search(Term, [ContType, Lang]).
 
 
 %%
