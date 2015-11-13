@@ -21,7 +21,6 @@
 %%% =======================================================
 
 start_link() ->
-	io:format("Started main flow_worker~n",  []),
 	gen_server:start_link(?MODULE, [], []).
 
 
@@ -32,6 +31,7 @@ start_link() ->
 
 %% ========================================================
 init([]) -> 
+	io:format("main_flow_worker: started, PID: ~n~p",  [self()]),
 	{ok, []}.
 
 
