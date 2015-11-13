@@ -54,7 +54,7 @@ Example of the whole [options, user_habit_data] request body:
   "content_type":[],
   "language":"en"},
  {"timestamp":1447435268,
-  "session_id":"",
+  "session_id":"1t8iv8lt4c54h9ht3gc1ml2997",
   "ip_address":"178.174.190.192",
   "browser":"Firefox",
   "browser_version":"42.0",
