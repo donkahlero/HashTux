@@ -15,10 +15,13 @@
 % instantly makes everything superbeautiful)
 %
 
-% CHANGES: 
-% SPLIT USER AGENT INTO Platform AND Browser AND BrowserVersion
-% Supply a field request_type that says "search" or "update"
 
+% Options (appended at the end of user habit data as well before sent to db)
+% 	language
+%	limit (post count in response) (also stored as user habit right now)
+%	services (twitter, instagram, youtube) (also stored as user habit right now)
+%	content_type ()
+%
 % User habit related:
 % 	timetamp
 %	session_id
@@ -26,23 +29,14 @@
 %	platform
 %	browser
 %	browserversion
-
-% Options - appended at the end to user habit data as well
-% 	language
-%	limit (post count in response) (also stored as user habit right now)
-%	services (twitter, instagram, youtube) (also stored as user habit right now)
-%	content_type ()
-%	(Later: Resolution (high, low, default))
 %
-% Other notes:
+%
+% Notes on cowboy:
 % URL: the full url, including http://
 % {URL, _} =  cowboy_req:url(Req),	
 % QueryString: all the query stuff after the ?
 % {Qs, _} = cowboy_req:qs(Req),
 %
-% 	TODO: Create a function that takes req as an argument
-%	and returns an option tuple to be sent to main flow
-% 	TODO: Handle resolution, with default value handled
 %	TODO: check cURL timeout / load balancing on PHP
 %	TODO: Check spaces in search terms
 %	TODO: rememeber client side option text above pic on/off - unrelated here but putting it down not to forget	
@@ -65,20 +59,30 @@ init(_Type, Req, []) ->
 
 
 handle(Req, State) ->
-	% Path: the path, starting with /
-	{Path, _} = cowboy_req:path(Req),
-			
-	% Extract the path (the search term, in our protocol)
-	[_ | Term] = binary:bin_to_list(Path),
 	
-	% "Debug" output
+	% Extract the request path, starting with /, then remove this first character
+	{Path, _} = cowboy_req:path(Req),
+	[_ | Term] = binary:bin_to_list(Path),
 	io:format("~nNow handling term: ~p~n", [Term]),
 	
+	% Get the request body - will be json [options, user_habit_data]
+	{ok, RequestBody, _Req} = cowboy_req:body(Req),
+	io:format("~nReceived body: ~n~p~n", [RequestBody]),
+
+	% Pattern match the distinct sublists against the decoded JSON.
+	% Force JSX to turn keys in key-value pairs to atoms.
+	[Options, UserHabitData] = jsx:decode(RequestBody, [{Labels, atom}]),
+
 	% Extract options from request
-	Options = http_option_parser:parse_options(Req),
+	%Options = http_option_parser:parse_options(Req),
 	
 	% Store user habit data - includes the options
-	user_habits:store(Term, Req, Options),
+	user_habits:store(Term, Options, UserHabitData),
+
+
+	
+
+	
 	
 	% Send the search term and the options to the main flow by making a call to 
 	% main flow server - get the PID of the worker back and wait for a reply from it
