@@ -71,7 +71,7 @@ handle(Req, State) ->
 
 	% Pattern match the distinct sublists against the decoded JSON.
 	% Force JSX to turn keys in key-value pairs to atoms.
-	[Options, UserHabitData] = jsx:decode(RequestBody, [{Labels, atom}]),
+	[Options, UserHabitData] = jsx:decode(RequestBody, [{labels, atom}]),
 
 	% Extract options from request
 	%Options = http_option_parser:parse_options(Req),
