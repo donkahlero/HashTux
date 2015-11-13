@@ -1,14 +1,15 @@
 -module(ig_search).
 
--export([search/1]).
+-export([search/2]).
 
 -define(URL, "https://api.instagram.com/v1/tags/").
--define(TAIL, "/media/recent?access_token=").
+-define(TAIL, "/media/recent?count=50&access_token=").
 -define(MEDIA, "instagram").
 
 
 
-search(Term) ->
+
+search(Term, Options) ->
 	Token = get_token(),
 	Url = ?URL ++ Term ++ ?TAIL ++ Token,
 	case httpc:request(Url) of
@@ -16,9 +17,11 @@ search(Term) ->
 			{_StatusLine, _Headers, Body} = Result,
 			try jsx:decode(list_to_binary(Body)) of
 				DecodedRes -> 
-					Results = parse(Term, DecodedRes),
+					DataList = get_value(<<"data">>, DecodedRes),
+					Results = parse_results(Term, DataList),
+					L = get_value(content_type, Options),
 					gen_server:call(db_serv, {add_doc, Results}),
-					Results
+					filter_insta(Results, L)
 			catch _ -> []
 			end;
 		{error, Reason} ->
@@ -33,123 +36,223 @@ search(Term) ->
 %%
 get_token() ->
 	{ok, Account} = application:get_env(hashtux, instagram_account),
-	Key = case extract(access_token, Account) of
-				{found, K} -> K;
-				not_found  -> []
+	Key = case get_value(access_token, Account) of
+				[] -> [];
+				V  -> V
 		  end,
 	Key.
 
 
-
-%%
-%% @docParses the general result from a search.
-%%
-parse(_Term, []) 	-> [];
-parse(Term, List) -> 
-	case extract(<<"data">>, List) of
-		{found, DataList} -> 
-			parse_data(Term, DataList);
-		not_found -> []
+%% 
+%% @doc Checks for the options for which to filter Instagram results. The
+%% options can be 'image' and 'video'. Calls filter_insta_res/2 if needed.
+%% 
+filter_insta(Res, []) -> Res;
+filter_insta(Res, L)  ->
+	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
+		{true, true}   -> Res;
+ 		{true, false}  -> filter_insta_res(Res, image);
+		{false, true}  -> filter_insta_res(Res, video)
 	end.
 
 
-
 %%
-%% @docAppends details to single details results.
-%%
-append_details(_Term, []) 	-> [];
-append_details(Term, List) ->
-	Details = [ {<<"search_term">>, list_to_binary(Term)}, 
- 		  	   	{<<"service">>, list_to_binary(?MEDIA)},
-			   	{<<"insert_timestamp">>, dateconv:get_timestamp()} ],
-	lists:append(List, Details).
-
+%% @doc Filters the results returned from Instagram based on the key 
+%% passed. The key is an atom. Returns a list containing the results 
+%% for which the key matches the key atom returned from get_val_atom/1. 
+%% 
+filter_insta_res([], _Key)	 -> [];
+filter_insta_res(List, Key) ->
+	[N || N <- List, get_val_atom(<<"content_type">>, N) == Key]. 
 
 
 %%
-%% @docParses results from search query.
+%% @doc Gets the value from the key-value pair with key content_type
+%% in the results from Instagram. Returns this value name as atom or 
+%% the atom 'no_atom' if not found.
 %%
-parse_data(_Term, []) 	-> [];
-parse_data(Term, [H|T]) ->
-	Details = parse_details(H),
-	NewDetails = append_details(Term, Details),
-	[NewDetails | parse_data(Term, T)].
-
-
-
-%%
-%% @docParses details for one search result.
-%%
-parse_details([]) -> [];
-%% tags 
-parse_details([{<<"tags">>, Value}|T]) ->
-	  [{<<"tags">>, Value} | parse_details(T)];
-%% content type (eg image, video, etc.)
-parse_details([{<<"type">>, Value}|T]) ->
-	  [{<<"content_type">>, Value} | parse_details(T)];
-%% location
-parse_details([{<<"location">>, Value}|T]) when Value /= null ->
-	  [{<<"location">>, Value} | parse_details(T)];
-%% profile link
-parse_details([{<<"link">>, Value}|T]) ->
-	  [{<<"profile_link">>, Value} | parse_details(T)];
-%% likes
-parse_details([{<<"likes">>, [{<<"count">>, Value},
-											 {_,_}]}|T]) ->
-	  [{<<"likes">>, Value} | parse_details(T)];
-%% resource link for images
-parse_details([{<<"images">>, Value}|T]) ->
-	  [ {<<"low_resolution">>, [{<<"url">>, V1},
-								{_, _},
-								{_, _}]}, 
-		{_,_}, 
-		{<<"standard_resolution">>, [{<<"url">>, V2}, 
-									 {_, _}, 
-									 {_, _}]} ] = Value,
-		[{<<"resource_link_high">>, V2},
-		 {<<"resource_link_low">>, V1} | parse_details(T)];
-%% resource link for videos
-parse_details([{<<"videos">>, Value}|T]) ->
-	  [{_,_}, 
-		 {<<"standard_resolution">>, [{<<"url">>, V1},
-									 	{_, _},
-									 	{_, _}]}, 
-		 {<<"low_resolution">>, [{<<"url">>, V2}, 
-								 {_, _}, 
-								 {_, _}]}] = Value,
-		[{<<"resource_link_high">>, V1},
-		 {<<"resource_link_low">>, V2} | parse_details(T)];
-%% date source was created
-parse_details([{<<"created_time">>, Value}|T]) ->
-	  [{<<"timestamp">>, list_to_integer(binary:bin_to_list(Value))} | 
-															parse_details(T)];
-%% text 
-parse_details([{<<"caption">>, [{_,_}, 
-								{<<"text">>, Value},
-								{_,_},
-								{_,_}]}|T]) ->
-	  [{<<"text">>, Value} | parse_details(T)];
-%% service id
-parse_details([{<<"id">>, Value}|T]) ->
-	  [{<<"service_id">>, Value} | parse_details(T)];
-%% user details
-parse_details([{<<"user">>, [{<<"username">>, Username},
-							 {_, _},
-							 {<<"id">>, Id},
-							 {_,_}]}|T]) ->
-	[{<<"username">>, Username}, 
-	 {<<"user_id">>, Id} | parse_details(T)];
-%% if nothing matches -> continue
-parse_details([{_, _}|T]) ->
-	  parse_details(T).
-
+get_val_atom(Key, List) ->
+	X = case lists:keyfind(Key, 1, List) of
+			{_K, V} -> list_to_atom(binary_to_list(V));
+			false	-> no_atom
+		end,
+	X.
 
 
 %%
-%% @docExtracts a value from a list.
-%%
-extract(Key, List) ->
+get_value(_Key, [])  -> [];
+get_value(Key, List) ->
 	case lists:keyfind(Key, 1, List) of
-		{_, TupleList} -> {found, TupleList};
-		false 		   -> not_found
+		{_K, V}	-> V;
+		false 	-> []
 	end.
+
+
+%%
+parse_results(_Term, []) 	-> [];
+parse_results(Term, [X|Xs]) ->
+	[ parse_details(Term, X) | parse_results(Term, Xs) ].
+
+
+%%
+parse_details(_Term, []) -> [];
+parse_details(Term, L)	 -> 
+	[ get_search_term(Term),
+	  get_service(),
+	  get_timestamp(),
+	  get_tags(L), 
+	  get_content_type(L),
+	  get_location(L),
+	  get_profile_link(L), 
+	  get_likes(L), 
+	  get_res_link_high(L),
+	  get_res_link_low(L),
+	  get_created_time(L),
+	  get_text(L),
+	  get_service_id(L),
+	  get_username(L),
+	  get_user_id(L) ].	
+	
+
+%%
+get_search_term(Term) ->
+	{<<"search_term">>, list_to_binary(Term)}.
+
+
+%%
+get_service() ->
+	{<<"service">>, list_to_binary(?MEDIA)}.
+
+
+%%
+get_timestamp() ->
+	{<<"insert_timestamp">>, dateconv:get_timestamp()}.
+
+
+%%
+get_tags([]) -> [];
+get_tags(L)  ->
+	{<<"tags">>, get_value(<<"tags">>, L)}.
+
+
+%%
+get_content_type([]) -> [];
+get_content_type(L)  ->
+	{<<"content_type">>, get_value(<<"type">>, L)}.
+
+
+%%
+get_location([]) -> [];
+get_location(L)	 ->
+	V = case get_value(<<"location">>, L) of
+			null -> [];
+			XY	 -> XY
+		end,
+	{<<"location">>, V}.
+
+
+%%
+get_profile_link([]) -> [];
+get_profile_link(L)	 ->
+	Username = get_value(<<"username">>, get_value(<<"user">>, L)),
+	Url = "https://instagram.com/",
+	Value = list_to_binary(lists:append(Url, binary:bin_to_list(Username))),
+	{<<"profile_link">>, Value}.
+
+
+%%
+get_likes([]) -> [];
+get_likes(L)  ->
+	LikesData = get_value(<<"likes">>, L),
+	{<<"likes">>, get_value(<<"count">>, LikesData)}.
+
+
+%%
+get_res_link_high([]) -> [];
+get_res_link_high(L)  ->
+	case get_value(<<"type">>, L) of
+		<<"image">> -> 
+			get_img_link_high(L);
+		<<"video">> -> 
+			get_vid_link_high(L)
+	end.
+
+
+%%
+get_res_link_low([]) -> [];
+get_res_link_low(L)  ->
+	case get_value(<<"type">>, L) of
+		<<"image">> -> 
+			get_img_link_low(L);
+		<<"video">> -> 
+			get_vid_link_low(L)
+	end.
+
+
+%%
+get_img_link_high([]) -> [];
+get_img_link_high(L)  ->
+	ImageData = get_value(<<"images">>, L),
+	Resources = get_value(<<"standard_resolution">>, ImageData),
+	{<<"resource_link_high">>, get_value(<<"url">>, Resources)}.
+
+
+%%
+get_img_link_low([]) -> [];
+get_img_link_low(L)  ->
+	ImageData = get_value(<<"images">>, L),
+	Resources = get_value(<<"low_resolution">>, ImageData),
+	{<<"resource_link_low">>, get_value(<<"url">>, Resources)}.
+
+
+%%
+get_vid_link_high([]) -> [];
+get_vid_link_high(L)  ->
+	VideoData = get_value(<<"videos">>, L),
+	Resources = get_value(<<"standard_resolution">>, VideoData),
+	{<<"resource_link_high">>, get_value(<<"url">>, Resources)}.
+
+
+%%
+get_vid_link_low([]) -> [];
+get_vid_link_low(L)  ->
+	VideoData = get_value(<<"videos">>, L),
+	Resources = get_value(<<"low_resolution">>, VideoData),
+	{<<"resource_link_low">>, get_value(<<"url">>, Resources)}.
+
+
+%%
+get_created_time([]) -> [];
+get_created_time(L)  ->
+	{<<"timestamp">>, 
+	 list_to_integer(binary:bin_to_list(get_value(<<"created_time">>, L)))}.
+
+
+%% 
+get_text([]) -> [];
+get_text(L)  ->
+	CaptionData = get_value(<<"caption">>, L),
+	{<<"text">>, get_value(<<"text">>, CaptionData)}.
+
+
+%%
+get_service_id([]) -> [];
+get_service_id(L)  ->
+	{<<"service_id">>, get_value(<<"id">>, L)}.
+
+
+%%
+get_username([]) -> [];
+get_username(L)  ->
+	UserInfo = get_value(<<"user">>, L),
+	{<<"username">>, get_value(<<"username">>, UserInfo)}.
+
+
+%%
+get_user_id([]) -> [];
+get_user_id(L)  ->
+	UserInfo = get_value(<<"user">>, L),
+	{<<"user_id">>, get_value(<<"id">>, UserInfo)}.
+	
+ 
+

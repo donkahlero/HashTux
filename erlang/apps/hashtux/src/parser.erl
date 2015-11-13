@@ -1,6 +1,8 @@
 -module(parser).
 
--export([extract/2, extract_youtube_ids/1, parse_youtube_video/2, clean_result/1]).
+-export([extract/2, atom_to_binarystring/1]).
+-export([extract_youtube_ids/1, parse_youtube_video/2, clean_result/1]).									% YOUTUBE Functions
+-export([is_content_type/2]).																				% TWITTER Functions
 
 % ****************************************
 % @doc A parser for decoded JSON Items
@@ -21,6 +23,10 @@ extract_from_node(Field, Node) ->
 		{found, X} -> X; 
 		not_found -> null
     end.
+
+% ****************************************
+% PARSE YOUTUBE decoded JSON
+% ****************************************
 
 % @ doc extract the Id from a list of decoded Youtube feeds returned by a Keyword search 
 extract_youtube_ids(List) ->
@@ -85,4 +91,19 @@ parse_youtube_video(Video, HashTag) ->
     % return clean result
     clean_result(A).
 
+% ****************************************
 
+% @doc Convert an atom to binary_string
+atom_to_binarystring(Atom) ->
+	list_to_binary(atom_to_list(Atom)).
+
+% ****************************************
+% PARSE TWITTER decoded JSON
+% ****************************************
+
+% @doc Tells if a given Tweet feed is of one of the types (content-types: text, image, video) included in the list TypeFilter.
+is_content_type(Status, TypeFilter) -> 
+
+	Extracted_CT = binary_to_list(extract_from_node(<<"content_type">>, Status)),
+
+	lists:member(Extracted_CT, TypeFilter).

@@ -8,43 +8,10 @@
 -define(ACCES_TOKEN, "3947085676-R5GaAeZAz2ns7wEcfZZ9Fw4Npt62kS4irnkgHcT").
 -define(ACCES_TOKEN_SECRET, "W1raFk3kqVEj38QFjDus2qCfk8IU8ilWgfTqAgk3T5Lv6").
 
-
-search_hash_tag(HashTag, [Qty, Lang]) -> 
-    
-    Count = if 
-        (Qty < 0) -> 15;
-        (Qty > 100) -> 100;
-        true -> Qty
-    end,
-
-    Options = case Lang of
-        en -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        it -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        fr -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        es -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        bg -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        de -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        sv -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        am -> [{q, HashTag}, {lang, Lang}, {count, Count}, {response_format, binary}];
-        _ -> [{q, HashTag}, {count, Count}, {response_format, binary}]                    %% Catch all- do not filter for any language
-    end, 
-
-    % Use oauth:sign/6 to generate a list of signed OAuth parameters, 
-    SignedParams = oauth:sign("GET", ?URL, Options, ?CONSUMER, ?ACCES_TOKEN, ?ACCES_TOKEN_SECRET),
-
-    % Send authorized GET request and get result as binary
-    Res = ibrowse:send_req(oauth:uri(?URL,SignedParams), [], get,[], Options),
-
-    {ok, Status, _ResponseHeaders, ResponseBody} = Res,
-
-    print_response_info(Status),
-
-    parse_response_body(HashTag, ResponseBody);
-
 %% DEFAULT SEARCH: match all options
-search_hash_tag(HashTag, _Options) -> 
-  	% Use oauth:sign/6 to generate a list of signed OAuth parameters, 
-	SignedParams = oauth:sign("GET", ?URL, [{q, HashTag}], ?CONSUMER, ?ACCES_TOKEN, ?ACCES_TOKEN_SECRET),
+search_hash_tag(HashTag, [{content_type, []}, {language, []}]) -> 
+    % Use oauth:sign/6 to generate a list of signed OAuth parameters, 
+    SignedParams = oauth:sign("GET", ?URL, [{q, HashTag}, {result_type, recent}], ?CONSUMER, ?ACCES_TOKEN, ?ACCES_TOKEN_SECRET),
 
     % Send authorized GET request and get result as binary
     Res = ibrowse:send_req(oauth:uri(?URL,SignedParams), [], get,[], [{response_format, binary}]),
@@ -53,7 +20,47 @@ search_hash_tag(HashTag, _Options) ->
 
     print_response_info(Status),
 
-    parse_response_body(HashTag, ResponseBody).
+    parse_response_body(HashTag, ResponseBody);
+
+% ADVANCED SEARCH: Filtered by Language and Type [text, image, video].
+search_hash_tag(HashTag, [{content_type, Types}, {language, Lang}]) -> 
+
+    Count = 30,         %% MAX number of results returned by 'GET' request.
+
+    % List of available Languages
+    LangParams = [en, es, fr, de, sv, bg, it, am],
+
+    % Set API request parameters
+    Options = case lists:member(Lang, LangParams) of
+        true -> [{q, HashTag}, {lang, Lang}, {count, Count}, {result_type, recent}];
+        false -> [{q, HashTag}, {result_type, recent}]                  %% 
+    end,
+
+    % Set content_type filter
+    TypeFilter = [atom_to_list(Z) || Z <- Types],    
+
+    % Use oauth:sign/6 to generate a list of signed OAuth parameters, 
+    SignedParams = oauth:sign("GET", ?URL, Options, ?CONSUMER, ?ACCES_TOKEN, ?ACCES_TOKEN_SECRET),
+
+    % Send authorized GET request and get result as binary
+    Res = ibrowse:send_req(oauth:uri(?URL,SignedParams), [], get,[], [{response_format, binary}]),
+
+    {ok, Status, _ResponseHeaders, ResponseBody} = Res,
+
+    print_response_info(Status),
+
+    %% LangResult is a list of Internal JSX objects mined for a specified language
+    LangResult = parse_response_body(HashTag, ResponseBody),
+
+    %% FILTER LangResult by content_type
+    FilteredRes = [H || H <- LangResult, parser:is_content_type(H, TypeFilter)],
+
+    % Debug Filtered Result size
+    ResLength = length(FilteredRes),
+    io:format("TWITTER ADVANCED SEARCH RETURNED ~p TWEETS~n", [ResLength]),
+
+    % Return Filtered Result
+    FilteredRes.
 
 % Print request status information
 print_response_info(Status) ->
@@ -71,7 +78,7 @@ parse_response_body(HashTag, ResponseBody) ->
             % io:format("Search Metadata is ~p~n", [SearchMetadata]),
             
             case extract(<<"count">>, SearchMetadata) of
-                {found, SearchCount} -> io:format("Search Count is ~p~n", [SearchCount]);
+                {found, SearchCount} -> io:format("TWITTER SIMPLE SEARCH RETURNED ~p TWEETS~n", [SearchCount]);
                 not_found -> io:format("Search Count NOT FOUND\n")
             end;
 
@@ -81,7 +88,7 @@ parse_response_body(HashTag, ResponseBody) ->
     case extract(<<"statuses">>, DecodedBody) of
         {found, StatusList} -> 
             parse_status_list(HashTag, StatusList, []);                                
-        not_found -> []
+        not_found -> []                                         %% return empty list if result was empty
     end.
 
     
@@ -252,7 +259,6 @@ parse_status_details(HashTag, Status) ->
             User_Profile_Link = null,
             UserID = null
     end,
-
 
     A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"service">>, <<"twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"timestamp">>, Date}, {<<"insert_timestamp">>, Timestamp}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Media_URL}, {<<"resource_link_low">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"free_text_name">>, UserName}, {<<"username">>, ScreenName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
     clean_result(A).
