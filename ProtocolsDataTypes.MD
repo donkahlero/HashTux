@@ -1,6 +1,7 @@
 #Protocols & DataType specification
-##Standart Document
-The standart document needs to be wrapped by a list. This is to ensure that we can pass several objects around our application:
+##Social Media Post Datatype / Document
+This is the format in which we store the social media posts in the database or return them to the client.
+We usually pass several posts around at a time. Hence generally the posts need to be wrapped in a list:
 ```erlang
 [[Document1], [Document2], [Document3], [DocumentN]].
 ```
@@ -23,3 +24,34 @@ The format of the document is the following (written in PSX JSON):
 {<<"like_count">>, like_count_as_integer},
 {<<"tags">>, [The Tags]}]
 ```
+
+##Format of requests to the Erlang backend
+A php file called request.php can be used to generate a properly structured request by first using the build_request_data() function and then making the actual request via the request() function.
+
+Nevertheless, here is the format of the request:
+ - Use HTTP POST requests.
+ - Supply the search term as the path in the request, for example http://localhost:8080/my_search_term
+ - In the request body, provide a JSON list of [options, user_habit_data]. Note that in Erlang the keys in each key-value tuple is converted to an atom, but while in JSON they are still strings.
+
+Options:
+ - request_type: "search" for initial search (more results) or "update" for subsequent (ajax) requests.
+ - service: a list, any combination of "twitter", "instagram", "youtube" or just [] for all.
+ - content_type: a list, any combination of "image", "text", "video" or just [] for all.
+ - language: two lowercase character representation
+
+Example for options: 
+```json
+[{"request_type","search"},
+  {"services",[]},
+  {"content_type",[]},
+  {"language","en"}]
+```
+ 
+User Habit Data:
+ - timetamp: Unix epoch time, number
+ - session_id: PHP session string
+ - ip_address: String
+ - platform: Platform, free text
+ - browser: Web browser, free text
+ - browserversion: Web browser version, free text
+
