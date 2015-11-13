@@ -62,7 +62,7 @@ handle(Req, State) ->
 	% Extract the request path (a string starting with /, we then remove this character)
 	{Path, _} = cowboy_req:path(Req),
 	[_ | Term] = binary:bin_to_list(Path),
-	io:format("~nhttp_handler: handling term ~p~n", [Term]),
+	io:format("~nhttp_handler: Handling term ~p~n", [Term]),
 	
 	% Get the request body - will be json [options, user_habit_data]
 	{ok, RequestBody, _Req} = cowboy_req:body(Req),
@@ -77,15 +77,15 @@ handle(Req, State) ->
 	% Send the search term and the options to the main flow by making a call to 
 	% main flow server - get the PID of the worker back and wait for a reply from it
 	{ok, HandlerPid} = gen_server:call(main_flow_server, {search, Term, Options}),
-	io:format("~nhttp_handler: worker PID: ~p~n", [HandlerPid]),
+	io:format("~nhttp_handler: Worker PID: ~p~n", [HandlerPid]),
 	
 	receive 
 		{HandlerPid, Reply} -> 
-			io:format("~nhttp_handler: receved a reply from worker ~p handling term ~p"
+			io:format("~nhttp_handler: Receved a reply from worker ~p handling term ~p"
 					 ++ " sending reply to client...~n", [HandlerPid, Term]),
 			ok
 		after 20000 ->
-			io:format("~nhttp_handler: timeout from worker~p handling term ~p~n", [HandlerPid, Term]),
+			io:format("~nhttp_handler: Timeout from worker~p handling term ~p~n", [HandlerPid, Term]),
 			Reply = []
 		end,	
 	

@@ -31,7 +31,7 @@ start_link() ->
 
 %% ========================================================
 init([]) -> 
-	io:format("main_flow_worker: started, PID: ~n~p",  [self()]),
+	io:format("main_flow_worker: started, PID: ~p~n",  [self()]),
 	{ok, []}.
 
 
@@ -51,12 +51,12 @@ code_change(_PrevVersion, _State, _Extra) ->
 %% ========================================================
 
 handle_info(Msg, State) -> 
-	io:format("main_flow_worker: received info too late: ~p~n", [Msg]),
+	io:format("main_flow_worker: Received info too late: ~p~n", [Msg]),
 	{noreply, State}.
 
 
 handle_cast({search, SourcePID, Term, Options}, State) -> 
-	io:format("main_flow_worker: ~nTerm: ~p~nOptions:~p~n", [Term, Options]),
+	io:format("main_flow_worker: Term: ~p~nmain_flow_worker: Options:~p~n", [Term, Options]),
 	
 	% Structure:
 	% If search, treshold value is ~30 or so
@@ -88,10 +88,10 @@ handle_cast({search, SourcePID, Term, Options}, State) ->
 	% first place, presumably some process running the http_handler...
 	receive 
 		{MinerPid, Y} ->
-			io:format("main_flow_worker: received reply from miner server~n", []),
+			io:format("main_flow_worker: Received reply from miner server~n", []),
 			SourcePID ! {self(), Y}
 		after 15000 ->
-			io:format("main_flow_worker: miner timeout!~n", []),
+			io:format("main_flow_worker: Miner timeout!~n", []),
 			SourcePID ! {self(), []}
 	end,
 
