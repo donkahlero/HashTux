@@ -47,13 +47,11 @@ pre_search_opt(L) ->
 pre_search_opt([], L) ->
 	L;
 pre_search_opt([{time}| T], L) ->
-	R = L ++ "startkey=[0" ++ ",\"a\"]&endkey=[99999999999999999999999999" ++ ",\"z\"]&group=true",
+	R = L ++ "startkey=[0" ++ ",\"a\"]&endkey=[99999999999999999999999999" ++ ",\"z\"]",
 	pre_search_opt(T, R);
 pre_search_opt([{time, Start, End}| T], L) ->
-	R = L ++ "startkey=[" ++ integer_to_list(Start) ++ ",\"a\"]&endkey=[" ++ integer_to_list(End) ++ ",\"z\"]&group=true",
+	R = L ++ "startkey=[" ++ integer_to_list(Start) ++ ",\"a\"]&endkey=[" ++ integer_to_list(End) ++ ",\"z\"]",
 	pre_search_opt(T, R);
-pre_search_opt([{limit, Limit}| T], L) ->
-	R = L ++ "&limit=" ++ integer_to_list(Limit),
-	pre_search_opt(T, R).
-
+pre_search_opt([_| T], L) ->
+	pre_search_opt(T, L).
 
