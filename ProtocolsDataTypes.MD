@@ -33,13 +33,13 @@ Nevertheless, here is the format of the request:
  - Supply the search term as the path in the request, for example http://localhost:8080/my_search_term
  - In the request body, provide a JSON list of [options, user_habit_data]. Note that in Erlang the keys in each key-value tuple is converted to an atom, but while in JSON they are still strings.
 
-Options:
+Options - a JSON object with the following key-value pairs:
  - request_type: "search" for initial search (more results) or "update" for subsequent (ajax) requests.
  - service: a list, any combination of "twitter", "instagram", "youtube" or just [] for all.
  - content_type: a list, any combination of "image", "text", "video" or just [] for all.
  - language: two lowercase characters representation
 
-User Habit Data:
+User Habit Data - a JSON object with the following key-value pairs:
  - timetamp: Unix epoch time, number
  - session_id: PHP session string
  - ip_address: String
