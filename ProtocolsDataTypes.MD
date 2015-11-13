@@ -61,7 +61,7 @@ Example of the whole [options, user_habit_data] request body:
   "platform":"Windows"}] 
 ```
 
-When decoded to erlang by JSX, the option part looks like this
+When decoded to erlang by JSX, the option part looks like this:
 ```erlang
 [{"request_type", <<"search">>},
   {"services", []},
