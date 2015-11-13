@@ -50,15 +50,15 @@ User Habit Data:
 Example of the whole [options, user_habit_data] request body: 
 ```json
 [{"request_type":"search",
-"services":[],
-"content_type":[],
-"language":"en"},
-{"timestamp":1447435268,
-"session_id":"",
-"ip_address":"178.174.190.192",
-"browser":"Firefox",
-"browser_version":"42.0"
-,"platform":"Windows"}] 
+  "services":[],
+  "content_type":[],
+  "language":"en"},
+ {"timestamp":1447435268,
+  "session_id":"",
+  "ip_address":"178.174.190.192",
+  "browser":"Firefox",
+  "browser_version":"42.0",
+  "platform":"Windows"}] 
 ```
 
 When decoded to erlang by JSX, the option part looks like this
