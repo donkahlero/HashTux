@@ -23,7 +23,7 @@
 %% ===================================================================
 
 start_link() ->
-	io:format("Started the main flow supervisor v2~n"),
+	io:format("main_flow_sup: Started the main flow supervisor.~n"),
   supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 

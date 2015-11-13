@@ -28,7 +28,7 @@ start_link() ->
 
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
-	io:format("Started the top level supervisor.~n~n"),
+	io:format("hashtux_sup: Started the top level supervisor! Welcome to hashtux.~n~n"),
 	%%
 	%% The cowboy HTTP handler is already set up.
 	%%
