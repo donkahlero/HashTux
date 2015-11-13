@@ -106,9 +106,7 @@ get_results(Term, Services, ContType, Lang) ->
 %% @doc Calls the appropriate search services to perform a search.
 %%
 search_services({instagram, {Term, ContType, _Lang}}) ->
-	R = ig_search:search(Term),
-	{_, L} = ContType,
-	filter_insta(R, L);
+	ig_search:search(Term, [ContType]);
 search_services({twitter, {Term, ContType, Lang}}) ->
 	twitter_search:search_hash_tag(Term, [ContType, Lang]);
 search_services({youtube, {Term, ContType, Lang}}) ->
@@ -123,43 +121,8 @@ search_services({youtube, {Term, ContType, Lang}}) ->
 get_services([]) ->
 	[instagram, twitter, youtube];
 get_services(L)  -> 
-	L.
+	[list_to_atom(binary_to_list(X)) || X <- L].
 
-
-%% 
-%% @doc Checks for the options for which to filter Instagram results. The
-%% options can be 'image' and 'video'. Calls filter_insta_res/2 if needed.
-%% 
-filter_insta(Res, []) -> Res;
-filter_insta(Res, L)  ->
-	case {lists:member(image, L), lists:member(video, L)} of
-		{true, true}   -> Res;
- 		{true, false}  -> filter_insta_res(Res, image);
-		{false, true}  -> filter_insta_res(Res, video)
-	end.
-
-
-%%
-%% @doc Filters the results returned from Instagram based on the key 
-%% passed. The key is an atom. Returns a list containing the results 
-%% for which the key matches the key atom returned from get_key_atom/1. 
-%% 
-filter_insta_res([], _Key)	 -> [];
-filter_insta_res(List, Key) ->
-	[N || N <- List, get_key_atom(N) == Key]. 
-
-
-%%
-%% @doc Gets the value from the key-value pair with key content_type
-%% in the results from Instagram. Returns this value name as atom or 
-%% the atom 'no_atom' if not found.
-%%
-get_key_atom(List) ->
-	X = case lists:keyfind(<<"content_type">>, 1, List) of
-			{_K, V} -> list_to_atom(binary_to_list(V));
-			false	-> no_atom
-		end,
-	X.
 
 
 
