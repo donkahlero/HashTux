@@ -81,7 +81,8 @@ handle(Req, State) ->
 	
 	receive 
 		{HandlerPid, Reply} -> 
-			io:format("~nhttp_handler: receved a reply from worker ~p handling term ~p~n", [HandlerPid, Term]),
+			io:format("~nhttp_handler: receved a reply from worker ~p handling term ~p"
+					 ++ " sending reply to client...~n", [HandlerPid, Term]),
 			ok
 		after 20000 ->
 			io:format("~nhttp_handler: timeout from worker~p handling term ~p~n", [HandlerPid, Term]),
