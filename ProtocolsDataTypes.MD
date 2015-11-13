@@ -37,7 +37,7 @@ Options:
  - request_type: "search" for initial search (more results) or "update" for subsequent (ajax) requests.
  - service: a list, any combination of "twitter", "instagram", "youtube" or just [] for all.
  - content_type: a list, any combination of "image", "text", "video" or just [] for all.
- - language: two lowercase character representation
+ - language: two lowercase characters representation
 
 Example for options: 
 ```json
