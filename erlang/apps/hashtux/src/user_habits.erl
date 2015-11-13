@@ -11,9 +11,12 @@
 %% ====================================================================
 -export([store/3]).
 
-store(Term, Req, Options) ->
+store(Term, Options, UserHabitData) ->
 	% Extract habit data and concatenate options at the end
-	FullHabitData = extract(Term, Req, Options),
+	%FullHabitData = extract(Term, Req, Options),
+
+	% Concatenate the two lists UserHabitData and Options
+	FullHabitData = lists:append(UserHabitData, Options),
 
 	% Send it to the DB server
 	Ref = gen_server:call(db_serv, {add_habit_doc, FullHabitData}),

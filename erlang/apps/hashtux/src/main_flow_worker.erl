@@ -58,10 +58,17 @@ handle_info(Msg, State) ->
 handle_cast({search, SourcePID, Term, Options}, State) -> 
 	io:format("Term: ~p~nOptions:~p~n", [Term, Options]),
 	
-	% Update the database with search term / session data for this request
-	% ...
-	% ...
-	% ...
+	% Structure:
+	% If search, treshold value is ~30 or so
+	% If update, treshold value is ~5 or so	
+	% Ask DB for matching posts from the last minute or so is cached, provided these options -
+	%	the DB should only return this if the post count is threshold or more! 
+	% If we get something, simply return this
+	% If not (empty list), mine as usual and send back the reply from mining. 
+	% This last point will later be expanded into:
+	%	Get what was last cached on this term
+	%	Provide this to the miners so they themselves can adjust the mining accordingly
+	%	Send back the results after mining.
 	
 	% Make a database call for the term
 	%Ref = gen_server:call(db_serv, {get_cont, Term}),
@@ -74,12 +81,11 @@ handle_cast({search, SourcePID, Term, Options}, State) ->
 	%		{reply, "DB timeout!", State}
 	%end.
 	
-	%
-	% Decide on some way to forward the cache to the request / miner code
-	%
-	
 	% Make a miner call for the term
 	{ok, MinerPid} = miner_server:search(Term, Options),
+
+	% Wait for the reply and then send this to whoever made the request in the
+	% first place, presumably some process running the http_handler...
 	receive 
 		{MinerPid, Y} ->
 			io:format("Miner reply~n", []),
@@ -88,12 +94,10 @@ handle_cast({search, SourcePID, Term, Options}, State) ->
 			io:format("Miner timeout!~n", []),
 			SourcePID ! {self(), []}
 	end,
-	%SourcePID ! {self(), []},
 
-	{noreply, State}.
+	% Stop this worker 
+	{stop, normal, State}.
 	
-	%io:format("MSG: ~p~n", [X]),
-	%{reply, ok, State}.
 
 
 

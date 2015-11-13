@@ -107,6 +107,7 @@ function build_request_data($request_type = "search", $services = [],
  * one ass. array for each, i just use a two-dimensional one where the first isn't
  * associative (just uses numbers), hence we end up with "a list of tuples"
  * if we convert this outer array to json.)
+ * http://php.net/manual/en/function.json-encode.php
  */
 function distinguish_tuples($array) {
 	$tuples = [];
