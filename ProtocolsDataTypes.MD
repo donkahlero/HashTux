@@ -41,10 +41,10 @@ Options:
 
 Example for options: 
 ```json
-[{"request_type","search"},
-  {"services",[]},
-  {"content_type",[]},
-  {"language","en"}]
+[{"request_type": "search"},
+  {"services": []},
+  {"content_type": []},
+  {"language": "en"}]
 ```
  
 User Habit Data:
