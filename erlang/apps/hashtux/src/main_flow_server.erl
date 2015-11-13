@@ -101,7 +101,7 @@ handle_call({search, Term, Options}, From,
 						S=#state{limit=N, refs=R}) when N > 0 ->
 	
 	% Start a new worker to handle the request.
-	io:format("main_flow_server: Starting worker", []),
+	io:format("main_flow_server: Starting worker~n", []),
 	{ok, Pid} = start_worker(),
 	Ref = erlang:monitor(process, Pid),
 	
