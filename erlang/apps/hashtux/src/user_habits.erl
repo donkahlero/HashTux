@@ -12,9 +12,6 @@
 -export([store/3]).
 
 store(Term, Options, UserHabitData) ->
-	% Extract habit data and concatenate options at the end
-	%FullHabitData = extract(Term, Req, Options),
-
 	% Concatenate the two lists UserHabitData and Options
 	FullHabitData = lists:append(UserHabitData, Options),
 
@@ -33,34 +30,8 @@ store(Term, Options, UserHabitData) ->
 			ok
 	end.
 
-extract(Term, Req, Options) ->	
-	% Extract the relevant variables (as binaries) from the request
-	{TimeStamp, _} = cowboy_req:qs_val(<<"timestamp">>, Req, <<"unknown">>),
-	{SessionID, _} = cowboy_req:qs_val(<<"session_id">>, Req, <<"unknown">>),
-	{IPAddress, _} = cowboy_req:qs_val(<<"ip_address">>, Req, <<"unknown">>),
-	{Browser, _} = cowboy_req:qs_val(<<"browser">>, Req, <<"unknown">>),
-	{BrowserVersion, _} = cowboy_req:qs_val(<<"browser_version">>, Req, <<"unknown">>),
-	{Platform, _} = cowboy_req:qs_val(<<"platform">>, Req, <<"unknown">>),
-	
-	% Convert binary representation of TimeStamp to int
-	TimeStampString = binary:bin_to_list(TimeStamp),
-	TimeStampInt = list_to_integer(TimeStampString),
-	
-	% Put it together as a list of key-value pairs suitable for DB storage. 
-	HabitData = [{<<"search_term">>, list_to_binary(Term)},
-	 	{<<"timestamp">>, TimeStampInt},
-	 	{<<"session_id">>, SessionID},
-		{<<"ip_address">>, IPAddress},
-		{<<"browser">>, Browser},
-		{<<"browser_version">>, BrowserVersion},
-		{<<"platform">>, Platform}],
-	
-	% Add the options at the end of the above list
-	HabitData ++ Options.
 
 
 %% ====================================================================
 %% Internal functions
 %% ====================================================================
-
-
