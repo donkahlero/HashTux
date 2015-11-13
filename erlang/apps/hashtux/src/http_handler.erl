@@ -58,54 +58,42 @@ init(_Type, Req, []) ->
 
 
 
-handle(Req, State) ->
-	
-	% Extract the request path, starting with /, then remove this first character
+handle(Req, State) ->	
+	% Extract the request path (a string starting with /, we then remove this character)
 	{Path, _} = cowboy_req:path(Req),
 	[_ | Term] = binary:bin_to_list(Path),
-	io:format("~nNow handling term: ~p~n", [Term]),
+	io:format("~nhttp_handler: handling term ~p~n", [Term]),
 	
 	% Get the request body - will be json [options, user_habit_data]
 	{ok, RequestBody, _Req} = cowboy_req:body(Req),
-	io:format("~nReceived body: ~n~p~n", [RequestBody]),
 
 	% Pattern match the distinct sublists against the decoded JSON.
 	% Force JSX to turn keys in key-value pairs to atoms.
 	[Options, UserHabitData] = jsx:decode(RequestBody, [{labels, atom}]),
 
-	% Extract options from request
-	%Options = http_option_parser:parse_options(Req),
-	
 	% Store user habit data - includes the options
 	user_habits:store(Term, Options, UserHabitData),
 
-
-	
-
-	
-	
 	% Send the search term and the options to the main flow by making a call to 
 	% main flow server - get the PID of the worker back and wait for a reply from it
 	{ok, HandlerPid} = gen_server:call(main_flow_server, {search, Term, Options}),
-	io:format("~nWorker PID: ~p~n", [HandlerPid]),
+	io:format("~nhttp_handler: worker PID: ~p~n", [HandlerPid]),
 	
 	receive 
 		{HandlerPid, Reply} -> 
-			io:format("~nReceved a reply from worker ~p~n", [HandlerPid]),
+			io:format("~nhttp_handler: receved a reply from worker ~p handling term ~p~n", [HandlerPid, Term]),
 			ok
 		after 20000 ->
-			io:format("~nTimeout from worker~p~n", [HandlerPid]),
+			io:format("~nhttp_handler: timeout from worker~p handling term ~p~n", [HandlerPid, Term]),
 			Reply = []
-		end,
-	
-	io:format("Main flow returned from handling ~p~n", [Term]),
+		end,	
 	
 	% Send the reply from the main flow call, which should be
 	% a list of social media posts. We encode it with jsx and send it out.
-	{ok, Req2} = cowboy_req:reply(200, [
-        {<<"content-type">>, <<"application/json">>}							
-    ], jsx:encode(Reply), Req),
+	{ok, Req2} = cowboy_req:reply(200, [{<<"content-type">>, <<"application/json">>}],
+								  jsx:encode(Reply), Req), 
 	{ok, Req2, State}.
+
 
 terminate(_Reason, _Req, _State) ->
     ok.
