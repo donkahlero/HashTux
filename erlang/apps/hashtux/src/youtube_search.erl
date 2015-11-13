@@ -5,10 +5,12 @@
 %% To be included in CONFIG FILE!
 -define(SERVER_KEY, "AIzaSyAT27JOYa8DAQKFK_2vPfxWagLxMXqbXFY").
 
+%% **** [ContType, Lang]
+
 % @doc Send GET request to Youtube Data API filtering results by the given Keyword
 % @params 
 %	HashTag: keyword
-search(HashTag, _Options) ->
+search(HashTag, [{content_type, _}, {language, _}]) ->
 
 	Endpoint = "https://www.googleapis.com/youtube/v3/search?",             %% endpoint for ITEM-LIST
 
@@ -20,7 +22,7 @@ search(HashTag, _Options) ->
 
 	FormattedTime = dateconv:datetime_to_rfc_339(UniTime),					% we need to get back 1 week!!!
 
-	After = "publishedAfter=" ++ FormattedTime,								% Filter only results from one week
+	After = "publishedAfter=" ++ FormattedTime ++ "&order=date",			% Filter only results from last week and order by date
 
 	Type = "type=video&videoCaption=closedCaption",							%% filter only VIDEO 'resource type' that contain capion
 
@@ -40,6 +42,8 @@ search(HashTag, _Options) ->
     				VideoList = [video_search(X) || X <- CleanIds],									% GET a list of decoded Video 'resources' 
     				Results = [parser:parse_youtube_video(Y, HashTag) || Y <- VideoList],			% ***return a list of parsed video items (*** SEND to DB!!!)
     				gen_server:call(db_serv, {add_doc, Results}),									% send result to database
+    				ResLength = length(Results),
+    				io:format("YOUTUBE SEARCH RETURNED ~p RESULTS~n", [ResLength]),
     				Results;																		% return Youtube results
     			not_found -> 
     				io:format("ITEMS List NOT FOUND\n"),

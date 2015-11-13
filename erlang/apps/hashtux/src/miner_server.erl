@@ -12,7 +12,7 @@
 %% the limit is set to 100 -> after that probably request
 %% help from the other servers running
 %% the ref can be used to monitor any processes started
--record(state, {limit=100,
+-record(state, {limit=1000,
 				 refs,
 				 queue=queue:new()}).
 %%% ============================================================
@@ -93,6 +93,10 @@ handle_call({search, Term, Options}, From,
 	gen_server:cast(Pid, {From, Term, Options}),
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
 	{reply, {ok, Pid}, NewS};
+% when too many workers running
+handle_call({search, Term, Options}, _From, 
+						S=#state{limit=N}) when N =< 0 ->
+	{reply, {no_alloc, {Term, Options}}, S};
 % all other calls
 handle_call(Request, _From, State) ->
 	{reply, {undef_call, Request}, State}.
@@ -103,3 +107,7 @@ start_worker() ->
 	ChildSpec = {erlang:unique_integer(), {miner_worker, start_link, []},
 							temporary, 5000, worker, [miner_worker]},
 	supervisor:start_child(miner_worker_sup, ChildSpec).
+
+
+
+
