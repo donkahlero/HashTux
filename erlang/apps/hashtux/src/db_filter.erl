@@ -35,12 +35,10 @@ content_type([X|Xs], CTypes, Res) ->
 %% @doc Helperfunction checking for the list of types.
 is_ctype([], _CurrentType) ->
     false;
-is_ctype([X|Xs], CurrentType) ->
-    CType = binary:list_to_bin(atom_to_list(X)),
-    case(CurrentType) of
-	CType -> true;
-	_ -> is_ctype(Xs, CurrentType)
-    end.
+is_ctype([CurrentType|_Xs], CurrentType) ->
+    true;
+is_ctype([_X|Xs], CurrentType) ->
+    is_ctype(Xs, CurrentType).
 
 %% @doc Function filtering for the language of the content.
 %% Just one language is possible here.
@@ -79,12 +77,10 @@ service([X|Xs], Services, Res) ->
 %% @doc Helperfunction for the service filter.
 is_service([], _CurrentService) ->
     false;
-is_service([X|Xs], CurrentService) ->
-    Service = binary:list_to_bin(atom_to_list(X)),
-    case(CurrentService) of
-        Service -> true;
-        _ -> is_service(Xs, CurrentService)
-    end.
+is_service([CurrentService|_Xs], CurrentService) ->
+    true;
+is_service([_X|Xs], CurrentService) ->
+    is_service(Xs, CurrentService).
 
 %% @doc Function ordering mapreduce results by their value
 order_by_value(L) ->
