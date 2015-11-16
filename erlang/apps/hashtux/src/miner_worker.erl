@@ -63,6 +63,14 @@ handle_call(_Request, _From, S) ->
 %%% PRIVATE FUNCTIONS
 %%% ============================================================================
 
+
+%%
+%send_results(Pid, Results, Term, Options) ->
+%	case get_value(request_type, Options) of
+%		<<"search">> ->
+			
+
+
 %% 
 % no options
 run_search(Term, []) -> 
@@ -79,7 +87,8 @@ run_search(Term, Options) ->
 			   end,
 	ContType = case lists:keyfind(content_type, 1, Options) of
 					{K2, V2} -> {K2, V2};
-					false  -> {content_type, []}
+					false  -> {content_type, 
+								[<<"image">>, <<"video">>, <<"text">>]}
 			   end,
 	Lang = case lists:keyfind(language, 1, Options) of
 				{K3, V3} -> {K3, V3};
@@ -124,6 +133,13 @@ get_services(L)  ->
 	[list_to_atom(binary_to_list(X)) || X <- L].
 
 
+%%
+get_value(_Key, [])  -> [];
+get_value(Key, List) ->
+	case lists:keyfind(Key, 1, List) of
+		{_K, V}	-> V;
+		false 	-> []
+	end.
 
 
 
