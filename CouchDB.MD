@@ -50,6 +50,17 @@ receive {Ref, Result} -> Result end.
 * The language is a binary string
 
 ```erlang
+{timeframe, StartTime, EndTime}
+```
+* The timeframe in between the post has to be
+* StartTime and EndTime are integers
+
+```erlang
+{minimum_posts, Amount}
+```
+* The minimum amount of posts the database should return or nothing
+
+```erlang
 {limit, Int}
 ```
 * Gives you back as many result as you specified in the Int
