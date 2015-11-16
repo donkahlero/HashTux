@@ -13,13 +13,32 @@
 -module(db_filter).
 
 -export([content_type/2, language/2, service/2, order_by_value/1, limit_result/2]).
--export([group_by_subkey/1, check_results/2]).
+-export([group_by_subkey/1, check_results/2, in_timestamp/3]).
 
-%% @doc 
-check_results([[{<<"results">>, <<"no">>}, {<<"timestamp">>, _}, {<<"options">>, Opts}]|[]], Opts) ->
-    true;
+%% @doc Function checking if the miners cannot find something or there is just 
+%% nothing cached yet.
+check_results([[{<<"results">>, <<"no">>}, {<<"search_term">>, _}, {<<"timestamp">>, _}, {<<"options">>, Opt}] | _], Opts) ->
+    case(lists:usort(foreach_opt(Opts, Opt, []))) of
+	[true] ->
+	    no_miner_res;
+	_ -> []
+    end;
 check_results(_, _) ->
-    false.
+    [].
+
+%% @doc Function going through all options.
+foreach_opt([], _, Res) ->
+    Res;
+foreach_opt([X|Xs], Opt, Res) ->
+    foreach_opt(Xs, Opt, [in_options(Opt, X) | Res]).
+
+%% @doc Function checking if current option is part of general options.
+in_options([], _) ->
+    false;
+in_options([{_, Val}|_], {_, Val}) ->
+    true;
+in_options([_|Xs], Opt) ->
+    in_options(Xs, Opt).
 
 %% @doc Function filtering for the type of content.
 %% This can be image, video or text.
@@ -30,12 +49,16 @@ content_type(L, CTypes) ->
 content_type([], _CTypes, Res) ->
     Res;
 content_type([X|Xs], CTypes, Res) ->
-    {_, CurrentType} = lists:keyfind(<<"content_type">>, 1, X),
-    case (is_ctype(CTypes, CurrentType)) of
+    case (lists:keyfind(<<"content_type">>, 1, X)) of
+	{<<"content_type">>, CType} ->
+	    case (is_ctype(CTypes, CType)) of
+		false ->
+		    content_type(Xs, CTypes, Res);
+		true ->
+		    content_type(Xs, CTypes, [X|Res])
+	    end;
 	false ->
-	    content_type(Xs, CTypes, Res);
-	true ->
-	    content_type(Xs, CTypes, [X|Res])
+	    content_type(Xs, CTypes, Res)
     end.
 
 %% @doc Helperfunction checking for the list of types.
@@ -72,12 +95,16 @@ service(L, Services) ->
 service([], _Services, Res) ->
     Res;
 service([X|Xs], Services, Res) ->
-    {_, CurrentService} = lists:keyfind(<<"service">>, 1, X),
-    case (is_service(Services, CurrentService)) of
-        false ->
-	    service(Xs, Services, Res);
-	true ->
-	    service(Xs, Services, [X|Res])
+    case (lists:keyfind(<<"service">>, 1, X)) of
+	{<<"service">>, Service} ->
+	    case(is_service(Services, Service)) of
+		true ->
+		    service(Xs, Services, [X|Res]);
+		false ->
+		    service(Xs, Services, X)
+	    end;
+	false ->
+	    service(Xs, Services, Res)
     end.
 
 %% @doc Helperfunction for the service filter.
@@ -87,6 +114,28 @@ is_service([CurrentService|_Xs], CurrentService) ->
     true;
 is_service([_X|Xs], CurrentService) ->
     is_service(Xs, CurrentService).
+
+%% @doc
+in_timestamp(L, StartTime, EndTime) ->
+    in_timestamp(L, StartTime, EndTime, []).
+
+in_timestamp([], _, _, Res) ->
+    Res;
+in_timestamp([X|Xs], StartTime, EndTime, Res) ->
+    {<<"timestamp">>, TimeStamp} = lists:keyfind(<<"timestamp">>, 1, X),
+    case(timeeval(TimeStamp, StartTime, EndTime)) of
+	true ->
+	    in_timestamp(Xs, StartTime, EndTime, [X | Res]);
+	false ->
+	    in_timestamp(Xs, StartTime, EndTime, Res)
+    end.
+
+timeeval(TimeStamp, StartTime, _) when TimeStamp >= StartTime ->
+    true;
+timeeval(TimeStamp, _, EndTime) when TimeStamp =< EndTime ->
+    true;
+timeeval(_, _, _) ->
+    false.
 
 %% @doc Function ordering mapreduce results by their value
 order_by_value(L) ->
