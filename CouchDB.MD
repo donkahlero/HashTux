@@ -35,19 +35,19 @@ receive {Ref, Result} -> Result end.
 
 #### Search options
 ```erlang
-{content_type, [image, text, video]}
+{content_type, [<<"image">>, <<"text">>, <<"video">>]}
 ```
-* The content_type needs to be send as a list with atoms
+* The content_type needs to be send as a list with binary strings
 
 ```erlang
-{service, [twitter, instagram, youtube]}
+{service, [<<"twitter">>, <<"instagram">>, <<"youtube">>]}
 ```
-* The services takes the different services we have in a list with atoms
+* The services takes the different services we have in a list with binary strings
 
 ```erlang
-{language, "en"}
+{language, <<"en">>}
 ```
-* The language is a string
+* The language is a binary string
 
 ```erlang
 {limit, Int}
