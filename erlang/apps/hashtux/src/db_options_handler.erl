@@ -44,7 +44,8 @@ search_opt([{request_type, _} | T], L) ->
     search_opt(T, L);
 search_opt([{limit, Num}| _], L) ->
     R = db_filter:limit_result(Num, L),
-    R.
+    R;
+search_opt(_, L).
 
 %% @doc This returns an url string for the quering of the db.
 pre_search_opt(L) -> 
