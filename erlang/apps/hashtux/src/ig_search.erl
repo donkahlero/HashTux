@@ -58,6 +58,7 @@ filter_insta(Res, []) -> Res;
 filter_insta(Res, L)  ->
 	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
 		{true, true}   -> Res;
+		{false, false} -> Res;
  		{true, false}  -> filter_insta_res(Res, <<"image">>);
 		{false, true}  -> filter_insta_res(Res, <<"video">>)
 	end.
