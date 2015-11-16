@@ -46,7 +46,8 @@ handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 	% get results
 	Results = run_search(Term, Options),
 	% send to original caller								
-	Pid ! {self(), Results},	
+	%Pid ! {self(), Results},	
+	send_results(Pid, Results, Term, Options),
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	% stop this worker
 	{stop, normal, State};
@@ -65,16 +66,27 @@ handle_call(_Request, _From, S) ->
 
 
 %%
-%send_results(Pid, [], Term, Options) ->
-%	case get_value(request_type, Options) of
-%		<<"search">> -> 
-%			gen_server:call(db_serv, {add_doc, get_no_results(Options)}),
-%			Pid ! 
-%		<<"update">> ->
-%			gen_server:call(db_serv, {add_doc, Results})
+send_results(Pid, [], Term, Options) ->
+	case get_value(request_type, Options) of
+		<<"search">> -> 
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
+			Pid ! {self(), []};
+		<<"update">> ->
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
+			Pid ! {self(), []};
+		<<"heartbeat">> ->
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
+	end;
+send_results(Pid, Results, _Term, Options) ->
+	case get_value(request_type, Options) of
+		<<"search">> -> 
+			Pid ! {self(), Results};
+		<<"update">> ->
+			Pid ! {self(), Results};
+		<<"heartbeat">> ->
+			ok
+	end.
 			
-			
-
 
 %% 
 % no options
@@ -138,8 +150,9 @@ get_services(L)  ->
 
 
 %%
-get_no_results(Options) ->
+get_no_results(Term, Options) ->
 	[ {<<"results">>, <<"no">>},
+	  {<<"search_term">>, list_to_binary(Term)},
 	  {<<"timestamp">>, dateconv:get_timestamp()},
 	  {<<"options">>, Options} ].
 
@@ -150,8 +163,9 @@ get_cont_type() ->
 
 
 %%
-get_value(_Key, [])  -> [];
-get_value(Key, List) ->
+get_value(_Key, [])   -> [];
+get_value(_Key, null) -> [];
+get_value(Key, List)  ->
 	case lists:keyfind(Key, 1, List) of
 		{_K, V}	-> V;
 		false 	-> []

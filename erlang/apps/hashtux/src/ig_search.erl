@@ -20,7 +20,13 @@ search(Term, Options) ->
 					DataList = get_value(<<"data">>, DecodedRes),
 					Results = parse_results(Term, DataList),
 					L = get_value(content_type, Options),
-					gen_server:call(db_serv, {add_doc, Results}),
+					case Results of 
+						[] ->
+							io:format("NOT WRITING TO DB~n"), 
+							ok;
+						R  ->
+							gen_server:call(db_serv, {add_doc, Results})
+					end,
 					filter_insta(Results, L)
 			catch _ -> []
 			end;
@@ -47,6 +53,7 @@ get_token() ->
 %% @doc Checks for the options for which to filter Instagram results. The
 %% options can be 'image' and 'video'. Calls filter_insta_res/2 if needed.
 %% 
+filter_insta([], _L)  -> [];
 filter_insta(Res, []) -> Res;
 filter_insta(Res, L)  ->
 	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
@@ -80,8 +87,9 @@ filter_insta_res(List, Key) ->
 
 
 %%
-get_value(_Key, [])  -> [];
-get_value(Key, List) ->
+get_value(_Key, [])	  -> [];
+get_value(_Key, null) -> [];
+get_value(Key, List)  ->
 	case lists:keyfind(Key, 1, List) of
 		{_K, V}	-> V;
 		false 	-> []
