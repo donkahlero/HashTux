@@ -3,7 +3,7 @@
 %% @doc Dispenser Server for all calls to the database. Outsources
 %% all work to worker processes which will be added to the responsible
 %% supervisor. Is part of the db_sup tree.
-%% @version 0.2
+%% @version 0.3
 %% -----------------------------------------------------------------------------
 %% | Sprint 1 // v0.1:                                                         |
 %% | Initial version. Is able to start workers with unique id an append        |
@@ -13,6 +13,9 @@
 %% | Sprint 2 // v0.2:                                                         |
 %% | Several name changes to more descriptive worker names.                    |
 %% | Added support for userstats workers.                                      |
+%% -----------------------------------------------------------------------------
+%% | Sprint 4 // v.03:                                                         |
+%% | Added the db statistic reader functions                                   |
 %% -----------------------------------------------------------------------------
 -module(db_serv).
 
@@ -79,6 +82,11 @@ handle_call({delete_hash, Hashtag}, {From, _Ref}, State) ->
     {ok, Ref} = start_hww(),
     gen_server:cast(Ref, {delete_hash, Hashtag, From}),
     {reply, Ref, State};
+%%% Getting and ordered list of requested hashtags
+handle_call({get_stats, Field, Options}, {From, _Ref}, State) ->
+    {ok, Ref} = start_usrw(),
+    gen_server:cast(Ref, {get_stats, Field, Options, From}),
+    {reply, Ref, State};
 %%% Get the current server state.
 handle_call(state, _From, State) ->
     {reply, State, State};
@@ -134,3 +142,9 @@ start_usww() ->
 					    []},
                   temporary, 5000, worker, [db_userstats_writer]},
     supervisor:start_child(db_stats_write_sup, ChildSpecs).
+
+start_usrw() ->
+    ChildSpecs = {erlang:unique_integer(), {db_userstats_reader, start_link,
+                                            []},
+                  temporary, 5000, worker, [db_userstats_reader]},
+    supervisor:start_child(db_stats_read_sup, ChildSpecs).
