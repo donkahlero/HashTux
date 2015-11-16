@@ -122,7 +122,7 @@ cache_type1_query(Term, RequestType, Options) ->
 	% time window is from 60 seconds ago to now
 	EndTime = dateconv:get_timestamp(),
 	StartTime = EndTime - 60,
-	Options2 = Options ++ {timeframe, StartTime, EndTime} ++ {limit, 50},
+	Options2 = Options ++ [{timeframe, StartTime, EndTime}, {limit, 50}],
 	
 	Ref = gen_server:call(db_serv, {get_posts, Term, Options2}),
 	receive 
