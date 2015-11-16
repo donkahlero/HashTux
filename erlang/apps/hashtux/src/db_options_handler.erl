@@ -27,19 +27,22 @@ order_options(T, R).
 
 %% @doc This returns a new list of json objects from the differnt options.
 search_opt([], L) ->
-	L;
+    L;
 search_opt([{content_type, CTs}| T], L) ->
-	R = db_filter:content_type(L, CTs),
-	search_opt(T, R);
+    R = db_filter:content_type(L, CTs),
+    search_opt(T, R);
 search_opt([{service, Services}| T], L) ->
-	R = db_filter:service(L, Services),
-	search_opt(T, R);
+    R = db_filter:service(L, Services),
+    search_opt(T, R);
 search_opt([{language, Langs}| T], L) ->
-	R = db_filter:language(L, Langs),
-	search_opt(T, R);
+    R = db_filter:language(L, Langs),
+    search_opt(T, R);
+search_opt([{timeframe, StartTime, EndTime} | T], L) ->
+    R = db_filter:in_timestamp(L, StartTime, EndTime),
+    search_opt(T, R);
 search_opt([{limit, Num}| _], L) ->
-	R = db_filter:limit_result(Num, L),
-	R.
+    R = db_filter:limit_result(Num, L),
+    R.
 
 %% @doc This returns an url string for the quering of the db.
 pre_search_opt(L) -> 

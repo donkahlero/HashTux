@@ -22,7 +22,7 @@
 %% -----------------------------------------------------------------------------
 -module(db_hash_reader).
 
--behaviour(gen_server).
+-behavior(gen_server).
 
 -export([start_link/0, stop/0, state/0]).
 
@@ -75,7 +75,12 @@ handle_cast({get_posts, Hashtag, Options, Rec}, State) ->
 	Hash_Result = couch_operations:doc_get_map_cont(
 			?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
 	Result = db_options_handler:search_opt(db_options_handler:order_options(Options), Hash_Result),
-	Rec ! {self(), Result},
+        case(Result) of
+	    [] -> 
+		Rec ! {self(), db_filter:check_results(Hash_Result, Options)};
+	    Res ->
+		Rec ! {self(), Res}
+	end,
 	{stop, normal, State};
 
 handle_cast({posts_exist, Hashtag, Rec}, State) ->
