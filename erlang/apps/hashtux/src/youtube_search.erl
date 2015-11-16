@@ -5,12 +5,55 @@
 %% To be included in CONFIG FILE!
 -define(SERVER_KEY, "AIzaSyAT27JOYa8DAQKFK_2vPfxWagLxMXqbXFY").
 
-%% **** [ContType, Lang]
-
 % @doc Send GET request to Youtube Data API filtering results by the given Keyword
 % @params 
 %	HashTag: keyword
-search(HashTag, [{content_type, _}, {language, _}]) ->
+search(HashTag, [{content_type, Types}, {language, Language}]) ->
+
+	io:format("Youtube: TYPES: ~p~n", [Types]),
+	io:format("Youtube: LANGUAGE: ~p~n", [Language]),
+
+	% True if client filtered by content type and requested videos 
+	VideoReq = lists:member(<<"video">>, Types),
+	io:format("Youtube: VIDEO REQUESTED: ~p~n", [VideoReq]),
+
+	if 
+		%% SIMPLE SEARCH or ADVANCED SEARCH that requested Videos
+		VideoReq -> 
+			
+			% A list of the languages available to the client
+			LangParams = [<<"en">>, <<"es">>, <<"fr">>, <<"de">>, <<"sv">>, <<"bg">>, <<"it">>, <<"am">>],
+
+			% Check if client requested specific language
+			case lists:member(Language, LangParams) of
+				%% Query API and Filter Result
+				true -> 
+					io:format("YOUTUBE: Client requested specific language\n"),
+					API_Res = query_youtube_API(HashTag),
+					Filtered_Res = [X || X <- API_Res, parser:is_language(X, Language)],
+					Res_Length = length(Filtered_Res),
+					io:format("YOUTUBE: Filtered Search returned ~p elements ~n", [Res_Length]),
+					gen_server:call(db_serv, {add_doc, Filtered_Res}),								% send result to database
+					Filtered_Res;																	% return result	
+				
+				%% Query API (no filter)
+				false -> 
+					io:format("YOUTUBE: Client requested ALL languages\n"),
+					%% **** ADD CALL TO DB Here!!!*****
+					Result = query_youtube_API(HashTag),
+					Res_Length = length(Result),
+					io:format("YOUTUBE: Simple Search returned ~p elements ~n", [Res_Length]),
+					gen_server:call(db_serv, {add_doc, Result}),									% send result to database
+					Result																			% return result	
+			end;
+
+		% Video NOT requested. Return Empty List
+		true -> 
+			io:format("YOUTUBE: Client DID NOT request VIDEOS. Returning empty list\n"),
+			[]																						% return empty list (no data sent to DB)
+	end.
+
+query_youtube_API(HashTag) ->
 
 	Endpoint = "https://www.googleapis.com/youtube/v3/search?",             %% endpoint for ITEM-LIST
 
@@ -22,7 +65,7 @@ search(HashTag, [{content_type, _}, {language, _}]) ->
 
 	FormattedTime = dateconv:datetime_to_rfc_339(UniTime),					% we need to get back 1 week!!!
 
-	After = "publishedAfter=" ++ FormattedTime ++ "&order=date",			% Filter only results from last week and order by date
+	After = "publishedAfter=" ++ FormattedTime ++ "&order=date",			% Filter only results from last week and SORT by date
 
 	Type = "type=video&videoCaption=closedCaption",							%% filter only VIDEO 'resource type' that contain capion
 
@@ -41,9 +84,8 @@ search(HashTag, [{content_type, _}, {language, _}]) ->
     				CleanIds = parser:extract_youtube_ids(Ids),
     				VideoList = [video_search(X) || X <- CleanIds],									% GET a list of decoded Video 'resources' 
     				Results = [parser:parse_youtube_video(Y, HashTag) || Y <- VideoList],			% ***return a list of parsed video items (*** SEND to DB!!!)
-    				gen_server:call(db_serv, {add_doc, Results}),									% send result to database
     				ResLength = length(Results),
-    				io:format("YOUTUBE SEARCH RETURNED ~p RESULTS~n", [ResLength]),
+    				io:format("YOUTUBE API Query RETURNED ~p RESULTS~n", [ResLength]),
     				Results;																		% return Youtube results
     			not_found -> 
     				io:format("ITEMS List NOT FOUND\n"),
