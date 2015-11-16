@@ -54,13 +54,8 @@ handle_info(Msg, State) ->
 	io:format("main_flow_worker: Received info too late: ~p~n", [Msg]),
 	{noreply, State}.
 
-% Structure:
-	% If not (empty list), mine as usual and send back the reply from mining. 
-	% This last point will later be expanded into:
-	%	Get what was last cached on this term
-	%	Provide this to the miners so they themselves can adjust the mining accordingly
-	%	Send back the results after mining.	
 
+% Cast: heartbeat
 handle_cast({heartbeat, SourcePID, Term, Options}, State) -> 
 	% Heartbeat from client means miners should cache data for this
 	% request, that the client can "pick up" later. No data should be 
@@ -72,7 +67,8 @@ handle_cast({heartbeat, SourcePID, Term, Options}, State) ->
 
 	% Stop this worker 
 	{stop, normal, State};
-	
+
+% Cast: search or update
 handle_cast({RequestType, SourcePID, Term, Options}, State) -> 
 	io:format("main_flow_worker: Term: ~p~nmain_flow_worker: "
 			 ++ "Options:~p~n", [Term, Options]),
@@ -83,14 +79,18 @@ handle_cast({RequestType, SourcePID, Term, Options}, State) ->
 	% running the http_handler...
 	CacheResult = cache_type1_query(Term, RequestType, Options),
 	case CacheResult of
-		no_miner_res -> 
+		no_miner_res ->
 			% The miners have executed lately but found nothing, return []
+			io:format("main_flow_worker: Miners ran recently but no results.~p~n"),
 			SourcePID ! {self(), []};
 		[] -> 
 			% Means the miners have NOT executed - make a miner request
+			io:format("main_flow_worker: Miners haven't run recently.~p~n"),
 			SourcePID ! {self(), miner_query(Term, Options)};
 		List ->
 			% Some results were found, return them
+			io:format("main_flow_worker: " ++
+						  "Miners have run recently, returning cached data~p~n"),
 			SourcePID ! {self(), List}
 	end,
 
