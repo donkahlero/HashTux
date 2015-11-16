@@ -65,25 +65,24 @@ handle(Req, State) ->
 	io:format("~nhttp_handler: Handling term ~p~n", [Term]),
 	
 	% Get the request body - will be json [options, user_habit_data]
-	{ok, RequestBody, _Req} = cowboy_req:body(Req),
-
 	% Pattern match the distinct sublists against the decoded JSON.
 	% Force JSX to turn keys in key-value pairs to atoms.
+	{ok, RequestBody, _Req} = cowboy_req:body(Req),	
 	[Options, UserHabitData] = jsx:decode(RequestBody, [{labels, atom}]),
 
 	% Store user habit data - includes the options
 	user_habits:store(Term, Options, UserHabitData),
-
-	% Send the search term and the options to the main flow by making a call to 
-	% main flow server - get the PID of the worker back and wait for a reply from it
-	{ok, HandlerPid} = gen_server:call(main_flow_server, {search, Term, Options}),
-	io:format("~nhttp_handler: Worker PID: ~p~n", [HandlerPid]),
+	
+	% Send the search term, request type and the options to the main flow by making a call
+	% to main flow server - get the PID of the worker back and wait for a reply from it
+	RequestType = aux:bin_to_atom(lists:keyfind(request_type, Options)),
+	{ok, HandlerPid} = gen_server:call(main_flow_server, {RequestType, Term, Options}),
+	io:format("~nhttp_handler: Made main_flow_server call, received worker PID: ~p~n", [HandlerPid]),
 	
 	receive 
 		{HandlerPid, Reply} -> 
 			io:format("~nhttp_handler: Receved a reply from worker ~p handling term ~p."
-					 ++ " Sending reply to client...~n", [HandlerPid, Term]),
-			ok
+					 ++ " Sending reply to client...~n", [HandlerPid, Term])
 		after 20000 ->
 			io:format("~nhttp_handler: Timeout from worker~p handling term ~p~n", [HandlerPid, Term]),
 			Reply = []

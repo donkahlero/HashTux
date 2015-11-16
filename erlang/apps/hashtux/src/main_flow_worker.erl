@@ -54,51 +54,84 @@ handle_info(Msg, State) ->
 	io:format("main_flow_worker: Received info too late: ~p~n", [Msg]),
 	{noreply, State}.
 
-
-handle_cast({search, SourcePID, Term, Options}, State) -> 
-	io:format("main_flow_worker: Term: ~p~nmain_flow_worker: Options:~p~n", [Term, Options]),
-	
-	% Structure:
-	% If search, treshold value is ~30 or so
-	% If update, treshold value is ~5 or so	
-	% Ask DB for matching posts from the last minute or so is cached, provided these options -
-	%	the DB should only return this if the post count is threshold or more! 
-	% If we get something, simply return this
+% Structure:
 	% If not (empty list), mine as usual and send back the reply from mining. 
 	% This last point will later be expanded into:
 	%	Get what was last cached on this term
 	%	Provide this to the miners so they themselves can adjust the mining accordingly
-	%	Send back the results after mining.
-	
-	% Make a database call for the term
-	%Ref = gen_server:call(db_serv, {get_cont, Term}),
-	%receive 
-	%	{Ref, [{<<"error">>,<<"not_found">>},{<<"reason">>,<<"missing">>}]} ->
-	%		{reply, "Nothing found!", State};
-	%	{Ref, Res} ->
-	%		{reply, Res, State}
-	%	after 1000 ->
-	%		{reply, "DB timeout!", State}
-	%end.
-	
-	% Make a miner call for the term
-	{ok, MinerPid} = miner_server:search(Term, Options),
+	%	Send back the results after mining.	
 
-	% Wait for the reply and then send this to whoever made the request in the
-	% first place, presumably some process running the http_handler...
-	receive 
-		{MinerPid, Y} ->
-			io:format("main_flow_worker: Received reply from miner server~n", []),
-			SourcePID ! {self(), Y}
-		after 15000 ->
-			io:format("main_flow_worker: Miner timeout!~n", []),
-			SourcePID ! {self(), []}
+handle_cast({heartbeat, SourcePID, Term, Options}, State) -> 
+	% Heartbeat from client means miners should cache data for this
+	% request, that the client can "pick up" later. No data should be 
+	% returned to the client right now, and we don't wait for a reply.
+	miner_server:search(Term, Options),
+	
+	% For simplicity, we just return [] to the using code
+	SourcePID ! {self(), []}, 	
+
+	% Stop this worker 
+	{stop, normal, State};
+	
+handle_cast({RequestType, SourcePID, Term, Options}, State) -> 
+	io:format("main_flow_worker: Term: ~p~nmain_flow_worker: "
+			 ++ "Options:~p~n", [Term, Options]),
+	
+	% Check type 1 cache for recent data.
+	% Then take approperiate action (call miners if needed) and send a reply
+	% to whoever made the request in the first place, presumably some process
+	% running the http_handler...
+	CacheResult = cache_type1_query(Term, RequestType, Options),
+	case CacheResult of
+		no_miner_res -> 
+			% The miners have executed lately but found nothing, return []
+			SourcePID ! {self(), []};
+		[] -> 
+			% Means the miners have NOT executed - make a miner request
+			SourcePID ! {self(), miner_query(Term, Options)};
+		List ->
+			% Some results were found, return them
+			SourcePID ! {self(), List}
 	end,
 
 	% Stop this worker 
 	{stop, normal, State}.
-	
 
+
+
+miner_query(Term, Options) ->
+	% Make a miner call for the term
+	{ok, MinerPid} = miner_server:search(Term, Options),
+
+	% Wait for the reply and return it.
+	receive 
+		{MinerPid, Result} ->
+			io:format("main_flow_worker: Received reply from miner server~n", []),
+			Result
+		after 15000 ->
+			% Timeout -> return empty list
+			io:format("main_flow_worker: Miner timeout!~n", []),
+			[]
+	end.
+
+
+% Checks to see if there is anything cached in the DB very recently
+% (such as the last minute) by the heartbeat mechanism 
+cache_type1_query(Term, RequestType, Options) ->
+	% Add some constraints to the DB request,
+	% time window is from 60 seconds ago to now
+	EndTime = dateconv:get_timestamp(),
+	StartTime = EndTime - 60,
+	Options2 = Options ++ {timeframe, StartTime, EndTime} ++ {limit, 50},
+	
+	Ref = gen_server:call(db_serv, {get_posts, Term, Options2}),
+	receive 
+		{Ref, Result} ->
+			% Just return the result to the using code.
+			Result
+		after 10000 ->
+			[]
+	end.
 
 
 
