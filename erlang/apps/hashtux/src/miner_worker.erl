@@ -77,7 +77,7 @@ send_results(Pid, [], Term, Options) ->
 		<<"heartbeat">> ->
 			gen_server:call(db_serv, {add_doc, get_no_results(Term, Options)})
 	end;
-send_results(Pid, Results, _Term, _Options) ->
+send_results(Pid, Results, _Term, Options) ->
 	case get_value(request_type, Options) of
 		<<"search">> -> 
 			Pid ! {self(), Results};
