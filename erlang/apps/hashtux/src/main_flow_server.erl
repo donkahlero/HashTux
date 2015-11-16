@@ -97,7 +97,7 @@ handle_cast(Msg, State) ->
 
 
 %% handles synchronous messages
-handle_call({search, Term, Options}, From, 
+handle_call({RequestType, Term, Options}, From, 
 						S=#state{limit=N, refs=R}) when N > 0 ->
 	
 	% Start a new worker to handle the request.
@@ -109,7 +109,7 @@ handle_call({search, Term, Options}, From,
 	% We include a reference to the PID that made the original call,
 	% so the worker can reply when finished.
 	{SourcePID, _} = From,
-	gen_server:cast(Pid, {search, SourcePID, Term, Options}),
+	gen_server:cast(Pid, {RequestType, SourcePID, Term, Options}),
 	
 	% Update the state of the main flow server.
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
