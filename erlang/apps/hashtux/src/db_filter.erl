@@ -13,7 +13,13 @@
 -module(db_filter).
 
 -export([content_type/2, language/2, service/2, order_by_value/1, limit_result/2]).
--export([group_by_subkey/1]).
+-export([group_by_subkey/1, check_results/2]).
+
+%% @doc 
+check_results([[{<<"results">>, <<"no">>}, {<<"timestamp">>, _}, {<<"options">>, Opts}]|[]], Opts) ->
+    true;
+check_results(_, _) ->
+    false.
 
 %% @doc Function filtering for the type of content.
 %% This can be image, video or text.
