@@ -49,9 +49,9 @@ language([], _Lang, Res) ->
     Res;
 language([X|Xs], Lang, Res) ->
     CurrentLang = lists:keyfind(<<"language">>, 1, X),
-    BinLang = binary:list_to_bin(Lang),
+    %%BinLang = binary:list_to_bin(Lang),
     case (CurrentLang) of
-	{_, BinLang} ->
+	{_, Lang} ->
 	    language(Xs, Lang, [X|Res]);
 	_ ->
 	    language(Xs, Lang, Res)
