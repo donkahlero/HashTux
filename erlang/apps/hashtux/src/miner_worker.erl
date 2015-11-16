@@ -69,13 +69,13 @@ handle_call(_Request, _From, S) ->
 send_results(Pid, [], Term, Options) ->
 	case get_value(request_type, Options) of
 		<<"search">> -> 
-			gen_server:call(db_serv, {add_doc, get_no_results(Term, Options)}),
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
 			Pid ! {self(), []};
 		<<"update">> ->
-			gen_server:call(db_serv, {add_doc, get_no_results(Term, Options)}),
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
 			Pid ! {self(), []};
 		<<"heartbeat">> ->
-			gen_server:call(db_serv, {add_doc, get_no_results(Term, Options)})
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
 	end;
 send_results(Pid, Results, _Term, Options) ->
 	case get_value(request_type, Options) of
@@ -163,8 +163,9 @@ get_cont_type() ->
 
 
 %%
-get_value(_Key, [])  -> [];
-get_value(Key, List) ->
+get_value(_Key, [])   -> [];
+get_value(_Key, null) -> [];
+get_value(Key, List)  ->
 	case lists:keyfind(Key, 1, List) of
 		{_K, V}	-> V;
 		false 	-> []
