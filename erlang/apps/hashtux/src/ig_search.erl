@@ -51,8 +51,8 @@ filter_insta(Res, []) -> Res;
 filter_insta(Res, L)  ->
 	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
 		{true, true}   -> Res;
- 		{true, false}  -> filter_insta_res(Res, image);
-		{false, true}  -> filter_insta_res(Res, video)
+ 		{true, false}  -> filter_insta_res(Res, <<"image">>);
+		{false, true}  -> filter_insta_res(Res, <<"video">>)
 	end.
 
 
@@ -63,7 +63,7 @@ filter_insta(Res, L)  ->
 %% 
 filter_insta_res([], _Key)	 -> [];
 filter_insta_res(List, Key) ->
-	[N || N <- List, get_val_atom(<<"content_type">>, N) == Key]. 
+	[N || N <- List, get_value(<<"content_type">>, N) == Key]. 
 
 
 %%
@@ -71,12 +71,12 @@ filter_insta_res(List, Key) ->
 %% in the results from Instagram. Returns this value name as atom or 
 %% the atom 'no_atom' if not found.
 %%
-get_val_atom(Key, List) ->
-	X = case lists:keyfind(Key, 1, List) of
-			{_K, V} -> list_to_atom(binary_to_list(V));
-			false	-> no_atom
-		end,
-	X.
+%get_val_atom(Key, List) ->
+%	X = case lists:keyfind(Key, 1, List) of
+%			{_K, V} -> list_to_atom(binary_to_list(V));
+%			false	-> no_atom
+%		end,
+%	X.
 
 
 %%
