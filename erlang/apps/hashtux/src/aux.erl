@@ -1,6 +1,6 @@
 -module(aux).
 
--export([bin_to_atom/1]).
+-export([bin_to_atom/1, get_value/2]).
 
 
 
