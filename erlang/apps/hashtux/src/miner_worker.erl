@@ -46,7 +46,8 @@ handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 	% get results
 	Results = run_search(Term, Options),
 	% send to original caller								
-	Pid ! {self(), Results},	
+	%Pid ! {self(), Results},	
+	send_results(Pid, Results, Term, Options),
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	% stop this worker
 	{stop, normal, State};
@@ -63,10 +64,34 @@ handle_call(_Request, _From, S) ->
 %%% PRIVATE FUNCTIONS
 %%% ============================================================================
 
+
+%%
+send_results(Pid, [], Term, Options) ->
+	case get_value(request_type, Options) of
+		<<"search">> -> 
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
+			Pid ! {self(), []};
+		<<"update">> ->
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
+			Pid ! {self(), []};
+		<<"heartbeat">> ->
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
+	end;
+send_results(Pid, Results, _Term, Options) ->
+	case get_value(request_type, Options) of
+		<<"search">> -> 
+			Pid ! {self(), Results};
+		<<"update">> ->
+			Pid ! {self(), Results};
+		<<"heartbeat">> ->
+			ok
+	end.
+			
+
 %% 
 % no options
 run_search(Term, []) -> 
-	ContType = {content_type, []},
+	ContType = {content_type, get_cont_type()},
 	Lang = {language, []},
 	L = get_results(Term, get_services([]), ContType, Lang),
 	lists:append(L);
@@ -79,7 +104,7 @@ run_search(Term, Options) ->
 			   end,
 	ContType = case lists:keyfind(content_type, 1, Options) of
 					{K2, V2} -> {K2, V2};
-					false  -> {content_type, []}
+					false  -> {content_type, get_cont_type()}
 			   end,
 	Lang = case lists:keyfind(language, 1, Options) of
 				{K3, V3} -> {K3, V3};
@@ -124,6 +149,27 @@ get_services(L)  ->
 	[list_to_atom(binary_to_list(X)) || X <- L].
 
 
+%%
+get_no_results(Term, Options) ->
+	[ {<<"results">>, <<"no">>},
+	  {<<"search_term">>, list_to_binary(Term)},
+	  {<<"timestamp">>, dateconv:get_timestamp()},
+	  {<<"options">>, Options} ].
+
+
+%% 
+get_cont_type() ->
+	[<<"image">>, <<"video">>, <<"text">>].
+
+
+%%
+get_value(_Key, [])   -> [];
+get_value(_Key, null) -> [];
+get_value(Key, List)  ->
+	case lists:keyfind(Key, 1, List) of
+		{_K, V}	-> V;
+		false 	-> []
+	end.
 
 
 

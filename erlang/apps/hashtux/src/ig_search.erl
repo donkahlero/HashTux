@@ -20,7 +20,13 @@ search(Term, Options) ->
 					DataList = get_value(<<"data">>, DecodedRes),
 					Results = parse_results(Term, DataList),
 					L = get_value(content_type, Options),
-					gen_server:call(db_serv, {add_doc, Results}),
+					case Results of 
+						[] ->
+							io:format("NOT WRITING TO DB~n"), 
+							ok;
+						R  ->
+							gen_server:call(db_serv, {add_doc, Results})
+					end,
 					filter_insta(Results, L)
 			catch _ -> []
 			end;
@@ -47,12 +53,13 @@ get_token() ->
 %% @doc Checks for the options for which to filter Instagram results. The
 %% options can be 'image' and 'video'. Calls filter_insta_res/2 if needed.
 %% 
+filter_insta([], _L)  -> [];
 filter_insta(Res, []) -> Res;
 filter_insta(Res, L)  ->
 	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
 		{true, true}   -> Res;
- 		{true, false}  -> filter_insta_res(Res, image);
-		{false, true}  -> filter_insta_res(Res, video)
+ 		{true, false}  -> filter_insta_res(Res, <<"image">>);
+		{false, true}  -> filter_insta_res(Res, <<"video">>)
 	end.
 
 
@@ -63,7 +70,7 @@ filter_insta(Res, L)  ->
 %% 
 filter_insta_res([], _Key)	 -> [];
 filter_insta_res(List, Key) ->
-	[N || N <- List, get_val_atom(<<"content_type">>, N) == Key]. 
+	[N || N <- List, get_value(<<"content_type">>, N) == Key]. 
 
 
 %%
@@ -71,17 +78,18 @@ filter_insta_res(List, Key) ->
 %% in the results from Instagram. Returns this value name as atom or 
 %% the atom 'no_atom' if not found.
 %%
-get_val_atom(Key, List) ->
-	X = case lists:keyfind(Key, 1, List) of
-			{_K, V} -> list_to_atom(binary_to_list(V));
-			false	-> no_atom
-		end,
-	X.
+%get_val_atom(Key, List) ->
+%	X = case lists:keyfind(Key, 1, List) of
+%			{_K, V} -> list_to_atom(binary_to_list(V));
+%			false	-> no_atom
+%		end,
+%	X.
 
 
 %%
-get_value(_Key, [])  -> [];
-get_value(Key, List) ->
+get_value(_Key, [])	  -> [];
+get_value(_Key, null) -> [];
+get_value(Key, List)  ->
 	case lists:keyfind(Key, 1, List) of
 		{_K, V}	-> V;
 		false 	-> []
