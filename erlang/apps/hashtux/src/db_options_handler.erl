@@ -40,6 +40,8 @@ search_opt([{language, Langs}| T], L) ->
 search_opt([{timeframe, StartTime, EndTime} | T], L) ->
     R = db_filter:in_timestamp(L, StartTime, EndTime),
     search_opt(T, R);
+search_opt([{request_time, _} | T], L) ->
+    search_opt(T, L);
 search_opt([{limit, Num}| _], L) ->
     R = db_filter:limit_result(Num, L),
     R.
