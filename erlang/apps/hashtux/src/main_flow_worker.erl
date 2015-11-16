@@ -81,16 +81,16 @@ handle_cast({RequestType, SourcePID, Term, Options}, State) ->
 	case CacheResult of
 		no_miner_res ->
 			% The miners have executed lately but found nothing, return []
-			io:format("main_flow_worker: Miners ran recently but no results.~p~n"),
+			io:format("main_flow_worker: Miners ran recently but no results.~n"),
 			SourcePID ! {self(), []};
 		[] -> 
 			% Means the miners have NOT executed - make a miner request
-			io:format("main_flow_worker: Miners haven't run recently.~p~n"),
+			io:format("main_flow_worker: Miners haven't run recently.~n"),
 			SourcePID ! {self(), miner_query(Term, Options)};
 		List ->
 			% Some results were found, return them
 			io:format("main_flow_worker: " ++
-						  "Miners have run recently, returning cached data~p~n"),
+						  "Miners have run recently, returning cached data~n"),
 			SourcePID ! {self(), List}
 	end,
 
