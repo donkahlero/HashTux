@@ -25,7 +25,7 @@ The format of the document is the following (written in Erlang compatible with P
 {<<"tags">>, [The Tags]}]
 ```
 
-##Format of requests to the Erlang backend
+##Format of search requests to the Erlang backend
 A php file called request.php can be used to generate a properly structured request by first using the build_request_data() function and then making the actual request via the request() function.
 
 Here is the format of the request:
@@ -68,3 +68,15 @@ When decoded to erlang by JSX, the option part looks like this:
   {"content_type", []},
   {"language", <<"en">>}]
 ```
+
+##Format of user statistics data requests to the Erlang backend
+The above section applies, except the available options. In the options object, set the request_type option to "stats". Use "/" as the path/search term, it will be ignored. The available options when requesting statistics are:
+
+- TODO,
+- TODO
+
+NOTE: I will separate the build_request_data function so that user habits are created in a separate function, which can also be used by a new function I'm going to create, custom_request_data, where you can insert your own options associative array (then it appends the user habit data and packages it into an object)
+So:
+
+- build_request_data works like it does now = takes parameters and makes an option object, but uses get_habit_data, and wraps into a correct object.
+- custom_request_data takes (path, options), appends get_habit_data object, and wraps into the correct object 
