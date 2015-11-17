@@ -63,7 +63,7 @@ handle_call(stop, _From, _State) ->
 handle_call(_, _, _) ->
     error(badarth).
 
-%% %% @doc Handels the cast which is the messages where we doing operations on.
+%% @doc Handels the cast which is the messages where we doing operations on.
 
 handle_cast({get_posts, Hashtag, Rec}, State) ->
     Result =  couch_operations:doc_get_map_cont(
@@ -74,7 +74,7 @@ handle_cast({get_posts, Hashtag, Rec}, State) ->
 handle_cast({get_posts, Hashtag, Options, Rec}, State) ->
 	Hash_Result = couch_operations:doc_get_map_cont(
 			?DB ++ "_design/post/_view/by_hashtag?key=\"" ++ Hashtag ++ "\""),
-	Result = db_options_handler:search_opt(db_options_handler:order_options(Options), Hash_Result),
+	Result = db_options_handler:handle_options(Hash_Result, Options),
         case(Result) of
 	    [] -> 
 		Rec ! {self(), db_filter:check_results(Hash_Result, Options)};
