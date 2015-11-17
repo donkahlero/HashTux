@@ -36,11 +36,10 @@
 % {URL, _} =  cowboy_req:url(Req),	
 % QueryString: all the query stuff after the ?
 % {Qs, _} = cowboy_req:qs(Req),
-%
+%	
+%	TODO: try/catch on malformed jsx?
 %	TODO: check cURL timeout / load balancing on PHP
 %	TODO: Check spaces in search terms
-%	TODO: rememeber client side option text above pic on/off - unrelated here but putting it down not to forget	
-	
 
 
 -module(http_handler).
