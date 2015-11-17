@@ -13,6 +13,7 @@
 %% | Sprint 4 // v.03                                                          |
 %% | Added the cleanup worker to the supervisor.                               |
 %% | Added supervisor for the DB Stats readers.                                |
+%% | Added the replicator worker to the supervisor.                            |    
 %% -----------------------------------------------------------------------------
 -module(db_sup).
 
@@ -39,7 +40,9 @@ init([]) ->
                     temporary, 5000, supervisor, [db_worker_sup]},
     DBCleaner = {db_cleaner, {db_cleaner, start_link, []},
               permanent, 5000, worker, [db_cleaner]},
+    DBReplicator = {db_replicator, {db_replicator, start_link, []},
+		   permanent, 5000, worker, [db_replicator]},
     DBServ = {db_serv, {db_serv, start_link, []},
 	      permanent, 5000, worker, [db_serv]},
     {ok, {{one_for_one, 1, 10}, [HashReadSup, HashWriteSup, StatsWriteSup, StatsReadSup,
-				 DBCleaner, DBServ]}}.
+				 DBCleaner, DBReplicator, DBServ]}}.
