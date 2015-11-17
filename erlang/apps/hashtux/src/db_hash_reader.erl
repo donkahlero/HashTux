@@ -9,16 +9,15 @@
 %% | functions. Then made it into a gen_server which handled a lot of calls.   |
 %% | It used every write operation defind in couch_operation.                  |
 %% -----------------------------------------------------------------------------
-%% -----------------------------------------------------------------------------
 %% | Sprint 2 // v0.2                                                          |
 %% | Changed the module to only do two different operations, get_posts and     |
 %% | hash_exists to fit the new changes on how we will store data and what to  |
 %% | get from the database.                                                    |
 %% -----------------------------------------------------------------------------
-%% -----------------------------------------------------------------------------
 %% | Sprint 4 // v0.3                                                          |
 %% | Added options to the advance search that will handle the different ones   |
 %% | that is sent. It fetch all the result from the DB and the filters it      |
+%% | Added the new calls to the new options handler module                     |  
 %% -----------------------------------------------------------------------------
 -module(db_hash_reader).
 
