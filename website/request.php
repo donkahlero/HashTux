@@ -34,7 +34,7 @@ function request($search, $request_data) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $request_data);
     
 	// Set the URL, including urlencoded (helps if there are special characters) search term
-    curl_setopt ($ch, CURLOPT_URL, "http://localhost:8080/" . urlencode($search));
+    curl_setopt ($ch, CURLOPT_URL, "http://localhost:8080/" . urlencode(clean($search)));
     
 	// Execute the request
 	$output = curl_exec($ch);  
@@ -55,9 +55,11 @@ function request($search, $request_data) {
  * Format of the resulting object will be [OPTIONS, USER_HABIT_DATA] where
  * OPTIONS and USER_HABIT_DATA each are lists of key-value tuples.
  *
+ * Unspecified fields are set to null by default and then omitted in the
+ * resulting request data object.
  */
-function build_request_data($request_type = "search", $services = [],
-		$content_type = [], $language = "en") {
+function build_request_data($request_type = "search", $services = null,
+		$content_type = null, $language = null) {
 
 	// Parse the user agent string so we get the components we need
 	$user_agent_strings = parse_user_agent();
@@ -82,40 +84,14 @@ function build_request_data($request_type = "search", $services = [],
 				
 	);
 
-	$options = distinguish_tuples($options);
-	$user_habit_data = distinguish_tuples($user_habit_data);
-
+	$options = array_filter($options);
+                
 	return json_encode([$options, $user_habit_data]);
 }
 
-
-/*
- * Converts a PHP associative key-value array into an array with key-value
- * objects that is as close as possible to Erlangs "list of tuples".
- *
- * Where an associative array in PHP would be encoded in JSON as
- * {"key1" : "value1", "key2" : "value2"}
- *
- * we instead get
- *
- * [{"key1" : "value1"}, {"key2" : "value2"}]
- *
- * if we encode the output of this method.
- *
- * (Because PHP doesn't really have tuples, the easiest way to convert it reasonably
- * is to use an associative array in PHP... FOR EACH key-value pair! Since we need 
- * one ass. array for each, i just use a two-dimensional one where the first isn't
- * associative (just uses numbers), hence we end up with "a list of tuples"
- * if we convert this outer array to json.)
- * http://php.net/manual/en/function.json-encode.php
+/* Remove special characters from string using regex. 
  */
-function distinguish_tuples($array) {
-	$tuples = [];
-	foreach ($array as $key => $value) {
-		// Add each value with the corresponding key as the only element
-		// for that index in the leftmost array []
-		$tuples[sizeof($tuples)][$key] = $value;
-	}
-	return $tuples;
+function clean($string) {
+   return preg_replace('/[^A-Öa-ö1-9\-\_\+ ]/', '', $string); // Removes special chars.
 }
 ?>	
