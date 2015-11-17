@@ -80,3 +80,9 @@ So:
 
 - build_request_data works like it does now = takes parameters and makes an option object, but uses get_habit_data, and wraps into a correct object.
 - custom_request_data takes (path, options), appends get_habit_data object, and wraps into the correct object 
+
+
+##Ajax requests to the Erlang backend
+We make AJAX requests through our web server, by querying ajax.php (via HTTP GET). By doing this, we can let the web server append some information to the request that we otherwise could not get without first sending them to the client (such as the users IP adress and PHP session ID). The file ajax.php then sends a proper HTTP POST request with the correct format. Right now these parameters are supported.
+- search: The search term. (If passing from the user, please make sure to sanitize in some way from special characters so it can actually be passed as an HTTP parameter)
+- request_type: Use "search", "update" or "heartbeat". 
