@@ -1,9 +1,10 @@
 <?php
-    require_once("curl_request.php");
+    require_once("request.php");
     
     $search = $_GET['search'];
-    
-    $output = curl_request($search);
+    $request_data = build_request_data("search");
+    $output = request($search, $request_data);
+  
 ?>
 
 <!DOCTYPE html> 
@@ -18,7 +19,12 @@
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        
         <script type="text/javascript">
+            
+            var searchterm = "<?php echo $search; ?>";
+            
+            var heartbeats = true;
             
             var items = [];         // An array to store all items fetched
             var displayed = [];     // An array to temporarily store the currently displayed items
@@ -48,23 +54,51 @@
             // (see top of document)
             
             function initialize() {
-                myjson = <?php echo json_encode($output);?>;
+                myjson = <?php echo json_encode($output); ?>;
                 parse_to_items(myjson);
             }
             
-            // A function for any future searches. Uses ajax.php to fetch the
-            // JSON object from the http server.
-            
-            function fetch(){
+            function heartbeat(){
                 
                 // NB RIGHT NOW THE SEARCH TERM IS "HARDCOD ED" BY PHP
                 $.ajax({
-                    url: "/ajax.php?search=<?php echo $search; ?>",
+                    url: "/ajax.php?search=" + searchterm + "&request_type=heartbeat",
                     type: "get",
                     success: function (myString) {
                         parse_to_items(myString);
                     }
                 });
+            }
+            
+            // A function for any future searches. Uses ajax.php to fetch the
+            // JSON object from the http server.
+            
+            function fetch() {
+                
+                // NB RIGHT NOW THE SEARCH TERM IS "HARDCOD ED" BY PHP
+                $.ajax({
+                   /* url: "/ajax.php?search=" + searchterm + "?request_type=heartbeat",*/
+                    url: "/ajax.php?search=" + searchterm,
+                    type: "get",
+                    success: function (myString) {
+                        parse_to_items(myString);
+                    }
+                });
+            }
+            
+            function heartbeatFetchHandler() {
+                
+                if(heartbeats === true)
+                {
+                    heartbeat();
+                    heartbeats = false;
+                }
+                
+                else
+                {
+                    fetch();
+                    heartbeats = true;
+                }
             }
             
             // A function to extract all the information from the JSON object and
@@ -154,7 +188,7 @@
                 initGrid();         // Initialize the grid
                 
                 setInterval(refresh, 1000);
-                setInterval(fetch, 60000);
+                setInterval(heartbeatFetchHandler, 30000);
  
             };
             
@@ -516,6 +550,22 @@
             function hideOptions() {
                 $('#options').fadeOut(500);
             }
+            
+            function changeSize() {
+                var id = arguments[0].id;
+                
+                if($('#' + id).attr('class') === 'btn btn-default')
+                {
+                    $('#' + id).attr('class', 'btn btn-primary');
+                }
+                
+                else
+                {
+                    $('#' + id).attr('class', 'btn btn-default')
+                }
+                    
+            }
+            
 	</script>
 	          
     </head>
@@ -558,27 +608,82 @@
                     </div>
                 </div>
             
-                <div class="container con-fill header" id="options" onclick="hideOptions()" 
+                <div class="container con-fill header" id="options" 
                      style="background-color: rgba(0, 0, 0, 0.5); display: none;" >
                     
-                    <div class="panel optionspanel">
-                        <h2 align="center">OPTIONS</h2>
-                        
-                        <button type="button" class="btn btn-link btn-md" id="closeOptions"
-                                style="position: absolute; top: 5px; right: 5px;">
-                            close
-                        </button>
+                    <div class="panel optionspanel" style="margin: auto;">
                         
                         <hr />
                         
-                        <h3 align="center">Grid Options</h3>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                        </ul>
+                        <h4 align="center">GRID OPTIONS</h4>
+                        
+                        <hr />
+                        
+                        <div class="optiontext" align="center">Size</div> 
+                        
+                        <div class="text-center">
+                            <div class="btn-group options">
+                                <button type="button" class="btn btn-default" id="size-sm" onclick="changeSize('size-sm')">SMALL</button>
+                                <button type="button" class="btn btn-primary" id="size-md" onclick="changeSize('size-md')">MEDIUM</button>
+                                <button type="button" class="btn btn-default" id="size-lg" onclick="changeSize('size-lg')">LARGE</button>
+                            </div>
+                        </div>
+                            
+                        <div class="optiontext" align="center">Refresh Rate</div>
+                        
+                        <div class="text-center">
+                            <div class="btn-group options">
+                                <button type="button" class="btn btn-default" id="ref-slow">SLOW</button>
+                                <button type="button" class="btn btn-primary" id="ref-md">MEDIUM</button>
+                                <button type="button" class="btn btn-default" id="ref-fast">FAST</button>
+                            </div>
+                        </div>
+                        
+                        <hr />
+                        
+                        <h4 align="center">CONTENT OPTIONS</h4>
+                        
+                        <hr />
+                        
+                        <div class="optiontext" align="center">Media Type</div>
+                        <div class="optionexpltext" align="center">Select the type of media you would like displayed in the grid.</div>
+                        
+                        <div class="text-center">
+                            <div class="btn-group options">
+                                <button type="button" class="btn btn-primary" id="type-img">Images</button>
+                                <button type="button" class="btn btn-primary" id="type-vid">Videos</button>
+                                <button type="button" class="btn btn-primary" id="type-txt">Text</button>
+                            </div>
+                        </div>
+                        
+                        <div class="optiontext" align="center">Services</div>
+                        <div class="optionexpltext" align="center">Select from which services you would like your content retrieved from.</div>
+                        
+                        <div class="text-center">
+                            <div class="btn-group options">
+                                <button type="button" class="btn btn-primary" id="serv-twitter">Twitter</button>
+                                <button type="button" class="btn btn-primary" id="serv-instagram">Instagram</button>
+                                <button type="button" class="btn btn-primary" id="serv-youtube">YouTube</button>
+                            </div>
+                        </div>
+                        
+                        <div class="optiontext" align="center">Languages</div>
+                        
+                        <div class="text-center">
+                            <div class="btn-group-vertical options">
+                                <button type="button" class="btn btn-primary" id="en">English</button>
+                                <button type="button" class="btn btn-default" id="es">Español (Spanish)</button>
+                                <button type="button" class="btn btn-primary" id="fr">Français (French)</button>
+                                <button type="button" class="btn btn-default" id="de">Deutsch (German)</button>
+                                <button type="button" class="btn btn-default" id="sv">Svenska (Swedish)</button>
+                                <button type="button" class="btn btn-primary" id="bg">български език (Bulgarian)</button>
+                                <button type="button" class="btn btn-primary" id="it">Italiano (Italian)</button>
+                                <button type="button" class="btn btn-default" id="am">አማርኛ (Amharic)</button>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn btn-default savebutton" id="save" onclick="hideOptions()">Save & Exit</button>
+                        
                     </div>
                     
                 </div>
