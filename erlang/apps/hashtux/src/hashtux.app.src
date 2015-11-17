@@ -1,0 +1,20 @@
+{application, 'hashtux',
+ [{description, "The HashTux backend"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, {'hashtux_app', []}},
+  {applications,
+   [kernel,
+    stdlib,
+		inets,
+		ssl,
+		cowboy,
+		ibrowse
+   ]},
+  {env,[{instagram_account, [
+														 {access_token, "2253641420.43956b9.2ce7ad96329647ffa756501b24fbed3e"}]}]},
+  {modules, []},
+  {contributors, []},
+  {licenses, []},
+  {links, []}
+ ]}.
