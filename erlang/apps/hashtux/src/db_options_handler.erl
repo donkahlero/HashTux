@@ -3,7 +3,7 @@
 %% %% %% %% @version 0.1
 -module(db_options_handler).
 
--export([order_options/1, search_opt/2, pre_search_opt/1, pre_search_opt/2]).
+-export([handle_options/2, pre_search_opt/1, pre_search_opt/2]).
 
 %% -----------------------------------------------------------------------------
 %% | Sprint 4                                                                  |
@@ -13,40 +13,12 @@
 %% | search_opt, pre_search_opt.                                               |
 %% -----------------------------------------------------------------------------
 
-%% @doc This orders the list of options so that the limit is last.
-order_options(Opt) ->
-	order_options(Opt, []).
-order_options([], L) ->
-	L;
-order_options([{limit, Lim}| T], L) ->
-	R = L ++ [{limit, Lim}],
-	order_options(T, R);
-order_options([H| T], L) ->
-	R = [H] ++ L,
-order_options(T, R).
-
-%% @doc This returns a new list of json objects from the differnt options.
-search_opt([], L) ->
-    L;
-search_opt([{content_type, CTs}| T], L) ->
-    R = db_filter:content_type(L, CTs),
-    search_opt(T, R);
-search_opt([{service, Services}| T], L) ->
-    R = db_filter:service(L, Services),
-    search_opt(T, R);
-search_opt([{language, Langs}| T], L) ->
-    R = db_filter:language(L, Langs),
-    search_opt(T, R);
-search_opt([{timeframe, StartTime, EndTime} | T], L) ->
-    R = db_filter:in_timestamp(L, StartTime, EndTime),
-    search_opt(T, R);
-search_opt([{request_type, _} | T], L) ->
-    search_opt(T, L);
-search_opt([{limit, Num}| _], L) ->
-    R = db_filter:limit_result(Num, L),
-    R;
-search_opt(_, L) ->
-    L.
+handle_options(L, Options) ->
+    FL1 = db_filter:content_type(L, lists:keyfind(content_type, 1, Options)),
+    FL2 = db_filter:service(FL1, lists:keyfind(service, 1, Options)),
+    FL3 = db_filter:language(FL2, lists:keyfind(language, 1, Options)),
+    FL4 = db_filter:timeframe(FL3, lists:keyfind(timeframe, 1, Options)),
+    db_filter:limit_result(FL4, lists:keyfind(limit, 1, Options)).
 
 %% @doc This returns an url string for the quering of the db.
 pre_search_opt(L) -> 

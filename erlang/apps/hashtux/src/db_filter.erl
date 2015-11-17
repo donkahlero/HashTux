@@ -13,7 +13,7 @@
 -module(db_filter).
 
 -export([content_type/2, language/2, service/2, order_by_value/1, limit_result/2]).
--export([group_by_subkey/1, check_results/2, in_timestamp/3]).
+-export([group_by_subkey/1, check_results/2, timeframe/2]).
 
 %% @doc Function checking if the miners cannot find something or there is just 
 %% nothing cached yet.
@@ -43,7 +43,9 @@ in_options([_|Xs], Opt) ->
 %% @doc Function filtering for the type of content.
 %% This can be image, video or text.
 %% Several types within one search are possible.
-content_type(L, CTypes) ->
+content_type(L, false) ->
+    L;
+content_type(L, {content_type, CTypes}) ->
     content_type(L, CTypes, []).
 
 content_type([], _CTypes, Res) ->
@@ -51,27 +53,21 @@ content_type([], _CTypes, Res) ->
 content_type([X|Xs], CTypes, Res) ->
     case (lists:keyfind(<<"content_type">>, 1, X)) of
 	{<<"content_type">>, CType} ->
-	    case (is_ctype(CTypes, CType)) of
-		false ->
-		    content_type(Xs, CTypes, Res);
-		true ->
-		    content_type(Xs, CTypes, [X|Res])
+	    case (lists:usort([true || Y <- CTypes, Y =:= CType])) of
+		[true] ->
+		    content_type(Xs, CTypes, [X|Res]);
+		_ ->
+		    content_type(Xs, CTypes, Res)
 	    end;
 	false ->
 	    content_type(Xs, CTypes, Res)
     end.
 
-%% @doc Helperfunction checking for the list of types.
-is_ctype([], _CurrentType) ->
-    false;
-is_ctype([CurrentType|_Xs], CurrentType) ->
-    true;
-is_ctype([_X|Xs], CurrentType) ->
-    is_ctype(Xs, CurrentType).
-
 %% @doc Function filtering for the language of the content.
 %% Just one language is possible here.
-language(L, Lang) ->
+language(L, false) ->
+    L;
+language(L, {language, Lang}) ->
     language(L, Lang, []).
 
 language([], _Lang, Res) ->
@@ -89,45 +85,41 @@ language([X|Xs], Lang, Res) ->
 %% @doc Function for filtering the content for the service.
 %% One or more services are possible: twitter, instagram and
 %% youtube.
-service(L, Services) ->
+service(L, false) ->
+    L;
+service(L, {service, Services}) ->
     service(L, Services, []).
 
-service([], _Services, Res) ->
+service([], _, Res) ->
     Res;
 service([X|Xs], Services, Res) ->
     case (lists:keyfind(<<"service">>, 1, X)) of
-	{<<"service">>, Service} ->
-	    case(is_service(Services, Service)) of
-		true ->
+	{<<"service">>, CurrentService} ->
+	    case(lists:usort([true || Y <- Services, Y =:= CurrentService])) of
+		[true] ->
 		    service(Xs, Services, [X|Res]);
-		false ->
-		    service(Xs, Services, X)
+		_ ->
+		    service(Xs, Services, Res)
 	    end;
 	false ->
 	    service(Xs, Services, Res)
     end.
 
-%% @doc Helperfunction for the service filter.
-is_service([], _CurrentService) ->
-    false;
-is_service([CurrentService|_Xs], CurrentService) ->
-    true;
-is_service([_X|Xs], CurrentService) ->
-    is_service(Xs, CurrentService).
-
 %% @doc
-in_timestamp(L, StartTime, EndTime) ->
-    in_timestamp(L, StartTime, EndTime, []).
+timeframe(L, false) ->
+    L;
+timeframe(L, {timeframe, StartTime, EndTime}) ->
+    timeframe(L, StartTime, EndTime, []).
 
-in_timestamp([], _, _, Res) ->
+timeframe([], _, _, Res) ->
     Res;
-in_timestamp([X|Xs], StartTime, EndTime, Res) ->
+timeframe([X|Xs], StartTime, EndTime, Res) ->
     {<<"timestamp">>, TimeStamp} = lists:keyfind(<<"timestamp">>, 1, X),
     case(timeeval(TimeStamp, StartTime, EndTime)) of
 	true ->
-	    in_timestamp(Xs, StartTime, EndTime, [X | Res]);
+	    timeframe(Xs, StartTime, EndTime, [X | Res]);
 	false ->
-	    in_timestamp(Xs, StartTime, EndTime, Res)
+	    timeframe(Xs, StartTime, EndTime, Res)
     end.
 
 timeeval(TimeStamp, StartTime, _) when TimeStamp >= StartTime ->
@@ -143,9 +135,13 @@ order_by_value(L) ->
       [{Key, Value} || [{<<"key">>, Key}, {<<"value">>, Value}] <- L])).
 
 %% @doc Limits a list to be as long as the Num says
-limit_result(Num, L) ->
-	{R, _} = lists:split(Num, L),
-	R.
+limit_result(L, false) ->
+    L;
+limit_result(L, {limit, Num}) when length(L) > Num->
+    {R, _} = lists:split(Num, L),
+    R;
+limit_result(L, _) ->
+    L.
 
 %%
 group_by_subkey(L) ->
