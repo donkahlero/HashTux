@@ -12,7 +12,7 @@
 -behaviour(gen_server).
 
 -export([init/1, terminate/2, code_change/3,
-				handle_info/2, handle_cast/2]).
+				handle_info/2, handle_cast/2, handle_call/3]).
 -export([start_link/0]).
 
 
@@ -54,6 +54,13 @@ handle_info(Msg, State) ->
 	io:format("main_flow_worker: Received info too late: ~p~n", [Msg]),
 	{noreply, State}.
 
+%% ========================================================
+
+handle_call(_Msg, _From, State) ->
+	{noreply, State}.
+
+
+%% ========================================================
 
 % Cast: heartbeat
 handle_cast({heartbeat, SourcePID, Term, Options}, State) -> 
@@ -70,7 +77,7 @@ handle_cast({heartbeat, SourcePID, Term, Options}, State) ->
 	{stop, normal, State};
 
 % Cast: search or update
-handle_cast({RequestType, SourcePID, Term, Options}, State) -> 
+handle_cast({_RequestType, SourcePID, Term, Options}, State) -> 
 	io:format("main_flow_worker: Term: ~p~nmain_flow_worker: "
 			 ++ "Options:~p~n", [Term, Options]),
 	
@@ -78,7 +85,7 @@ handle_cast({RequestType, SourcePID, Term, Options}, State) ->
 	% Then take approperiate action (call miners if needed) and send a reply
 	% to whoever made the request in the first place, presumably some process
 	% running the http_handler...
-	CacheResult = cache_query(Term, RequestType, Options),
+	CacheResult = cache_query(Term, Options),
 	case CacheResult of
 		no_miner_res ->
 			% The miners have executed lately but found nothing, return []
@@ -99,9 +106,12 @@ handle_cast({RequestType, SourcePID, Term, Options}, State) ->
 	{stop, normal, State}.
 
 
+%% ========================================================
+
+
 % Helper functions that checks if there is anything cached in the DB very recently
 % (such as the last minute) by the heartbeat mechanism 
-cache_query(Term, RequestType, Options) ->
+cache_query(Term, Options) ->
 	% TODO: Good candidate for storing in a config file on refactoring
 	% The amount of seconds for which we consider cached data to still
 	% be up to date.
