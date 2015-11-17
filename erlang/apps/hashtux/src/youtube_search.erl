@@ -2,8 +2,6 @@
 
 -export([search/2]).
 
-%% To be included in CONFIG FILE!
--define(SERVER_KEY, "AIzaSyAT27JOYa8DAQKFK_2vPfxWagLxMXqbXFY").
 
 % @doc Send GET request to Youtube Data API filtering results by the given Keyword
 % @params 
@@ -53,6 +51,7 @@ search(HashTag, [{content_type, Types}, {language, Language}]) ->
 			[]																						% return empty list (no data sent to DB)
 	end.
 
+% @doc sends a GET request for a given keyword
 query_youtube_API(HashTag) ->
 
 	Endpoint = "https://www.googleapis.com/youtube/v3/search?",             %% endpoint for ITEM-LIST
@@ -69,7 +68,7 @@ query_youtube_API(HashTag) ->
 
 	Type = "type=video&videoCaption=closedCaption",							%% filter only VIDEO 'resource type' that contain capion
 
-	Key = "key=" ++ ?SERVER_KEY,											%% API KEY parameter
+	Key = "key=" ++ aux:get_youtube_keys(),											%% API KEY parameter
 
 	Url = Endpoint ++ Part ++ "&" ++ Q ++ "&" ++ After ++ "&" ++ Type ++ "&" ++ Key,
 
@@ -106,7 +105,7 @@ video_search(VideoId) ->
 
     Id = "id=" ++ VideoId,													%% id parameter
 
-    Key = "key=" ++ ?SERVER_KEY,
+    Key = "key=" ++ aux:get_youtube_keys(),
 
 	Url = Endpoint ++ Id ++ "&" ++ Key ++ "&" ++ Part,
 
