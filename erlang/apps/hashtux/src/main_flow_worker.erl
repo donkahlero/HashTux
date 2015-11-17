@@ -61,6 +61,7 @@ handle_cast({heartbeat, SourcePID, Term, Options}, State) ->
 	% request, that the client can "pick up" later. No data should be 
 	% returned to the client right now, and we don't wait for a reply.
 	miner_cast_only(Term, Options),
+	io:format("main_flow_worker: Heartbeat for term ~p~n", [Term]),
 	
 	% For simplicity, we just return [] to the using code
 	SourcePID ! {self(), []}, 	
