@@ -3,6 +3,13 @@
 % Then add other DB instances as new tuples in the "external" list.
 %
 [
+{kernel,
+	[{distributed, [ { hashtux,
+					   30000,
+					   [hashtux@derkahler.de] } ]},
+	 {sync_nodes_mandatory, []},
+	 {sync_nodes_timeout, 30000}
+	]},
 {db_conf,[
 	{localdb,{"http://localhost:1994/", "hashtux", "grouptux"}},
 	{external, [{"http://tikser.se:1984/", "hashtux", "grouptux"}]}]},
