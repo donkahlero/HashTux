@@ -11,5 +11,12 @@ Specified when making a HTTP request to the erlang backend (See document on data
 - update: Used for subsequent (ajax) fetching, if the user keeps the browser open.
 - stats: Used to request statistical user habit data.  
 
-##Workload Distribution
-TOOD. 
+##Workload Distribution and Availability
+###DNS
+Our DNS solution means that a connecting client's web browser will connect to one of our available web servers. This in itself provides a layer of workload distribution. It also provides a mechanism for increased availability since if a web server goes down, the clients will connect to the web servers that are still running.
+###Web application
+Our web applications PHP code, through which all codes to the Erlang backend is made (even AJAX calls), will notice a timeout if the local or otherwise preferred Erlang http interface does not respond in time. It will then connect to an alternative Erlang node specified in its configuration.
+###Erlang
+(Ivo please write here)
+###Database
+(Jonas please write here)
