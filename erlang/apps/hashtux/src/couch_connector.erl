@@ -2,57 +2,52 @@
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% @doc CouchDB connector. Uses CouchDB's RESTful API. Covers just the most
 %% base level operations. Further abstractions are covered in other modules.
-%% @version 0.1
+%% @version 0.2
 %% -----------------------------------------------------------------------------
 %% | Sprint 1 // v0.1                                                          |
 %% | Added all necessary REST operations to our CouchDB.                       |
 %% -----------------------------------------------------------------------------
-%% -----------------------------------------------------------------------------
 %% | Sprint 4 // v0.2                                                          |
 %% | Added a post_request to be used for compressing the DB                    |
+%% | Requests to the database are more genereal now.                           |
+%% | -> Address needs to be passed                                             |
 %% -----------------------------------------------------------------------------
-
 -module(couch_connector).
+-version(0.2).
 
-%% These are macros describing the DB user, pass and address + port.
--define(URI, "derkahler.de").
--define(PORT, "1994").
--define(USER, "hashtux").
--define(PW, "grouptux").
--define(ADDR,"http://" ++ ?URI ++ ":" ++ ?PORT ++ "/").
+-export([get_info/0]).
+-export([put_request/3, get_request/1, delete_request/1, post_request/3]).
 
--export([get_info/0, put_request/3, get_request/1, delete_request/1, post_request/3]).
- -version("0.1").
-
-%% @doc Function creating a auth header for the HTTP request.
+%% @doc Function creating an http auth header
 auth_header(User, Pass) ->
-	            Encoded = base64:encode_to_string(lists:append([User,":",Pass])),
-		                    {"Authorization","Basic " ++ Encoded}.
+    Encoded = base64:encode_to_string(lists:append([User,":",Pass])),
+    {"Authorization","Basic " ++ Encoded}.
 
 %% @doc Function fetching the general information from the database.
 get_info() ->
-	?MODULE:get_request([]).
+    ?MODULE:get_request([]).
 
-%% @doc This function puts in a new DB or new document as well as adding fields to it.
-put_request(DocAddr, Content, Type) ->
-	Headers = [auth_header(?USER, ?PW), {"Content-Type", Type}],
-	Options = [{body_format, string}],
-	httpc:request(put, {?ADDR ++ DocAddr, Headers, Type, Content}, [], Options).
+%% @doc This function puts in a new DB or new document.
+put_request({Addr, User, Pass}, Content, Type) ->
+    Headers = [auth_header(User, Pass), {"Content-Type", Type}],
+    Options = [{body_format, string}],
+    httpc:request(put, {Addr, Headers, Type, Content}, [], Options).
 
-%% @doc This function gets the infromation from the DB. You can get general information of go deeper
-%% and get specific document and json files.
-get_request(DocAddr) ->
-	Headers = [auth_header(?USER, ?PW)],
-	Options = [{body_format, binary}],
-	httpc:request(get, {?ADDR ++ DocAddr, Headers}, [], Options).
+%% @doc This function fetches data from the database.
+get_request({Addr, User, Pass}) ->
+    Headers = [auth_header(User, Pass)],
+    Options = [{body_format, binary}],
+    httpc:request(get, {Addr, Headers}, [], Options).
 
 %% @doc This function deletes data from the DB.
-delete_request(DocAddr) ->
-	Headers = [auth_header(?USER, ?PW)],
-	Options = [{body_format, binary}],
-	httpc:request(delete, {?ADDR ++ DocAddr, Headers}, [], Options).
+delete_request({Addr, User, Pass}) ->
+    Headers = [auth_header(User, Pass)],
+    Options = [{body_format, binary}],
+    httpc:request(delete, {Addr, Headers}, [], Options).
 
-post_request(DocAddr, Content, Type) ->
-	Headers = [auth_header(?USER, ?PW), {"Content-Type", Type}],
-	Options = [{body_format, string}],
-	httpc:request(post, {?ADDR ++ DocAddr, Headers, Type, Content}, [], Options).
+%% @doc This function makes a POST req on the databse.
+%% This is mainly used for executing JSON formated Javascript code on the db.
+post_request({Addr, User, Pass}, Content, Type) ->
+    Headers = [auth_header(User, Pass), {"Content-Type", Type}],
+    Options = [{body_format, string}],
+    httpc:request(post, {Addr, Headers, Type, Content}, [], Options).
