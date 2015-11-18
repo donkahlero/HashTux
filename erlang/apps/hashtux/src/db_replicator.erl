@@ -7,24 +7,38 @@
 %% | Added functions to                                                        |
 %% | - Replicate the statistic database                                        |
 %% -----------------------------------------------------------------------------
-
 -module(db_replicator).
+-version(0.1).
 
 -export([start_link/0]).
 
-start_link() ->
-    {ok, spawn_link(fun() -> cleanup() end)}.
+%% Local Database params
+-define(ADDR, fun() -> {ok, {ADDR, _, _}} =
+              application:get_env(db_conf, localdb), ADDR end).
+-define(USER, fun() -> {ok, {_, USER, _}} =
+              application:get_env(db_conf, localdb), USER end).
+-define(PASS, fun() -> {ok, {_, _, PASS}} =
+              application:get_env(db_conf, localdb), PASS end).
 
-cleanup() ->
-    replicate_userstats(),
+%% @doc Starts the replication worker and links it to the calling process
+start_link() ->
+    {ok, spawn_link(fun() -> replicate() end)}.
+
+%% @doc Function to replicate the database in a given time interval
+replicate() ->
+    {ok, DBList} = application:get_env(db_conf, external),
+    replicate_userstats(DBList),
     %Replicate every 15 minutes
     timer:sleep(60000 * 15),
-    cleanup().
+    replicate().
 
 %% @doc Replaction function. Replicates the local database to a target database.
 %% This works for a cluster up to ~5 nodes. For more a tweaked connector is
 %% needed.
-replicate_userstats() ->
-    couch_connector:post_request("_replicate", 
-	"{\"source\":\"hashtux_userstats\",\"target\":\"http://hashtux:grouptux@tikser.se:1984/hashtux_userstats\"}",
-	"application/json").
+replicate_userstats([]) ->
+    ok;
+replicate_userstats([{Addr, User, Pass}|Xs]) ->
+    couch_connector:post_request({?ADDR() ++ "_replicate", User, Pass},
+                   "{\"source\":\"hashtux_userstats\",\"target\":\"" ++ Addr ++
+                   "hashtux_userstats\"}", "application/json"),
+    replicate_userstats(Xs).
