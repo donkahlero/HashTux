@@ -1,0 +1,11 @@
+% 
+% Check the correct port for localhost.
+% Then add other DB instances as new tuples in the "external" list.
+%
+[{db_conf,[
+	{localdb,{"http://localhost:1994/", "hashtux", "grouptux"}},
+	{external, [{"http://tikser.se:1984/", "hashtux", "grouptux"}]}]},
+{miner_conf, [
+	{whatever, here}
+]}
+].

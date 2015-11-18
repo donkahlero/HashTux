@@ -13,6 +13,7 @@ rel/example_project
 .concrete/DEV_MODE
 .rebar
 /website/nbproject/private/
+hashtux.config
 
 #NetBeans
 nbproject/private/
