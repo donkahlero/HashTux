@@ -91,7 +91,7 @@ get_val(Json, Field) ->
 %% @doc Function getting a UUID from the CouchDB
 get_uuid() ->
     {ok, {_HTTP, _Inf, Res}} = couch_connector:get_request({?ADDR() ++ "_uuids",
-                                                            ?USER, ?PASS}),
+                                                            ?USER(), ?PASS()}),
     [{<<"uuids">>, [UUID]}] = jsx:decode(Res),
     binary_to_list(UUID).
 
