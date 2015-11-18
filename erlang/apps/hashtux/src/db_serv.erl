@@ -18,6 +18,7 @@
 %% | Added the db statistic reader functions                                   |
 %% -----------------------------------------------------------------------------
 -module(db_serv).
+-version(0.3).
 
 -behavior(gen_server).
 
@@ -30,7 +31,7 @@
 %% | stop the server and get its current state.                                |
 %% -----------------------------------------------------------------------------
 %% @doc Start the gen_server and link it to the calling process.
-start_link() ->    
+start_link() ->
   gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 %% @doc Stop the db_serv
@@ -75,7 +76,7 @@ handle_call({add_doc, Content}, {From, _Ref}, State) ->
 %%% Add userstats to the database.
 handle_call({add_habit_doc, Content}, {From, _Ref}, State) ->
     {ok, Ref} = start_usww(),
-    gen_server:cast(Ref, {add_doc, Content, From}), 
+    gen_server:cast(Ref, {add_doc, Content, From}),
     {reply, Ref, State};
 %%% Delete a hashtag document in the database.
 handle_call({delete_hash, Hashtag}, {From, _Ref}, State) ->
@@ -125,26 +126,25 @@ code_change(_OldVsn, State, _Extra) ->
 %% This type of worker performs WRITE ONLY stuff.
 start_hww() ->
     ChildSpecs = {erlang:unique_integer(), {db_hash_writer, start_link, []},
-		  temporary, 5000, worker, [db_hash_writer]},
+                 temporary, 5000, worker, [db_hash_writer]},
     supervisor:start_child(db_hash_write_sup, ChildSpecs).
 
 %% @doc Function which starts a hashtag reader worker.
-%% This reader worker gets appended to the ht reader 
-%% supervisor. 
+%% This reader worker gets appended to the ht reader
+%% supervisor.
 start_hrw() ->
     ChildSpecs = {erlang:unique_integer(), {db_hash_reader, start_link, []},
-                  temporary, 5000, worker, [db_hash_reader]},
+                 temporary, 5000, worker, [db_hash_reader]},
     supervisor:start_child(db_hash_read_sup, ChildSpecs).
 
 %% @doc Function which starts a userstats writer worker.
 start_usww() ->
-    ChildSpecs = {erlang:unique_integer(), {db_userstats_writer, start_link,
-					    []},
+    ChildSpecs = {erlang:unique_integer(), {db_userstats_writer, start_link,[]},
                   temporary, 5000, worker, [db_userstats_writer]},
     supervisor:start_child(db_stats_write_sup, ChildSpecs).
 
+%% @doc Function which starts a userstarts reader worker.
 start_usrw() ->
-    ChildSpecs = {erlang:unique_integer(), {db_userstats_reader, start_link,
-                                            []},
+    ChildSpecs = {erlang:unique_integer(), {db_userstats_reader, start_link,[]},
                   temporary, 5000, worker, [db_userstats_reader]},
     supervisor:start_child(db_stats_read_sup, ChildSpecs).
