@@ -66,8 +66,8 @@ handle_call(_, _, _) ->
 %% @doc Write data to the userstats database.
 handle_cast({add_doc, Content, Rec}, State) ->
     UUID = couch_operations:get_uuid(),
-    couch_operations:doc_add({?ADDR ++ "hashtux_userstats/" ++ UUID,
-                              ?USER, ?PASS()}, Content),
+    couch_operations:doc_add({?ADDR() ++ "hashtux_userstats/" ++ UUID,
+                              ?USER(), ?PASS()}, Content),
     Rec ! {self(), true},
     {stop, normal, State}.
 
