@@ -12,16 +12,17 @@
 %% -----------------------------------------------------------------------------
 -module(db_filter).
 
--export([content_type/2, language/2, service/2, order_by_value/1, limit_result/2]).
--export([group_by_subkey/1, check_results/2, timeframe/2]).
+-export([content_type/2, language/2, service/2, order_by_value/1]).
+-export([limit_result/2, group_by_subkey/1, check_results/2, timeframe/2]).
 
-%% @doc Function checking if the miners cannot find something or there is just 
+%% @doc Function checking if the miners cannot find something or there is just
 %% nothing cached yet.
-check_results([[{<<"results">>, <<"no">>}, {<<"search_term">>, _}, {<<"timestamp">>, _}, {<<"options">>, Opt}] | _], Opts) ->
+check_results([[{<<"results">>, <<"no">>}, {<<"search_term">>, _},
+                {<<"timestamp">>, _}, {<<"options">>, Opt}] | _], Opts) ->
     case(lists:usort(foreach_opt(Opts, Opt, []))) of
-	[true] ->
-	    no_miner_res;
-	_ -> []
+        [true] ->
+            no_miner_res;
+        _ -> []
     end;
 check_results(_, _) ->
     [].
@@ -46,14 +47,16 @@ in_options([_|Xs], Opt) ->
 content_type(L, false) ->
     L;
 content_type(L, {content_type, CTypes}) ->
-    [X || X <- L, Y <- CTypes, lists:keyfind(<<"content_type">>, 1, X) == {<<"content_type">>, Y}].
+    [X || X <- L, Y <- CTypes,
+          lists:keyfind(<<"content_type">>, 1, X) == {<<"content_type">>, Y}].
 
 %% @doc Function filtering for the language of the content.
 %% Just one language is possible here.
 language(L, false) ->
     L;
 language(L, {language, Language}) ->
-    [X || X <- L, lists:keyfind(<<"language">>, 1, X) == {<<"language">>, Language}].
+    [X || X <- L,
+          lists:keyfind(<<"language">>, 1, X) == {<<"language">>, Language}].
 
 %% @doc Function for filtering the content for the service.
 %% One or more services are possible: twitter, instagram and
@@ -62,8 +65,8 @@ service(L, false) ->
     L;
 service(L, {service, Services}) ->
     [X || X <- L, Y <- Services, lists:keyfind(<<"service">>, 1, X) == {<<"service">>, Y}].
-    
-%% @doc
+
+%% @doc Function to check if the elemnts in the doc are in a given timeframe.
 timeframe(L, false) ->
     L;
 timeframe(L, {timeframe, StartTime, EndTime}) ->
@@ -74,10 +77,10 @@ timeframe([], _, _, Res) ->
 timeframe([X|Xs], StartTime, EndTime, Res) ->
     {<<"timestamp">>, TimeStamp} = lists:keyfind(<<"timestamp">>, 1, X),
     case(timeeval(TimeStamp, StartTime, EndTime)) of
-	true ->
-	    timeframe(Xs, StartTime, EndTime, [X | Res]);
-	false ->
-	    timeframe(Xs, StartTime, EndTime, Res)
+        true ->
+            timeframe(Xs, StartTime, EndTime, [X | Res]);
+        false ->
+            timeframe(Xs, StartTime, EndTime, Res)
     end.
 
 timeeval(TimeStamp, StartTime, _) when TimeStamp >= StartTime ->
@@ -101,13 +104,14 @@ limit_result(L, {limit, Num}) when length(L) > Num->
 limit_result(L, _) ->
     L.
 
-%%
+%% @doc Function which orders the list by the value and not by the key.
 group_by_subkey(L) ->
     KVs = [{Key, Value} ||
-	  [{<<"key">>, [_Timestamp, Key]}, {<<"value">>, Value}] <- L],
+          [{<<"key">>, [_Timestamp, Key]}, {<<"value">>, Value}] <- L],
     [[{binary:list_to_bin("key"), Key}, {binary:list_to_bin("value"), Value}] ||
     {Key, Value} <- sum_values(lists:keysort(1, KVs), [])].
 
+%% @doc Function which sums the values in a key value list.
 sum_values([], Res) ->
     Res;
 sum_values([{X, N} | Xs], [{X, M} | Ys]) ->
