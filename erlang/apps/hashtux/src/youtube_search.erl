@@ -2,8 +2,9 @@
 
 -export([search/2]).
 
-%% To be included in CONFIG FILE!
--define(SERVER_KEY, "AIzaSyAT27JOYa8DAQKFK_2vPfxWagLxMXqbXFY").
+-define(SEARCH_URL, "https://www.googleapis.com/youtube/v3/search?").		% Endpoint for a Search:list request to Youtube Data API
+-define(VIDEOS_URL, "https://www.googleapis.com/youtube/v3/videos?").		% Endpoint for a Videos:list request to Youtube Data API
+
 
 % @doc Send GET request to Youtube Data API filtering results by the given Keyword
 % @params 
@@ -53,9 +54,8 @@ search(HashTag, [{content_type, Types}, {language, Language}]) ->
 			[]																						% return empty list (no data sent to DB)
 	end.
 
+% @doc sends a GET request for a given keyword
 query_youtube_API(HashTag) ->
-
-	Endpoint = "https://www.googleapis.com/youtube/v3/search?",             %% endpoint for ITEM-LIST
 
 	Part = "part=snippet&fields=items(id(videoId))",						%% Partial Request: request only ID 'field' in the Snippet 'part'
 
@@ -69,9 +69,9 @@ query_youtube_API(HashTag) ->
 
 	Type = "type=video&videoCaption=closedCaption",							%% filter only VIDEO 'resource type' that contain capion
 
-	Key = "key=" ++ ?SERVER_KEY,											%% API KEY parameter
+	Key = "key=" ++ aux:get_youtube_keys(),											%% API KEY parameter
 
-	Url = Endpoint ++ Part ++ "&" ++ Q ++ "&" ++ After ++ "&" ++ Type ++ "&" ++ Key,
+	Url = ?SEARCH_URL ++ Part ++ "&" ++ Q ++ "&" ++ After ++ "&" ++ Type ++ "&" ++ Key,
 
 	case httpc:request(Url) of 
 		{ok, Result} -> 
@@ -100,15 +100,13 @@ query_youtube_API(HashTag) ->
 % @doc sends a GET request for a specific videoId 
 video_search(VideoId) ->
 
-	Endpoint = "https://www.googleapis.com/youtube/v3/videos?",             %% endpoint for DETAILS
-
     Part = "part=snippet,statistics,player,status",							%% request details and statistics 'fields'
 
     Id = "id=" ++ VideoId,													%% id parameter
 
-    Key = "key=" ++ ?SERVER_KEY,
+    Key = "key=" ++ aux:get_youtube_keys(),
 
-	Url = Endpoint ++ Id ++ "&" ++ Key ++ "&" ++ Part,
+	Url = ?VIDEOS_URL ++ Id ++ "&" ++ Key ++ "&" ++ Part,
 
 	case httpc:request(Url) of 
 		{ok, Result} -> 
