@@ -8,7 +8,7 @@
         
         /* We see if this is proper JSON */
         $options = json_decode($options_json, true);
-        
+               
         /* See if request type is specified, otherwise assume update *//*
         if (isset($_GET['request_type'])) {
             $request_type = $_GET['request_type'];
@@ -19,7 +19,6 @@
         /* Only handle if the search term is specified */
         if (isset($_GET['search']) && $_GET['search'] != "") {          
             $search = $_GET['search'];
-            $request_data = build_custom_request($options);
-            echo request($search, $request_data);
+            echo request($search, $options);
         } 
 ?>
