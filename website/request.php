@@ -73,7 +73,8 @@ function build_request_options($request_type = "search", $services = null,
 	);
 	// Filter out any null values so they're not even sent
 	$options = array_filter($options);
-       
+      
+	return $options;
 }
 
 
