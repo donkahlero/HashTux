@@ -6825,8 +6825,7 @@ button.close {
     top: 0;
 }
 .fixalert {
-    padding: 10px !important;
-    margin-top:12px !important;
+    margin-top:12px;
     display: none;
 }
 .row-grid-12 { height: 100%; }
@@ -6967,4 +6966,13 @@ button.close {
     margin-top: 20px;
     border: none; 
     border-radius: 0;
+}
+
+.gridalert {
+    padding: 10px;
+    display: none;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
 }
