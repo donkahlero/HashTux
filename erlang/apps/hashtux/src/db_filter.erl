@@ -46,41 +46,14 @@ in_options([_|Xs], Opt) ->
 content_type(L, false) ->
     L;
 content_type(L, {content_type, CTypes}) ->
-    content_type(L, CTypes, []).
-
-content_type([], _CTypes, Res) ->
-    Res;
-content_type([X|Xs], CTypes, Res) ->
-    case (lists:keyfind(<<"content_type">>, 1, X)) of
-	{<<"content_type">>, CType} ->
-	    case (lists:usort([true || Y <- CTypes, Y =:= CType])) of
-		[true] ->
-		    content_type(Xs, CTypes, [X|Res]);
-		_ ->
-		    content_type(Xs, CTypes, Res)
-	    end;
-	false ->
-	    content_type(Xs, CTypes, Res)
-    end.
+    [X || X <- L, Y <- CTypes, lists:keyfind(<<"content_type">>, 1, X) == {<<"content_type">>, Y}].
 
 %% @doc Function filtering for the language of the content.
 %% Just one language is possible here.
 language(L, false) ->
     L;
-language(L, {language, Lang}) ->
-    language(L, Lang, []).
-
-language([], _Lang, Res) ->
-    Res;
-language([X|Xs], Lang, Res) ->
-    CurrentLang = lists:keyfind(<<"language">>, 1, X),
-    %%BinLang = binary:list_to_bin(Lang),
-    case (CurrentLang) of
-	{_, Lang} ->
-	    language(Xs, Lang, [X|Res]);
-	_ ->
-	    language(Xs, Lang, Res)
-    end.
+language(L, {language, Language}) ->
+    [X || X <- L, lists:keyfind(<<"language">>, 1, X) == {<<"language">>, Language}].
 
 %% @doc Function for filtering the content for the service.
 %% One or more services are possible: twitter, instagram and
@@ -88,23 +61,8 @@ language([X|Xs], Lang, Res) ->
 service(L, false) ->
     L;
 service(L, {service, Services}) ->
-    service(L, Services, []).
-
-service([], _, Res) ->
-    Res;
-service([X|Xs], Services, Res) ->
-    case (lists:keyfind(<<"service">>, 1, X)) of
-	{<<"service">>, CurrentService} ->
-	    case(lists:usort([true || Y <- Services, Y =:= CurrentService])) of
-		[true] ->
-		    service(Xs, Services, [X|Res]);
-		_ ->
-		    service(Xs, Services, Res)
-	    end;
-	false ->
-	    service(Xs, Services, Res)
-    end.
-
+    [X || X <- L, Y <- Services, lists:keyfind(<<"service">>, 1, X) == {<<"service">>, Y}].
+    
 %% @doc
 timeframe(L, false) ->
     L;
