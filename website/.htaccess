@@ -11,6 +11,7 @@ RewriteCond %{REQUEST_URI} !^/css/(.+)$
 RewriteCond %{REQUEST_URI} !^/js/(.+)$
 RewriteCond %{REQUEST_URI} !^/design.php$
 RewriteCond %{REQUEST_URI} !^/ajax.php$
+RewriteCond %{REQUEST_URI} !^/ajax_post.php$
 RewriteCond %{REQUEST_URI} !^/favicon.ico$
 RewriteCond %{REQUEST_URI} !^/stats.php$
 RewriteCond %{REQUEST_URI} !^/googlemaps.php$
