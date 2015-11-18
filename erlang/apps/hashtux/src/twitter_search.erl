@@ -2,11 +2,8 @@
 
 -export([search_hash_tag/2]).
 
-%% Define macros for Application Authentication
+%% Twitter Search API Endpoint
 -define(URL, "https://api.twitter.com/1.1/search/tweets.json").
--define(CONSUMER, {"8zASL19iVZ6IpMa0imBbRDJlo", "u4BL8BIGb6NllmZJwlnO2zpf0H5vzv2wMP4s5aYquZvBFEd0ux", hmac_sha1}).
--define(ACCES_TOKEN, "3947085676-R5GaAeZAz2ns7wEcfZZ9Fw4Npt62kS4irnkgHcT").
--define(ACCES_TOKEN_SECRET, "W1raFk3kqVEj38QFjDus2qCfk8IU8ilWgfTqAgk3T5Lv6").
 
 % ADVANCED SEARCH: Filtered by Language and Type [text, image, video].
 search_hash_tag(HashTag, [{content_type, Types}, {language, Lang}]) -> 
@@ -26,10 +23,14 @@ search_hash_tag(HashTag, [{content_type, Types}, {language, Lang}]) ->
 
     io:format("Twitter: TYPES: ~p~n", [Types]),
     % Set content_type filter
-    TypeFilter = [binary_to_list(Z) || Z <- Types],    
+    TypeFilter = [binary_to_list(Z) || Z <- Types],  
+
+    % Get Authorization Credentials
+    {AccessToken, AccessTokenSecret, ConsumerKey, ConsumerKeySecret} = aux:get_twitter_keys(),
+    Consumer = {ConsumerKey, ConsumerKeySecret, hmac_sha1},  
 
     % Use oauth:sign/6 to generate a list of signed OAuth parameters, 
-    SignedParams = oauth:sign("GET", ?URL, Options, ?CONSUMER, ?ACCES_TOKEN, ?ACCES_TOKEN_SECRET),
+    SignedParams = oauth:sign("GET", ?URL, Options, Consumer, AccessToken, AccessTokenSecret),
 
     % Send authorized GET request and get result as binary
     Res = ibrowse:send_req(oauth:uri(?URL,SignedParams), [], get,[], [{response_format, binary}]),
@@ -50,7 +51,6 @@ search_hash_tag(HashTag, [{content_type, Types}, {language, Lang}]) ->
     ResLength = length(FilteredRes),
     io:format("TWITTER ADVANCED SEARCH RETURNED ~p TWEETS~n", [ResLength]),
 
-    %% **** ADD CALL TO DB Here!!!*****
     gen_server:call(db_serv, {add_doc, FilteredRes}),            %% Sends the document to DB
 
     % Return Filtered Result
