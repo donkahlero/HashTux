@@ -38,6 +38,8 @@
             var savedTypes = [];
             var savedServices = [];
             
+            var screenFrozen = false;
+            
             var items = [];         // An array to store all items fetched
             var displayed = [];     // An array to temporarily store the currently displayed items
             
@@ -125,7 +127,6 @@
                     data: JSON.stringify(options),
                     
                     success: function (myString) {
-                        alert(myString);
                         parse_to_items(myString);
                     }
                 });
@@ -374,7 +375,7 @@
                     items.splice(index, 1);
                 }
             }
-            
+            //ScreenFreeze is funtion that go through a displayed items and 
             function screenFreeze() {
                 
                 for(i = 0; i < displayed.length; i++)
@@ -402,7 +403,8 @@
                     
                 }
                 
-                $('#grid').css('border', '1px solid #FFF')
+                $('#grid').css('border', '1px solid #FFF');
+                screenFrozen = true;
             }
             
             function unfreeze()
@@ -415,6 +417,7 @@
                 }
                 
                 $('#grid').css('border', '');
+                screenFrozen = false;
             }
 
             function tileFreeze(){
@@ -438,11 +441,11 @@
                     }
                	}
             }
-            
+
             function refresh() 
             {
                 
-                if(items.length > 0)
+                if(items.length > 0 && !screenFrozen)
                 {
                 
                     var newIndex = Math.floor((Math.random() * items.length));
@@ -556,7 +559,36 @@
                             
                 }
             }
-       
+             //Handles a keyboard input in this case a space.
+             //When pressed it trigger screenFreeze() and  togglePlay();
+            $(function() {
+              $(document).keypress(function(e){
+            	if ((e.which && e.which == 32) || (e.keyCode && e.keyCode == 32)) {
+            	  togglePlay();
+            	  screenFreeze();
+            	  return false;
+            	  } else {
+            	  return true;
+            	  }
+            	  });
+            	$('').click(function(){   //Extra onclick function incase we decide to use a button. 
+            	togglePlay();             
+            	screenFreeze();
+            	return false;
+            	});
+            // This function animates the play and pause pictures 
+            // The two pictures fade in and out. 
+            function togglePlay(){
+            	var $elem = $('#player').children(':first');
+            	$elem.stop()
+            	.show()
+            	.animate({'marginTop':'-175px','marginLeft':'-175px','width':'350px','height':'350px','opacity':'0'},function(){
+            	$(this).css({'width':'100px','height':'100px','margin-left':'-50px','margin-top':'-50px','opacity':'1','display':'none'});
+            	});
+            	$elem.parent().append($elem);
+            	}
+            	});
+            
             function showField() {
                 $('#sField').fadeIn(500);
                 $('#searchBtn').hide();
@@ -904,6 +936,12 @@
                                 style="float:right; margin-right: 15px;" onclick="showField()">
                             S
                         </button>
+                        <div class="centered" id="player">
+                            <img id="pause" src="http://codropspz.tympanus.netdna-cdn.com/codrops/wp-content/uploads/2010/01/pause1-150x150.png" width="100" height="100" style="display:none;"/>
+                            <img id="play" src="http://codropspz.tympanus.netdna-cdn.com/codrops/wp-content/uploads/2010/01/play1-150x150.png" width="100" height="100" style="display:none;"/>
+                             
+                       </div>
+                        
                     </div>
                 </div>
             </div>
