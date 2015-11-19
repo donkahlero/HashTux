@@ -28,18 +28,22 @@ start_link() ->
 
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
-	%% For now, start the HTTP handler here.
-	%% Later, we probably will just start a sub-supervisor for each task
-	%% (mining, db handling and http handling).
+	io:format("hashtux_sup: Started the top level supervisor! Welcome to hashtux.~n~n"),
+	%%
+	%% The cowboy HTTP handler is already set up.
+	%%
+	%% Here we can start supervisors responsible for the sub-task
+	%% data fetching, DB servers and main program flow
 	
-	Dispatch = cowboy_router:compile([
-        {'_', [{'_', http_handler, []}]}
-    ]),
-    cowboy:start_http(my_http_listener, 100, [{port, 8080}],
-        [{env, [{dispatch, Dispatch}]}]
-    ),
-	io:format("~n~nStarted the cowboy http_handler~n~n", []),
-    
+	%% Start the DB supervisor
+	db_sup:start_link(),
+	
+	%% Start the miner supervisor
+	miner_sup:start_link(),
+	
+	%% Start the main flow supervisor
+	main_flow_sup:start_link(),
+	
 	{ok, { {one_for_all, 0, 1}, []} }.
 
 %%====================================================================
