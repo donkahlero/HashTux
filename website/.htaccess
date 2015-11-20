@@ -1,0 +1,25 @@
+RewriteEngine on
+
+
+#
+# Everything that should not be rewritten gets an exception rule
+#
+
+RewriteCond %{REQUEST_URI} !^/$ 
+RewriteCond %{REQUEST_URI} !^/index.php$ 
+RewriteCond %{REQUEST_URI} !^/css/(.+)$ 
+RewriteCond %{REQUEST_URI} !^/js/(.+)$
+RewriteCond %{REQUEST_URI} !^/design.php$
+RewriteCond %{REQUEST_URI} !^/ajax.php$
+RewriteCond %{REQUEST_URI} !^/ajax_post.php$
+RewriteCond %{REQUEST_URI} !^/favicon.ico$
+RewriteCond %{REQUEST_URI} !^/stats.php$
+RewriteCond %{REQUEST_URI} !^/googlemaps.php$
+
+#
+# All other requests are handled by search.php, the requested path is appended as a parameter
+# followed by the rest of the query string if present
+#
+
+RewriteRule ^(.+)$ search.php?search=$1 [QSA,L]
+
