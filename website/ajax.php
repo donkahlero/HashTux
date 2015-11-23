@@ -1,4 +1,14 @@
 <?php
+	/*
+	 * Used for making AJAX calls to the Erlang backend. By querying this file
+	 * and therefore using the request method defined in request.php instead of
+	 * directly connecting to the backend, we can append some details
+	 * to the request (such as user habit data.
+	 * 
+	 * So obviously we just ouput the response (JSON from Erlang backend) and
+	 * nothing else from this file.
+	 */
+
 	/* Start a new session or resume if the client has a cookie ;) */
 	session_start();
 	require_once ("request.php");
