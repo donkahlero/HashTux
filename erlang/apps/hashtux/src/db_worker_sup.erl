@@ -1,3 +1,6 @@
+%% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
+%% @author Niklas le Comte <niklas.lecomte@hotmail.com>
+%% Supervisor sceleton for the workers.
 -module(db_worker_sup).
 
 -behavior(supervisor).
