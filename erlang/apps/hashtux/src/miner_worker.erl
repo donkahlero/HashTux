@@ -67,6 +67,7 @@ handle_call(_Request, _From, S) ->
 
 %%
 send_results(Pid, [], Term, Options) ->
+	io:format("Results returned from search: ~p~n", [[]]),	
 	case get_value(request_type, Options) of
 		<<"search">> -> 
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
@@ -78,6 +79,7 @@ send_results(Pid, [], Term, Options) ->
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
 	end;
 send_results(Pid, Results, _Term, Options) ->
+	io:format("Results returned from search: ~p~n", [Results]),
 	case get_value(request_type, Options) of
 		<<"search">> -> 
 			Pid ! {self(), Results};
@@ -91,12 +93,14 @@ send_results(Pid, Results, _Term, Options) ->
 %% 
 % no options
 run_search(Term, []) -> 
+	io:format("WORKER: Running search...~n"),
 	ContType = {content_type, get_cont_type()},
 	Lang = {language, []},
 	L = get_results(Term, get_services([]), ContType, Lang),
 	lists:append(L);
 % with options
 run_search(Term, Options) ->
+	io:format("WORKER: Running search...~n"),
 	% get the options
 	Services = case lists:keyfind(service, 1, Options) of
 					{_K1, V1} -> get_services(V1);
@@ -119,6 +123,7 @@ run_search(Term, Options) ->
 %% available. The search is performed in parallel for each service.
 %%
 get_results(Term, Services, ContType, Lang) ->
+	io:format("WORKER: Getting results...~n"),
 	F = fun(Pid, X) -> spawn(fun() -> 
 									Pid ! {self(), 
 									search_services({X, {Term, ContType, Lang}})} 
@@ -131,6 +136,7 @@ get_results(Term, Services, ContType, Lang) ->
 %% @doc Calls the appropriate search services to perform a search.
 %%
 search_services({instagram, {Term, ContType, _Lang}}) ->
+	io:format("WORKER: Calling ig_search...~n"),
 	ig_search:search(Term, [ContType]);
 search_services({twitter, {Term, ContType, Lang}}) ->
 	twitter_search:search_hash_tag(Term, [ContType, Lang]);
