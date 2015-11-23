@@ -2,7 +2,7 @@
 
 -export([extract/2, atom_to_binarystring/1]).
 -export([extract_youtube_ids/1, parse_youtube_video/2, clean_result/1, is_language/2]).						% YOUTUBE Functions
--export([is_content_type/2, parse_tweet_response_body/2]).																				% TWITTER Functions
+-export([filter_by_content_type/2, parse_tweet_response_body/2]).																				% TWITTER Functions
 
 % ****************************************
 % @doc A parser for decoded JSON Items
@@ -262,9 +262,9 @@ format_single_media(Media) ->
 
     {Media_Url, Media_Type}.
 
-% @doc Tells if a given Tweet feed is of one of the types (content-types: text, image, video) included in the list TypeFilter.
-is_content_type(Status, TypeFilter) -> 
+% @doc Tells if a given Tweet feed is of one of the types (content-types: text, image, video) included in the list AllowedTypes.
+filter_by_content_type(Status, AllowedTypes) -> 
 
 	Extracted_CT = binary_to_list(extract_from_node(<<"content_type">>, Status)),
 
-	lists:member(Extracted_CT, TypeFilter).
+	lists:member(Extracted_CT, AllowedTypes).
