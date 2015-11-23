@@ -10,6 +10,7 @@
 
 
 search(Term, Options) ->
+	io:format("IG_SEARCH: Now handling term ~p~n", [Term]),
 	Token = get_token(),
 	Url = ?URL ++ Term ++ ?TAIL ++ Token,
 	case httpc:request(Url) of

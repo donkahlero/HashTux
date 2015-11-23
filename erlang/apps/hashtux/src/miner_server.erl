@@ -23,7 +23,8 @@
 %% for now register as local -> change later
 %% no arguments passed here to callback function init/1
 start_link() ->	
-	gen_server:start_link({local, miner_server}, ?MODULE, [], []).
+	io:format("~nMINER_SERVER: Starting...~n"),
+	gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 
 %% for stopping the server - asynchronious call
@@ -34,6 +35,7 @@ stop() ->
 %% for requesting a search
 search(Term, Options) ->
 	gen_server:call(?MODULE, {search, Term, Options}).
+
 
 
 
@@ -54,7 +56,7 @@ init([]) ->
 
 %% for abnormal termination
 terminate(Reason, _State) ->
-	io:format("STOPPING:miner_server, REASON:~p~n", [Reason]),
+	io:format("~nMINER_SERVER: Stopping...~nREASON:~p~n", [Reason]),
 	ok.
 
 
@@ -65,8 +67,9 @@ code_change(_PrevVersion, State, _Extra) ->
 
 %% handles the down message received from the miner worker
 %% when it has finished with the task (or not)
-handle_info({'DOWN', Ref, process, _Pid, _}, 
+handle_info({'DOWN', Ref, process, _Pid, Reason}, 
 						S=#state{limit=N, refs=Refs}) ->
+	io:format("~nMINER_SERVER: Worker stopping for reason: ~p~n", [Reason]),
 	case gb_sets:is_element(Ref, Refs) of
 		true ->
 			NewRefs = gb_sets:delete(Ref, Refs),
@@ -76,13 +79,15 @@ handle_info({'DOWN', Ref, process, _Pid, _},
 			{noreply, S}
 	end;
 % all other messages -> ignored
-handle_info(_Msg, S) ->
+handle_info(Msg, S) ->
+	io:format("~nMINER_SERVER: Unknown info message: ~p~n", [Msg]),
 	{noreply, S}.
 
 
 %% handles asynchronous messages
 handle_cast(Msg, State) ->
-	{noreply, Msg, State}.	
+	io:format("~nMINER_SERVER: Unknown cast message: ~p~n", [Msg]),
+	{reply, Msg, State}.	
 
 
 %% handles synchronous messages, search request
@@ -90,10 +95,13 @@ handle_call({search, Term, Options}, From,
 						S=#state{limit=N, refs=R}) when N > 0 ->
 	{ok, Pid} = start_worker(),
 	Ref = erlang:monitor(process, Pid),
-	gen_server:cast(Pid, {From, Term, Options}),
+	io:format("~nMINER_SERVER: Casting message to worker...~n"),
+	{To, _} = From,
+	gen_server:cast(Pid, {To, Term, Options}),
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
 	{reply, {ok, Pid}, NewS};
 % when too many workers running
+% TODO: send a message to remote servers for help
 handle_call({search, Term, Options}, _From, 
 						S=#state{limit=N}) when N =< 0 ->
 	{reply, {no_alloc, {Term, Options}}, S};
@@ -107,6 +115,13 @@ start_worker() ->
 	ChildSpec = {erlang:unique_integer(), {miner_worker, start_link, []},
 							temporary, 5000, worker, [miner_worker]},
 	supervisor:start_child(miner_worker_sup, ChildSpec).
+
+
+
+
+
+
+
 
 
 

@@ -16,8 +16,8 @@
 %% ===================================================================
 
 start_link() ->
-	io:format("starting miner_worker_sup~n"),
-  supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+	io:format("~nMINER_WORKER_SUP: Starting...~n"),
+  	supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 %% ===================================================================
 %% Supervisor callbacks

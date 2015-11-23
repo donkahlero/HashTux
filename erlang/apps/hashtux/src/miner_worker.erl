@@ -27,7 +27,8 @@ init([]) ->
 
 
 %%
-terminate(_Reason, _State) -> ok.
+terminate(_Reason, _State) -> 
+	ok.
 
 
 %% 
@@ -37,27 +38,28 @@ code_change(_PrevVersion, State, _Extra) ->
 
 %%
 handle_info(_Msg, S) -> 
-	{noreply, S}.
+	{stop, normal, S}.
 
 
 %%
 %% no options
-handle_cast({{Pid, _Ref}, Term, Options}, State) ->
+handle_cast({To, Term, Options}, State) ->
+	io:format("WORKER [~p]: Message cast received in worker...~n", [self()]),
 	% get results
+	io:format("WORKER [~p]: Getting results...~n", [self()]),
 	Results = run_search(Term, Options),
 	% send to original caller								
 	%Pid ! {self(), Results},	
-	send_results(Pid, Results, Term, Options),
+	io:format("WORKER [~p]: Results received. Sending back...~n", [self()]),
+	send_results(To, Results, Term, Options),
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	% stop this worker
-	{stop, normal, State};
-handle_cast(_Request, State) ->
 	{stop, normal, State}.
 
 
 %%
-handle_call(_Request, _From, S) -> 
-	{noreply, S}.
+handle_call(_Msg, _From, S) -> 
+	{stop, normal, S}.
 
 
 %%% ============================================================================
@@ -66,23 +68,23 @@ handle_call(_Request, _From, S) ->
 
 
 %%
-send_results(Pid, [], Term, Options) ->
+send_results(To, [], Term, Options) ->
 	case get_value(request_type, Options) of
 		<<"search">> -> 
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
-			Pid ! {self(), []};
+			To ! [];
 		<<"update">> ->
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
-			Pid ! {self(), []};
+			To ! [];
 		<<"heartbeat">> ->
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
 	end;
-send_results(Pid, Results, _Term, Options) ->
+send_results(To, Results, _Term, Options) ->
 	case get_value(request_type, Options) of
 		<<"search">> -> 
-			Pid ! {self(), Results};
+			To ! Results;
 		<<"update">> ->
-			Pid ! {self(), Results};
+			To ! Results;
 		<<"heartbeat">> ->
 			ok
 	end.
@@ -97,6 +99,7 @@ run_search(Term, []) ->
 	lists:append(L);
 % with options
 run_search(Term, Options) ->
+	io:format("WORKER: Running search...~n"),
 	% get the options
 	Services = case lists:keyfind(service, 1, Options) of
 					{_K1, V1} -> get_services(V1);
@@ -119,6 +122,7 @@ run_search(Term, Options) ->
 %% available. The search is performed in parallel for each service.
 %%
 get_results(Term, Services, ContType, Lang) ->
+	io:format("WORKER: Getting results in parallel...~n"),
 	F = fun(Pid, X) -> spawn(fun() -> 
 									Pid ! {self(), 
 									search_services({X, {Term, ContType, Lang}})} 
@@ -131,6 +135,7 @@ get_results(Term, Services, ContType, Lang) ->
 %% @doc Calls the appropriate search services to perform a search.
 %%
 search_services({instagram, {Term, ContType, _Lang}}) ->
+	io:format("WORKER: Calling ig_search...~n"),
 	ig_search:search(Term, [ContType]);
 search_services({twitter, {Term, ContType, Lang}}) ->
 	twitter_search:search_hash_tag(Term, [ContType, Lang]);
