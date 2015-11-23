@@ -19,13 +19,15 @@ search(Term, Options) ->
 				DecodedRes -> 
 					DataList = get_value(<<"data">>, DecodedRes),
 					Results = parse_results(Term, DataList),
+					io:format("IG_SEARCH: Results are: ~p~n", [Results]),
 					L = get_value(content_type, Options),
 					case Results of 
 						[] ->
 							io:format("NOT WRITING TO DB~n"), 
 							ok;
 						R  ->
-							gen_server:call(db_serv, {add_doc, Results})
+							ok
+							%gen_server:call(db_serv, {add_doc, Results})
 					end,
 					filter_insta(Results, L)
 			catch _ -> []
