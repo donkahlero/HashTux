@@ -5,20 +5,23 @@
 %% Twitter Search API Endpoint
 -define(URL, "https://api.twitter.com/1.1/search/tweets.json").
 
-% ADVANCED SEARCH: Filtered by Language and Type [text, image, video].
+%%
+%% @doc Return list of Tweets containing the given HashTag.
+%% Tweets are stored in the DB and formatted in 'internal representation' form.
+%%
 search_hash_tag(HashTag, [{content_type, Types}, {language, Lang}]) -> 
     
-    io:format("TWITTER ADVANCED SEARCH CALLED~n"),
+    io:format("TWITTER ADVANCED SEARCH CALLED for Keyword ~p~n", [HashTag]),
 
-    Count = 30,         %% MAX number of results returned by 'GET' request.
+    Tag = "#" ++ HashTag,
 
     % List of available Languages
     LangParams = [<<"en">>, <<"es">>, <<"fr">>, <<"de">>, <<"sv">>, <<"bg">>, <<"it">>, <<"am">>],
 
     % Set API request parameters
     Options = case lists:member(Lang, LangParams) of
-        true -> [{q, HashTag}, {lang, binary_to_atom(Lang, latin1)}, {count, Count}, {result_type, recent}];
-        false -> [{q, HashTag}, {result_type, recent}]                  %% do not set Language parameter in API request
+        true -> [{q, Tag}, {lang, binary_to_atom(Lang, latin1)}, {count, 30}, {result_type, recent}];        %% Set 'language' and 'count' params
+        false -> [{q, Tag}, {result_type, recent}]
     end,
 
     io:format("Twitter: TYPES: ~p~n", [Types]),
@@ -45,16 +48,14 @@ search_hash_tag(HashTag, [{content_type, Types}, {language, Lang}]) ->
     LangResult = parser:parse_tweet_response_body(HashTag, DecodedBody),
 
     %% FILTER LangResult by content_type
-    FilteredRes = [H || H <- LangResult, parser:is_content_type(H, TypeFilter)],
+    FilteredRes = [H || H <- LangResult, parser:filter_by_content_type(H, TypeFilter)],
 
     % Debug Filtered Result size
     ResLength = length(FilteredRes),
     io:format("TWITTER ADVANCED SEARCH RETURNED ~p TWEETS~n", [ResLength]),
 
-    gen_server:call(db_serv, {add_doc, FilteredRes}),            %% Sends the document to DB
-
     % Return Filtered Result
-    FilteredRes.                                                 %% Return Result
+    [{filtered, FilteredRes}, {unfiltered, LangResult}].         %% Return Result
 
 % Print request status information
 print_response_info(Status) ->

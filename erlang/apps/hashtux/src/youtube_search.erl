@@ -30,22 +30,19 @@ search(HashTag, [{content_type, Types}, {language, Language}]) ->
 				%% Query API and Filter Result
 				true -> 
 					io:format("YOUTUBE: Client requested specific language\n"),
-					API_Res = query_youtube_API(HashTag),
+					API_Res = query_youtube_API(HashTag, 30),
 					Filtered_Res = [X || X <- API_Res, parser:is_language(X, Language)],
 					Res_Length = length(Filtered_Res),
 					io:format("YOUTUBE: Filtered Search returned ~p elements ~n", [Res_Length]),
-					gen_server:call(db_serv, {add_doc, Filtered_Res}),								% send result to database
-					Filtered_Res;																	% return result	
+					[{filtered, Filtered_Res}, {unfiltered, API_Res}];											% return result	
 				
 				%% Query API (no filter)
 				false -> 
 					io:format("YOUTUBE: Client requested ALL languages\n"),
-					%% **** ADD CALL TO DB Here!!!*****
-					Result = query_youtube_API(HashTag),
+					Result = query_youtube_API(HashTag, 10),
 					Res_Length = length(Result),
 					io:format("YOUTUBE: Simple Search returned ~p elements ~n", [Res_Length]),
-					gen_server:call(db_serv, {add_doc, Result}),									% send result to database
-					Result																			% return result	
+					[{filtered, Result}, {unfiltered, Result}]													% return result	
 			end;
 
 		% Video NOT requested. Return Empty List
@@ -55,11 +52,13 @@ search(HashTag, [{content_type, Types}, {language, Language}]) ->
 	end.
 
 % @doc sends a GET request for a given keyword
-query_youtube_API(HashTag) ->
+query_youtube_API(HashTag, Count) ->
 
 	Part = "part=snippet&fields=items(id(videoId))",						%% Partial Request: request only ID 'field' in the Snippet 'part'
 
 	Q = "q=" ++ HashTag,													%% keyword parameter
+
+	MaxResults = "maxResults=" ++ integer_to_list(Count),					%% increase max results to 10
 
 	UniTime = dateconv:back_one_week(calendar:universal_time()),			%
 
@@ -69,9 +68,9 @@ query_youtube_API(HashTag) ->
 
 	Type = "type=video&videoCaption=closedCaption",							%% filter only VIDEO 'resource type' that contain capion
 
-	Key = "key=" ++ aux:get_youtube_keys(),											%% API KEY parameter
+	Key = "key=" ++ aux:get_youtube_keys(),									%% API KEY parameter
 
-	Url = ?SEARCH_URL ++ Part ++ "&" ++ Q ++ "&" ++ After ++ "&" ++ Type ++ "&" ++ Key,
+	Url = ?SEARCH_URL ++ Part ++ "&" ++ Q ++ "&" ++ MaxResults ++ "&" ++ After ++ "&" ++ Type ++ "&" ++ Key,
 
 	case httpc:request(Url) of 
 		{ok, Result} -> 
