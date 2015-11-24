@@ -1,7 +1,7 @@
 %% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% @doc Module taking care of cleaning up the database in a given time interval.
-%% @version 0.2
+%% @version 0.3
 %% -----------------------------------------------------------------------------
 %% | Sprint 3 // v0.1:                                                         |
 %% | Added functions to                                                        |
@@ -12,8 +12,12 @@
 %% | Small clean up                                                            |
 %% | Reads the database information out of the config file                     |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.3:                                                         |
+%% | Fixed the cleanup function: will not crash when there are now results     |
+%% | to delete.                                                                |
+%% -----------------------------------------------------------------------------
 -module(db_cleaner).
--version(0.2).
+-version(0.3).
 
 -export([start_link/0]).
 
@@ -46,14 +50,18 @@ delete_entries() ->
     Results = couch_operations:doc_get({?ADDR() ++
        "hashtux/_design/post/_view/by_insert_timestamp?endkey=" ++
        Time, ?USER(), ?PASS()}),
-    {_, Posts} = lists:keyfind(<<"rows">>, 1, Results),
-    [couch_operations:doc_delete({?ADDR() ++ "hashtux/" ++ binary_to_list(ID),
-        ?USER(), ?PASS()}, binary_to_list(Rev)) ||
-           [{<<"_id">>, ID}, {<<"_rev">>, Rev} | _] <- [Content ||
-        {<<"value">>, Content} <- lists:flatten(Posts)]],
+    case(lists:keyfind(<<"rows">>, 1, Results)) of
+        {_, Posts} ->
+            [couch_operations:doc_delete({?ADDR() ++ "hashtux/" ++
+                binary_to_list(ID), ?USER(), ?PASS()}, binary_to_list(Rev)) ||
+                [{<<"_id">>, ID}, {<<"_rev">>, Rev} | _] <- [Content ||
+                {<<"value">>, Content} <- lists:flatten(Posts)]];
+        false ->
+            no_results
+        end,
     ok.
 
-%% @doc Function which compacts the database. 
+%% @doc Function which compacts the database.
 compact_db() ->
     couch_connector:post_request({?ADDR() ++ "hashtux/_compact",
                                   ?USER(), ?PASS()}, [], "application/json"),
