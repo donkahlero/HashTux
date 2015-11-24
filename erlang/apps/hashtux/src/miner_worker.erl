@@ -69,14 +69,13 @@ send_results(Pid, [], Term, Options) ->
 	io:format("Results returned from search: ~p~n", [[]]),	
 	case get_value(request_type, Options) of
 		<<"search">> -> 
-			%gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
 			Pid ! {self(), []};
 		<<"update">> ->
-			%gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
 			Pid ! {self(), []};
 		<<"heartbeat">> ->
-			ok
-			%gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
+			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
 	end;
 send_results(Pid, Results, _Term, Options) ->
 	FilteredRes = get_value(filtered, Results),
@@ -85,10 +84,11 @@ send_results(Pid, Results, _Term, Options) ->
 	%io:format("Unfiltered results returned from search: ~p~n", [UnfilteredRes]),
 	case get_value(request_type, Options) of
 		<<"search">> -> 
-			%gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
+			io:format("WORKER: Writing to db...~n"),
+			gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
 			Pid ! {self(), FilteredRes};
 		<<"update">> ->
-			%gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
+			gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
 			Pid ! {self(), FilteredRes};
 		<<"heartbeat">> ->
 			ok
