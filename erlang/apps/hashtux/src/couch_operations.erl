@@ -49,10 +49,12 @@ doc_get({Addr, User, Pass}) ->
 
 %% @doc Gets just objects from the database without anything else.
 doc_get_map_cont({Addr, User, Pass}) ->
-    Doc = doc_get({Addr, User, Pass}),
-    [_RowCount, _OffSet | [{_, Rows} | _]] = Doc,
-    [Post || [{<<"_id">>, _ID}, {<<"_rev">>, _Rev} | Post] <-
-             [Posts || {<<"value">>, Posts} <- lists:flatten(Rows)]].
+    case (doc_get({Addr, User, Pass})) of
+         [_RowCount, _OffSet | [{_, Rows} | _]] ->
+             [Post || [{<<"_id">>, _ID}, {<<"_rev">>, _Rev} | Post] <-
+             [Posts || {<<"value">>, Posts} <- lists:flatten(Rows)]];
+         _ -> []
+    end.
 
 doc_get_mapreduce_cont({Addr, User, Pass}) ->
     Doc = doc_get({Addr, User, Pass}),
