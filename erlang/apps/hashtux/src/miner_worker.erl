@@ -45,8 +45,7 @@ handle_info(_Msg, S) ->
 handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 	% get results
 	Results = run_search(Term, Options),
-	% send to original caller								
-	%Pid ! {self(), Results},	
+	% send to original caller	
 	send_results(Pid, Results, Term, Options),
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	% stop this worker
@@ -70,13 +69,14 @@ send_results(Pid, [], Term, Options) ->
 	io:format("Results returned from search: ~p~n", [[]]),	
 	case get_value(request_type, Options) of
 		<<"search">> -> 
-			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
+			%gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
 			Pid ! {self(), []};
 		<<"update">> ->
-			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
+			%gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
 			Pid ! {self(), []};
 		<<"heartbeat">> ->
-			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
+			ok
+			%gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
 	end;
 send_results(Pid, Results, _Term, Options) ->
 	io:format("Results returned from search: ~p~n", [Results]),
@@ -139,8 +139,10 @@ search_services({instagram, {Term, ContType, _Lang}}) ->
 	io:format("WORKER: Calling ig_search...~n"),
 	ig_search:search(Term, [ContType]);
 search_services({twitter, {Term, ContType, Lang}}) ->
+	io:format("WORKER: Calling twitter_search...~n"),
 	twitter_search:search_hash_tag(Term, [ContType, Lang]);
 search_services({youtube, {Term, ContType, Lang}}) ->
+	io:format("WORKER: Calling youtube_search...~n"),
 	youtube_search:search(Term, [ContType, Lang]).
 
 
