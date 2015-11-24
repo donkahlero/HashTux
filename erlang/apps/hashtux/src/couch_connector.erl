@@ -2,7 +2,7 @@
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% @doc CouchDB connector. Uses CouchDB's RESTful API. Covers just the most
 %% base level operations. Further abstractions are covered in other modules.
-%% @version 0.2
+%% @version 0.3
 %% -----------------------------------------------------------------------------
 %% | Sprint 1 // v0.1                                                          |
 %% | Added all necessary REST operations to our CouchDB.                       |
@@ -12,10 +12,13 @@
 %% | Requests to the database are more genereal now.                           |
 %% | -> Address needs to be passed                                             |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.3                                                          |
+%% | Fixed the get_info                                                        |
+%% -----------------------------------------------------------------------------
 -module(couch_connector).
--version(0.2).
+-version(0.3).
 
--export([get_info/0]).
+-export([get_info/1]).
 -export([put_request/3, get_request/1, delete_request/1, post_request/3]).
 
 %% @doc Function creating an http auth header
@@ -24,8 +27,8 @@ auth_header(User, Pass) ->
     {"Authorization","Basic " ++ Encoded}.
 
 %% @doc Function fetching the general information from the database.
-get_info() ->
-    ?MODULE:get_request([]).
+get_info({Addr, User, Pass}) ->
+    ?MODULE:get_request({Addr, User, Pass}).
 
 %% @doc This function puts in a new DB or new document.
 put_request({Addr, User, Pass}, Content, Type) ->
