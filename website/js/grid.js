@@ -1,3 +1,13 @@
+/**
+ * This Javascript file handles the generating of the grid.
+ */
+
+/**
+ * A function that fills the displayed array with the number of items that
+ * are needed to fill up the grid. If there is not enough items, it gets filled
+ * with all the availible items.
+ */
+
 function initDisplayed()
 {                
     if(displayed.length > 0)
