@@ -3,8 +3,7 @@
     
     $search = $_GET['search'];
     $options = build_request_options("search");
-    $output = request($search, $options);
-  
+    $output = request($search, $options); 
 ?>
 
 <!DOCTYPE html> 
@@ -29,6 +28,7 @@
         <script type="text/javascript">
             
             var searchterm = "<?php echo $search; ?>";
+            var options = {request_type: "search"};
             
             var heartbeats = true;
             
@@ -57,18 +57,6 @@
                 this.userlink = userlink;
                 this.frozen = frozen;           // A boolean to check if the content is frozen (frozen will not refresh)
                 this.tile = tile;               // Corresponding to the tile ID if the content is being displayed
-            }
-            
-            function type(image, video, text) {
-                this.image = image;
-                this.video = video;
-                this.text = text;
-            }
-            
-            function service(twitter, instagram, youtube) {
-                this.twitter = twitter;
-                this.instagram = instagram;
-                this.youtube = youtube;
             }
             
             // A function for the initial fetch when a search is made. In this
@@ -104,9 +92,6 @@
             // JSON object from the http server.
             
             function fetch() {
-                
-                var options = {request_type: "update", content_type: ["image"]};
-                
                 $.ajax({
                     url: "/ajax_post.php?search=" + searchterm,
                     type: "post",                    
@@ -114,6 +99,7 @@
                     
                     success: function (myString) {
                         parse_to_items(myString);
+                        alert(JSON.stringify(options));
                     }
                 });
             }
@@ -224,357 +210,6 @@
  
             };
             
-//            function initGrid() 
-//            {
-//                var grid = $('#grid');
-//                var count = 0;
-//                
-//                for(i = 0; i < gridHeight; i++) {
-//                    
-//                    var cols = "";
-//                    
-//                    for(j = 0; j < gridWidth; j++) {
-//                        
-//                        if(count >= displayed.length) 
-//                        {
-//                            
-//                            cols = cols + 
-//                                "<div class='col-xs-" +
-//                                (12/gridWidth) + 
-//                                " col-fill imageitem' style='background-image:url();' id='tile" +
-//                                count +
-//                                "'></div>";
-//                        
-//                            count++;
-//                        }
-//                        
-//                        else if(displayed[count].service === "instagram") 
-//                        {
-//                            
-//                            if(displayed[count].type === "image")
-//                            {
-//                                
-//                            
-//                                cols = cols + 
-//                                    "<div class='col-xs-" +
-//                                    (12/gridWidth) + 
-//                                    " col-fill imageitem' style='background-image:url(" +
-//                                    displayed[count].url +
-//                                    ");' id='tile" +
-//                                    count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
-//                                    "<p class='usernameimage'><a class='greytext' href='" +
-//                                    displayed[count].userlink + "' target='_blank'>@" +
-//                                    displayed[count].username + "</a></p>" +
-//                                    "</div>";
-//
-//                                displayed[count].tile = "tile" + count;
-//                                count++;
-//                            
-//                            }
-//                            
-//                            else if(displayed[count].type === "video")
-//                            {
-//                                cols = cols +
-//                                "<div class='col-xs-" + 
-//                                (12/gridWidth) + 
-//                                " col-fill imageitem' style='background-image:url('');' id='tile"+
-//                                count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
-//                                "<p class='usernameimage'><a class='greytext' href='" +
-//                                displayed[count].userlink + "' target='_blank'>@" +
-//                                displayed[count].username +
-//                                "</a></p><p class='twittertext'>[INSERT VIDEO HERE]</p>" +
-//                                "</div>";
-//                        
-//                                displayed[count].tile = "tile" + count;
-//                                count++;
-//                            }
-//                            
-//                        }
-//                        
-//                        else if(displayed[count].service === "twitter")
-//                        {
-//                            
-//                            if(displayed[count].type === "text")
-//                            { 
-//                                cols = cols +
-//                                    "<div class='col-xs-" +
-//                                    (12/gridWidth) + 
-//                                    " col-fill twitteritem' id='tile" +
-//                                    count + "'onclick='tileFreeze(" + "tile" + count + ")'>" +
-//                                    "<div class='twittertext'><p>" +
-//                                    displayed[count].text +
-//                                    "<p class='usernametweet'><a class='greytext' href='" +
-//                                    displayed[count].userlink + "' target='_blank'>@" +
-//                                    displayed[count].username + 
-//                                    "</a></p></p></div>" +
-//                                    "</div>";
-//
-//                                displayed[count].tile = "tile" + count;
-//                                count++;
-//                            }
-//                            
-//                            else if(displayed[count].type === "image")
-//                            {
-//                                cols = cols + 
-//                                    "<div class='col-xs-" +
-//                                    (12/gridWidth) + 
-//                                    " col-fill twitteritem' style='background-image:url(" +
-//                                    displayed[count].url +
-//                                    ");' id='tile" +
-//                                    count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
-//                                    "<div class='twitterimagetext'><p>" +
-//                                    displayed[count].text +
-//                                    "<p class='usernametweet'><a class='greytext' href='" +
-//                                    displayed[count].userlink + "' target='_blank'>@" +
-//                                    displayed[count].username + 
-//                                    "</a></p></p></div>" +
-//                                    "</div>";
-//                            
-//                                    displayed[count].tile = "tile" + count;
-//                                    count++;
-//                            }
-//                        }
-//                    }
-//                    
-//                    grid.html(grid.html() +
-//                        "<div class='row-grid-" +
-//                        (12/gridHeight) + "' id='row" +
-//                        i + "'>" + cols + "</div>");
-//                }
-//            }
-//            
-//            function initDisplayed()
-//            {                
-//                if(displayed.length > 0)
-//                {
-//                    displayed.length = 0;
-//                }
-//                
-//                for(k = 0; k < totalItems; k++) {
-//                    
-//                    if(items.length < 1)
-//                        break;
-//                    
-//                    var index = Math.floor((Math.random() * items.length));
-//
-//                    displayed.push(items[index]);
-//                    items.splice(index, 1);
-//                }
-//            }
-//            //ScreenFreeze is funtion that go through a displayed items and 
-//            function screenFreeze() {
-//                
-//                for(i = 0; i < displayed.length; i++)
-//                {
-//                    if(!displayed[i].frozen)
-//                    {
-//                        freeze();
-//                    }
-//
-//                    else
-//                    {
-//                        unfreeze();
-//                        break;
-//                    }
-//                }
-//            }
-//            
-//            function freeze()
-//            {
-//                for(i = 0; i < displayed.length; i++)
-//                {
-//                    displayed[i].frozen = true;
-//                    
-//                    $('#' + displayed[i].tile).css('border', '1px solid #FFF');
-//                    
-//                }
-//                
-//                $('#grid').css('border', '1px solid #FFF');
-//                screenFrozen = true;
-//            }
-//            
-//            function unfreeze()
-//            {
-//                for(i = 0; i < displayed.length; i++)
-//                {
-//                    displayed[i].frozen = false;
-//                    
-//                    $('#' + displayed[i].tile).css('border', '');
-//                }
-//                
-//                $('#grid').css('border', '');
-//                screenFrozen = false;
-//            }
-//
-//            function tileFreeze(){
-//
-//                var tile = arguments[0].id;
-//
-//                for(i = 0; i < displayed.length; i++)
-//                {
-//                    if(displayed[i].tile === tile && !displayed[i].frozen)
-//                    {
-//                        displayed[i].frozen = true;
-//                        
-//                        $('#' + tile).css('border', '1px solid #FFF');
-//                    }
-//
-//                    else if(displayed[i].tile === tile && displayed[i].frozen)
-//                    {
-//                        displayed[i].frozen = false;
-//                        
-//                        $('#' + tile).css('border', '');
-//                    }
-//               	}
-//            }
-//
-//            function refresh() 
-//            {
-//                
-//                if(items.length > 0 && !screenFrozen)
-//                {
-//                
-//                    var newIndex = Math.floor((Math.random() * items.length));
-//                    var newItem = items[newIndex];
-//                    var randTileNum = Math.floor((Math.random() * totalItems));
-//                    var randTile = "#tile" + randTileNum;
-//                    var currentItem;
-//                    var currentIndex;
-//
-//                        for(i = 0; i < displayed.length; i++)
-//                        {
-//                            if(displayed[i].tile === "tile" + randTileNum)
-//                            {
-//                                currentItem = displayed[i];
-//                                currentIndex = i;
-//                            }
-//                        }
-//                        
-//                        if(!currentItem.frozen)
-//                        {
-//                            if(newItem.service === "instagram")
-//                            {
-//                                if(newItem.type === "image") 
-//                                {
-//                                    $(randTile).animate({height: "0", opacity: "0"}, 0);
-//
-//                                    $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill imageitem');
-//                                    $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
-//                                    $(randTile).css('background-image', 'url(' + newItem.url + ')');
-//                                    $(randTile).html("<p class='usernameimage'><a class='greytext' href='" +
-//                                            newItem.userlink + "' target='_blank'>@" +
-//                                            newItem.username + "</a></p>");
-//
-//                                    $(randTile).animate({height: "100%", opacity: "1"}, 1000);
-//                                }
-//                                
-//                                else if(newItem.type === "video")
-//                                {
-//                                    $(randTile).animate({height: "0", opacity: "0"}, 0);
-//
-//                                    $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill imageitem');
-//                                    $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
-//                                    $(randTile).css('background-image', '');
-//                                    $(randTile).html(
-//                                            "<p class='usernameimage'><a class='greytext' href='" +
-//                                            newItem.userlink + "' target='_blank'>@" +
-//                                            newItem.username + "</a></p>" +
-//                                            "<p class='twittertext'>" +
-//                                            "[INSERT VIDEO HERE]" +
-//                                            "</p>");
-//
-//                                    $(randTile).animate({height: "100%", opacity: "1"}, 1000);
-//                                }
-//                            }
-//                            
-//                            else if(newItem.service === "twitter")
-//                            {
-//                                if(newItem.type === "text")
-//                                {
-//                                    $(randTile).animate({height: "0", opacity: "0"}, 0);
-//
-//                                    $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill twitteritem');
-//                                    $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
-//                                    $(randTile).css('background-image', '');
-//                                    $(randTile).html(
-//                                            "<div class='twittertext'><p>" +
-//                                            newItem.text +
-//                                            "</p><p class='usernametweet'><a class='greytext' href='" +
-//                                            newItem.userlink + "' target='_blank'>@" +
-//                                            newItem.username + "</a></p>" +
-//                                            "</div>");
-//
-//                                    $(randTile).animate({height: "100%", opacity: "1"}, 1000);
-//                                }
-//                                
-//                                else if(newItem.type === "image")
-//                                {
-//                                    $(randTile).animate({height: "0", opacity: "0"}, 0);
-//                                    
-//                                    $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill imageitem');
-//                                    $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
-//                                    $(randTile).css('background-image', 'url(' + newItem.url + ')');
-//                                    $(randTile).html(
-//                                            "<div class='twitterimagetext'><p>" +
-//                                            newItem.text +
-//                                            "</p><p class='usernametweet'><a class='greytext' href='" +
-//                                            newItem.userlink + "' target='_blank'>@" +
-//                                            newItem.username + "</a></p>" +
-//                                            "</div>");
-//                                    
-//                                    $(randTile).animate({height: "100%", opacity: "1"}, 1000);
-//                                }
-//                            }
-//
-//                            if(currentItem !== null)
-//                            {
-//                                currentItem.tile = "";
-//                                items.push(currentItem);
-//                                displayed.splice(currentIndex, 1);
-//                            }
-//
-//                            newItem.tile = "tile" + randTileNum;
-//                            displayed.push(newItem);
-//                            items.splice(newIndex, 1);
-//                        }
-//                        
-//                        else
-//                        {
-//                            refresh();
-//                        }
-//                            
-//                }
-//            }
-//             //Handles a keyboard input in this case a space.
-//             //When pressed it trigger screenFreeze() and  togglePlay();
-//            $(function() {
-//              $(document).keypress(function(e){
-//            	if ((e.which && e.which == 32) || (e.keyCode && e.keyCode == 32)) {
-//            	  togglePlay();
-//            	  screenFreeze();
-//            	  return false;
-//            	  } else {
-//            	  return true;
-//            	  }
-//            	  });
-//            	$('').click(function(){   //Extra onclick function incase we decide to use a button. 
-//            	togglePlay();             
-//            	screenFreeze();
-//            	return false;
-//            	});
-//            // This function animates the play and pause pictures 
-//            // The two pictures fade in and out. 
-//            function togglePlay(){
-//            	var $elem = $('#player').children(':first');
-//            	$elem.stop()
-//            	.show()
-//            	.animate({'marginTop':'-175px','marginLeft':'-175px','width':'350px','height':'350px','opacity':'0'},function(){
-//            	$(this).css({'width':'100px','height':'100px','margin-left':'-50px','margin-top':'-50px','opacity':'1','display':'none'});
-//            	});
-//            	$elem.parent().append($elem);
-//            	}
-//            	});
-            
             function showField() {
                 $('#sField').fadeIn(500);
                 $('#searchBtn').hide();
@@ -600,285 +235,6 @@
                 $('#sField').hide();
                 $('#searchBtn').fadeIn(500);
             }
-            
-//            function showOptions() {
-//                $('#options').fadeIn(500);
-//                freeze();
-//                
-//                $('#optionsPanel').click(function () {
-//                    event.stopPropagation();
-//                });
-//            }
-//            
-//            function hideOptions() {
-//                $('#options').fadeOut(500);
-//                unfreeze();
-//                
-//                $('#aborted').fadeTo(3000, 500).slideUp(500, function() {
-//                    $('#aborted').alert('close');
-//                });
-//            }
-//            
-//            function saveOptions() {
-//                
-//                alert("Types\n" +
-//                        "Images: " + types.image + "\n" +
-//                        "Videos: " + types.video + "\n" +
-//                        "Text: " + types.text + "\n\n" +
-//                        "Services\n" +
-//                        "Twitter: " + services.twitter + "\n" +
-//                        "Instagram: " + services.instagram + "\n" +
-//                        "YouTube: " + services.youtube + "\n\n" +
-//                        "Language: " + language);
-//                
-//                // Check if the size tracker is small, medium or large. Then
-//                // set the gridWidth, gridHeight and totalItems acoordingly.
-//                
-//                if(size === "small")
-//                {
-//                    gridWidth = 3;
-//                    gridHeight = 2;
-//                    totalItems = gridWidth * gridHeight;
-//                }
-//                
-//                else if(size === "medium")
-//                {
-//                    gridWidth = 4;
-//                    gridHeight = 3;
-//                    totalItems = gridWidth * gridHeight;
-//                }
-//                
-//                else if(size === "large")
-//                {
-//                    gridWidth = 6;
-//                    gridHeight = 4;
-//                    totalItems = gridWidth * gridHeight;
-//                }
-//                
-//                // Checks whether the refresh rate tracker is slow, medium or fast
-//                // and changes the refresh rate accordingly.
-//                
-//                if(refreshRate === "slow")
-//                {
-//                    clearInterval(refreshTimer);
-//                    refreshTimer = setInterval(refresh, 10000);
-//                }
-//                
-//                else if(refreshRate === "medium")
-//                {
-//                    clearInterval(refreshTimer);
-//                    refreshTimer = setInterval(refresh, 5000);
-//                }
-//                
-//                else if(refreshRate === "fast")
-//                {
-//                    clearInterval(refreshTimer);
-//                    refreshTimer = setInterval(refresh, 2000);
-//                }
-//                
-//                savedTypes = [];
-//                savedServices = [];
-//                
-//                // Types
-//                
-//                if(types.image === true)
-//                    savedTypes.push("image");
-//                
-//                if(types.video === true)
-//                    savedTypes.push("video");
-//                
-//                if(types.text === true)
-//                    savedTypes.push("text");
-//                
-//                // Services
-//                
-//                if(services.twitter === true)
-//                    savedTypes.push("twitter");
-//                
-//                if(services.instagram === true)
-//                    savedTypes.push("instagram");
-//                
-//                if(services.youtube === true)
-//                    savedTypes.push("youtube");
-//                
-//                // Show an alert to notify the user that the changes are saved
-//              
-//                $('#saved').fadeTo(3000, 500).slideUp(500, function() {
-//                    $('#saved').alert('close');
-//                });
-//                
-//                hideOptions();      // Hide the options menu
-//                reinitialize();     // Reinitialize the grid
-//                unfreeze();         // Unfreeze the tiles
-//            }
-//            
-//            function changeSize(id) {
-//                
-//                if(id === 'size-sm')
-//                {
-//                    size = "small";
-//                    
-//                    $('#size-sm').attr('class', 'btn btn-primary btn-md');
-//                    $('#size-md').attr('class', 'btn btn-default btn-md');
-//                    $('#size-lg').attr('class', 'btn btn-default btn-md');
-//                    
-//                }
-//                
-//                else if(id === 'size-md')
-//                {
-//                    size = "medium";
-//                    
-//                    $('#size-sm').attr('class', 'btn btn-default btn-md');
-//                    $('#size-md').attr('class', 'btn btn-primary btn-md');
-//                    $('#size-lg').attr('class', 'btn btn-default btn-md');
-//                }
-//                
-//                else
-//                {
-//                    size = "large";
-//                    
-//                    $('#size-sm').attr('class', 'btn btn-default btn-md');
-//                    $('#size-md').attr('class', 'btn btn-default btn-md');
-//                    $('#size-lg').attr('class', 'btn btn-primary btn-md');
-//                }
-//            }
-//            
-//            function changeRefRate(id) {
-//                
-//                if(id === 'ref-slow')
-//                {
-//                    refreshRate = "slow";
-//                    
-//                    $('#ref-slow').attr('class', 'btn btn-primary btn-md');
-//                    $('#ref-md').attr('class', 'btn btn-default btn-md');
-//                    $('#ref-fast').attr('class', 'btn btn-default btn-md');
-//                    
-//                }
-//                
-//                else if(id === 'ref-md')
-//                {
-//                    refreshRate = "medium";
-//                    
-//                    $('#ref-slow').attr('class', 'btn btn-default btn-md');
-//                    $('#ref-md').attr('class', 'btn btn-primary btn-md');
-//                    $('#ref-fast').attr('class', 'btn btn-default btn-md');
-//                }
-//                
-//                else
-//                {
-//                    refreshRate = "fast";
-//                    
-//                    $('#ref-slow').attr('class', 'btn btn-default btn-md');
-//                    $('#ref-md').attr('class', 'btn btn-default btn-md');
-//                    $('#ref-fast').attr('class', 'btn btn-primary btn-md');
-//                }
-//            }
-//            
-//            function changeType(id) {
-//                
-//                if(id === 'type-img')
-//                {
-//                    if(types.image === true)
-//                    {
-//                        types.image = false;
-//                        $('#type-img').attr('class', 'btn btn-default btn-md');
-//                    }
-//                    
-//                    else
-//                    {
-//                        types.image = true;
-//                        $('#type-img').attr('class', 'btn btn-primary btn-md');
-//                    }           
-//                }
-//                
-//                else if(id === 'type-vid')
-//                {
-//                    if(types.video === true)
-//                    {
-//                        types.video = false;
-//                        $('#type-vid').attr('class', 'btn btn-default btn-md');
-//                    }
-//                    
-//                    else
-//                    {
-//                        types.video = true;
-//                        $('#type-vid').attr('class', 'btn btn-primary btn-md');
-//                    } 
-//                }
-//                
-//                else
-//                {
-//                    if(types.text === true)
-//                    {
-//                        types.text = false;
-//                        $('#type-txt').attr('class', 'btn btn-default btn-md');
-//                    }
-//                    
-//                    else
-//                    {
-//                        types.text = true;
-//                        $('#type-txt').attr('class', 'btn btn-primary btn-md');
-//                    } 
-//                }
-//            }
-//            
-//            function changeService(id) {
-//                
-//                if(id === 'serv-twitter')
-//                {
-//                    if(services.twitter === true)
-//                    {
-//                        services.twitter = false;
-//                        $('#serv-twitter').attr('class', 'btn btn-default btn-md');
-//                    }
-//                    
-//                    else
-//                    {
-//                        services.twitter = true;
-//                        $('#serv-twitter').attr('class', 'btn btn-primary btn-md');
-//                    }           
-//                }
-//                
-//                if(id === 'serv-instagram')
-//                {
-//                    if(services.instagram === true)
-//                    {
-//                        services.instagram = false;
-//                        $('#serv-instagram').attr('class', 'btn btn-default btn-md');
-//                    }
-//                    
-//                    else
-//                    {
-//                        services.instagram = true;
-//                        $('#serv-instagram').attr('class', 'btn btn-primary btn-md');
-//                    }           
-//                }
-//                
-//                if(id === 'serv-youtube')
-//                {
-//                    if(services.youtube === true)
-//                    {
-//                        services.youtube = false;
-//                        $('#serv-youtube').attr('class', 'btn btn-default btn-md');
-//                    }
-//                    
-//                    else
-//                    {
-//                        services.youtube = true;
-//                        $('#serv-youtube').attr('class', 'btn btn-primary btn-md');
-//                    }           
-//                }
-//            }
-//            
-//            function changeLanguage(id) {
-//                if(language !== "")
-//                {
-//                    $('#' + language).attr('class', 'btn btn-default btn-md');
-//                }
-//                
-//                $('#' + id).attr('class', 'btn btn-primary btn-md');
-//                language = id;
-//            }
             
 	</script>
 	          
@@ -947,7 +303,7 @@
                         <div class="btn-group options">
                             <button type="button" class="btn btn-default btn-md"
                                     id="size-sm" onclick="changeSize('size-sm')">SMALL</button>
-                            <button type="button" class="btn btn-primary btn-md"
+                            <button type="button" class="btn btn-default btn-md"
                                     id="size-md" onclick="changeSize('size-md')">MEDIUM</button>
                             <button type="button" class="btn btn-default btn-md"
                                     id="size-lg" onclick="changeSize('size-lg')">LARGE</button>
@@ -960,7 +316,7 @@
                         <div class="btn-group options">
                             <button type="button" class="btn btn-default btn-md" 
                                     id="ref-slow" onclick="changeRefRate('ref-slow')">SLOW</button>
-                            <button type="button" class="btn btn-primary btn-md" 
+                            <button type="button" class="btn btn-default btn-md" 
                                     id="ref-md" onclick="changeRefRate('ref-md')">MEDIUM</button>
                             <button type="button" class="btn btn-default btn-md" 
                                     id="ref-fast" onclick="changeRefRate('ref-fast')">FAST</button>
@@ -978,11 +334,11 @@
 
                     <div class="text-center">
                         <div class="btn-group options">
-                            <button type="button" class="btn btn-primary btn-md"
+                            <button type="button" class="btn btn-default btn-md"
                                     id="type-img" onclick="changeType('type-img')">Images</button>
-                            <button type="button" class="btn btn-primary btn-md"
+                            <button type="button" class="btn btn-default btn-md"
                                     id="type-vid" onclick="changeType('type-vid')">Videos</button>
-                            <button type="button" class="btn btn-primary btn-md"
+                            <button type="button" class="btn btn-default btn-md"
                                     id="type-txt" onclick="changeType('type-txt')">Text</button>
                         </div>
                     </div>
@@ -992,11 +348,11 @@
 
                     <div class="text-center">
                         <div class="btn-group options">
-                            <button type="button" class="btn btn-primary btn-md"
+                            <button type="button" class="btn btn-default btn-md"
                                     id="serv-twitter" onclick="changeService('serv-twitter')">Twitter</button>
-                            <button type="button" class="btn btn-primary btn-md"
+                            <button type="button" class="btn btn-default btn-md"
                                     id="serv-instagram" onclick="changeService('serv-instagram')">Instagram</button>
-                            <button type="button" class="btn btn-primary btn-md"
+                            <button type="button" class="btn btn-default btn-md"
                                     id="serv-youtube" onclick="changeService('serv-youtube')">YouTube</button>
                         </div>
                     </div>
@@ -1034,4 +390,3 @@
 	    
     </body>
 </html>
-
