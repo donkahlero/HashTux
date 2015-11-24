@@ -1,12 +1,24 @@
 var size = "md";
 var refreshRate = "md";
 
-var types = new type(true, false, true);
-var services = new service(true, true, false);
+var types = new type(true, true, true);
+var services = new service(true, true, true);
 
 var language = "";
 var savedTypes = [];
 var savedServices = [];
+
+function type(image, video, text) {
+    this.image = image;
+    this.video = video;
+    this.text = text;
+}
+
+function service(twitter, instagram, youtube) {
+    this.twitter = twitter;
+    this.instagram = instagram;
+    this.youtube = youtube;
+}
 
 function initOptions() {
     $('#size-' + size).attr('class', 'btn btn-primary btn-md');
@@ -110,13 +122,45 @@ function saveOptions() {
     // Services
 
     if(services.twitter === true)
-        savedTypes.push("twitter");
+        savedServices.push("twitter");
 
     if(services.instagram === true)
-        savedTypes.push("instagram");
+        savedServices.push("instagram");
 
     if(services.youtube === true)
-        savedTypes.push("youtube");
+        savedServices.push("youtube");
+    
+    options.request_type = "update";
+    
+    if(savedTypes.length !== 3 && savedTypes.length !== 0)
+    {
+        options.content_type = savedTypes;
+    }
+    
+    else
+    {
+        delete options.content_type;
+    }
+    
+    if(savedServices.length !== 3 && savedServices.length !== 0)
+    {
+        options.service = savedServices;
+    }
+    
+    else
+    {
+        delete options.service;
+    }
+    
+    if(language !== "")
+    {
+        options.language = language;
+    }
+    
+    else
+    {
+        delete options.language;
+    }
 
     // Show an alert to notify the user that the changes are saved
 
@@ -133,7 +177,7 @@ function changeSize(id) {
 
     if(id === 'size-sm')
     {
-        size = "small";
+        size = "sm";
 
         $('#size-sm').attr('class', 'btn btn-primary btn-md');
         $('#size-md').attr('class', 'btn btn-default btn-md');
@@ -143,7 +187,7 @@ function changeSize(id) {
 
     else if(id === 'size-md')
     {
-        size = "medium";
+        size = "md";
 
         $('#size-sm').attr('class', 'btn btn-default btn-md');
         $('#size-md').attr('class', 'btn btn-primary btn-md');
@@ -152,7 +196,7 @@ function changeSize(id) {
 
     else
     {
-        size = "large";
+        size = "lg";
 
         $('#size-sm').attr('class', 'btn btn-default btn-md');
         $('#size-md').attr('class', 'btn btn-default btn-md');
@@ -298,20 +342,18 @@ function changeLanguage(id) {
 }
 
 function showOptions() {
-    initOptions();
-    freeze();
-    
     $('#options').fadeIn(500);
-
+    freeze();
+    initOptions();
+    
     $('#optionsPanel').click(function () {
         event.stopPropagation();
     });
 }
 
 function hideOptions() {
-    unfreeze();
-    
     $('#options').fadeOut(500);
+    unfreeze();
 
     $('#aborted').fadeTo(3000, 500).slideUp(500, function() {
         $('#aborted').alert('close');
