@@ -17,8 +17,10 @@ search(Term, Options) ->
 			{_StatusLine, _Headers, Body} = Result,
 			try jsx:decode(list_to_binary(Body)) of
 				DecodedRes -> 
+					MaxTagId = get_max_tag_id(DecodedRes),
 					DataList = get_value(<<"data">>, DecodedRes),
-					Results = parse_results(Term, DataList),
+					%io:format("Raw results are: ~p~n", [DecodedRes]),
+					Results = parse_results(Term, MaxTagId, DataList),
 					Types = get_value(content_type, Options),
 					FilterRes = filter_insta(Results, Types),
 					[{filtered, Results}, {unfiltered, FilterRes}]
@@ -41,6 +43,15 @@ get_token() ->
 				V  -> V
 		  end,
 	Key.
+
+
+%% 
+%% @doc Gets the max tag id for the time scroll.
+%%
+get_max_tag_id(L) ->
+	PagData = get_value(<<"pagination">>, L),
+	MaxTagId = get_value(<<"next_max_tag_id">>, PagData),
+	list_to_integer(binary:bin_to_list(MaxTagId)).
 
 
 %% 
@@ -92,17 +103,18 @@ get_value(Key, List)  ->
 
 
 %%
-parse_results(_Term, []) 	-> [];
-parse_results(Term, [X|Xs]) ->
-	[ parse_details(Term, X) | parse_results(Term, Xs) ].
+parse_results(_Term, MaxTagId, [])	  -> [];
+parse_results(Term, MaxTagId, [X|Xs]) ->
+	[ parse_details(Term, MaxTagId, X) | parse_results(Term, MaxTagId, Xs) ].
 
 
 %%
-parse_details(_Term, []) -> [];
-parse_details(Term, L)	 -> 
+parse_details(_Term, MaxTagId, []) -> [];
+parse_details(Term, MaxTagId, L)   -> 
 	[ get_search_term(Term),
 	  get_service(),
 	  get_timestamp(),
+	  get_tag_id(MaxTagId),
 	  get_tags(L), 
 	  get_content_type(L),
 	  get_location(L),
@@ -130,6 +142,11 @@ get_service() ->
 %%
 get_timestamp() ->
 	{<<"insert_timestamp">>, dateconv:get_timestamp()}.
+
+
+%%
+get_tag_id(TagId) ->
+	{<<"tag_id">>, TagId}.	
 
 
 %%
