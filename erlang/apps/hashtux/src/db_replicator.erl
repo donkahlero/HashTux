@@ -1,14 +1,17 @@
 %% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% @doc Module taking care of replicating the database in a given time interval.
-%% @version 0.1
+%% @version 0.2
 %% -----------------------------------------------------------------------------
 %% | Sprint 4 // v0.1:                                                         |
 %% | Added functions to                                                        |
 %% | - Replicate the statistic database                                        |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.2:                                                         |
+%% | Fixed the module. Is checking now for errors in the connections.          |
+%% -----------------------------------------------------------------------------
 -module(db_replicator).
--version(0.1).
+-version(0.2).
 
 -export([start_link/0]).
 
