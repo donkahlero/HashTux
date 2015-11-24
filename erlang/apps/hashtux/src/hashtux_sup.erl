@@ -45,12 +45,12 @@ init([]) ->
 	%main_flow_sup:start_link(),
 	
 	
-	DB_sup = {db_sup, 
-				 {db_sup, start_link, []},
-			 		permanent, 
-					10000, 
-					worker, 
-					[db_sup]},
+	%DB_sup = {db_sup, 
+	%			 {db_sup, start_link, []},
+	%		 		permanent, 
+	%				10000, 
+	%				worker, 
+	%				[db_sup]},
 	Miner_sup = {miner_sup, 
 				 {miner_sup, start_link, []},
 			 		permanent, 
@@ -65,7 +65,7 @@ init([]) ->
 					[main_flow_sup]},
 	
 	%{ok, { {one_for_all, 0, 1}, []} }.
-	{ok, { {one_for_one, 3, 1800}, [DB_sup, Miner_sup, Main_flow_sup]}}.
+	{ok, { {one_for_one, 3, 1800}, [Miner_sup, Main_flow_sup]}}.
 	
 	
 
