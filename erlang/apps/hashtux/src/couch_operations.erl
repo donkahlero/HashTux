@@ -2,7 +2,7 @@
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% @doc Specific operations on the database (mostly document based). Uses the
 %% couch_connector module to do them.
-%% @version 0.2
+%% @version 0.3
 %% -----------------------------------------------------------------------------
 %% | Sprint 1 // v0.1                                                          |
 %% | Added all basic functions to this module.                                 |
@@ -12,8 +12,11 @@
 %% | The functions get now the DBAddr, User and Pass passed which is then used |
 %% | for calling the db_connector module.                                      |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.3                                                          |
+%% | Small hotfixes. Checking now if the results can be pattern matched.       |
+%% -----------------------------------------------------------------------------
 -module(couch_operations).
--version(0.2).
+-version(0.3).
 
 %% Document operations
 -export([doc_add/2, doc_get_map_cont/1, doc_get_mapreduce_cont/1]).
@@ -57,9 +60,12 @@ doc_get_map_cont({Addr, User, Pass}) ->
     end.
 
 doc_get_mapreduce_cont({Addr, User, Pass}) ->
-    Doc = doc_get({Addr, User, Pass}),
-    [{_, List}] = Doc,
-    List.
+    case(doc_get({Addr, User, Pass})) of
+        [{_, List}] ->
+            List;
+        _ ->
+            []
+    end.
 
 %% @doc Deletes a document from the database.
 doc_delete({Addr, User, Pass}, Rev) ->
