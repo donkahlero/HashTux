@@ -79,12 +79,17 @@ send_results(Pid, [], Term, Options) ->
 			%gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
 	end;
 send_results(Pid, Results, _Term, Options) ->
-	io:format("Results returned from search: ~p~n", [Results]),
+	FilteredRes = get_value(filtered, Results),
+	%io:format("Filtered results returned from search: ~p~n", [FilteredRes]),
+	UnfilteredRes = get_value(unfiltered, Results),	
+	%io:format("Unfiltered results returned from search: ~p~n", [UnfilteredRes]),
 	case get_value(request_type, Options) of
 		<<"search">> -> 
-			Pid ! {self(), Results};
+			%gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
+			Pid ! {self(), FilteredRes};
 		<<"update">> ->
-			Pid ! {self(), Results};
+			%gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
+			Pid ! {self(), FilteredRes};
 		<<"heartbeat">> ->
 			ok
 	end.
