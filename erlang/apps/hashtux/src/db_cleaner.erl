@@ -46,7 +46,7 @@ cleanup() ->
 %% a given amount of time.
 delete_entries() ->
     Time = integer_to_list(calendar:datetime_to_gregorian_seconds(
-       calendar:now_to_universal_time(erlang:timestamp()))-719528*24*3600-3600),
+       calendar:now_to_universal_time(os:timestamp()))-719528*24*3600-3600),
     Results = couch_operations:doc_get({?ADDR() ++
        "hashtux/_design/post/_view/by_insert_timestamp?endkey=" ++
        Time, ?USER(), ?PASS()}),
