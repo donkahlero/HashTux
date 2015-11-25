@@ -8,6 +8,8 @@
 	 * 
 	 * Using this requires providing the request type parameter in the options
 	 * object!
+	 *
+	 * NOTE: Make sure this file does not have ANY text/characters outside the php tags!
 	 */
 	
 	/* Start a new session or resume if the client has a cookie ;) */
@@ -19,6 +21,7 @@
         
 	/* We see if this is proper JSON */
 	$options = json_decode($options_json, true);
+	
 	/* Only handle if the search term is specified */
 	if (isset($_GET['search']) && $_GET['search'] != "") {          
 		$search = $_GET['search'];
