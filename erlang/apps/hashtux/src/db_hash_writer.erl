@@ -26,14 +26,6 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2]).
 -export([handle_info/2, terminate/2]).
 
-%% Local database params
--define(ADDR, fun() -> {ok, {ADDR, _, _}} =
-              application:get_env(db_conf, localdb), ADDR end).
--define(USER, fun() -> {ok, {_, USER, _}} =
-              application:get_env(db_conf, localdb), USER end).
--define(PASS, fun() -> {ok, {_, _, PASS}} =
-              application:get_env(db_conf, localdb), PASS end).
-
 %% -----------------------------------------------------------------------------
 %% | Public API                                                                |
 %% -----------------------------------------------------------------------------
@@ -73,13 +65,14 @@ handle_cast({add_doc, Content, Rec}, State) ->
     Rec ! {self(), true},
     {stop, normal, State};
 %% Deletes a hashtag from the database
-handle_cast({delete_hash, Hashtag, Rec}, State) ->
-    Results = couch_operations:doc_get({?ADDR() ++
-              "hashtux/_design/post/_view/by_hashtag?key=\"" ++
-              Hashtag ++ "\"", ?USER(), ?PASS()}),
+handle_cast({delete_hash, Hash, Rec}, State) ->
+    Results = couch_operations:doc_get({db_addr_serv:main_addr() ++
+              "hashtux/_design/post/_view/by_hashtag?key=\"" ++ Hash ++ "\"",
+              db_addr_serv:main_user(), db_addr_serv:main_pass()}),
     {_, Posts} = lists:keyfind(<<"rows">>, 1, Results),
-    [couch_operations:doc_delete({?ADDR() ++ binary_to_list(ID),
-       binary_to_list(Rev), ?USER(), ?PASS()}) ||
+    [couch_operations:doc_delete({db_addr_serv:main_addr() ++
+         binary_to_list(ID), binary_to_list(Rev),
+         db_addr_serv:main_user(), db_addr_serv:main_pass()}) ||
          [{<<"_id">>, ID}, {<<"_rev">>, Rev} | _] <- [Content ||
        {<<"value">>, Content} <- lists:flatten(Posts)]],
     Rec ! {self(), true},
@@ -100,6 +93,6 @@ terminate(_Reason, _State) ->
 add_docs([]) -> ok;
 add_docs([H|T]) ->
     UUID = couch_operations:get_uuid(),
-    couch_operations:doc_add({?ADDR() ++ "hashtux/" ++ UUID,
-                              ?USER(), ?PASS()}, H),
+    couch_operations:doc_add({db_addr_serv:main_addr() ++ "hashtux/" ++ UUID,
+                     db_addr_serv:main_user(), db_addr_serv:main_pass()}, H),
     add_docs(T).

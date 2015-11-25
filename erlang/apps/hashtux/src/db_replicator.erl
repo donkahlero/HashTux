@@ -15,22 +15,13 @@
 
 -export([start_link/0]).
 
-%% Local Database params
--define(ADDR, fun() -> {ok, {ADDR, _, _}} =
-              application:get_env(db_conf, localdb), ADDR end).
--define(USER, fun() -> {ok, {_, USER, _}} =
-              application:get_env(db_conf, localdb), USER end).
--define(PASS, fun() -> {ok, {_, _, PASS}} =
-              application:get_env(db_conf, localdb), PASS end).
-
 %% @doc Starts the replication worker and links it to the calling process
 start_link() ->
     {ok, spawn_link(fun() -> replicate() end)}.
 
 %% @doc Function to replicate the database in a given time interval
 replicate() ->
-    {ok, DBList} = application:get_env(db_conf, external),
-    replicate_userstats(DBList),
+    replicate_userstats(db_addr_serv:external_dbs()),
     %Replicate every 15 minutes
     timer:sleep(60000 * 15),
     replicate().
@@ -41,7 +32,8 @@ replicate() ->
 replicate_userstats([]) ->
     ok;
 replicate_userstats([{Addr, User, Pass}|Xs]) ->
-    couch_connector:post_request({?ADDR() ++ "_replicate", User, Pass},
+    couch_connector:post_request({db_addr_serv:main_addr() ++ "_replicate",
+                   User, Pass},
                    "{\"source\":\"hashtux_userstats\",\"target\":\"" ++ Addr ++
                    "hashtux_userstats\"}", "application/json"),
     replicate_userstats(Xs).

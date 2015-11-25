@@ -24,15 +24,6 @@
 -export([doc_change/2, doc_get/1, doc_delete/2, doc_append/2]).
 -export([doc_rmval/2, doc_exist/1, get_uuid/0]).
 
-%% Local database params
--define(ADDR, fun() -> {ok, {ADDR, _, _}} =
-              application:get_env(db_conf, localdb), ADDR end).
--define(USER, fun() -> {ok, {_, USER, _}} =
-              application:get_env(db_conf, localdb), USER end).
--define(PASS, fun() -> {ok, {_, _, PASS}} =
-              application:get_env(db_conf, localdb), PASS end).
-
-
 %% @doc Method to initially add a document to the database.
 %% Encodes the erlang JSon representation to valid JSon.
 doc_add({Addr, User, Pass}, Content) ->
@@ -104,8 +95,9 @@ get_val(Json, Field) ->
 
 %% @doc Function getting a UUID from the CouchDB
 get_uuid() ->
-    {ok, {_HTTP, _Inf, Res}} = couch_connector:get_request({?ADDR() ++ "_uuids",
-                                                            ?USER(), ?PASS()}),
+    {ok, {_HTTP, _Inf, Res}} =
+    couch_connector:get_request({db_addr_serv:main_addr() ++ "_uuids",
+                    db_addr_serv:main_user(), db_addr_serv:main_pass()}),
     [{<<"uuids">>, [UUID]}] = jsx:decode(Res),
     binary_to_list(UUID).
 
