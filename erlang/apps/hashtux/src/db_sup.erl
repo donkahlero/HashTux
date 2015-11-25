@@ -57,5 +57,6 @@ init([]) ->
                    permanent, 5000, worker, [db_replicator]},
     DBServ = {db_serv, {db_serv, start_link, []},
              permanent, 5000, worker, [db_serv]},
+    io:format("db_sup started...~n", []),
     {ok, {{one_for_one, 1, 10}, [DBAddrServ, HashReadSup, HashWriteSup,
               StatsWriteSup, StatsReadSup, DBCleaner, DBReplicator, DBServ]}}.
