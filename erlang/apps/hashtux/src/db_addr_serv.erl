@@ -1,3 +1,13 @@
+%% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
+%% @doc Module for fetching and evaluating database addresses. On init the
+%% module tries to access a database. When this database does not respond in a
+%% given amount of time the database is treated as unavailable and another
+%% database is used as the main database for the node.
+%% @version 0.1
+%% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.1                                                          |
+%% | First version of this module. Does the things as described above.         |
+%% -----------------------------------------------------------------------------
 -module(db_addr_serv).
 
 -behavior(gen_server).
@@ -23,18 +33,22 @@ stop() ->
 state() ->
   gen_server:call(?MODULE, state).
 
+%% @doc Get the address of the main server
 main_addr() ->
     {Addr, _, _} = gen_server:call(?MODULE, get_maindb),
     Addr.
 
+%% @doc Get the user of the main database
 main_user() ->
     {_, User, _} = gen_server:call(?MODULE, get_maindb),
     User.
 
+%% @doc Get the password of the main database
 main_pass() ->
     {_, _, Pass} = gen_server:call(?MODULE, get_maindb),
     Pass.
 
+%% @doc get the external databases available
 external_dbs() ->
     gen_server:call(?MODULE, get_external_dbs).
 
@@ -44,7 +58,7 @@ external_dbs() ->
 %% -----------------------------------------------------------------------------
 %% @doc db_serv init function. No argument needed to be passed.
 init([]) ->
-    io:format("db_addrfetcher started...\n", []),
+    io:format("db_addr_server started...\n", []),
     [MainDB | ExternalDBs] = get_dbs(),
     init_designdocs(MainDB),
     {ok, {MainDB, ExternalDBs}}.
