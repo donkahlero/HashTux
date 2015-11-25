@@ -128,7 +128,9 @@ parse_youtube_video(Video, HashTag) ->
     A = [{<<"search_term">>, list_to_binary(HashTag)}, {<<"service">>, <<"youtube">>}, {<<"insert_timestamp">>, Timestamp}, {<<"timestamp">>, PubDate}, {<<"content_type">>, <<"video">>}, {<<"service_id">>, Id}, {<<"text">>, Description}, {<<"language">>, Language}, {<<"view_count">>, ViewCount}, {<<"likes">>, LikeCount}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Resource_URL}, {<<"resource_link_low">>, Resource_URL}, {<<"username">>, ChannelTitle}, {<<"profile_link">>, Channel_URL}, {<<"user_id">>, ChannelId}],
 
     % return clean result
-    clean_result(A).
+    B = clean_result(A),
+    io:format("RETURNED YOUTUBE ITEM ~p~n", [B]),
+    B.
 
 %% 
 %% @doc Tells if a given Youtube video matches the Language Filter
@@ -192,7 +194,6 @@ parse_tweet_details(HashTag, Status) ->
 
     Date = case extract(<<"created_at">>, Status) of
         {found, X2} -> 
-            io:format("TWITTER DATE ~p~n", [X2]),      %% *** REMOVE-THIS!!!!*****
             dateconv:twitter_to_epoch(binary_to_list(X2));
         not_found -> null
     end,
