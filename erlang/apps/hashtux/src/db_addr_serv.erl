@@ -3,6 +3,7 @@
 -behavior(gen_server).
 
 -export([start_link/0, stop/0, state/0]).
+-export([main_addr/0, main_user/0, main_pass/0, external_dbs/0]).
 -export([init/1, terminate/2, code_change/3]).
 -export([handle_call/3, handle_cast/2, handle_info/2]).
 
@@ -22,6 +23,21 @@ stop() ->
 state() ->
   gen_server:call(?MODULE, state).
 
+main_addr() ->
+    {Addr, _, _} = gen_server:call(?MODULE, get_maindb),
+    Addr.
+
+main_user() ->
+    {_, User, _} = gen_server:call(?MODULE, get_maindb),
+    User.
+
+main_pass() ->
+    {_, _, Pass} = gen_server:call(?MODULE, get_maindb),
+    Pass.
+
+external_dbs() ->
+    gen_server:call(?MODULE, get_external_dbs).
+
 %% -----------------------------------------------------------------------------
 %% | Server implementation. Further documentation for each call. Casts, and    |
 %% | get_info is not supported yet.                                            |
@@ -31,12 +47,14 @@ init([]) ->
     io:format("db_addrfetcher started...\n", []),
     [MainDB | ExternalDBs] = get_dbs(),
     init_designdocs(MainDB),
-    {ok, [MainDB | ExternalDBs]}.
+    {ok, {MainDB, ExternalDBs}}.
 
-handle_call(get_maindb, _From, [MainDB | ExternalDBs]) ->
-    {reply, MainDB, [MainDB | ExternalDBs]};
-handle_call(get_externaldbs, _From, [MainDB | ExternalDBs]) ->
-    {reply, ExternalDBs, [MainDB | ExternalDBs]}.
+handle_call(get_maindb, _From, DBs) ->
+    {MainDB, _} = DBs,
+    {reply, MainDB, DBs};
+handle_call(get_external_dbs, _From, DBs) ->
+    {_, ExternalDBs} = DBs,
+    {reply, ExternalDBs, DBs}.
 
 %%% Other casts are not implemented yet.
 handle_cast(_, _) ->
