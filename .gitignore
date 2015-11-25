@@ -75,3 +75,6 @@ local.properties
 _build/*
 _build/
 rebar.lock
+
+##PHP
+config.php
