@@ -44,7 +44,7 @@ function initGrid()
                 cols = cols + 
                     "<div class='col-xs-" +
                     (12/gridWidth) + 
-                    " col-fill imageitem' style='background-image:url();' id='tile" +
+                    " col-fill fixitem' style='background-image:url();' id='tile" +
                     count +
                     "'></div>";
 
@@ -61,7 +61,7 @@ function initGrid()
                     cols = cols + 
                         "<div class='col-xs-" +
                         (12/gridWidth) + 
-                        " col-fill imageitem' style='background-image:url(" +
+                        " col-fill fixitem' style='background-image:url(" +
                         displayed[count].url +
                         ");' id='tile" +
                         count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
@@ -78,15 +78,18 @@ function initGrid()
                 else if(displayed[count].type === "video")
                 {
                     cols = cols +
-                    "<div class='col-xs-" + 
-                    (12/gridWidth) + 
-                    " col-fill imageitem' style='background-image:url('');' id='tile"+
-                    count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
-                    "<p class='usernameimage'><a class='greytext' href='" +
-                    displayed[count].userlink + "' target='_blank'>@" +
-                    displayed[count].username +
-                    "</a></p><p class='twittertext'>[INSERT VIDEO HERE]</p>" +
-                    "</div>";
+                        "<div class='col-xs-" + 
+                        (12/gridWidth) + 
+                        " col-fill' style='background-image:url('');' id='tile"+
+                        count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        "<video width='100%' height='100%' autoplay loop muted controls src='" +
+                        displayed[count].url + 
+                        "' style='object-fit: fill; top: 0; position: absolute;'></video>" +
+                        "<p class='usernameimage'><a class='greytext' href='" +
+                        displayed[count].userlink + "' target='_blank'>@" +
+                        displayed[count].username +
+                        "</a></p>" +
+                        "</div>";
 
                     displayed[count].tile = "tile" + count;
                     count++;
@@ -102,7 +105,7 @@ function initGrid()
                     cols = cols +
                         "<div class='col-xs-" +
                         (12/gridWidth) + 
-                        " col-fill twitteritem' id='tile" +
+                        " col-fill fixitem' id='tile" +
                         count + "'onclick='tileFreeze(" + "tile" + count + ")'>" +
                         "<div class='twittertext'><p>" +
                         displayed[count].text +
@@ -121,7 +124,7 @@ function initGrid()
                     cols = cols + 
                         "<div class='col-xs-" +
                         (12/gridWidth) + 
-                        " col-fill twitteritem' style='background-image:url(" +
+                        " col-fill fixitem' style='background-image:url(" +
                         displayed[count].url +
                         ");' id='tile" +
                         count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
@@ -133,9 +136,29 @@ function initGrid()
                         "</a></p></p></div>" +
                         "</div>";
 
-                        displayed[count].tile = "tile" + count;
-                        count++;
+                    displayed[count].tile = "tile" + count;
+                    count++;
                 }
+            }
+            
+            else if(displayed[count].service === "youtube")
+            {
+                cols = cols +
+                    "<div class='col-xs-" + 
+                    (12/gridWidth) + 
+                    " col-fill' style='background-image:url('');' id='tile"+
+                    count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                    "<video width='100%' height='100%' autoplay loop muted controls src='" +
+                    displayed[count].url + 
+                    "' style='object-fit: fill; top: 0; position: absolute;'></video>" +
+                    "<p class='usernameimage'><a class='greytext' href='" +
+                    displayed[count].userlink + "' target='_blank'>@" +
+                    displayed[count].username +
+                    "</a></p>" +
+                    "</div>";
+
+                displayed[count].tile = "tile" + count;
+                count++;
             }
         }
 
