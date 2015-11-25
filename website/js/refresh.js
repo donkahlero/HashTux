@@ -28,7 +28,7 @@ function refresh()
                     {
                         $(randTile).animate({height: "0", opacity: "0"}, 0);
 
-                        $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill imageitem');
+                        $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill fixitem');
                         $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
                         $(randTile).css('background-image', 'url(' + newItem.url + ')');
                         $(randTile).html("<p class='usernameimage'><a class='greytext' href='" +
@@ -42,16 +42,16 @@ function refresh()
                     {
                         $(randTile).animate({height: "0", opacity: "0"}, 0);
 
-                        $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill imageitem');
+                        $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill');
                         $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
                         $(randTile).css('background-image', '');
                         $(randTile).html(
                                 "<p class='usernameimage'><a class='greytext' href='" +
                                 newItem.userlink + "' target='_blank'>@" +
                                 newItem.username + "</a></p>" +
-                                "<p class='twittertext'>" +
-                                "[INSERT VIDEO HERE]" +
-                                "</p>");
+                                "<video width='100%' height='100%' autoplay loop muted controls src='" +
+                                newItem.url + 
+                                "'style='object-fit: fill; top: 0; position: absolute;'></video>");
 
                         $(randTile).animate({height: "100%", opacity: "1"}, 1000);
                     }
@@ -63,7 +63,7 @@ function refresh()
                     {
                         $(randTile).animate({height: "0", opacity: "0"}, 0);
 
-                        $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill twitteritem');
+                        $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill fixitem');
                         $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
                         $(randTile).css('background-image', '');
                         $(randTile).html(
@@ -81,7 +81,7 @@ function refresh()
                     {
                         $(randTile).animate({height: "0", opacity: "0"}, 0);
 
-                        $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill imageitem');
+                        $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill fixitem');
                         $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
                         $(randTile).css('background-image', 'url(' + newItem.url + ')');
                         $(randTile).html(
@@ -94,6 +94,24 @@ function refresh()
 
                         $(randTile).animate({height: "100%", opacity: "1"}, 1000);
                     }
+                }
+                
+                else if(newItem.service === "youtube")
+                {
+                    $(randTile).animate({height: "0", opacity: "0"}, 0);
+
+                    $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill');
+                    $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
+                    $(randTile).css('background-image', '');
+                    $(randTile).html(
+                            "<video width='100%' height='100%' autoplay loop muted controls src='" +
+                            newItem.url + 
+                            "'style='object-fit: fill; top: 0; position: absolute;'></video>" +
+                            "<p class='usernameimage'><a class='greytext' href='" +
+                            newItem.userlink + "' target='_blank'>@" +
+                            newItem.username + "</a></p>");
+
+                    $(randTile).animate({height: "100%", opacity: "1"}, 1000);
                 }
 
                 if(currentItem !== null)
