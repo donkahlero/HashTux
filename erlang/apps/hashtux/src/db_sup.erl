@@ -37,6 +37,8 @@ shell_start() ->
 %% @doc Init function which creades all child options and then starts the
 %% the children.
 init([]) ->
+    DBAddrServ = {db_addr_serv, {db_addr_serv, start_link, []},
+                 permanent, 5000, worker, [db_addr_serv]},
     HashReadSup = {db_hash_read_sup, {db_worker_sup, start_link,
                   [db_hash_read_sup]}, temporary, 5000, supervisor,
                   [db_worker_sup]},
@@ -55,5 +57,5 @@ init([]) ->
                    permanent, 5000, worker, [db_replicator]},
     DBServ = {db_serv, {db_serv, start_link, []},
              permanent, 5000, worker, [db_serv]},
-    {ok, {{one_for_one, 1, 10}, [HashReadSup, HashWriteSup, StatsWriteSup,
-         StatsReadSup, DBCleaner, DBReplicator, DBServ]}}.
+    {ok, {{one_for_one, 1, 10}, [DBAddrServ, HashReadSup, HashWriteSup,
+              StatsWriteSup, StatsReadSup, DBCleaner, DBReplicator, DBServ]}}.
