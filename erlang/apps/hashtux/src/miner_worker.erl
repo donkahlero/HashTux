@@ -45,8 +45,7 @@ handle_info(_Msg, S) ->
 handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 	% get results
 	Results = run_search(Term, Options),
-	% send to original caller								
-	%Pid ! {self(), Results},	
+	% send to original caller	
 	send_results(Pid, Results, Term, Options),
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	% stop this worker
@@ -67,6 +66,7 @@ handle_call(_Request, _From, S) ->
 
 %%
 send_results(Pid, [], Term, Options) ->
+	io:format("Results returned from search: ~p~n", [[]]),	
 	case get_value(request_type, Options) of
 		<<"search">> -> 
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
@@ -78,11 +78,18 @@ send_results(Pid, [], Term, Options) ->
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
 	end;
 send_results(Pid, Results, _Term, Options) ->
+	FilteredRes = get_value(filtered, Results),
+	%io:format("Filtered results returned from search: ~p~n", [FilteredRes]),
+	UnfilteredRes = get_value(unfiltered, Results),	
+	%io:format("Unfiltered results returned from search: ~p~n", [UnfilteredRes]),
 	case get_value(request_type, Options) of
 		<<"search">> -> 
-			Pid ! {self(), Results};
+			io:format("WORKER: Writing to db...~n"),
+			gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
+			Pid ! {self(), FilteredRes};
 		<<"update">> ->
-			Pid ! {self(), Results};
+			gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
+			Pid ! {self(), FilteredRes};
 		<<"heartbeat">> ->
 			ok
 	end.
@@ -91,12 +98,15 @@ send_results(Pid, Results, _Term, Options) ->
 %% 
 % no options
 run_search(Term, []) -> 
+	io:format("WORKER: Running search...~n"),
 	ContType = {content_type, get_cont_type()},
 	Lang = {language, []},
-	L = get_results(Term, get_services([]), ContType, Lang),
+	HistoryTimestamp = {history_timestamp, []},
+	L = get_results(Term, get_services([]), ContType, Lang, HistoryTimestamp),
 	lists:append(L);
 % with options
 run_search(Term, Options) ->
+	io:format("WORKER: Running search...~n"),
 	% get the options
 	Services = case lists:keyfind(service, 1, Options) of
 					{_K1, V1} -> get_services(V1);
@@ -110,7 +120,11 @@ run_search(Term, Options) ->
 				{K3, V3} -> {K3, V3};
 				false  -> {language, []}
 		   end,
-	L = get_results(Term, Services, ContType, Lang),
+	HistoryTimestamp = case lists:keyfind(history_timestamp, 1, Options) of
+				{K4, V4} -> {K4, V4};
+				false  -> {history_timestamp, []}
+		   end,
+	L = get_results(Term, Services, ContType, Lang, HistoryTimestamp),
 	lists:append(L).
 
 
@@ -118,10 +132,11 @@ run_search(Term, Options) ->
 %% @doc Returns a list with the results from searching the different services 
 %% available. The search is performed in parallel for each service.
 %%
-get_results(Term, Services, ContType, Lang) ->
+get_results(Term, Services, ContType, Lang, HistoryTimestamp) ->
+	io:format("WORKER: Getting results...~n"),
 	F = fun(Pid, X) -> spawn(fun() -> 
 									Pid ! {self(), 
-									search_services({X, {Term, ContType, Lang}})} 
+									search_services({X, {Term, ContType, Lang, HistoryTimestamp}})} 
 							  end) 
 		end,
 	[receive {R, X} -> X end || R <- [F(self(), N) || N <- Services]].
@@ -130,12 +145,15 @@ get_results(Term, Services, ContType, Lang) ->
 %%
 %% @doc Calls the appropriate search services to perform a search.
 %%
-search_services({instagram, {Term, ContType, _Lang}}) ->
+search_services({instagram, {Term, ContType, _Lang, _HistoryTimestamp}}) ->
+	io:format("WORKER: Calling ig_search...~n"),
 	ig_search:search(Term, [ContType]);
-search_services({twitter, {Term, ContType, Lang}}) ->
-	twitter_search:search_hash_tag(Term, [ContType, Lang]);
-search_services({youtube, {Term, ContType, Lang}}) ->
-	youtube_search:search(Term, [ContType, Lang]).
+search_services({twitter, {Term, ContType, Lang, HistoryTimestamp}}) ->
+	io:format("WORKER: Calling twitter_search...~n"),
+	twitter_search:search_hash_tag(Term, [ContType, Lang, HistoryTimestamp]);
+search_services({youtube, {Term, ContType, Lang, HistoryTimestamp}}) ->
+	io:format("WORKER: Calling youtube_search...~n"),
+	youtube_search:search(Term, [ContType, Lang, HistoryTimestamp]).
 
 
 %%
