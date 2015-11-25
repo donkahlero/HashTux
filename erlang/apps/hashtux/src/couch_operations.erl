@@ -40,7 +40,7 @@ doc_add({Addr, User, Pass}, Content) ->
 
 %% @doc Overwrite content of a document.
 doc_change({Addr, User, Pass}, Content) ->
-    Rev = get_tupp(jsx:decode(?MODULE:doc_get(Addr)), "_rev"),
+    Rev = get_tupp(?MODULE:doc_get({Addr, User, Pass}), "_rev"),
     couch_connector:put_request({Addr, User, Pass},
                     binary_to_list(jsx:encode([Rev | Content])), "text/json").
 
