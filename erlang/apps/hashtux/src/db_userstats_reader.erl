@@ -61,9 +61,9 @@ handle_call(_, _, _) ->
     error(undef).
 
 %% @doc Get statistics based on the search term from the server.
-handle_cast({get_stats, get_search_term, Options, Rec}, State) ->
+handle_cast({get_stats, Term, Options, Rec}, State) ->
     R = couch_operations:doc_get_mapreduce_cont({?ADDR() ++
-             "hashtux_userstats/_design/stat/_view/by_search_term?" ++
+             "hashtux_userstats/_design/stat/_view/"++ Term  ++"?" ++
              db_options_handler:pre_search_opt(Options) ++ "&group=true",
              ?USER(), ?PASS()}),
     Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
