@@ -9,6 +9,7 @@
 %% -----------------------------------------------------------------------------
 %% | Sprint 5 // v0.2:                                                         |
 %% | Fixed the module. Is checking now for errors in the connections.          |
+%% | Applied changes of db_addr_serv.                                          |
 %% -----------------------------------------------------------------------------
 -module(db_replicator).
 -version(0.2).

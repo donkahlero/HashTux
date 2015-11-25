@@ -15,11 +15,11 @@
 %% | Sprint 5 // v0.3                                                          |
 %% | Small hotfixes. Checking now if the results can be pattern matched.       |
 %% | The document update function works now with the new general design.       |
+%% | Applied changes of db_addr_serv.                                          |
 %% -----------------------------------------------------------------------------
 -module(couch_operations).
 -version(0.3).
 
-%% Document operations
 -export([doc_add/2, doc_get_map_cont/1, doc_get_mapreduce_cont/1]).
 -export([doc_change/2, doc_get/1, doc_delete/2, doc_append/2]).
 -export([doc_rmval/2, doc_exist/1, get_uuid/0]).
