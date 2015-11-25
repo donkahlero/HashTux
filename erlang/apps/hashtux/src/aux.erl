@@ -3,7 +3,6 @@
 -export([bin_to_atom/1, get_value/2, get_youtube_keys/0, get_twitter_keys/0]).
 
 
-
 bin_to_atom(Binary) ->
 	list_to_atom(binary_to_list(Binary)).
 
