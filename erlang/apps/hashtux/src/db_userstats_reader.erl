@@ -1,7 +1,7 @@
 %% @author Jonas Kahler <jonas.kahler@icloud.com> [www.derkahler.de]
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% @doc A worker that handles the reading from the db for the userstats
-%% @version 0.1
+%% @version 0.2
 %% -----------------------------------------------------------------------------
 %% | Sprint 4                                                                  |
 %% | Version 0.1                                                               |
@@ -10,8 +10,11 @@
 %% | it can read from the db and use mapreduce functions for getting the corre-|
 %% | ct data.                                                                  |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5                                                                  |
+%% | Applied changes of db_addr_serv.                                          |
+%% -----------------------------------------------------------------------------
 -module(db_userstats_reader).
--version(0.1).
+-version(0.2).
 
 -behavior(gen_server).
 

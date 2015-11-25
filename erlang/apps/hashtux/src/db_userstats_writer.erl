@@ -1,6 +1,6 @@
 %% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @author Niklas le Comte <niklas.lecomte@hotmail.com>
-%% @version 0.2
+%% @version 0.3
 %% -----------------------------------------------------------------------------
 %% | Sprint 3 // v0.1                                                          |
 %% | Added this worker to write user statistics to the database.               |
@@ -13,8 +13,11 @@
 %% | With the db addresses defined in the config file. Therefore the macros    |
 %% | were added.                                                               |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.3                                                          |
+%% | Applied changes of db_addr_serv.                                          |
+%% -----------------------------------------------------------------------------
 -module(db_userstats_writer).
--version(0.2).
+-version(0.3).
 
 -behavior(gen_server).
 

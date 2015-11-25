@@ -15,6 +15,7 @@
 %% | Sprint 5 // v0.3:                                                         |
 %% | Fixed the cleanup function: will not crash when there are now results     |
 %% | to delete.                                                                |
+%% | Applied changes of db_addr_serv.                                          |
 %% -----------------------------------------------------------------------------
 -module(db_cleaner).
 -version(0.3).

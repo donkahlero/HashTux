@@ -1,7 +1,7 @@
 %% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% @doc Initial database actions module
-%% @version 0.3
+%% @version 0.4
 %% -----------------------------------------------------------------------------
 %% | Sprint 1 // v0.1                                                          |
 %% | Created first as a normal module where the diffrent write operations was  |
@@ -17,8 +17,11 @@
 %% | Applied the new changes to this worker. It now fetches the credentials of |
 %% | the database server from the config file and uses them to write to the db |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.4                                                          |
+%% | Applied changes of db_addr_serv.                                          |
+%% -----------------------------------------------------------------------------
 -module(db_hash_writer).
--version(0.3).
+-version(0.4).
 
 -behavior(gen_server).
 
