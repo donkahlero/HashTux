@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 <?php
     require_once("request.php");
     
@@ -6,7 +8,6 @@
     $output = request($search, $options); 
 ?>
 
-<!DOCTYPE html> 
 <html>
     <head>
         
@@ -28,7 +29,7 @@
         <script type="text/javascript">
             
             var searchterm = "<?php echo $search; ?>";
-            var options = {request_type: "search"};
+            var options = {request_type: "update"};
             
             var heartbeats = true;
             
@@ -98,8 +99,8 @@
                     data: JSON.stringify(options),
                     
                     success: function (myString) {
+                        alert(JSON.stringify(myString));
                         parse_to_items(myString);
-                        alert(JSON.stringify(options));
                     }
                 });
             }
@@ -125,6 +126,8 @@
 
             function parse_to_items(json) {
                 
+                var debug = "";
+                
                 var jsonobj = $.parseJSON(json);    // Parse the JSON object
                 
                 // A for loop to go through all of the objects within the JSON
@@ -138,8 +141,20 @@
                                 jsonobj[i].content_type, jsonobj[i].service,
                                 jsonobj[i].resource_link_high, jsonobj[i].text,
                                 jsonobj[i].username, jsonobj[i].profile_link, false, "");
+                    
+                    if(incItem.service === "youtube")
+                    {
+                        debug += "1" + jsonobj[i].content_type + "\n" +
+                                    "2" + jsonobj[i].service + "\n" +
+                                    "3" + jsonobj[i].resource_link_high + "\n" +
+                                    "5" + jsonobj[i].username + "\n" +
+                                    "6" + jsonobj[i].profile_link;
+                    }
+                    
+                    debug += jsonobj[i].service
                                 
                     var ignore = false;     // A boolean to keep track of whether to insert the item or not
+
                     
                     // Goes through the displayed array to check whether any of
                     // the items in it is the same as the incoming item. If so, disregard
@@ -174,9 +189,9 @@
                         // If the length of the item array reaches 50 elements
                         // push an old item out before inserting a new one
                         
-                        if(items.length >= 50)
+                        if(items.length >= 100)
                         {
-                            items.splice(items.length, 1);     // Remove the head of items
+                            items.splice(0, 1);     // Remove the head of items
                             items.push(incItem);    // Add the new item to the end of items
                         }
                         
@@ -187,14 +202,14 @@
                     }
                 }
                 
-//                var debug = "";
+//                debug += "\n\n";
 //                
 //                for(k = 0; k < items.length; k++)
 //                {
-//                    debug += items[k].service;
+//                    debug += items[k].service + " ";
 //                }
-//                
-//                alert(debug);
+                
+                alert(debug);
             }
             
             // A function that runs as soon as the users window loads
@@ -206,7 +221,7 @@
                 initGrid();         // Initialize the grid
                 
                 refreshTimer = setInterval(refresh, 5000);
-                setInterval(heartbeatFetchHandler, 10000);
+                setInterval(heartbeatFetchHandler, 30000);
  
             };
             
