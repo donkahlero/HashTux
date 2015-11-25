@@ -14,6 +14,7 @@
 %% -----------------------------------------------------------------------------
 %% | Sprint 5 // v0.3                                                          |
 %% | Small hotfixes. Checking now if the results can be pattern matched.       |
+%% | The document update function works now with the new general design.       |
 %% -----------------------------------------------------------------------------
 -module(couch_operations).
 -version(0.3).
@@ -39,16 +40,21 @@ doc_add({Addr, User, Pass}, Content) ->
                     jsx:encode(Content), "text/json").
 
 %% @doc Overwrite content of a document.
-doc_change({Addr, User, Pass}, Content) ->
-    Rev = get_tupp(?MODULE:doc_get({Addr, User, Pass}), "_rev"),
-    couch_connector:put_request({Addr, User, Pass},
-                    binary_to_list(jsx:encode([Rev | Content])), "text/json").
+doc_change(Cred, Content) ->
+    case (?MODULE:doc_get(Cred)) of
+        [{<<"error">>,<<"not_found">>}, _] ->
+            ?MODULE:doc_add(Cred, Content);
+        _ ->
+            Rev = get_tupp(?MODULE:doc_get(Cred), "_rev"),
+            couch_connector:put_request(Cred,
+                 binary_to_list(jsx:encode([Rev | Content])), "text/json")
+    end.
 
 %% @doc Fetches a document from the database.
 %% Returns just the content of this document. HTML header + info are ignored.
 doc_get({Addr, User, Pass}) ->
     {ok, {_HTTP, _Info, Res}} = couch_connector:get_request({Addr, User, Pass}),
-    jsx:decode(Res).
+        jsx:decode(Res).
 
 %% @doc Gets just objects from the database without anything else.
 doc_get_map_cont({Addr, User, Pass}) ->
