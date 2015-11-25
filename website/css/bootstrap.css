@@ -6841,19 +6841,13 @@ button.close {
 .row-grid-2 { height: 16.666666666666664%; }
 .row-grid-1 { height: 8.333333333333332%; }
 
-.imageitem {
-    text-align: center;
-    background-size: cover;
-    background-position: center center;
-}
-
-.twitteritem {
-    text-align: center;
+.fixitem {
     background-size: cover;
     background-position: center center;
 }
 
 .twittertext {
+    text-align: center;
     background-color: rgba(0, 0, 0, 0.5);
     font-size: 10px;
     color: #ebebeb;
@@ -6866,6 +6860,7 @@ button.close {
 }
 
 .twitterimagetext {
+    text-align: center;
     background-color: rgba(0, 0, 0, 0.5);
     font-size: 10px;
     color: #ebebeb;
@@ -6877,6 +6872,7 @@ button.close {
 }
 
 .usernametweet {
+    text-align: center;
     position: relative;
     top: 50%;
     color: #cccccc;
@@ -6886,10 +6882,11 @@ button.close {
 }
 
 .usernameimage {
+    text-align: center;
     width: 100%;
     padding: 5px;
     background-color: rgba(0, 0, 0, 0.5);
-    position: relative;
+    position: absolute;
     top: 0;
     color: #cccccc;
     font-size: 10px;
