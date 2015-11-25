@@ -107,7 +107,3 @@ start_worker() ->
 	ChildSpec = {erlang:unique_integer(), {miner_worker, start_link, []},
 							temporary, 5000, worker, [miner_worker]},
 	supervisor:start_child(miner_worker_sup, ChildSpec).
-
-
-
-
