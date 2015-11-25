@@ -14,6 +14,8 @@
  * We use cURL for the actual request. 
  * We pass some options and details that we store as "user habit data",
  * see further comments below and in documentation on the format.
+ * 
+ * NOTE: Make sure this file does not have ANY text/characters outside the php tags!
  */
  
 
@@ -65,12 +67,18 @@ function request($term, $options) {
 	// Put together the request body in the [options, user habit data] format
 	$habit_data = _get_user_habit_data();
 	$request_body = json_encode([$options, $habit_data]);
-
+	
+	$backend_timeout = $config['backend_timeout'];
+	if ($options['request_type'] == "stats") {
+		// An exception - higher timeout for stats request
+		$backend_timeout = 60;
+	}
+	
 	// Try the first server first, then cycle through the array if timeout or errors occur
 	$server_index = _get_server_index();
 	$attempts = 0;
 	do {
-		$output = _query_server($config['backend_servers'][$server_index], $term, $request_body);
+		$output = _query_server($config['backend_servers'][$server_index], $term, $request_body, $backend_timeout);
 		$attempts++;
 
 		// If timeout or error occured, try the next backend server
@@ -102,12 +110,12 @@ function _next_server_index($index) {
 /*
  * Makes a concrete request to the specified server - returns false on error or timeout
  */
-function _query_server($address, $term, $request_body) {
+function _query_server($address, $term, $request_body, $backend_timeout) {
 	global $config;
 
 	// Error check: die if cURL isn't available
 	if (!function_exists('curl_init')){
-   	die("Sorry cURL is not installed!");
+   		die("Sorry cURL is not installed!");
 	}
 	$ch = curl_init();
 
@@ -115,7 +123,7 @@ function _query_server($address, $term, $request_body) {
   curl_setopt ($ch, CURLOPT_RETURNTRANSFER, TRUE);
   
 	// cURL should timeout after configured time
-	curl_setopt($ch, CURLOPT_TIMEOUT, $config['backend_timeout']);
+	curl_setopt($ch, CURLOPT_TIMEOUT, $backend_timeout);
   // cURL should POST the JSON in $request_data
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $request_body);
@@ -126,8 +134,8 @@ function _query_server($address, $term, $request_body) {
 	// Execute the request
 	$output = curl_exec($ch);  
 
-	// Return false on timeout or other error
-	if (curl_errno($ch)) {
+	// Return false on timeout or other error (errno 0 means no error)
+	if (curl_errno($ch) != 0) {
 		$output = false;
 	}
 	curl_close($ch);
@@ -166,4 +174,4 @@ function _get_user_habit_data() {
 function _clean_searchterm($string) {
    return preg_replace('/[^A-Öa-ö1-9\-\_\+ ]/', '', $string); // Removes special chars.
 }
-?>	
+?>
