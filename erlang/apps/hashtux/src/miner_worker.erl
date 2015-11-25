@@ -101,7 +101,8 @@ run_search(Term, []) ->
 	io:format("WORKER: Running search...~n"),
 	ContType = {content_type, get_cont_type()},
 	Lang = {language, []},
-	L = get_results(Term, get_services([]), ContType, Lang),
+	HistoryTimestamp = {history_timestamp, []},
+	L = get_results(Term, get_services([]), ContType, Lang, HistoryTimestamp),
 	lists:append(L);
 % with options
 run_search(Term, Options) ->
@@ -119,7 +120,11 @@ run_search(Term, Options) ->
 				{K3, V3} -> {K3, V3};
 				false  -> {language, []}
 		   end,
-	L = get_results(Term, Services, ContType, Lang),
+	HistoryTimestamp = case lists:keyfind(history_timestamp, 1, Options) of
+				{K4, V4} -> {K4, V4};
+				false  -> {history_timestamp, []}
+		   end,
+	L = get_results(Term, Services, ContType, Lang, HistoryTimestamp),
 	lists:append(L).
 
 
@@ -127,11 +132,11 @@ run_search(Term, Options) ->
 %% @doc Returns a list with the results from searching the different services 
 %% available. The search is performed in parallel for each service.
 %%
-get_results(Term, Services, ContType, Lang) ->
+get_results(Term, Services, ContType, Lang, HistoryTimestamp) ->
 	io:format("WORKER: Getting results...~n"),
 	F = fun(Pid, X) -> spawn(fun() -> 
 									Pid ! {self(), 
-									search_services({X, {Term, ContType, Lang}})} 
+									search_services({X, {Term, ContType, Lang, HistoryTimestamp}})} 
 							  end) 
 		end,
 	[receive {R, X} -> X end || R <- [F(self(), N) || N <- Services]].
@@ -140,15 +145,15 @@ get_results(Term, Services, ContType, Lang) ->
 %%
 %% @doc Calls the appropriate search services to perform a search.
 %%
-search_services({instagram, {Term, ContType, _Lang}}) ->
+search_services({instagram, {Term, ContType, _Lang, _HistoryTimestamp}}) ->
 	io:format("WORKER: Calling ig_search...~n"),
 	ig_search:search(Term, [ContType]);
-search_services({twitter, {Term, ContType, Lang}}) ->
+search_services({twitter, {Term, ContType, Lang, HistoryTimestamp}}) ->
 	io:format("WORKER: Calling twitter_search...~n"),
-	twitter_search:search_hash_tag(Term, [ContType, Lang]);
-search_services({youtube, {Term, ContType, Lang}}) ->
+	twitter_search:search_hash_tag(Term, [ContType, Lang, HistoryTimestamp]);
+search_services({youtube, {Term, ContType, Lang, HistoryTimestamp}}) ->
 	io:format("WORKER: Calling youtube_search...~n"),
-	youtube_search:search(Term, [ContType, Lang]).
+	youtube_search:search(Term, [ContType, Lang, HistoryTimestamp]).
 
 
 %%

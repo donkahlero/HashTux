@@ -9,7 +9,9 @@
 % @doc Send GET request to Youtube Data API filtering results by the given Keyword
 % @params 
 %	HashTag: keyword
-search(HashTag, [{content_type, Types}, {language, Language}]) ->
+search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp, HistoryTimestamp}]) ->
+
+	io:format("Youtube: HISTORY TIMESTAMP ~p~n", [HistoryTimestamp]),
 
 	io:format("Youtube: TYPES: ~p~n", [Types]),
 	io:format("Youtube: LANGUAGE: ~p~n", [Language]),
