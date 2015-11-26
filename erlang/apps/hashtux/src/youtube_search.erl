@@ -50,7 +50,7 @@ search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp
 		% Video NOT requested. Return Empty List
 		true -> 
 			io:format("YOUTUBE: Client DID NOT request VIDEOS. Returning empty list\n"),
-			[]																						% return empty list (no data sent to DB)
+			[{filtered, []}, {unfiltered, []}]																						% return empty list (no data sent to DB)
 	end.
 
 % @doc sends a GET request for a given keyword
