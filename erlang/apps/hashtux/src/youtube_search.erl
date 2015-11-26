@@ -62,22 +62,14 @@ query_youtube_API(HashTag, Count, HistoryTimestamp) ->
 
 	MaxResults = "maxResults=" ++ integer_to_list(Count),					%% increase max results to 10
 
-	UniTime = apis_aux:back_one_week(calendar:universal_time()),			%
-
 	%%(CHANGE THIS TO ONE DAY) ==============
 	% Handle case history_timestamp
-	case HistoryTimestamp of
-		%% Generate Time Parameter
-		[] -> ok;
-		%% Generate time parameter
-		Timestamp -> ok
+	After = case HistoryTimestamp of
+		%% Generate AFTER Time Parameter for normal search
+		[] -> apis_aux:youtube_get_after_param();
+		%% Generate BEFORE and AFTER time parameters for History search
+		Timestamp -> apis_aux:youtube_get_after_before_params(HistoryTimestamp)
 	end,
-
-	FormattedTime = apis_aux:datetime_to_rfc_339(UniTime),					% we need to get back 1 week!!! (CHANGE THIS TO ONE DAY)
-	io:format("YOUTUBE - FORMATTED TIMESTAMP :~p~n", [FormattedTime]),
-
-	After = "publishedAfter=" ++ FormattedTime ++ "&order=date",			% Filter only results from last week and SORT by date
-
 	%% =====================================
 
 	Type = "type=video&videoCaption=closedCaption",							%% filter only VIDEO 'resource type' that contain capion
