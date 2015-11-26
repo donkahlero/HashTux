@@ -48,7 +48,6 @@ handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 	% send to original caller	
 	send_results(Pid, Results, Term, Options),
 	io:format("FINISHED:worker [~p]~n", [self()]),
-	io:format("RESULTS ~p~n", [Results]),
 	% stop this worker
 	{stop, normal, State};
 handle_cast(_Request, State) ->
@@ -79,18 +78,24 @@ send_results(Pid, [], Term, Options) ->
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
 	end;
 send_results(Pid, Results, _Term, Options) ->
+
+	MyFilteredResults = get_aggregated_results(Results, filtered),
+	MyUnfilteredResults = get_aggregated_results(Results, unfiltered),
+
 	FilteredRes = get_value(filtered, Results),
+
 	%io:format("Filtered results returned from search: ~p~n", [FilteredRes]),
 	UnfilteredRes = get_value(unfiltered, Results),	
 	%io:format("Unfiltered results returned from search: ~p~n", [UnfilteredRes]),
+	%% ********************
 	case get_value(request_type, Options) of
 		<<"search">> -> 
 			io:format("WORKER: Writing to db...~n"),
-			gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
-			Pid ! {self(), FilteredRes};
+			gen_server:call(db_serv, {add_doc, [MyUnfilteredResults]}),
+			Pid ! {self(), MyFilteredResults};
 		<<"update">> ->
-			gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
-			Pid ! {self(), FilteredRes};
+			gen_server:call(db_serv, {add_doc, [MyUnfilteredResults]}),
+			Pid ! {self(), MyFilteredResults};
 		<<"heartbeat">> ->
 			ok
 	end.
@@ -104,7 +109,6 @@ run_search(Term, []) ->
 	Lang = {language, []},
 	HistoryTimestamp = {history_timestamp, []},
 	L = get_results(Term, get_services([]), ContType, Lang, HistoryTimestamp),
-	io:format("Appending ~p~n", [L]),				%%+++++++++++++
 	lists:append(L);
 % with options
 run_search(Term, Options) ->
@@ -181,6 +185,25 @@ get_no_results(Term, Options) ->
 get_cont_type() ->
 	[<<"image">>, <<"video">>, <<"text">>].
 
+%% @author Marco Trifance
+%% @doc Gets a list of raw results (filtered and unfiltered for all social medias) and return a list
+%%		for the specified FilterType (filtered/unfiltered)
+get_aggregated_results(RawList, FilterType) ->
+	get_aggregated_results(RawList, FilterType, []).
+
+get_aggregated_results([], _FilterType, AggregatedResult) -> AggregatedResult;
+get_aggregated_results([H|T], FilterType, AggregatedResult) ->
+	case (is_type(H, FilterType)) of
+		true -> 
+			{_Key, Value} = H,
+			NewAggregatedResult = AggregatedResult ++ Value,
+			get_aggregated_results(T, FilterType, NewAggregatedResult);
+		false ->
+			get_aggregated_results(T, FilterType, AggregatedResult)
+	end.
+
+is_type({FilterType, _Any}, FilterType) -> true;
+is_type({_OtherType, _Any}, _FilterType) -> false.
 
 %%
 get_value(_Key, [])   -> [];
