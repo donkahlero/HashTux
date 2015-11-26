@@ -192,7 +192,6 @@ parse_tweet_details(HashTag, Status) ->
 
     Date = case extract(<<"created_at">>, Status) of
         {found, X2} -> 
-            io:format("TWITTER DATE ~p~n", [X2]),      %% *** REMOVE-THIS!!!!*****
             dateconv:twitter_to_epoch(binary_to_list(X2));
         not_found -> null
     end,
