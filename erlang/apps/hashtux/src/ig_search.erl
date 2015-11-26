@@ -53,7 +53,7 @@ get_max_tag_id(L) ->
 	MaxTagId = get_value(<<"next_max_tag_id">>, PagData),
 	case MaxTagId of
 		[] -> 0;
-		Other -> list_to_integer(binary:bin_to_list(MaxTagId))
+		_Other -> list_to_integer(binary:bin_to_list(MaxTagId))
 	end.
 	
 
