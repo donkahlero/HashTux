@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 
 <?php
-    require_once("request.php");
-    
     $search = $_GET['search'];
-    $options = build_request_options("search");
-    $output = request($search, $options); 
 ?>
 
 <html>
@@ -66,8 +62,17 @@
             // (see top of document)
             
             function initialize() {
-                myjson = <?php echo json_encode($output); ?>;
-                parse_to_items(myjson);
+                $.ajax({
+                    url: "/ajax.php?search=" + searchterm + "&request_type=search",
+                    type: "get",
+                    
+                    success: function (myString) {
+//                        $('#debug').html("<p>" + myString + "</p>");
+                        parse_to_items(myString);
+                        initDisplayed();    // Run the initDisplayed function
+                        initGrid();         // Initialize the grid
+                    }
+                });
             }
             
             function reinitialize() {
@@ -75,18 +80,52 @@
                 items = [];
                 $('#grid').html('');
                 
-                initialize();
-                initDisplayed();
-                initGrid();
+                options.request_type = "search";
+                
+                $.ajax({
+                    url: "/ajax_post.php?search=" + searchterm,
+                    type: "post",
+                    data: JSON.stringify(options),
+                    
+                    success: function (myString) {
+//                        $('#debug').html("<p>" + myString + "</p>");
+                        parse_to_items(myString);
+                        initDisplayed();    // Run the initDisplayed function
+                        initGrid();         // Initialize the grid
+                    }
+                });
+                
+                options.request_type = "update";
             }
             
-            function heartbeat(){
+            function newSearch() {
+                
+                var newTerm = $('#searchField').val();
+                
+                alert("New Search: " + newTerm);
+                
+                if(newTerm === "")
+                {
+                    $('#invalidterm').fadeTo(3000, 500).slideUp(500, function() {
+                        $('#invalidterm').alert('close');
+                    });
+                }
+                
+                else
+                {
+                    displayed = [];
+                    items = [];
+                    $('#grid').html('');
+                    
+                    searchterm = newTerm;
+                    initialize();
+                }
+            }
+            
+            function heartbeat() {
                 $.ajax({
                     url: "/ajax.php?search=" + searchterm + "&request_type=heartbeat",
-                    type: "get",
-                    success: function (myString) {
-                        parse_to_items(myString);
-                    }
+                    type: "get"
                 });
             }
             
@@ -143,16 +182,16 @@
                                 jsonobj[i].resource_link_high, jsonobj[i].text,
                                 jsonobj[i].username, jsonobj[i].profile_link, false, "");
                     
-                    if(incItem.service === "youtube")
-                    {
-                        debug += "1" + jsonobj[i].content_type + "\n" +
-                                    "2" + jsonobj[i].service + "\n" +
-                                    "3" + jsonobj[i].resource_link_high + "\n" +
-                                    "5" + jsonobj[i].username + "\n" +
-                                    "6" + jsonobj[i].profile_link;
-                    }
+//                    if(incItem.service === "youtube")
+//                    {
+//                        debug += "1" + jsonobj[i].content_type + "\n" +
+//                                    "2" + jsonobj[i].service + "\n" +
+//                                    "3" + jsonobj[i].resource_link_high + "\n" +
+//                                    "5" + jsonobj[i].username + "\n" +
+//                                    "6" + jsonobj[i].profile_link;
+//                    }
                     
-                    debug += jsonobj[i].service
+                    debug += jsonobj[i].service;
                                 
                     var ignore = false;     // A boolean to keep track of whether to insert the item or not
 
@@ -190,7 +229,7 @@
                         // If the length of the item array reaches 50 elements
                         // push an old item out before inserting a new one
                         
-                        if(items.length >= 100)
+                        if(items.length >= 50)
                         {
                             items.splice(0, 1);     // Remove the head of items
                             items.push(incItem);    // Add the new item to the end of items
@@ -218,12 +257,11 @@
             window.onload = function() {
                 
                 initialize();       // Run the initialize function
-                initDisplayed();    // Run the initDisplayed function
-                initGrid();         // Initialize the grid
                 
                 refreshTimer = setInterval(refresh, 5000);
                 setInterval(heartbeatFetchHandler, 30000);
- 
+                
+                hoverListener();
             };
             
             function showField() {
@@ -252,6 +290,37 @@
                 $('#searchBtn').fadeIn(500);
             }
             
+            function runScript(e) {
+                if (e.keyCode === 13) {
+                    newSearch();
+                }
+            }
+            
+            function hoverListener() {
+                
+                var menuShowing = false;
+                
+                $('body').mouseover(function(e){
+                    var x = e.pageX - this.offsetLeft;
+                    var y = e.pageY - this.offsetTop;
+                    
+                    var topLimit = ($(document).height()/3);
+                    
+                    if(y < topLimit && menuShowing === false)
+                    {
+                        showMenu();
+                        menuShowing = true;
+                    }
+                    
+                    if(y > topLimit && menuShowing === true)
+                    {
+                        hideMenu();
+                        hideSearchField();
+                        menuShowing = false;
+                    }
+                });
+            }
+            
 	</script>
 	          
     </head>
@@ -261,6 +330,7 @@
         <div class="container con-fill">
 
             <div class="container con-fill header" id="grid">
+                <!--<div class="panel" id="debug"></div>-->
             </div>
 
             <div class="container con-fill-hor">
@@ -278,7 +348,7 @@
                         </button>
                         <div class="input-group" style="display: none; float:right; width:inherit; margin-right: 15px;" id="sField">
                             <span class="input-group-addon">#</span>
-                            <input type="text" class="form-control" name="sField">
+                            <input type="text" class="form-control" id="searchField" onkeypress="runScript(event)">
                         </div>
                         <button type="button" class="btn btn-default btn-md" id="searchBtn"
                                 style="float:right; margin-right: 15px;" onclick="showField()">
@@ -300,6 +370,10 @@
             
             <div class="alert-success gridalert" id="saved">
                 Changes saved!
+            </div>
+            
+            <div class="alert-warning gridalert" id="invalidterm">
+                You did not enter a hashtag, please try again!
             </div>
 
             <div class="container con-fill header" id="options" onclick="hideOptions()"
