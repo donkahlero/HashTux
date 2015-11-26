@@ -51,7 +51,11 @@ get_token() ->
 get_max_tag_id(L) ->
 	PagData = get_value(<<"pagination">>, L),
 	MaxTagId = get_value(<<"next_max_tag_id">>, PagData),
-	list_to_integer(binary:bin_to_list(MaxTagId)).
+	case MaxTagId of
+		[] -> 0;
+		Other -> list_to_integer(binary:bin_to_list(MaxTagId))
+	end.
+	
 
 
 %% 
