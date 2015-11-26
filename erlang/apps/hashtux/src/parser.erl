@@ -128,9 +128,7 @@ parse_youtube_video(Video, HashTag) ->
     A = [{<<"search_term">>, list_to_binary(HashTag)}, {<<"service">>, <<"youtube">>}, {<<"insert_timestamp">>, Timestamp}, {<<"timestamp">>, PubDate}, {<<"content_type">>, <<"video">>}, {<<"service_id">>, Id}, {<<"text">>, Description}, {<<"language">>, Language}, {<<"view_count">>, ViewCount}, {<<"likes">>, LikeCount}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Resource_URL}, {<<"resource_link_low">>, Resource_URL}, {<<"username">>, ChannelTitle}, {<<"profile_link">>, Channel_URL}, {<<"user_id">>, ChannelId}],
 
     % return clean result
-    B = clean_result(A),
-    io:format("RETURNED YOUTUBE ITEM ~p~n", [B]),
-    B.
+    clean_result(A).
 
 %% 
 %% @doc Tells if a given Youtube video matches the Language Filter
