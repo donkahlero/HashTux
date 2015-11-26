@@ -32,7 +32,7 @@ search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp
 				%% Query API and Filter Result
 				true -> 
 					io:format("YOUTUBE: Client requested specific language\n"),
-					API_Res = query_youtube_API(HashTag, 30),
+					API_Res = query_youtube_API(HashTag, 30, HistoryTimestamp),
 					Filtered_Res = [X || X <- API_Res, parser:is_language(X, Language)],
 					Res_Length = length(Filtered_Res),
 					io:format("YOUTUBE: Filtered Search returned ~p elements ~n", [Res_Length]),
@@ -41,7 +41,7 @@ search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp
 				%% Query API (no filter)
 				false -> 
 					io:format("YOUTUBE: Client requested ALL languages\n"),
-					Result = query_youtube_API(HashTag, 10),
+					Result = query_youtube_API(HashTag, 10, HistoryTimestamp),
 					Res_Length = length(Result),
 					io:format("YOUTUBE: Simple Search returned ~p elements ~n", [Res_Length]),
 					[{filtered, Result}, {unfiltered, Result}]													% return result	
@@ -54,7 +54,7 @@ search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp
 	end.
 
 % @doc sends a GET request for a given keyword
-query_youtube_API(HashTag, Count) ->
+query_youtube_API(HashTag, Count, HistoryTimestamp) ->
 
 	Part = "part=snippet&fields=items(id(videoId))",						%% Partial Request: request only ID 'field' in the Snippet 'part'
 
@@ -62,11 +62,23 @@ query_youtube_API(HashTag, Count) ->
 
 	MaxResults = "maxResults=" ++ integer_to_list(Count),					%% increase max results to 10
 
-	UniTime = dateconv:back_one_week(calendar:universal_time()),			%
+	UniTime = apis_aux:back_one_week(calendar:universal_time()),			%
 
-	FormattedTime = dateconv:datetime_to_rfc_339(UniTime),					% we need to get back 1 week!!!
+	%%(CHANGE THIS TO ONE DAY) ==============
+	% Handle case history_timestamp
+	case HistoryTimestamp of
+		%% Generate Time Parameter
+		[] -> ok;
+		%% Generate time parameter
+		Timestamp -> ok
+	end,
+
+	FormattedTime = apis_aux:datetime_to_rfc_339(UniTime),					% we need to get back 1 week!!! (CHANGE THIS TO ONE DAY)
+	io:format("YOUTUBE - FORMATTED TIMESTAMP :~p~n", [FormattedTime]),
 
 	After = "publishedAfter=" ++ FormattedTime ++ "&order=date",			% Filter only results from last week and SORT by date
+
+	%% =====================================
 
 	Type = "type=video&videoCaption=closedCaption",							%% filter only VIDEO 'resource type' that contain capion
 
