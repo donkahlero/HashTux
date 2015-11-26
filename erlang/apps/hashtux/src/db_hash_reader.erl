@@ -1,7 +1,7 @@
 %% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% %% @doc Initial database actions module
-%% %% @version 0.3
+%% %% @version 0.4
 %% -----------------------------------------------------------------------------
 %% | Sprint 1 // v0.1                                                          |
 %% | Created first as a normal module where the diffrent write operations was  |
@@ -20,22 +20,17 @@
 %% | Applied the new general calls to the connector module                     |
 %% | Cleaned up the whole code and created detailed documentation              |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.4                                                          |
+%% | Applied changes of db_addr_serv.                                          |
+%% -----------------------------------------------------------------------------
 -module(db_hash_reader).
--version(0.3).
+-version(0.4).
 
 -behavior(gen_server).
 
 -export([start_link/0, stop/0, state/0]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2]).
 -export([code_change/3, terminate/2]).
-
-%% Local database credentials
--define(ADDR, fun() -> {ok, {ADDR, _, _}} =
-              application:get_env(db_conf, localdb), ADDR end).
--define(USER, fun() -> {ok, {_, USER, _}} =
-              application:get_env(db_conf, localdb), USER end).
--define(PASS, fun() -> {ok, {_, _, PASS}} =
-              application:get_env(db_conf, localdb), PASS end).
 
 %% -----------------------------------------------------------------------------
 %% | Public API                                                                |
@@ -67,18 +62,20 @@ init([]) ->
 %% | Implementation of different casts to the server.                          |
 %% -----------------------------------------------------------------------------
 %% @doc Fetch all results for a search term. Without options.
-handle_cast({get_posts, Hashtag, Rec}, State) ->
+handle_cast({get_posts, Hash, Rec}, State) ->
     Result =  couch_operations:doc_get_map_cont({
-              ?ADDR() ++ "hashtux/_design/post/_view/by_hashtag?key=\"" ++
-              Hashtag ++  "\"", ?USER(), ?PASS()}),
+              db_addr_serv:main_addr() ++
+              "hashtux/_design/post/_view/by_hashtag?key=\"" ++ Hash ++  "\"",
+              db_addr_serv:main_user(), db_addr_serv:main_pass()}),
     Rec ! {self(), Result},
     {stop, normal, State};
 
 %% @doc Fetch results for a given search term with different options.
-handle_cast({get_posts, Hashtag, Options, Rec}, State) ->
+handle_cast({get_posts, Hash, Options, Rec}, State) ->
     Hash_Result = couch_operations:doc_get_map_cont({
-                  ?ADDR() ++ "hashtux/_design/post/_view/by_hashtag?key=\"" ++
-                  Hashtag ++ "\"", ?USER(), ?PASS()}),
+                 db_addr_serv:main_addr () ++
+                 "hashtux/_design/post/_view/by_hashtag?key=\"" ++ Hash ++ "\"",
+                 db_addr_serv:main_user(), db_addr_serv:main_pass()}),
     Result = db_options_handler:handle_options(Hash_Result, Options),
     case(Result) of
         [] ->
@@ -89,10 +86,11 @@ handle_cast({get_posts, Hashtag, Options, Rec}, State) ->
         {stop, normal, State};
 
 %% @doc Check if a hashtag is existing in the database.
-handle_cast({posts_exist, Hashtag, Rec}, State) ->
+handle_cast({posts_exist, Hash, Rec}, State) ->
     Result = couch_operations:doc_exist({
-             ?ADDR() ++ "hashtux/_design/post/_view/by_hashtag?key=\"" ++
-             Hashtag ++ "\"", ?USER(), ?PASS()}),
+             db_addr_serv:main_addr() ++
+             "hashtux/_design/post/_view/by_hashtag?key=\"" ++ Hash ++ "\"",
+             db_addr_serv:main_user(), db_addr_serv:main_pass()}),
     Rec ! {self(), Result},
     {stop, normal, State}.
 
