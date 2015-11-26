@@ -85,7 +85,7 @@ parse_youtube_video(Video, HashTag) ->
 
 			Snippet = extract_from_node(<<"snippet">>, Items),
 
-			PubDate = dateconv:youtube_to_epoch(binary_to_list(extract_from_node(<<"publishedAt">>, Snippet))),		%% convert to EPOCH
+			PubDate = apis_aux:youtube_to_epoch(binary_to_list(extract_from_node(<<"publishedAt">>, Snippet))),		%% convert to EPOCH
 
 			Description = extract_from_node(<<"description">>, Snippet),
 			

@@ -15,8 +15,8 @@ search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_time
 
     HashTag = "#" ++ Keyword,
 
+    % generate Keyword + hisotry_timestamp parameters
     QParam = apis_aux:generate_twitter_q_param(HashTag, HistoryTimestamp),
-
     io:format("Twitter: Q-PARAM : ~p~n", [QParam]),
 
     % List of available Languages
@@ -68,6 +68,6 @@ search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_time
 % Print request status information
 print_response_info(Status) ->
     case Status of
-        "200" -> io:format("Request was fulfilled\n");
-        _Other -> io:format("Got non-200 response\n")
+        "200" -> io:format("Twitter Request was fulfilled\n");
+        _Other -> io:format("Twitter Request got non-200 response\n")
     end.
