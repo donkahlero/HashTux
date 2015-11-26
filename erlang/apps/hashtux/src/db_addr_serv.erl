@@ -98,8 +98,9 @@ get_dbs() ->
 
 eval_db(DB) ->
     case (couch_connector:get_info(DB)) of
-        {ok,{{"HTTP/1.1",200,"OK"}, _, Body}} ->
-            lists:keyfind(<<"couchdb">>, 1, jsx:decode(Body)) =:= <<"Welcome">>;
+        {ok,{_, _, Body}} ->
+            lists:keyfind(<<"couchdb">>, 1, jsx:decode(Body)) =:=
+                                            {<<"couchdb">>, <<"Welcome">>};
         {error, _} ->
             false
     end.
