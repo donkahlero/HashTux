@@ -48,6 +48,7 @@ handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 	% send to original caller	
 	send_results(Pid, Results, Term, Options),
 	io:format("FINISHED:worker [~p]~n", [self()]),
+	io:format("RESULTS ~p~n", [Results]),
 	% stop this worker
 	{stop, normal, State};
 handle_cast(_Request, State) ->
@@ -103,6 +104,7 @@ run_search(Term, []) ->
 	Lang = {language, []},
 	HistoryTimestamp = {history_timestamp, []},
 	L = get_results(Term, get_services([]), ContType, Lang, HistoryTimestamp),
+	io:format("Appending ~p~n", [L]),				%%+++++++++++++
 	lists:append(L);
 % with options
 run_search(Term, Options) ->
@@ -188,6 +190,3 @@ get_value(Key, List)  ->
 		{_K, V}	-> V;
 		false 	-> []
 	end.
-
-
-
