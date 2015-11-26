@@ -97,13 +97,10 @@ get_dbs() ->
     [X || X <- [LocalDB | ExternalDB], eval_db(X) =:= true].
 
 eval_db(DB) ->
-    Rec = self(),
-    PID = spawn(fun() -> Rec ! couch_connector:get_info(DB) end),
-    receive
-        {ok,{{"HTTP/1.1",200,"OK"}, _, _}} ->
-            true
-    after 1000 ->
-            exit(PID, normal),
+    case (couch_connector:get_info(DB)) of
+        {ok,{{"HTTP/1.1",200,"OK"}, _, Body}} ->
+            lists:keyfind(<<"couchdb">>, 1, jsx:decode(Body)) =:= <<"Welcome">>;
+        {error, _} ->
             false
     end.
 
