@@ -79,23 +79,17 @@ send_results(Pid, [], Term, Options) ->
 	end;
 send_results(Pid, Results, _Term, Options) ->
 
-	MyFilteredResults = get_aggregated_results(Results, filtered),
-	MyUnfilteredResults = get_aggregated_results(Results, unfiltered),
+	FilteredResults = get_aggregated_results(Results, filtered),
+	UnfilteredResults = get_aggregated_results(Results, unfiltered),
 
-	FilteredRes = get_value(filtered, Results),
-
-	%io:format("Filtered results returned from search: ~p~n", [FilteredRes]),
-	UnfilteredRes = get_value(unfiltered, Results),	
-	%io:format("Unfiltered results returned from search: ~p~n", [UnfilteredRes]),
-	%% ********************
 	case get_value(request_type, Options) of
 		<<"search">> -> 
 			io:format("WORKER: Writing to db...~n"),
-			gen_server:call(db_serv, {add_doc, [MyUnfilteredResults]}),
-			Pid ! {self(), MyFilteredResults};
+			gen_server:call(db_serv, {add_doc, [UnfilteredResults]}),
+			Pid ! {self(), FilteredResults};
 		<<"update">> ->
-			gen_server:call(db_serv, {add_doc, [MyUnfilteredResults]}),
-			Pid ! {self(), MyFilteredResults};
+			gen_server:call(db_serv, {add_doc, [UnfilteredResults]}),
+			Pid ! {self(), FilteredResults};
 		<<"heartbeat">> ->
 			ok
 	end.
@@ -202,6 +196,9 @@ get_aggregated_results([H|T], FilterType, AggregatedResult) ->
 			get_aggregated_results(T, FilterType, AggregatedResult)
 	end.
 
+
+%% @author Marco Trifance
+%% @doc Helper function for get_aggregated_results/3
 is_type({FilterType, _Any}, FilterType) -> true;
 is_type({_OtherType, _Any}, _FilterType) -> false.
 
