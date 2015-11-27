@@ -20,7 +20,7 @@
 -module(couch_operations).
 -version(0.3).
 
--export([doc_add/2]).
+-export([doc_add/2, doc_get_map_cont/1, doc_get_mapreduce_cont/1]).
 -export([doc_change/2, doc_get/1, doc_delete/2, doc_append/2, delete_db/1]).
 -export([doc_rmval/2, doc_exist/1, get_uuid/0, add_db/1]).
 
@@ -46,6 +46,23 @@ doc_change(Cred, Content) ->
 doc_get({Addr, User, Pass}) ->
     {ok, {_HTTP, _Info, Res}} = couch_connector:get_request({Addr, User, Pass}),
         jsx:decode(Res).
+
+%% @doc Gets just objects from the database without anything else.
+doc_get_map_cont({Addr, User, Pass}) ->
+    case (doc_get({Addr, User, Pass})) of
+         [_RowCount, _OffSet | [{_, Rows} | _]] ->
+             [Post || [{<<"_id">>, _ID}, {<<"_rev">>, _Rev} | Post] <-
+             [Posts || {<<"value">>, Posts} <- lists:flatten(Rows)]];
+        _ -> []
+    end.
+
+doc_get_mapreduce_cont({Addr, User, Pass}) ->
+    case(doc_get({Addr, User, Pass})) of
+        [{_, List}] ->
+            List;
+        _ ->
+            []
+    end.
 
 %% @doc Deletes a document from the database.
 doc_delete({Addr, User, Pass}, Rev) ->
