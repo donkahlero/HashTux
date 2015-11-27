@@ -11,11 +11,6 @@
 %	HashTag: keyword
 search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp, HistoryTimestamp}]) ->
 
-	io:format("Youtube: HISTORY TIMESTAMP ~p~n", [HistoryTimestamp]),
-
-	io:format("Youtube: TYPES: ~p~n", [Types]),
-	io:format("Youtube: LANGUAGE: ~p~n", [Language]),
-
 	% True if client filtered by content type and requested videos 
 	VideoReq = lists:member(<<"video">>, Types),
 	io:format("Youtube: VIDEO REQUESTED: ~p~n", [VideoReq]),
