@@ -67,6 +67,11 @@ build_youtube_video_link(VideoId) ->
     A = lists:append("https://www.youtube.com/watch?v=", binary_to_list(VideoId)),
     list_to_binary(A).
 
+% Builds a Youtube 'Embedded Video' URL for a given videoId
+build_youtube_embedded_link(null) -> null;
+build_youtube_embedded_link(VideoId) -> 
+    A = lists:append("https://www.youtube.com/embed/", binary_to_list(VideoId)),
+    list_to_binary(A).
 
 %%
 %% @doc convert a decoded youtube Video resource to internal representation
@@ -82,6 +87,8 @@ parse_youtube_video(Video, HashTag) ->
 			Id = extract_from_node(<<"id">>, Items),
 
             Resource_URL = build_youtube_video_link(Id),
+
+            Embed_URL = build_youtube_embedded_link(Id),
 
 			Snippet = extract_from_node(<<"snippet">>, Items),
 
@@ -103,14 +110,13 @@ parse_youtube_video(Video, HashTag) ->
 
 			ViewCount = extract_from_node(<<"viewCount">>, Statistics),
 
-			LikeCount = extract_from_node(<<"likeCount">>, Statistics),
-
-			{Id, PubDate, Description, ViewCount, LikeCount, Tags};
+			LikeCount = extract_from_node(<<"likeCount">>, Statistics);
 
 		not_found -> 
 			
 			Id = null,
             Resource_URL = null,
+            Embed_URL = null,
 			PubDate = null,
 			Description = null,
 			Language = null,
@@ -119,13 +125,11 @@ parse_youtube_video(Video, HashTag) ->
 			Tags = null,
             ChannelId = null,
             Channel_URL = null,
-            ChannelTitle = null,
-
-			{Id, PubDate, Description, ViewCount, LikeCount, Tags}
+            ChannelTitle = null
     end,
 
     % NOTE: add 'Clean Result'
-    A = [{<<"search_term">>, list_to_binary(HashTag)}, {<<"service">>, <<"youtube">>}, {<<"insert_timestamp">>, Timestamp}, {<<"timestamp">>, PubDate}, {<<"content_type">>, <<"video">>}, {<<"service_id">>, Id}, {<<"text">>, Description}, {<<"language">>, Language}, {<<"view_count">>, ViewCount}, {<<"likes">>, LikeCount}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Resource_URL}, {<<"resource_link_low">>, Resource_URL}, {<<"username">>, ChannelTitle}, {<<"profile_link">>, Channel_URL}, {<<"user_id">>, ChannelId}],
+    A = [{<<"search_term">>, list_to_binary(HashTag)}, {<<"service">>, <<"youtube">>}, {<<"insert_timestamp">>, Timestamp}, {<<"timestamp">>, PubDate}, {<<"content_type">>, <<"video">>}, {<<"service_id">>, Id}, {<<"text">>, Description}, {<<"language">>, Language}, {<<"view_count">>, ViewCount}, {<<"likes">>, LikeCount}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Embed_URL}, {<<"resource_link_low">>, Resource_URL}, {<<"username">>, ChannelTitle}, {<<"profile_link">>, Channel_URL}, {<<"user_id">>, ChannelId}],
 
     % return clean result
     clean_result(A).
