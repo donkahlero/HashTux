@@ -45,8 +45,10 @@ handle_info(_Msg, S) ->
 handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 	% get results
 	Results = run_search(Term, Options),
+	% parse_results into filtered and unfiltered
+	{FilteredRes, UnfiltereRes} = parse_results(Results),
 	% send to original caller	
-	send_results(Pid, Results, Term, Options),
+	send_results(Pid, FilteredRes, UnfiltereRes, Term, Options),
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	% stop this worker
 	{stop, normal, State};
@@ -65,8 +67,9 @@ handle_call(_Request, _From, S) ->
 
 
 %%
-send_results(Pid, [], Term, Options) ->
-	io:format("Results returned from search: ~p~n", [[]]),	
+send_results(Pid, [], _UnfilteredResults, Term, Options) ->
+	io:format("Filtered Results returned from search: ~p~n", [[]]),
+	io:format("WORKER: Sending placeholder to db...~n"),	
 	case get_value(request_type, Options) of
 		<<"search">> -> 
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
@@ -77,10 +80,7 @@ send_results(Pid, [], Term, Options) ->
 		<<"heartbeat">> ->
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
 	end;
-send_results(Pid, Results, _Term, Options) ->
-
-	FilteredResults = get_aggregated_results(Results, filtered),
-	UnfilteredResults = get_aggregated_results(Results, unfiltered),
+send_results(Pid, FilteredResults, UnfilteredResults, _Term, Options) ->
 
 	case get_value(request_type, Options) of
 		<<"search">> -> 
@@ -169,6 +169,7 @@ get_services(L)  ->
 
 %%
 get_no_results(Term, Options) ->
+	io:format("MINER WORKER: Get NO RESULTS OPTIONS : ~p~n", [Options]),
 	[ {<<"results">>, <<"no">>},
 	  {<<"search_term">>, list_to_binary(Term)},
 	  {<<"timestamp">>, dateconv:get_timestamp()},
@@ -179,9 +180,20 @@ get_no_results(Term, Options) ->
 get_cont_type() ->
 	[<<"image">>, <<"video">>, <<"text">>].
 
+
+%%
+get_value(_Key, [])   -> [];
+get_value(_Key, null) -> [];
+get_value(Key, List)  ->
+	case lists:keyfind(Key, 1, List) of
+		{_K, V}	-> V;
+		false 	-> []
+	end.
+
 %% @author Marco Trifance
-%% @doc Gets a list of raw results (filtered and unfiltered for all social medias) and return a list
-%%		for the specified FilterType (filtered/unfiltered)
+%% @doc Helper function for parse_results/1
+%%		Gets a list of raw results (filtered and unfiltered for all social medias) and return 
+%% 		an aggregated list from all three social medias for the specified FilterType (filtered/unfiltered)
 get_aggregated_results(RawList, FilterType) ->
 	get_aggregated_results(RawList, FilterType, []).
 
@@ -196,17 +208,18 @@ get_aggregated_results([H|T], FilterType, AggregatedResult) ->
 			get_aggregated_results(T, FilterType, AggregatedResult)
 	end.
 
-
 %% @author Marco Trifance
 %% @doc Helper function for get_aggregated_results/3
 is_type({FilterType, _Any}, FilterType) -> true;
 is_type({_OtherType, _Any}, _FilterType) -> false.
 
-%%
-get_value(_Key, [])   -> [];
-get_value(_Key, null) -> [];
-get_value(Key, List)  ->
-	case lists:keyfind(Key, 1, List) of
-		{_K, V}	-> V;
-		false 	-> []
-	end.
+%% @author Marco Trifance
+%% @doc Gets a list of raw results (filtered and unfiltered for all social medias) and returns 
+%% 		a tuple of two lists containing filtered and unfiltered results for all social medias
+parse_results(Results) -> 
+
+	FilteredResults = get_aggregated_results(Results, filtered),
+	UnfilteredResults = get_aggregated_results(Results, unfiltered),
+
+	{FilteredResults, UnfilteredResults}.
+
