@@ -21,8 +21,8 @@
 -version(0.3).
 
 -export([doc_add/2, doc_get_map_cont/1, doc_get_mapreduce_cont/1]).
--export([doc_change/2, doc_get/1, doc_delete/2, doc_append/2]).
--export([doc_rmval/2, doc_exist/1, get_uuid/0]).
+-export([doc_change/2, doc_get/1, doc_delete/2, doc_append/2, delete_db/1]).
+-export([doc_rmval/2, doc_exist/1, get_uuid/0, add_db/1]).
 
 %% @doc Method to initially add a document to the database.
 %% Encodes the erlang JSon representation to valid JSon.
@@ -53,7 +53,7 @@ doc_get_map_cont({Addr, User, Pass}) ->
          [_RowCount, _OffSet | [{_, Rows} | _]] ->
              [Post || [{<<"_id">>, _ID}, {<<"_rev">>, _Rev} | Post] <-
              [Posts || {<<"value">>, Posts} <- lists:flatten(Rows)]];
-         _ -> []
+        _ -> []
     end.
 
 doc_get_mapreduce_cont({Addr, User, Pass}) ->
@@ -79,6 +79,14 @@ doc_rmval({Addr, User, Pass}, Name) ->
     Doc = remove_val(doc_get({Addr, User, Pass}), Name),
     couch_connector:put_request({Addr, User, Pass},
                     binary_to_list(jsx:encode(Doc)), "text/json").
+
+%% @doc Deletes the DB.
+delete_db({Addr, User, Pass}) ->
+    couch_connector:delete_request({Addr, User,Pass}).
+
+%% @doc Adds a DB.
+add_db({Addr, User, Pass}) ->
+    couch_connector:put_request({Addr, User, Pass}, [], []).
 
 %% @doc Helperfunction to remove a value from a JSon document.
 remove_val(Origin, Name) ->
