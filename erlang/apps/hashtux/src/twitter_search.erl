@@ -11,13 +11,10 @@
 %%
 search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_timestamp, HistoryTimestamp}]) -> 
 
-    io:format("TWITTER ADVANCED SEARCH CALLED for Keyword ~p~n", [Keyword]),
-
     HashTag = "#" ++ Keyword,
 
     % generate Keyword + hisotry_timestamp parameters
     QParam = apis_aux:generate_twitter_q_param(HashTag, HistoryTimestamp),
-    io:format("Twitter: Q-PARAM : ~p~n", [QParam]),
 
     % List of available Languages
     LangParams = [<<"en">>, <<"es">>, <<"fr">>, <<"de">>, <<"sv">>, <<"bg">>, <<"it">>, <<"am">>],
@@ -28,7 +25,6 @@ search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_time
         false -> [{q, QParam}, {result_type, recent}]
     end,
 
-    io:format("Twitter: TYPES: ~p~n", [Types]),
     % Set content_type filter
     TypeFilter = [binary_to_list(Z) || Z <- Types],  
 
