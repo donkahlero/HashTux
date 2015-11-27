@@ -68,11 +68,11 @@ query_youtube_API(HashTag, Count, HistoryTimestamp) ->
 		%% Generate AFTER Time Parameter for normal search
 		[] -> apis_aux:youtube_get_after_param();
 		%% Generate BEFORE and AFTER time parameters for History search
-		Timestamp -> apis_aux:youtube_get_after_before_params(HistoryTimestamp)
+		Timestamp -> apis_aux:youtube_get_after_before_params(Timestamp)
 	end,
 	%% =====================================
 
-	Type = "type=video&videoCaption=closedCaption",							%% filter only VIDEO 'resource type' that contain capion
+	Type = "type=video&videoCaption=closedCaption&videoEmbeddable=true",	%% filter only VIDEO 'resource type' that contain capion
 
 	Key = "key=" ++ aux:get_youtube_keys(),									%% API KEY parameter
 
