@@ -1,7 +1,7 @@
 -module(apis_aux).
 
 -export([generate_twitter_q_param/2]).
--export([youtube_to_epoch/1, back_one_week/1, datetime_to_rfc_339/1]).
+-export([youtube_to_epoch/1, back_one_week/1, datetime_to_rfc_339/1, youtube_get_after_param/0, youtube_get_after_before_params/1]).
 
 
 %% =================================
@@ -107,7 +107,7 @@ back_one_week({{Year, Month, Day},{Hour, Min, Sec}}) ->
 % @doc Convert a timestamp in calendar datetime format into the RFC 339 format (1970-01-01T00:00:00Z)
 datetime_to_rfc_339({{Year, Month, Day},{Hour, Min, Sec}}) ->
 
-    StringYear = integer_to_list(Year),
+    StringYear = integer_to_list(Year + 1970),
     StringMonth = two_digit_string(integer_to_list(Month)),
     StringDay = two_digit_string(integer_to_list(Day)),
     StringHour = two_digit_string(integer_to_list(Hour)),
@@ -116,8 +116,30 @@ datetime_to_rfc_339({{Year, Month, Day},{Hour, Min, Sec}}) ->
 
     StringYear ++ "-" ++ StringMonth ++ "-" ++ StringDay ++ "T" ++ StringHour ++ ":" ++ StringMin ++ ":" ++ StringSec ++ "Z".
 
+% @doc Generates time parameter for Youtube search with default timestamp value
 youtube_get_after_param() -> 
-	Timestamp = dateconv:get_timestamp(),
-	io:format("TIMESTAMP is ~p~n", [Timestamp]),
-	Timestamp.
+	CurrentTimestamp = calendar:datetime_to_gregorian_seconds(calendar:now_to_universal_time(os:timestamp()))-719528*24*3600,
+	DateTime = calendar:gregorian_seconds_to_datetime(CurrentTimestamp - 86400),		%% Move back one day and get date-time format 
+	FormattedTime = datetime_to_rfc_339(DateTime),
+	io:format("FORMATTED TIME is ~p~n", [FormattedTime]),
+	"publishedAfter=" ++ FormattedTime ++ "&order=date".								% Return after query parameter
+
+% @doc Generates time parameters (AFTER and BEFORE) for Youtube search with specified History-Timestamp value
+youtube_get_after_before_params(HistoryTimestamp) ->
+	CurrentTimestamp = calendar:datetime_to_gregorian_seconds(calendar:now_to_universal_time(os:timestamp()))-719528*24*3600,
+
+	%% Move 12-hours before defined timestamp
+	Formatted_StartDate = datetime_to_rfc_339(calendar:gregorian_seconds_to_datetime(HistoryTimestamp - 43200)),	%% Get start date 12h back	
+	io:format("FORMATTED START DATE is ~p~n", [Formatted_StartDate]),										
+	
+	%% Move 12-hours after defined timestamp. If timestamp is larger than current_timestamp, set EndDate equal to current_timestamp
+	EndTimestamp = if 
+		(HistoryTimestamp + 43200) > CurrentTimestamp -> CurrentTimestamp;			%% Move 12-hours after defined timestamp
+		true -> HistoryTimestamp + 43200
+	end,
+
+	Formatted_EndDate = apis_aux:datetime_to_rfc_339(calendar:gregorian_seconds_to_datetime(EndTimestamp)),
+	io:format("FORMATTED END DATE is ~p~n", [Formatted_EndDate]),										
+	"publishedAfter=" ++ Formatted_StartDate ++ "&publishedBefore=" ++ Formatted_EndDate ++ "&order=date".
+
 
