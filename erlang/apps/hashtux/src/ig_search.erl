@@ -9,6 +9,10 @@
 
 
 
+%%
+%% @doc Searches Instagram for the term passed and filters the results
+%% according to the options passed.
+%%
 search(Term, Options) ->
 	Token = get_token(),
 	Url = ?URL ++ Term ++ ?TAIL ++ Token,
@@ -56,7 +60,7 @@ get_max_tag_id(L) ->
 	PagData = get_value(<<"pagination">>, L),
 	MaxTagId = get_value(<<"next_max_tag_id">>, PagData),
 	case MaxTagId of
-		[] -> 0;
+		[] 	   -> 0;
 		_Other -> list_to_integer(binary:bin_to_list(MaxTagId))
 	end.
 	
@@ -79,8 +83,7 @@ filter_insta(Res, L)  ->
 
 %%
 %% @doc Filters the results returned from Instagram based on the key 
-%% passed. The key is an atom. Returns a list containing the results 
-%% for which the key matches the key atom returned from get_val_atom/1. 
+%% passed. 
 %% 
 filter_insta_res([], _Key)	 -> [];
 filter_insta_res(List, Key) ->
@@ -111,14 +114,18 @@ get_value(Key, List)  ->
 
 
 %%
-parse_results(_Term, MaxTagId, [])	  -> [];
+%% @doc Parses the individual result from the data query.
+%%
+parse_results(_Term, _MaxTagId, [])	  -> [];
 parse_results(Term, MaxTagId, [X|Xs]) ->
 	[ parse_details(Term, MaxTagId, X) | parse_results(Term, MaxTagId, Xs) ].
 
 
 %%
-parse_details(_Term, MaxTagId, []) -> [];
-parse_details(Term, MaxTagId, L)   -> 
+%% @doc Parses the details of an individual result.
+%%
+parse_details(_Term, _MaxTagId, []) -> [];
+parse_details(Term, MaxTagId, L)   	-> 
 	[ get_search_term(Term),
 	  get_service(),
 	  get_timestamp(),
@@ -138,25 +145,35 @@ parse_details(Term, MaxTagId, L)   ->
 	
 
 %%
+%% @doc Returns the search term {key, value} pair.
+%%
 get_search_term(Term) ->
 	{<<"search_term">>, list_to_binary(Term)}.
 
 
+%%
+%% @doc Returns the service {key, value} pair.
 %%
 get_service() ->
 	{<<"service">>, list_to_binary(?MEDIA)}.
 
 
 %%
+%% @doc Returns the insert timestamp {key, value} pair.
+%%
 get_timestamp() ->
 	{<<"insert_timestamp">>, dateconv:get_timestamp()}.
 
 
 %%
+%% @doc Returns the next max tag id {key, value} pair.
+%%
 get_tag_id(TagId) ->
 	{<<"tag_id">>, TagId}.	
 
 
+%%
+%% @doc Returns the tags {key, value} pair.
 %%
 get_tags([]) -> [];
 get_tags(L)  ->
@@ -164,11 +181,15 @@ get_tags(L)  ->
 
 
 %%
+%% @doc Returns the content type {key, value} pair.
+%%
 get_content_type([]) -> [];
 get_content_type(L)  ->
 	{<<"content_type">>, get_value(<<"type">>, L)}.
 
 
+%%
+%% @doc Returns the location {key, value} pair.
 %%
 get_location([]) -> [];
 get_location(L)	 ->
@@ -180,6 +201,8 @@ get_location(L)	 ->
 
 
 %%
+%% @doc Returns the profile link {key, value} pair.
+%%
 get_profile_link([]) -> [];
 get_profile_link(L)	 ->
 	Username = get_value(<<"username">>, get_value(<<"user">>, L)),
@@ -189,12 +212,16 @@ get_profile_link(L)	 ->
 
 
 %%
+%% @doc Returns the likes {key, value} pair.
+%%
 get_likes([]) -> [];
 get_likes(L)  ->
 	LikesData = get_value(<<"likes">>, L),
 	{<<"likes">>, get_value(<<"count">>, LikesData)}.
 
 
+%%
+%% @doc Returns the resource link high {key, value} pair.
 %%
 get_res_link_high([]) -> [];
 get_res_link_high(L)  ->
@@ -207,6 +234,8 @@ get_res_link_high(L)  ->
 
 
 %%
+%% @doc Returns the resource link low {key, value} pair.
+%%
 get_res_link_low([]) -> [];
 get_res_link_low(L)  ->
 	case get_value(<<"type">>, L) of
@@ -218,6 +247,8 @@ get_res_link_low(L)  ->
 
 
 %%
+%% @doc Returns the image resource link high {key, value} pair.
+%%
 get_img_link_high([]) -> [];
 get_img_link_high(L)  ->
 	ImageData = get_value(<<"images">>, L),
@@ -225,6 +256,8 @@ get_img_link_high(L)  ->
 	{<<"resource_link_high">>, get_value(<<"url">>, Resources)}.
 
 
+%%
+%% @doc Returns the image resource link low {key, value} pair.
 %%
 get_img_link_low([]) -> [];
 get_img_link_low(L)  ->
@@ -234,6 +267,8 @@ get_img_link_low(L)  ->
 
 
 %%
+%% @doc Returns the video resource link high {key, value} pair.
+%%
 get_vid_link_high([]) -> [];
 get_vid_link_high(L)  ->
 	VideoData = get_value(<<"videos">>, L),
@@ -241,6 +276,8 @@ get_vid_link_high(L)  ->
 	{<<"resource_link_high">>, get_value(<<"url">>, Resources)}.
 
 
+%%
+%% @doc Returns the video resource link low {key, value} pair.
 %%
 get_vid_link_low([]) -> [];
 get_vid_link_low(L)  ->
@@ -250,6 +287,8 @@ get_vid_link_low(L)  ->
 
 
 %%
+%% @doc Returns the timestamp {key, value} pair.
+%%
 get_created_time([]) -> [];
 get_created_time(L)  ->
 	{<<"timestamp">>, 
@@ -257,6 +296,8 @@ get_created_time(L)  ->
 
 
 %% 
+%% @doc Returns the text {key, value} pair.
+%%
 get_text([]) -> [];
 get_text(L)  ->
 	CaptionData = get_value(<<"caption">>, L),
@@ -264,11 +305,15 @@ get_text(L)  ->
 
 
 %%
+%% @doc Returns the service id {key, value} pair.
+%%
 get_service_id([]) -> [];
 get_service_id(L)  ->
 	{<<"service_id">>, get_value(<<"id">>, L)}.
 
 
+%%
+%% @doc Returns the username {key, value} pair.
 %%
 get_username([]) -> [];
 get_username(L)  ->
@@ -277,10 +322,16 @@ get_username(L)  ->
 
 
 %%
+%% @doc Returns the user id {key, value} pair.
+%%
 get_user_id([]) -> [];
 get_user_id(L)  ->
 	UserInfo = get_value(<<"user">>, L),
 	{<<"user_id">>, get_value(<<"id">>, UserInfo)}.
 	
  
+
+
+
+
 
