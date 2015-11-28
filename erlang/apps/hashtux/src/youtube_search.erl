@@ -9,10 +9,7 @@
 % @doc Send GET request to Youtube Data API filtering results by the given Keyword
 % @params 
 %	HashTag: keyword
-search(HashTag, [{content_type, Types}, {language, Language}]) ->
-
-	io:format("Youtube: TYPES: ~p~n", [Types]),
-	io:format("Youtube: LANGUAGE: ~p~n", [Language]),
+search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp, HistoryTimestamp}]) ->
 
 	% True if client filtered by content type and requested videos 
 	VideoReq = lists:member(<<"video">>, Types),
@@ -30,7 +27,7 @@ search(HashTag, [{content_type, Types}, {language, Language}]) ->
 				%% Query API and Filter Result
 				true -> 
 					io:format("YOUTUBE: Client requested specific language\n"),
-					API_Res = query_youtube_API(HashTag, 30),
+					API_Res = query_youtube_API(HashTag, 30, HistoryTimestamp),
 					Filtered_Res = [X || X <- API_Res, parser:is_language(X, Language)],
 					Res_Length = length(Filtered_Res),
 					io:format("YOUTUBE: Filtered Search returned ~p elements ~n", [Res_Length]),
@@ -39,7 +36,7 @@ search(HashTag, [{content_type, Types}, {language, Language}]) ->
 				%% Query API (no filter)
 				false -> 
 					io:format("YOUTUBE: Client requested ALL languages\n"),
-					Result = query_youtube_API(HashTag, 10),
+					Result = query_youtube_API(HashTag, 10, HistoryTimestamp),
 					Res_Length = length(Result),
 					io:format("YOUTUBE: Simple Search returned ~p elements ~n", [Res_Length]),
 					[{filtered, Result}, {unfiltered, Result}]													% return result	
@@ -48,11 +45,11 @@ search(HashTag, [{content_type, Types}, {language, Language}]) ->
 		% Video NOT requested. Return Empty List
 		true -> 
 			io:format("YOUTUBE: Client DID NOT request VIDEOS. Returning empty list\n"),
-			[]																						% return empty list (no data sent to DB)
+			[{filtered, []}, {unfiltered, []}]																						% return empty list (no data sent to DB)
 	end.
 
 % @doc sends a GET request for a given keyword
-query_youtube_API(HashTag, Count) ->
+query_youtube_API(HashTag, Count, HistoryTimestamp) ->
 
 	Part = "part=snippet&fields=items(id(videoId))",						%% Partial Request: request only ID 'field' in the Snippet 'part'
 
@@ -60,13 +57,17 @@ query_youtube_API(HashTag, Count) ->
 
 	MaxResults = "maxResults=" ++ integer_to_list(Count),					%% increase max results to 10
 
-	UniTime = dateconv:back_one_week(calendar:universal_time()),			%
+	%%(CHANGE THIS TO ONE DAY) ==============
+	% Handle case history_timestamp
+	After = case HistoryTimestamp of
+		%% Generate AFTER Time Parameter for normal search
+		[] -> apis_aux:youtube_get_after_param();
+		%% Generate BEFORE and AFTER time parameters for History search
+		Timestamp -> apis_aux:youtube_get_after_before_params(Timestamp)
+	end,
+	%% =====================================
 
-	FormattedTime = dateconv:datetime_to_rfc_339(UniTime),					% we need to get back 1 week!!!
-
-	After = "publishedAfter=" ++ FormattedTime ++ "&order=date",			% Filter only results from last week and SORT by date
-
-	Type = "type=video&videoCaption=closedCaption",							%% filter only VIDEO 'resource type' that contain capion
+	Type = "type=video&videoCaption=closedCaption&videoEmbeddable=true",	%% filter only VIDEO 'resource type' that contain capion
 
 	Key = "key=" ++ aux:get_youtube_keys(),									%% API KEY parameter
 
