@@ -4,16 +4,31 @@
 
 -export([init/1, terminate/2, code_change/3,
 				handle_info/2, handle_call/3, handle_cast/2]).
--export([start_link/0]).
+-export([start_link/0, stop/0]).
+
+
 
 
 %%% ============================================================================
 %%% PUBLIC API
 %%% ============================================================================
 
+
+%% 
+%% @doc Starts the worker.
+%%
 start_link() ->
-	io:format("STARTING:miner_worker~n"),
+	io:format("MINER_WORKER: Starting...~n"),
 	gen_server:start_link(?MODULE, [], []).
+
+
+%%
+%% @doc Stops the worker.
+%%
+stop() ->
+	gen_server:cast(?MODULE, stop).
+
+
 
 
 %%% ============================================================================
@@ -22,43 +37,61 @@ start_link() ->
 
 
 %%
+%% @doc Handles the initialisation the worker.
+%%
 init([]) -> 
 	{ok, []}.
 
 
 %%
-terminate(_Reason, _State) -> ok.
+%% @doc Handles the termination of the worker.
+%%
+terminate(Reason, _State) -> 
+	io:format("MINER_WORKER [~p]: Stopping for reason: ~p~n", [self(), Reason]),	
+	ok.
 
 
+%%
+%% @doc Handles code change.
 %% 
 code_change(_PrevVersion, State, _Extra) -> 
 	{ok, State}.
 
 
 %%
-handle_info(_Msg, S) -> 
-	{noreply, S}.
+%% @doc Handles messages sent to the worker.
+%%
+handle_info(Msg, State) -> 
+	io:format("MINER_WORKER [~p]: Unknown message: ~p~n", [self(), Msg]),
+	{stop, normal, State}.
 
 
 %%
-%% no options
-handle_cast({{Pid, _Ref}, Term, Options}, State) ->
+%% @doc Handles casts to the worker. Only casts to stop the worker are 
+%% supported.
+%%
+handle_cast(stop, State) ->
+	{stop, normal, State};
+handle_cast(Msg, State) ->
+	io:format("MINER_WORKER [~p]: Unknown cast: ~p~n", [self(), Msg]),
+	{stop, normal, State}.
+
+
+%%
+%% @doc Handles calls to the worker.
+%%
+handle_call({{Pid, _Ref}, Term, Options}, _From, State) -> 
 	% get results
 	Results = run_search(Term, Options),
 	% parse_results into filtered and unfiltered
 	{FilteredRes, UnfiltereRes} = parse_results(Results),
 	% send to original caller	
 	send_results(Pid, FilteredRes, UnfiltereRes, Term, Options),
-	io:format("FINISHED:worker [~p]~n", [self()]),
+	io:format("MINER_WORKER [~p]: Finished~n", [self()]),
 	% stop this worker
-	{stop, normal, State};
-handle_cast(_Request, State) ->
-	{stop, normal, State}.
+	{stop, normal, ok, State}.
 
 
-%%
-handle_call(_Request, _From, S) -> 
-	{noreply, S}.
 
 
 %%% ============================================================================
@@ -96,17 +129,10 @@ send_results(Pid, FilteredResults, UnfilteredResults, _Term, Options) ->
 			
 
 %% 
-% no options
-run_search(Term, []) -> 
-	io:format("WORKER: Running search...~n"),
-	ContType = {content_type, get_cont_type()},
-	Lang = {language, []},
-	HistoryTimestamp = {history_timestamp, []},
-	L = get_results(Term, get_services([]), ContType, Lang, HistoryTimestamp),
-	lists:append(L);
-% with options
+%% @doc Checks the options passed and runs a search accordingly.
+%%
 run_search(Term, Options) ->
-	io:format("WORKER: Running search...~n"),
+	io:format("MINER_WORKER [~p]: Running search...~n", [self()]),
 	% get the options
 	Services = case lists:keyfind(service, 1, Options) of
 					{_K1, V1} -> get_services(V1);
@@ -124,7 +150,9 @@ run_search(Term, Options) ->
 				{K4, V4} -> {K4, V4};
 				false  -> {history_timestamp, []}
 		   end,
+	% get the results
 	L = get_results(Term, Services, ContType, Lang, HistoryTimestamp),
+	% return results properly formatted
 	lists:append(L).
 
 
@@ -133,26 +161,30 @@ run_search(Term, Options) ->
 %% available. The search is performed in parallel for each service.
 %%
 get_results(Term, Services, ContType, Lang, HistoryTimestamp) ->
-	io:format("WORKER: Getting results...~n"),
-	F = fun(Pid, X) -> spawn(fun() -> 
-									Pid ! {self(), 
-									search_services({X, {Term, ContType, Lang, HistoryTimestamp}})} 
-							  end) 
+	io:format("MINER_WORKER [~p]: Getting results...~n", [self()]),
+	F = fun(Pid, X) -> 
+			spawn(fun() -> 
+						Pid ! {self(), 
+						search_services({X, {Term, ContType, Lang, HistoryTimestamp}})} 
+			end) 
 		end,
-	[receive {R, X} -> X end || R <- [F(self(), N) || N <- Services]].
+	[ receive {R, X} -> X end || R <- [F(self(), N) || N <- Services] ].
 
 
 %%
 %% @doc Calls the appropriate search services to perform a search.
 %%
+%%% Instagram search.
 search_services({instagram, {Term, ContType, _Lang, _HistoryTimestamp}}) ->
-	io:format("WORKER: Calling ig_search...~n"),
+	io:format("MINER_WORKER [~p]: Calling ig_search...~n", [self()]),
 	ig_search:search(Term, [ContType]);
+%%% Twitter search.
 search_services({twitter, {Term, ContType, Lang, HistoryTimestamp}}) ->
-	io:format("WORKER: Calling twitter_search...~n"),
+	io:format("MINER_WORKER [~p]: Calling twitter_search...~n", [self()]),
 	twitter_search:search_hash_tag(Term, [ContType, Lang, HistoryTimestamp]);
+%%% YouTube search.
 search_services({youtube, {Term, ContType, Lang, HistoryTimestamp}}) ->
-	io:format("WORKER: Calling youtube_search...~n"),
+	io:format("MINER_WORKER [~p]: Calling youtube_search...~n", [self()]),
 	youtube_search:search(Term, [ContType, Lang, HistoryTimestamp]).
 
 
@@ -168,8 +200,10 @@ get_services(L)  ->
 
 
 %%
+%% @doc Returns the no results options to be written to database.
+%%
 get_no_results(Term, Options) ->
-	io:format("MINER WORKER: Get NO RESULTS OPTIONS : ~p~n", [Options]),
+	io:format("MINER_WORKER [~p]: No results options: ~p~n", [self(), Options]),
 	[ {<<"results">>, <<"no">>},
 	  {<<"search_term">>, list_to_binary(Term)},
 	  {<<"timestamp">>, dateconv:get_timestamp()},
@@ -177,6 +211,8 @@ get_no_results(Term, Options) ->
 
 
 %% 
+%% @doc Returns all the content types to search for.
+%%
 get_cont_type() ->
 	[<<"image">>, <<"video">>, <<"text">>].
 
