@@ -21,8 +21,12 @@ search(Term, Options) ->
 					DataList = get_value(<<"data">>, DecodedRes),
 					%io:format("Raw results are: ~p~n", [DecodedRes]),
 					Results = parse_results(Term, MaxTagId, DataList),
+					ResLength = length(Results),
+					io:format("INSTAGRAM API RESULT COUNT :~p~n", [ResLength]),
 					Types = get_value(content_type, Options),
 					FilterRes = filter_insta(Results, Types),
+					FilterResLength = length(FilterRes),
+					io:format("INSTAGRAM API FILTERED RESULT COUNT :~p~n", [FilterResLength]),
 					[{filtered, Results}, {unfiltered, FilterRes}]
 			catch _ -> []
 			end;
@@ -51,7 +55,11 @@ get_token() ->
 get_max_tag_id(L) ->
 	PagData = get_value(<<"pagination">>, L),
 	MaxTagId = get_value(<<"next_max_tag_id">>, PagData),
-	list_to_integer(binary:bin_to_list(MaxTagId)).
+	case MaxTagId of
+		[] -> 0;
+		_Other -> list_to_integer(binary:bin_to_list(MaxTagId))
+	end.
+	
 
 
 %% 

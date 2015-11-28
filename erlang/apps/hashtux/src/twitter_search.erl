@@ -9,22 +9,22 @@
 %% @doc Return list of Tweets containing the given HashTag.
 %% Tweets are stored in the DB and formatted in 'internal representation' form.
 %%
-search_hash_tag(HashTag, [{content_type, Types}, {language, Lang}]) -> 
-    
-    io:format("TWITTER ADVANCED SEARCH CALLED for Keyword ~p~n", [HashTag]),
+search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_timestamp, HistoryTimestamp}]) -> 
 
-    Tag = "#" ++ HashTag,
+    HashTag = "#" ++ Keyword,
+
+    % generate Keyword + hisotry_timestamp parameters
+    QParam = apis_aux:generate_twitter_q_param(HashTag, HistoryTimestamp),
 
     % List of available Languages
     LangParams = [<<"en">>, <<"es">>, <<"fr">>, <<"de">>, <<"sv">>, <<"bg">>, <<"it">>, <<"am">>],
 
     % Set API request parameters
     Options = case lists:member(Lang, LangParams) of
-        true -> [{q, Tag}, {lang, binary_to_atom(Lang, latin1)}, {count, 30}, {result_type, recent}];        %% Set 'language' and 'count' params
-        false -> [{q, Tag}, {result_type, recent}]
+        true -> [{q, QParam}, {lang, binary_to_atom(Lang, latin1)}, {count, 30}, {result_type, recent}];        %% Set 'language' and 'count' params
+        false -> [{q, QParam}, {result_type, recent}]
     end,
 
-    io:format("Twitter: TYPES: ~p~n", [Types]),
     % Set content_type filter
     TypeFilter = [binary_to_list(Z) || Z <- Types],  
 
@@ -45,7 +45,11 @@ search_hash_tag(HashTag, [{content_type, Types}, {language, Lang}]) ->
     %% Decode response body 
     DecodedBody = jsx:decode(ResponseBody),
     %% LangResult is a list of Internal JSX objects mined for a specified language (all languages if not specified)
-    LangResult = parser:parse_tweet_response_body(HashTag, DecodedBody),
+    LangResult = parser:parse_tweet_response_body(Keyword, DecodedBody),
+
+    % Debug Filtered Result size
+    LangResLength = length(LangResult),
+    io:format("TWITTER SIMPLE SEARCH RETURNED ~p TWEETS~n", [LangResLength]),
 
     %% FILTER LangResult by content_type
     FilteredRes = [H || H <- LangResult, parser:filter_by_content_type(H, TypeFilter)],
@@ -60,6 +64,6 @@ search_hash_tag(HashTag, [{content_type, Types}, {language, Lang}]) ->
 % Print request status information
 print_response_info(Status) ->
     case Status of
-        "200" -> io:format("Request was fulfilled\n");
-        _Other -> io:format("Got non-200 response\n")
+        "200" -> io:format("Twitter Request was fulfilled\n");
+        _Other -> io:format("Twitter Request got non-200 response\n")
     end.
