@@ -4,9 +4,10 @@
 -export([extract_youtube_ids/1, parse_youtube_video/2, clean_result/1, is_language/2]).						% YOUTUBE Functions
 -export([filter_by_content_type/2, parse_tweet_response_body/2]).																				% TWITTER Functions
 
-% ****************************************
+% *****************************************************************************
 % @doc A parser for decoded JSON Items
-% ****************************************
+%       Handle conversion from decoded FEEDS to internal representation format
+% *****************************************************************************
 
 % the value of a key from decoded JSON message.
 extract(K, L) ->
@@ -24,6 +25,20 @@ extract_from_node(Field, Node) ->
 		not_found -> null
     end.
 
+%%
+%% Remove empty fields from parsed item (i.e. removes fields that returned null)
+%%
+clean_result(L) -> [X || X <- L, has_null_value(X) == false].
+
+has_null_value({_, null}) -> true;
+has_null_value({_, _}) -> false.
+
+%%
+%% @doc Convert an atom to binary_string
+%%
+atom_to_binarystring(Atom) ->
+    list_to_binary(atom_to_list(Atom)).
+
 % ****************************************
 % PARSE YOUTUBE decoded JSON
 % ****************************************
@@ -40,26 +55,44 @@ extract_ids([H|T], Result) ->
 extract_id([{<<"id">>, [{<<"videoId">>, VideoId}]}]) -> binary_to_list(VideoId);
 extract_id(_) -> parser_error.
 
-% Remove empty fields from Final Result (i.e. removes fields that returned null)
-clean_result(L) -> [X || X <- L, has_null_value(X) == false].
+% Builds a Youtube Channel URL for a given channelId
+build_youtube_channel_link(null) -> null;
+build_youtube_channel_link(ChannelId) -> 
+    A = lists:append("https://youtube.com/channel/", binary_to_list(ChannelId)),
+    list_to_binary(A).
 
-has_null_value({_, null}) -> true;
-has_null_value({_, _}) -> false.
+% Builds a Youtube Video URL for a given videoId
+build_youtube_video_link(null) -> null;
+build_youtube_video_link(VideoId) -> 
+    A = lists:append("https://www.youtube.com/watch?v=", binary_to_list(VideoId)),
+    list_to_binary(A).
 
-% @ convert a decoded youtube Video resource to internal representation
+% Builds a Youtube 'Embedded Video' URL for a given videoId
+build_youtube_embedded_link(null) -> null;
+build_youtube_embedded_link(VideoId) -> 
+    A = lists:append("https://www.youtube.com/embed/", binary_to_list(VideoId)),
+    list_to_binary(A).
+
+%%
+%% @doc convert a decoded youtube Video resource to internal representation
+%%
 parse_youtube_video(Video, HashTag) -> 
 	
 	%% Register the time the document was sent to DB
     Timestamp = dateconv:get_timestamp(),
 
     case extract(<<"items">>, Video) of
-		{found, [Items]} -> 
+		{found, [Items]} ->
 			
 			Id = extract_from_node(<<"id">>, Items),
 
+            Resource_URL = build_youtube_video_link(Id),
+
+            Embed_URL = build_youtube_embedded_link(Id),
+
 			Snippet = extract_from_node(<<"snippet">>, Items),
 
-			PubDate = dateconv:youtube_to_epoch(binary_to_list(extract_from_node(<<"publishedAt">>, Snippet))),		%% convert to EPOCH
+			PubDate = apis_aux:youtube_to_epoch(binary_to_list(extract_from_node(<<"publishedAt">>, Snippet))),		%% convert to EPOCH
 
 			Description = extract_from_node(<<"description">>, Snippet),
 			
@@ -67,59 +100,64 @@ parse_youtube_video(Video, HashTag) ->
 
 			Tags = extract_from_node(<<"tags">>, Snippet),
 
+            ChannelId = extract_from_node(<<"channelId">>, Snippet),
+
+            Channel_URL = build_youtube_channel_link(ChannelId),
+
+            ChannelTitle = extract_from_node(<<"channelTitle">>, Snippet),
+
 			Statistics = extract_from_node(<<"statistics">>, Items),
 
 			ViewCount = extract_from_node(<<"viewCount">>, Statistics),
 
-			LikeCount = extract_from_node(<<"likeCount">>, Statistics),
-
-			{Id, PubDate, Description, ViewCount, LikeCount, Tags};
+			LikeCount = extract_from_node(<<"likeCount">>, Statistics);
 
 		not_found -> 
 			
 			Id = null,
+            Resource_URL = null,
+            Embed_URL = null,
 			PubDate = null,
 			Description = null,
 			Language = null,
 			ViewCount = null,
 			LikeCount = null,
 			Tags = null,
-
-			{Id, PubDate, Description, ViewCount, LikeCount, Tags}
+            ChannelId = null,
+            Channel_URL = null,
+            ChannelTitle = null
     end,
 
     % NOTE: add 'Clean Result'
-    A = [{<<"search_term">>, list_to_binary(HashTag)}, {<<"service">>, <<"youtube">>}, {<<"insert_timestamp">>, Timestamp}, {<<"timestamp">>, PubDate}, {<<"content_type">>, <<"video">>}, {<<"service_id">>, Id}, {<<"text">>, Description}, {<<"language">>, Language}, {<<"view_count">>, ViewCount}, {<<"likes">>, LikeCount}, {<<"tags">>, Tags}],
+    A = [{<<"search_term">>, list_to_binary(HashTag)}, {<<"service">>, <<"youtube">>}, {<<"insert_timestamp">>, Timestamp}, {<<"timestamp">>, PubDate}, {<<"content_type">>, <<"video">>}, {<<"service_id">>, Id}, {<<"text">>, Description}, {<<"language">>, Language}, {<<"view_count">>, ViewCount}, {<<"likes">>, LikeCount}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Embed_URL}, {<<"resource_link_low">>, Resource_URL}, {<<"username">>, ChannelTitle}, {<<"profile_link">>, Channel_URL}, {<<"user_id">>, ChannelId}],
 
     % return clean result
     clean_result(A).
 
-% ****************************************
-% @doc Tells if a given Youtube video matches the Language Filter
+%% 
+%% @doc Tells if a given Youtube video matches the Language Filter
+%%
 is_language(Status, LangFilter) ->
 	
 	case extract_from_node(<<"language">>, Status) of
 		null -> 
 			io:format("EXTRACTED LANG IS NULL ~n"),
-			true;		%% If doc has no Language node, return true
+			false;		%% If doc has no Language node, return FALSE
 		
 		Lang -> 
 
-			Extracted_Lang = binary_to_list(Lang),
+			Extracted_Lang = lists:sublist(binary_to_list(Lang), 2), 
 
 			io:format("EXTRACTED LANG IS ~p~n", [Extracted_Lang]),
 			io:format("LANG FILTER IS ~p~n", [LangFilter]),
 
-			A = binary_to_list(LangFilter) == Extracted_Lang,
+			A = binary_to_list(LangFilter) == Extracted_Lang,            
 			
 			io:format("RETURNING ~p~n", [A]),	
 
 			A
 	end.
 
-% @doc Convert an atom to binary_string
-atom_to_binarystring(Atom) ->
-	list_to_binary(atom_to_list(Atom)).
 
 % ****************************************
 % PARSE TWITTER decoded JSON
@@ -128,17 +166,6 @@ atom_to_binarystring(Atom) ->
 % Decode Response Body and parses result
 parse_tweet_response_body(HashTag, DecodedBody) ->
 
-    %% Debug search Metadata
-    case extract(<<"search_metadata">>, DecodedBody) of
-        {found, SearchMetadata} -> 
-            case extract(<<"count">>, SearchMetadata) of
-                {found, SearchCount} -> io:format("Twitter: fetched ~p feeds from Twitter API ~n", [SearchCount]);
-                not_found -> io:format("Search Count NOT FOUND\n")
-            end;
-
-        not_found -> io:format("Search Metadata NOT FOUND\n")
-    end,
-
     %% Parse the list of Tweets returned by the Twitter API
     case extract(<<"statuses">>, DecodedBody) of
         {found, StatusList} -> 
@@ -146,7 +173,8 @@ parse_tweet_response_body(HashTag, DecodedBody) ->
         not_found -> []                                         %% return empty list if result was empty
     end.
 
-%% PARSING!!!!
+%% 
+%% Parse a list of tweets
 %% Calls parse_status_details on all statuses included in a given List
 %% Sends the document to DB and returns it
 parse_tweet_status_list(_HashTag, [], Result) -> Result;                        %% return doc
@@ -167,7 +195,8 @@ parse_tweet_details(HashTag, Status) ->
     end,
 
     Date = case extract(<<"created_at">>, Status) of
-        {found, X2} -> dateconv:twitter_to_epoch(binary_to_list(X2));
+        {found, X2} -> 
+            dateconv:twitter_to_epoch(binary_to_list(X2));
         not_found -> null
     end,
 
@@ -261,8 +290,9 @@ format_single_media(Media) ->
     end,
 
     {Media_Url, Media_Type}.
-
-% @doc Tells if a given Tweet feed is of one of the types (content-types: text, image, video) included in the list AllowedTypes.
+%%
+%% @doc Tells if a given Tweet feed is of one of the types (content-types: text, image, video) included in the list AllowedTypes.
+%%
 filter_by_content_type(Status, AllowedTypes) -> 
 
 	Extracted_CT = binary_to_list(extract_from_node(<<"content_type">>, Status)),
