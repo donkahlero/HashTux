@@ -45,8 +45,10 @@ handle_info(_Msg, S) ->
 handle_cast({{Pid, _Ref}, Term, Options}, State) ->
 	% get results
 	Results = run_search(Term, Options),
+	% parse_results into filtered and unfiltered
+	{FilteredRes, UnfiltereRes} = parse_results(Results),
 	% send to original caller	
-	send_results(Pid, Results, Term, Options),
+	send_results(Pid, FilteredRes, UnfiltereRes, Term, Options),
 	io:format("FINISHED:worker [~p]~n", [self()]),
 	% stop this worker
 	{stop, normal, State};
@@ -65,8 +67,9 @@ handle_call(_Request, _From, S) ->
 
 
 %%
-send_results(Pid, [], Term, Options) ->
-	io:format("Results returned from search: ~p~n", [[]]),	
+send_results(Pid, [], _UnfilteredResults, Term, Options) ->
+	io:format("Filtered Results returned from search: ~p~n", [[]]),
+	io:format("WORKER: Sending placeholder to db...~n"),	
 	case get_value(request_type, Options) of
 		<<"search">> -> 
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
@@ -77,19 +80,16 @@ send_results(Pid, [], Term, Options) ->
 		<<"heartbeat">> ->
 			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
 	end;
-send_results(Pid, Results, _Term, Options) ->
-	FilteredRes = get_value(filtered, Results),
-	%io:format("Filtered results returned from search: ~p~n", [FilteredRes]),
-	UnfilteredRes = get_value(unfiltered, Results),	
-	%io:format("Unfiltered results returned from search: ~p~n", [UnfilteredRes]),
+send_results(Pid, FilteredResults, UnfilteredResults, _Term, Options) ->
+
 	case get_value(request_type, Options) of
 		<<"search">> -> 
 			io:format("WORKER: Writing to db...~n"),
-			gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
-			Pid ! {self(), FilteredRes};
+			gen_server:call(db_serv, {add_doc, [UnfilteredResults]}),
+			Pid ! {self(), FilteredResults};
 		<<"update">> ->
-			gen_server:call(db_serv, {add_doc, [UnfilteredRes]}),
-			Pid ! {self(), FilteredRes};
+			gen_server:call(db_serv, {add_doc, [UnfilteredResults]}),
+			Pid ! {self(), FilteredResults};
 		<<"heartbeat">> ->
 			ok
 	end.
@@ -101,7 +101,8 @@ run_search(Term, []) ->
 	io:format("WORKER: Running search...~n"),
 	ContType = {content_type, get_cont_type()},
 	Lang = {language, []},
-	L = get_results(Term, get_services([]), ContType, Lang),
+	HistoryTimestamp = {history_timestamp, []},
+	L = get_results(Term, get_services([]), ContType, Lang, HistoryTimestamp),
 	lists:append(L);
 % with options
 run_search(Term, Options) ->
@@ -119,7 +120,11 @@ run_search(Term, Options) ->
 				{K3, V3} -> {K3, V3};
 				false  -> {language, []}
 		   end,
-	L = get_results(Term, Services, ContType, Lang),
+	HistoryTimestamp = case lists:keyfind(history_timestamp, 1, Options) of
+				{K4, V4} -> {K4, V4};
+				false  -> {history_timestamp, []}
+		   end,
+	L = get_results(Term, Services, ContType, Lang, HistoryTimestamp),
 	lists:append(L).
 
 
@@ -127,11 +132,11 @@ run_search(Term, Options) ->
 %% @doc Returns a list with the results from searching the different services 
 %% available. The search is performed in parallel for each service.
 %%
-get_results(Term, Services, ContType, Lang) ->
+get_results(Term, Services, ContType, Lang, HistoryTimestamp) ->
 	io:format("WORKER: Getting results...~n"),
 	F = fun(Pid, X) -> spawn(fun() -> 
 									Pid ! {self(), 
-									search_services({X, {Term, ContType, Lang}})} 
+									search_services({X, {Term, ContType, Lang, HistoryTimestamp}})} 
 							  end) 
 		end,
 	[receive {R, X} -> X end || R <- [F(self(), N) || N <- Services]].
@@ -140,15 +145,15 @@ get_results(Term, Services, ContType, Lang) ->
 %%
 %% @doc Calls the appropriate search services to perform a search.
 %%
-search_services({instagram, {Term, ContType, _Lang}}) ->
+search_services({instagram, {Term, ContType, _Lang, _HistoryTimestamp}}) ->
 	io:format("WORKER: Calling ig_search...~n"),
 	ig_search:search(Term, [ContType]);
-search_services({twitter, {Term, ContType, Lang}}) ->
+search_services({twitter, {Term, ContType, Lang, HistoryTimestamp}}) ->
 	io:format("WORKER: Calling twitter_search...~n"),
-	twitter_search:search_hash_tag(Term, [ContType, Lang]);
-search_services({youtube, {Term, ContType, Lang}}) ->
+	twitter_search:search_hash_tag(Term, [ContType, Lang, HistoryTimestamp]);
+search_services({youtube, {Term, ContType, Lang, HistoryTimestamp}}) ->
 	io:format("WORKER: Calling youtube_search...~n"),
-	youtube_search:search(Term, [ContType, Lang]).
+	youtube_search:search(Term, [ContType, Lang, HistoryTimestamp]).
 
 
 %%
@@ -164,6 +169,7 @@ get_services(L)  ->
 
 %%
 get_no_results(Term, Options) ->
+	io:format("MINER WORKER: Get NO RESULTS OPTIONS : ~p~n", [Options]),
 	[ {<<"results">>, <<"no">>},
 	  {<<"search_term">>, list_to_binary(Term)},
 	  {<<"timestamp">>, dateconv:get_timestamp()},
@@ -184,5 +190,36 @@ get_value(Key, List)  ->
 		false 	-> []
 	end.
 
+%% @author Marco Trifance
+%% @doc Helper function for parse_results/1
+%%		Gets a list of raw results (filtered and unfiltered for all social medias) and return 
+%% 		an aggregated list from all three social medias for the specified FilterType (filtered/unfiltered)
+get_aggregated_results(RawList, FilterType) ->
+	get_aggregated_results(RawList, FilterType, []).
 
+get_aggregated_results([], _FilterType, AggregatedResult) -> AggregatedResult;
+get_aggregated_results([H|T], FilterType, AggregatedResult) ->
+	case (is_type(H, FilterType)) of
+		true -> 
+			{_Key, Value} = H,
+			NewAggregatedResult = AggregatedResult ++ Value,
+			get_aggregated_results(T, FilterType, NewAggregatedResult);
+		false ->
+			get_aggregated_results(T, FilterType, AggregatedResult)
+	end.
+
+%% @author Marco Trifance
+%% @doc Helper function for get_aggregated_results/3
+is_type({FilterType, _Any}, FilterType) -> true;
+is_type({_OtherType, _Any}, _FilterType) -> false.
+
+%% @author Marco Trifance
+%% @doc Gets a list of raw results (filtered and unfiltered for all social medias) and returns 
+%% 		a tuple of two lists containing filtered and unfiltered results for all social medias
+parse_results(Results) -> 
+
+	FilteredResults = get_aggregated_results(Results, filtered),
+	UnfilteredResults = get_aggregated_results(Results, unfiltered),
+
+	{FilteredResults, UnfilteredResults}.
 
