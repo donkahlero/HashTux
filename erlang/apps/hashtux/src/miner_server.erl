@@ -5,7 +5,7 @@
 -export([init/1, terminate/2, code_change/3,
 				handle_info/2, handle_call/3, handle_cast/2]).
 -export([start_link/0, stop/0]).
--export([search/2]).
+-export([search/2, heartbeat/2]).
 
 %% Record for keeping track of the state, namely, for how many workers
 %% are currently operating so we know when to start distributing the 
