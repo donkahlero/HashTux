@@ -1,6 +1,8 @@
 # HashTux
 ### Module documentation
-* [CouchDB module](https://github.com/TacoVox/HashTux/blob/master/CouchDB.MD)
+* [CouchDB module](https://github.com/TacoVox/HashTux/blob/master/doc/CouchDB.MD)
+* [Miner module](https://github.com/TacoVox/HashTux/blob/master/doc/Miner.MD)
+* [Protocols & DataTypes](https://github.com/TacoVox/HashTux/blob/master/doc/ProtocolsDataTypes.MD)
 
 ### SSH/SFTP access to the development server
 * Server address: dev.hashtux.com
