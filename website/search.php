@@ -103,7 +103,7 @@
                 
                 var newTerm = $('#searchField').val();
                 
-                alert("New Search: " + newTerm);
+//                alert("New Search: " + newTerm);
                 
                 if(newTerm === "")
                 {
@@ -140,7 +140,7 @@
                     data: JSON.stringify(options),
                     
                     success: function (myString) {
-                        alert(JSON.stringify(myString));
+//                        alert(JSON.stringify(myString));
                         parse_to_items(myString);
                     }
                 });
@@ -183,16 +183,7 @@
                                 jsonobj[i].resource_link_high, jsonobj[i].text,
                                 jsonobj[i].username, jsonobj[i].profile_link, false, "");
                     
-//                    if(incItem.service === "youtube")
-//                    {
-//                        debug += "1" + jsonobj[i].content_type + "\n" +
-//                                    "2" + jsonobj[i].service + "\n" +
-//                                    "3" + jsonobj[i].resource_link_high + "\n" +
-//                                    "5" + jsonobj[i].username + "\n" +
-//                                    "6" + jsonobj[i].profile_link;
-//                    }
-                    
-                    debug += jsonobj[i].service;
+//                    debug += jsonobj[i].service;
                                 
                     var ignore = false;     // A boolean to keep track of whether to insert the item or not
 
@@ -243,14 +234,14 @@
                     }
                 }
                 
-                debug += "\n\n";
-                
-                for(k = 0; k < items.length; k++)
-                {
-                    debug += items[k].service + " ";
-                }
-                
-                alert(debug);
+//                debug += "\n\n";
+//                
+//                for(k = 0; k < items.length; k++)
+//                {
+//                    debug += items[k].service + " ";
+//                }
+//                
+//                alert(debug);
             }
             
           /**
