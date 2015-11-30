@@ -7,6 +7,7 @@
 	 * 
 	 * So obviously we just ouput the response (JSON from Erlang backend) and
 	 * nothing else from this file.
+	 * NOTE: Make sure this file does not have ANY text/characters outside the php tags!
 	 */
 
 	/* Start a new session or resume if the client has a cookie ;) */
