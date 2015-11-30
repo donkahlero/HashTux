@@ -4,11 +4,16 @@
 
 
 
+
+%%
+%% @doc Converts binary term to atom.
+%%
 bin_to_atom(Binary) ->
 	list_to_atom(binary_to_list(Binary)).
 
+
 %%
-%% @doc Helper function to retrieve key values
+%% @doc Returns the value from a {key, value} pair in a list.
 %%
 get_value(_Key, [])	  -> [];
 get_value(_Key, null) -> [];

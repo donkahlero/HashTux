@@ -1,24 +1,20 @@
 %% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% @doc Module taking care of replicating the database in a given time interval.
-%% @version 0.1
+%% @version 0.2
 %% -----------------------------------------------------------------------------
 %% | Sprint 4 // v0.1:                                                         |
 %% | Added functions to                                                        |
 %% | - Replicate the statistic database                                        |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.2:                                                         |
+%% | Fixed the module. Is checking now for errors in the connections.          |
+%% | Applied changes of db_addr_serv.                                          |
+%% -----------------------------------------------------------------------------
 -module(db_replicator).
--version(0.1).
+-version(0.2).
 
 -export([start_link/0]).
-
-%% Local Database params
--define(ADDR, fun() -> {ok, {ADDR, _, _}} =
-              application:get_env(db_conf, localdb), ADDR end).
--define(USER, fun() -> {ok, {_, USER, _}} =
-              application:get_env(db_conf, localdb), USER end).
--define(PASS, fun() -> {ok, {_, _, PASS}} =
-              application:get_env(db_conf, localdb), PASS end).
 
 %% @doc Starts the replication worker and links it to the calling process
 start_link() ->
@@ -26,8 +22,7 @@ start_link() ->
 
 %% @doc Function to replicate the database in a given time interval
 replicate() ->
-    {ok, DBList} = application:get_env(db_conf, external),
-    replicate_userstats(DBList),
+    replicate_userstats(db_addr_serv:external_dbs()),
     %Replicate every 15 minutes
     timer:sleep(60000 * 15),
     replicate().
@@ -38,7 +33,8 @@ replicate() ->
 replicate_userstats([]) ->
     ok;
 replicate_userstats([{Addr, User, Pass}|Xs]) ->
-    couch_connector:post_request({?ADDR() ++ "_replicate", User, Pass},
+    couch_connector:post_request({db_addr_serv:main_addr() ++ "_replicate",
+                   User, Pass},
                    "{\"source\":\"hashtux_userstats\",\"target\":\"" ++ Addr ++
                    "hashtux_userstats\"}", "application/json"),
     replicate_userstats(Xs).

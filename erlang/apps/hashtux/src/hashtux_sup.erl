@@ -36,15 +36,38 @@ init([]) ->
 	%% data fetching, DB servers and main program flow
 	
 	%% Start the DB supervisor
-	db_sup:start_link(),
+	%db_sup:start_link(),
 	
 	%% Start the miner supervisor
-	miner_sup:start_link(),
+	%miner_sup:start_link(),
 	
 	%% Start the main flow supervisor
-	main_flow_sup:start_link(),
+	%main_flow_sup:start_link(),
 	
-	{ok, { {one_for_all, 0, 1}, []} }.
+	
+	DB_sup = {db_sup, 
+				 {db_sup, start_link, []},
+			 		permanent, 
+					10000, 
+					worker, 
+					[db_sup]},
+	Miner_sup = {miner_sup, 
+				 {miner_sup, start_link, []},
+			 		permanent, 
+					10000, 
+					worker, 
+					[miner_sup]},
+	Main_flow_sup = {main_flow_sup, 
+				 {main_flow_sup, start_link, []},
+			 		permanent, 
+					10000, 
+					worker, 
+					[main_flow_sup]},
+	
+	%{ok, { {one_for_all, 0, 1}, []} }.
+	{ok, { {one_for_one, 3, 1800}, [DB_sup, Miner_sup, Main_flow_sup]}}.
+	
+	
 
 %%====================================================================
 %% Internal functions
