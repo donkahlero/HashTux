@@ -42,7 +42,6 @@ var statsList = [new statsObj("hashtux",31),
 
 function creatTable(){
   //  fetch();
-    //var x = document.getElementById("test");
      var table = document.createElement('table');
 	 var tableBody = document.createElement('tbody');
 
@@ -152,8 +151,8 @@ function creatTable(){
                      <th>Top 10 search terms</th>
                    </tr>  
                  </thead>  
-                 <tbody>  
-                   <tr id="test">
+                 <tbody id="test">  
+                   <tr >
                    <td> 
                      </td>  
                    </tr>
