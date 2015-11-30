@@ -12,7 +12,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <link href="css/bootstrap.css" rel="stylesheet">
-        <link href="css/hashtux.css"rel="stylesheet">
+        <link href="css/hashtux.css" rel="stylesheet">
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
@@ -40,7 +40,6 @@
             var gridWidth = 4;      // The width of the grid (in num of tiles)
             var gridHeight = 3;     // The Height of the grid (in num of tiles)
             var totalItems = gridWidth * gridHeight;    // total number of tiles
-
             
             // A constructor that given a certain number of arguments creates item
             // object which in this case is a representation of the JSON objects
@@ -63,6 +62,9 @@
              */
             
             function initialize() {
+                
+                loading();
+                
                 $.ajax({
                     url: "/ajax.php?search=" + searchterm + "&request_type=search",
                     type: "get",
@@ -72,11 +74,15 @@
                         parse_to_items(myString);   // Parse the JSON to items
                         initDisplayed();            // Run the initDisplayed function
                         initGrid();                 // Initialize the grid
+                        stopLoading();
                     }
                 });
             }
             
             function reinitialize() {
+            
+                loading();
+            
                 displayed = [];
                 items = [];
                 $('#grid').html('');
@@ -93,6 +99,7 @@
                         parse_to_items(myString);   // Parse the JSON to items
                         initDisplayed();            // Run the initDisplayed function
                         initGrid();                 // Initialize the grid
+                        stopLoading();
                     }
                 });
                 
@@ -101,9 +108,11 @@
             
             function newSearch() {
                 
+                hideNoResults();
+                
                 var newTerm = $('#searchField').val();
                 
-                alert("New Search: " + newTerm);
+//                alert("New Search: " + newTerm);
                 
                 if(newTerm === "")
                 {
@@ -140,7 +149,7 @@
                     data: JSON.stringify(options),
                     
                     success: function (myString) {
-                        alert(JSON.stringify(myString));
+//                        alert(JSON.stringify(myString));
                         parse_to_items(myString);
                     }
                 });
@@ -167,7 +176,19 @@
 
             function parse_to_items(json) {
                 
-                var debug = "";
+//                var debug = "";
+
+                alert(json);
+                
+                if(json === "[]")
+                {
+                    showNoResults();
+                }
+                
+                else
+                {
+                    hideNoResults();
+                }
                 
                 var jsonobj = $.parseJSON(json);    // Parse the JSON object
                 
@@ -183,16 +204,7 @@
                                 jsonobj[i].resource_link_high, jsonobj[i].text,
                                 jsonobj[i].username, jsonobj[i].profile_link, false, "");
                     
-//                    if(incItem.service === "youtube")
-//                    {
-//                        debug += "1" + jsonobj[i].content_type + "\n" +
-//                                    "2" + jsonobj[i].service + "\n" +
-//                                    "3" + jsonobj[i].resource_link_high + "\n" +
-//                                    "5" + jsonobj[i].username + "\n" +
-//                                    "6" + jsonobj[i].profile_link;
-//                    }
-                    
-                    debug += jsonobj[i].service;
+//                    debug += jsonobj[i].service;
                                 
                     var ignore = false;     // A boolean to keep track of whether to insert the item or not
 
@@ -243,14 +255,14 @@
                     }
                 }
                 
-                debug += "\n\n";
-                
-                for(k = 0; k < items.length; k++)
-                {
-                    debug += items[k].service + " ";
-                }
-                
-                alert(debug);
+//                debug += "\n\n";
+//                
+//                for(k = 0; k < items.length; k++)
+//                {
+//                    debug += items[k].service + " ";
+//                }
+//                
+//                alert(debug);
             }
             
           /**
@@ -291,6 +303,22 @@
             function hideSearchField() {
                 $('#sField').hide();
                 $('#searchBtn').fadeIn(500);
+            }
+            
+            function loading() {
+                $('#progress').show();
+            }
+            
+            function stopLoading() {
+                $('#progress').hide();
+            }
+            
+            function showNoResults() {
+                $('#no-results').show();
+            }
+            
+            function hideNoResults() {
+                $('#no-results').hide();
             }
             
             function runScript(e) {
@@ -377,6 +405,11 @@
             
             <div class="alert-warning gridalert" id="invalidterm">
                 You did not enter a hashtag, please try again!
+            </div>
+            
+            <div class="center-container">
+                <div class="spinner" id="progress"></div>
+                <div class="no-results" id="no-results">NO RESULTS</div>
             </div>
 
             <div class="container con-fill header" id="options" onclick="hideOptions()"
