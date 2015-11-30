@@ -23,7 +23,7 @@ reduce(L) ->
     {<<"key">>, EndTime} = lists:keyfind(<<"key">>, 1, lists:last(L)),
     PIDs = spawn_workers(splitup(L, gen_tf(StartTime, EndTime), []), []),
     ResList = receive_res(PIDs, []),
-    lists:usort([[{<<"key">>, T}, {<<"value">>, Amount}] ||
+    lists:usort([{T, Amount} ||
       [{<<"key">>, T}, {<<"value">>, _}] <- ResList,
       Amount <- [lists:sum([Counter || [{<<"key">>, T2},
       {<<"value">>, Counter}] <- ResList, T2 =:= T])]]).
