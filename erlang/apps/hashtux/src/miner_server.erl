@@ -10,7 +10,7 @@
 %% Record for keeping track of the state, namely, for how many workers
 %% are currently operating so we know when to start distributing the 
 %% work load.
--record(state, {limit=0,
+-record(state, {limit=1000,
 				 refs,
 				 queue=queue:new()}).
 
@@ -42,6 +42,14 @@ stop() ->
 %%
 search(Term, Options) ->
 	gen_server:call(?MODULE, {search, Term, Options}).
+
+
+%%
+%% @doc Handles heartbeat requests from client.
+%%
+heartbeat(Term, Options) ->
+	gen_server:call(?MODULE, {heartbeat, Term, Options}),
+	ok.
 
 
 
@@ -123,6 +131,18 @@ handle_call({search, _Term, _Options}, _From,
 						S=#state{limit=N}) when N =< 0 ->
 	io:format("MINER_SERVER: no_alloc ~n"),
 	{reply, no_alloc, S};
+%%% When heartbeat requested.
+handle_call({heartbeat, Term, Options}, From, 
+						S=#state{limit=N, refs=R}) when N > 0 ->
+	{ok, Pid} = start_worker(),
+	Ref = erlang:monitor(process, Pid),
+	gen_server:call(Pid, {From, Term, Options}),
+	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
+	{noreply, NewS};
+%%% When heartbeat requested and limit for workers reached.
+handle_call({heartbeat, Term, Options}, From, 
+						S=#state{limit=N}) when N =< 0 ->
+	{noreply, S};
 %%% All other calls.
 handle_call(Request, _From, State) ->
 	io:format("MINER_SERVER: Unknown call: ~p~n", [Request]),
