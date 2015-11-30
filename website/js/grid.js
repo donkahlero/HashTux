@@ -148,7 +148,7 @@ function initGrid()
                     (12/gridWidth) + 
                     " col-fill' style='background-image:url('');' id='tile"+
                     count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
-                    "<iframe width='100%' height='100%' frameborder='0' volume='0' src='" +
+                    "<iframe width='100%' height='100%' frameborder='0' src='" +
                     displayed[count].url + "?autoplay=1&loop=1&rel=0" +
                     "' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
                     "<p class='usernameimage'><a class='greytext' href='" +

@@ -16,17 +16,18 @@
         var value = ["8","7","6","2"];
 
 
-        tablegenerate (no,searchTerms,value);
+        tablegenerate(no,searchTerms,value);
 
-        function tablegenerate (no,searchTerms,value) {
+        function tablegenerate(no,searchTerms,value) {
             for(i=0; i<no.length;i++)
             {
-                 var $formrow = '<tr><td>'+no[i]+'</td><td>'+searchTerms[i]+'</td><td>'+value[i]+'</td></tr>';
-                $('.searchTermTable').append($formrow);
+                alert("in for loop...");
+//                var $formrow = '<tr><td>'+no[i]+'</td><td>'+searchTerms[i]+'</td><td>'+value[i]+'</td></tr>';
+                $('#searchTermTable').append('<tr><td>'+no[i]+'</td><td>'+searchTerms[i]+'</td><td>'+value[i]+'</td></tr>');
             }
         }
 
-        </script>    
+        </script>
         
     </head>
     
@@ -34,7 +35,7 @@
 
     <div class="container">
 					
-		<table table class="searchTermTable" style="float:justify;">
+		<table table class="searchTermTable" id="searchTermTable">
     		<tr>
       			<th width="10%">No.</th>
         		<th width="80%">Search Term</th>

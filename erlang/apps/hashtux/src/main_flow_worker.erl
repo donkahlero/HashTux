@@ -176,17 +176,22 @@ miner_cast_only(Term, Options) ->
 % Helper function for sending a miner request. Returns results.
 miner_query(Term, Options) ->
 	% Make a miner call for the term
-	{ok, MinerPid} = miner_server:search(Term, Options),
-
-	% Wait for the reply and return it.
-	receive 
-		{MinerPid, Result} ->
-			io:format("main_flow_worker: Received reply from miner server~n", []),
-			Result
-		after 15000 ->
-			% Timeout -> return empty list
-			io:format("main_flow_worker: Miner timeout!~n", []),
-			[]
+	Reply =  miner_server:search(Term, Options),
+	case Reply of
+		no_alloc ->
+			% Miner server too busy
+			no_alloc; 
+		{ok, MinerPid} -> 
+			% Wait for the reply and return it.
+			receive 
+				{MinerPid, Result} ->
+					io:format("main_flow_worker: Received reply from miner server~n", []),
+					Result
+				after 15000 ->
+					% Timeout -> return empty list
+					io:format("main_flow_worker: Miner timeout!~n", []),
+					[]
+			end
 	end.
 
 
