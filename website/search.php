@@ -368,6 +368,8 @@
             <div class="alert-warning gridalert" id="invalidterm">
                 You did not enter a hashtag, please try again!
             </div>
+            
+            <div class="spinner"></div>
 
             <div class="container con-fill header" id="options" onclick="hideOptions()"
                      style="background-color: rgba(0, 0, 0, 0.5); display: none;" >
