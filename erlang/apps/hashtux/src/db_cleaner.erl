@@ -15,19 +15,12 @@
 %% | Sprint 5 // v0.3:                                                         |
 %% | Fixed the cleanup function: will not crash when there are now results     |
 %% | to delete.                                                                |
+%% | Applied changes of db_addr_serv.                                          |
 %% -----------------------------------------------------------------------------
 -module(db_cleaner).
 -version(0.3).
 
 -export([start_link/0]).
-
-%% Local database params
--define(ADDR, fun() -> {ok, {ADDR, _, _}} =
-              application:get_env(db_conf, localdb), ADDR end).
--define(USER, fun() -> {ok, {_, USER, _}} =
-              application:get_env(db_conf, localdb), USER end).
--define(PASS, fun() -> {ok, {_, _, PASS}} =
-              application:get_env(db_conf, localdb), PASS end).
 
 %% @doc Starts the cleaner worker and links it to the calling process.
 start_link() ->
@@ -47,13 +40,14 @@ cleanup() ->
 delete_entries() ->
     Time = integer_to_list(calendar:datetime_to_gregorian_seconds(
        calendar:now_to_universal_time(os:timestamp()))-719528*24*3600-3600),
-    Results = couch_operations:doc_get({?ADDR() ++
+    Results = couch_operations:doc_get({db_addr_serv:main_addr() ++
        "hashtux/_design/post/_view/by_insert_timestamp?endkey=" ++
-       Time, ?USER(), ?PASS()}),
+       Time, db_addr_serv:main_user(), db_addr_serv:main_pass()}),
     case(lists:keyfind(<<"rows">>, 1, Results)) of
         {_, Posts} ->
-            [couch_operations:doc_delete({?ADDR() ++ "hashtux/" ++
-                binary_to_list(ID), ?USER(), ?PASS()}, binary_to_list(Rev)) ||
+            [couch_operations:doc_delete({db_addr_serv:main_addr() ++
+                "hashtux/" ++ binary_to_list(ID), db_addr_serv:main_user(),
+                db_addr_serv:main_pass()}, binary_to_list(Rev)) ||
                 [{<<"_id">>, ID}, {<<"_rev">>, Rev} | _] <- [Content ||
                 {<<"value">>, Content} <- lists:flatten(Posts)]];
         false ->
@@ -63,11 +57,15 @@ delete_entries() ->
 
 %% @doc Function which compacts the database.
 compact_db() ->
-    couch_connector:post_request({?ADDR() ++ "hashtux/_compact",
-                                  ?USER(), ?PASS()}, [], "application/json"),
-    couch_connector:post_request({?ADDR() ++ "hashtux/_view_cleanup", ?USER(),
-                                  ?PASS()}, [], "application/json"),
-    couch_connector:post_request({?ADDR() ++ "hashtux_userstats/_compact",
-                                  ?USER(), ?PASS()}, [], "application/json"),
-    couch_connector:post_request({?ADDR() ++ "hashtux_userstats/_view_cleanup",
-                                  ?USER(), ?PASS()}, [], "application/json").
+    couch_connector:post_request({db_addr_serv:main_addr() ++
+                    "hashtux/_compact", db_addr_serv:main_user(),
+                    db_addr_serv:main_pass()}, [], "application/json"),
+    couch_connector:post_request({db_addr_serv:main_addr() ++
+                    "hashtux/_view_cleanup", db_addr_serv:main_user(),
+                    db_addr_serv:main_pass()}, [], "application/json"),
+    couch_connector:post_request({db_addr_serv:main_addr() ++
+                    "hashtux_userstats/_compact", db_addr_serv:main_user(),
+                    db_addr_serv:main_pass()}, [], "application/json"),
+    couch_connector:post_request({db_addr_serv:main_addr() ++
+                    "hashtux_userstats/_view_cleanup", db_addr_serv:main_user(),
+                    db_addr_serv:main_pass()}, [], "application/json").
