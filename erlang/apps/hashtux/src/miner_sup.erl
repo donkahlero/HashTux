@@ -20,8 +20,8 @@
 
 
 start_link() ->
-	io:format("Started the miner_sup~n"),
-  supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+	io:format("MINER_SUP: Starting...~n"),
+  	supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 
 

@@ -26,6 +26,7 @@
 %% @doc Starts the server.
 %%
 start_link() ->	
+	io:format("MINER_SERVER: Starting...~n"),
 	gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 
