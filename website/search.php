@@ -52,14 +52,15 @@
                 this.url = url;                 // URL (img/video)
                 this.text = text;               // Text content (tweet)
                 this.username = username;       // The username of content provider
-                this.userlink = userlink;
+                this.userlink = userlink;       // The link to the profile/channel page, depending on the service
                 this.frozen = frozen;           // A boolean to check if the content is frozen (frozen will not refresh)
                 this.tile = tile;               // Corresponding to the tile ID if the content is being displayed
             }
             
-            // A function for the initial fetch when a search is made. In this
-            // case the JSON is already fetched from the http server using 'curl'
-            // (see top of document)
+            /**
+             * A function that handles the initial request for data from the backend.
+             * This request is done with ajax and our internal request type is set to search.
+             */
             
             function initialize() {
                 $.ajax({
@@ -68,9 +69,9 @@
                     
                     success: function (myString) {
 //                        $('#debug').html("<p>" + myString + "</p>");
-                        parse_to_items(myString);
-                        initDisplayed();    // Run the initDisplayed function
-                        initGrid();         // Initialize the grid
+                        parse_to_items(myString);   // Parse the JSON to items
+                        initDisplayed();            // Run the initDisplayed function
+                        initGrid();                 // Initialize the grid
                     }
                 });
             }
@@ -89,9 +90,9 @@
                     
                     success: function (myString) {
 //                        $('#debug').html("<p>" + myString + "</p>");
-                        parse_to_items(myString);
-                        initDisplayed();    // Run the initDisplayed function
-                        initGrid();         // Initialize the grid
+                        parse_to_items(myString);   // Parse the JSON to items
+                        initDisplayed();            // Run the initDisplayed function
+                        initGrid();                 // Initialize the grid
                     }
                 });
                 
@@ -242,37 +243,39 @@
                     }
                 }
                 
-//                debug += "\n\n";
-//                
-//                for(k = 0; k < items.length; k++)
-//                {
-//                    debug += items[k].service + " ";
-//                }
+                debug += "\n\n";
+                
+                for(k = 0; k < items.length; k++)
+                {
+                    debug += items[k].service + " ";
+                }
                 
                 alert(debug);
             }
             
-            // A function that runs as soon as the users window loads
+          /**
+           * A function that runs as soon as the users window loads.
+           */
             
             window.onload = function() {
                 
                 initialize();       // Run the initialize function
                 
-                refreshTimer = setInterval(refresh, 5000);
-                setInterval(heartbeatFetchHandler, 30000);
+                refreshTimer = setInterval(refresh, 5000);      // Initialize the refresh function on a timer.
+                setInterval(heartbeatFetchHandler, 30000);      // Initialize the heartbeatFetchHandler function on a timer.
                 
-                hoverListener();
+                hoverListener();    // Run the hoverListener function
             };
             
+            // Shows the textfield used to make a new search when you click the search button
+            
             function showField() {
-                $('#sField').fadeIn(500);
-                $('#searchBtn').hide();
+                $('#sField').fadeIn(500);           // Fade in the text field
+                $('#searchBtn').hide();             // Hide the search button
                 
                 $('#sField').click(function() {
-                    event.stopPropagation();
+                    event.stopPropagation();        // Ignore 
                 });
-                
-                event.stopPropagation();
             }
             
             function showMenu() {
