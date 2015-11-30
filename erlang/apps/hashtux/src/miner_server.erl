@@ -76,8 +76,9 @@ code_change(_PrevVersion, State, _Extra) ->
 %% finished with the task (or not).
 %%
 %%% When received a down message from the worker process. 
-handle_info({'DOWN', Ref, process, _Pid, _}, 
+handle_info({'DOWN', Ref, process, Pid, _}, 
 						S=#state{limit=N, refs=Refs}) ->
+	io:format("MINER_SERVER: Removing worker [~p] from refs...~n", [Pid]),
 	case gb_sets:is_element(Ref, Refs) of
 		true ->
 			NewRefs = gb_sets:delete(Ref, Refs),
