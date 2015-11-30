@@ -39,6 +39,14 @@ var statsList = [new statsObj("hashtux",31),
 					   ];          
 
 
+function tablegenerate () {
+
+    for(i=0; i < statsList.length;i++)
+    {
+         var $formrow = '<tr><td>'+ i+1'<tr><td>'+statsList[i].name+'</td><td>'+statsList[i].value+'</td></tr>';
+        $('.searchTermTable').append($formrow);
+    }
+}
 
 
 
@@ -179,7 +187,7 @@ function hideallTables(){
           <h3>User Habits </h3>
         <div class="row">
             <div class="col-md-6">
-        <table table class= "table table-hover" id="myTableSearchterm" width="100%" >  
+        <table  table class= "table table-hover"  id="myTableSearchterm" width="100%" >  
                  <thead>  
                    <tr>  
                      <th>Top 10 search terms</th>
@@ -202,7 +210,13 @@ function hideallTables(){
                    </tr>  
                  </tbody>  
                </table>
-
+		<table table class="searchTermTable" style="float:justify;">
+    		<tr>
+      			<th width="10%">No.</th>
+        		<th width="80%">Search Term</th>
+       			<th width="10%">Value</th>
+    		</tr>
+		</table>
             <table table class= "table table-hover" id="myTableBrowser" width="100%">  
                          <thead>  
                            <tr>  
