@@ -14,7 +14,7 @@ RewriteCond %{REQUEST_URI} !^/ajax.php$
 RewriteCond %{REQUEST_URI} !^/ajax_post.php$
 RewriteCond %{REQUEST_URI} !^/favicon.ico$
 RewriteCond %{REQUEST_URI} !^/stats.php$
-RewriteCond %{REQUEST_URI} !^/googlemaps.php$
+RewriteCond %{REQUEST_URI} !^/graph.php$
 
 #
 # All other requests are handled by search.php, the requested path is appended as a parameter
