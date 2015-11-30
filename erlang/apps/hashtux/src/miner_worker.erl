@@ -199,10 +199,10 @@ get_services(L)  ->
 %%
 get_no_results(Term, Options) ->
 	io:format("MINER_WORKER [~p]: No results options: ~p~n", [self(), Options]),
-	[ {<<"results">>, <<"no">>},
-	  {<<"search_term">>, list_to_binary(Term)},
-	  {<<"timestamp">>, dateconv:get_timestamp()},
-	  {<<"options">>, Options} ].
+	[ [{<<"results">>, <<"no">>},
+	   {<<"search_term">>, list_to_binary(Term)},
+	   {<<"timestamp">>, dateconv:get_timestamp()},
+	   {<<"options">>, Options}] ].
 
 
 %% 

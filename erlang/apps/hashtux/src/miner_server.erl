@@ -121,7 +121,7 @@ handle_call({search, Term, Options}, From,
 %%% When limit for workers reached.
 handle_call({search, Term, Options}, _From, 
 						S=#state{limit=N}) when N =< 0 ->
-	{reply, {no_alloc, {Term, Options}}, S};
+	{reply, no_alloc, S};
 %%% All other calls.
 handle_call(Request, _From, State) ->
 	io:format("MINER_SERVER: Unknown call: ~p~n", [Request]),
