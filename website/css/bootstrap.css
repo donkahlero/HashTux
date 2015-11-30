@@ -3012,7 +3012,7 @@ select[multiple].input-lg {
   vertical-align: middle;
   -ms-touch-action: manipulation;
       touch-action: manipulation;
-  cursor: pointer;
+  cursor: pointer; 
   background-image: none;
   border: 1px solid transparent;
   white-space: nowrap;
