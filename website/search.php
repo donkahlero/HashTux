@@ -40,7 +40,6 @@
             var gridWidth = 4;      // The width of the grid (in num of tiles)
             var gridHeight = 3;     // The Height of the grid (in num of tiles)
             var totalItems = gridWidth * gridHeight;    // total number of tiles
-
             
             // A constructor that given a certain number of arguments creates item
             // object which in this case is a representation of the JSON objects
