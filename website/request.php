@@ -1,13 +1,9 @@
 <?php
 
 /*
- * TODO: remember last server that replied in time: implement when we call next_server_index
- * TODO: then read from this when we call get_server_index, and comment these lines
- * TODO: consider splitting into one file that helps building options/data,
- * and one for more low-level connection stuff
- *
- * This file is responsible for handing off the search to the erlang backend.
- * Usage: generate request options with build_request_options() if you want to.
+ * This file is responsible for handing off search or stats requests to the erlang 
+ * backend. Usage: generate request options with build_request_options() if you want to,
+ * otherwise just prepare an associative array with options. 
  * Make the request with request().
  *
  * We use cURL for the actual request.
@@ -20,156 +16,8 @@
 // This file uses an external library to parse the user agent string into subparts.
 require_once ("lib/UserAgentParser.php");
 require_once ("config.php");
+require_once ("server_manager.php");
 
-
-/**
- * This class maintains an ordered list of backend servers.
- * When we first ask for the preferred server, it gives us the topmost entry
- * in the backend_servers array in the config. However, if requests to this one
- * times out or has problems, the using code can call preferred_server_down() 
- * to tell this module to adjust the order of the list of backend servers.
- * @author jerker
- *
- */
-class server_manager {
-	var $server_array = [];
-	var $servers_tried = 1;
-	var $server_filename = "servers.order";
-	
-	/**
-	 * Constructor. 
-	 */
-	function __construct() {
-		global $config;
-		// Read the file into array if posisble. It is already ordered.
-		$this->server_array = $this->load_file();
-
-		// If there was trouble with the file, load_file has returned false.
-		if (!$this->server_array) {
-			
-			$this->server_array = [];
-			
-			// Let's create the key-value array based on the configuration
-			foreach ($config['backend_servers'] as $currentserver) {
-				$this->server_array[$currentserver] = 0;
-				error_log("Adding server " . $currentserver);
-			}
-			// ...and save it
-			$this->save_file();			
-		}
-	}
-
-	
-	/**
-	 * Return the preferred server, if the list contains at least one entry
-	 * and the using code hasn't gone through all the available servers.
-	 */
-	public function get_preferred_server() {
-		global $config;
-		
-		$preferred_server = false;
-		if (sizeof($this->server_array) > 0 && 
-				$this->servers_tried <= sizeof($config['backend_servers'])) {
-			$preferred_server = $this->get_topmost_address();
-		}
-
-		error_log("Preferred server:  " . serialize($preferred_server));
-		
-		return $preferred_server;
-	}
-	
-	/**
-	 * Call this if there are problems with the preferred server.
-	 */
-	public function preferred_server_down() {
-
-		error_log("NOTE: Preferred server down called!");
-		
-		// Keep track of how many servers we've tried so far (during the 
-		// lifetime of this object)
-		$this->servers_tried++;	
-
-		// Put the current timestamp as the value for the current server
-		$this->server_array[$this->get_topmost_address()] = time();
-		
-		// Sort the array in ascending order - servers with 0 known instances of
-		// being down or downtime long ago (likely up again) will be further up
-		asort($this->server_array);
-		
-		// Write to the servers.order file
-		$this->save_file();	
-	}
-	
-	private function get_topmost_address() {		
-		$topmost_address = "";
-
-		error_log("Current server array: " . serialize($this->server_array));
-		if (sizeof($this->server_array) > 0 && is_array($this->server_array)) {
-			// "Reset" the array to ensure we get the first entry 
-			reset($this->server_array);			
-			// Then take the first key of the array
-			$topmost_address = key($this->server_array);
-		}
-
-		return $topmost_address;		
-	}
-	
-
-
-			
-	
-	/**
-	 * Read from the servers.order file and see if it exists and contains all
-	 * the servers. If so, return the key-value array. If not, return false.
-	 */
-	private function load_file() {
-		$result = false;
-		if (file_exists($this->server_filename)) {
-			// Read the file where the array is stored in it's serialized form.
-			// Unserialize to get it as an array again 
-			$array_result = unserialize(file_get_contents($this->server_filename));
-			
-			// Only return the loaded array if all entries (keys) match the config
-			if ($this->has_configured_servers($array_result)) {
-				$result = $array_result;				
-			}
-		}
-		return $result;
-	}
-	
-	
-	/**
-	 * Make sure all servers from the config (and ONLY those) is present in
-	 * the array given as the argument 
-	 */
-	private function has_configured_servers($proposed_server_array) {
-		global $config;
-		
-		if (is_array($proposed_server_array)) {
-			// The server addresses are keys in the server array		
-			$proposed_servers = array_keys($proposed_server_array);
-			
-			// Check equality between arrays. === returns true if the arrays
-			// have the same key-value pairs
-			return ($config['backend_servers'] === $proposed_servers);
-		} else {
-			return false;
-		}
-	}
-	
-	
-	/**
-	 * Save the current order and timestamps.
-	 */
-	private function save_file() {
-
-		error_log("Saving... ");
-		if (sizeof($this->server_array > 0)) {
-			// Serialize and save to file
-			file_put_contents($this->server_filename, serialize($this->server_array));
-		}
-	}		
-}
 
 /*
  * Builds an associative array of all the options that need to be passed
@@ -198,6 +46,7 @@ function build_request_options($request_type = "search", $services = null, $cont
 	return $options;
 }
 
+
 /*
  * Makes a request to the erlang backend and returns the result (as JSON).
  * $search: the search term
@@ -222,27 +71,25 @@ function request($term, $options) {
 		$backend_timeout = 60;
 	}
 	
+	// The server_manager class keeps track of which servers are available
 	$server_manager = new server_manager();
-	// On problems, retry with a new server as long as the server manager proposes more servers
 	$server_address = $server_manager->get_preferred_server();
-	$output = false;
-	$limit = 0;
+	// Assume invalid reply from server
+	$reply = false;
 	do {
-		$limit++;
-		$output = _query_server ($server_address, $term, $request_body, $backend_timeout);
+		$reply = _query_server($server_address, $term, $request_body, $backend_timeout);
 		
 		// If timeout or error occured, try the next backend server
-		if (!$output) {
+		if (!$reply) {
 			$server_manager->preferred_server_down();
 			$server_address = $server_manager->get_preferred_server();
 		}		
-		error_log("server adress: " . $server_address);
-		
-		// Repeat as long as content is invalid and there are more
-		// servers to try
-	} while (!$output && $server_address != false && $limit < 4);
+
+		// Repeat as long as content is invalid and another server was proposed by
+		// server_manager
+	} while (!$reply && $server_address != false);
 	
-	return $output;
+	return $reply;
 }
 
 
@@ -281,6 +128,7 @@ function _query_server($address, $term, $request_body, $backend_timeout) {
 	
 	return $output;
 }
+
 
 /*
  * Put together the user habit data associative array that will later be part

@@ -76,5 +76,6 @@ _build/*
 _build/
 rebar.lock
 
-##PHP
+##Website
 config.php
+servers.order
