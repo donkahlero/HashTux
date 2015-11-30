@@ -39,8 +39,9 @@ put_request({Addr, User, Pass}, Content, Type) ->
 %% @doc This function fetches data from the database.
 get_request({Addr, User, Pass}) ->
     Headers = [auth_header(User, Pass)],
+    HTTPOptions = [{timeout, 1000}],
     Options = [{body_format, binary}],
-    httpc:request(get, {Addr, Headers}, [], Options).
+    httpc:request(get, {Addr, Headers}, HTTPOptions, Options).
 
 %% @doc This function deletes data from the DB.
 delete_request({Addr, User, Pass}) ->
