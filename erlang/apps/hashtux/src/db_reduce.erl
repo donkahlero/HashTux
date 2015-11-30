@@ -23,7 +23,7 @@ reduce(L) ->
     {<<"key">>, EndTime} = lists:keyfind(<<"key">>, 1, lists:last(L)),
     PIDs = spawn_workers(splitup(L, gen_tf(StartTime, EndTime), []), []),
     ResList = receive_res(PIDs, []),
-    lists:usort([{T, Amount} ||
+    lists:usort([{gen_key(T), Amount} ||
       [{<<"key">>, T}, {<<"value">>, _}] <- ResList,
       Amount <- [lists:sum([Counter || [{<<"key">>, T2},
       {<<"value">>, Counter}] <- ResList, T2 =:= T])]]).
@@ -43,6 +43,12 @@ splitup(L, [Time|Times], SplitRes) ->
           eval_time(CurrTime, Time) end,
     {L1, L2} = lists:partition(F, L),
     splitup(L2, Times, [L1|SplitRes]).
+
+%% @doc Generate the key (if it consists out of seperate keys).
+gen_key([K1, K2]) ->
+    binary:list_to_bin(binary_to_list(K1) ++ ", " ++ binary_to_list(K2));
+gen_key(K) ->
+    K.
 
 %% @doc Helperfunction evaluating if a Time is within hat timeframe.
 eval_time(Time, CompareTime) when Time =< CompareTime ->
