@@ -10,7 +10,7 @@
 %% Record for keeping track of the state, namely, for how many workers
 %% are currently operating so we know when to start distributing the 
 %% work load.
--record(state, {limit=1000,
+-record(state, {limit=1,
 				 refs,
 				 queue=queue:new()}).
 
@@ -119,7 +119,7 @@ handle_call({search, Term, Options}, From,
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
 	{reply, {ok, Pid}, NewS};
 %%% When limit for workers reached.
-handle_call({search, Term, Options}, _From, 
+handle_call({search, _Term, _Options}, _From, 
 						S=#state{limit=N}) when N =< 0 ->
 	io:format("MINER_SERVER: no_alloc ~n"),
 	{reply, no_alloc, S};
