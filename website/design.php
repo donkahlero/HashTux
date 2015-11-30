@@ -25,7 +25,7 @@
                 $('.searchTermTable').append($formrow);
             }
         }
-          
+
         </script>    
         
     </head>
