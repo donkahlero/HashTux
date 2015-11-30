@@ -1,6 +1,6 @@
 %% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @author Niklas le Comte <niklas.lecomte@hotmail.com>
-%% @version 0.2
+%% @version 0.3
 %% -----------------------------------------------------------------------------
 %% | Sprint 3 // v0.1                                                          |
 %% | Added this worker to write user statistics to the database.               |
@@ -13,22 +13,17 @@
 %% | With the db addresses defined in the config file. Therefore the macros    |
 %% | were added.                                                               |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.3                                                          |
+%% | Applied changes of db_addr_serv.                                          |
+%% -----------------------------------------------------------------------------
 -module(db_userstats_writer).
--version(0.2).
+-version(0.3).
 
 -behavior(gen_server).
 
 -export([start_link/0, stop/0, state/0]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2]).
 -export([code_change/3, terminate/2]).
-
-%% Local database params
--define(ADDR, fun() -> {ok, {ADDR, _, _}} =
-              application:get_env(db_conf, localdb), ADDR end).
--define(USER, fun() -> {ok, {_, USER, _}} =
-              application:get_env(db_conf, localdb), USER end).
--define(PASS, fun() -> {ok, {_, _, PASS}} =
-              application:get_env(db_conf, localdb), PASS end).
 
 %% -----------------------------------------------------------------------------
 %% | Public gen_server API                                                     |
@@ -66,8 +61,10 @@ handle_call(_, _, _) ->
 %% @doc Write data to the userstats database.
 handle_cast({add_doc, Content, Rec}, State) ->
     UUID = couch_operations:get_uuid(),
-    couch_operations:doc_add({?ADDR() ++ "hashtux_userstats/" ++ UUID,
-                              ?USER(), ?PASS()}, Content),
+    couch_operations:doc_add({db_addr_serv:main_addr() ++
+                             "hashtux_userstats/" ++ UUID,
+                             db_addr_serv:main_user(),
+                             db_addr_serv:main_pass()}, Content),
     Rec ! {self(), true},
     {stop, normal, State}.
 
