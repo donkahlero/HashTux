@@ -36,25 +36,13 @@ var statsList = [new statsObj("hashtux",31),
 						new statsObj("Pepperoni",2),
 						new statsObj("beautiful",5),
 						new statsObj("beauty",5)
-					   ];          
-
-
-function tablegenerate () {
-
-    for(i=0; i < statsList.length;i++)
-    {
-         var $formrow = '<tr><td>'+ i+1'<tr><td>'+statsList[i].name+'</td><td>'+statsList[i].value+'</td></tr>';
-        $('.searchTermTable').append($formrow);
-    }
-}
+					   ];
 
 
 
 function creatTable(){
   //  fetch();
     //var x = document.getElementById("test");
-     var table = document.createElement('table');
-	 var tableBody = document.createElement('tbody');
     
 		for(i = 0; i < statsList.length; i++)
 			{
@@ -67,7 +55,7 @@ function creatTable(){
 		    	
 			}
 		table.appendChild(tableBody);
-		document.body.appendChild(table);
+		$('#test').html(table);
     }
     
 function showSearchtermTable(){
@@ -194,9 +182,9 @@ function hideallTables(){
                    </tr>  
                  </thead>  
                  <tbody>  
-                   <tr>  
+                   <tr>
                    <td id="test"> 
-                     1.Hashtux<br>
+<!--                     1.Hashtux<br>
                      2.Summer<br>   
                      3.Sun<br>  
                      4.Candy<br>  
@@ -205,18 +193,13 @@ function hideallTables(){
                      7.Summer<br>   
                      8.Sun<br>  
                      9.Candy<br>  
-                     10.Pepperoni<br>
+                     10.Pepperoni<br>-->
                      </td>  
-                   </tr>  
+                   </tr>
+                   <tr><td>test</td></tr>
+                   <tr><td>test</td></tr>
                  </tbody>  
-               </table>
-		<table table class="searchTermTable" style="float:justify;">
-    		<tr>
-      			<th width="10%">No.</th>
-        		<th width="80%">Search Term</th>
-       			<th width="10%">Value</th>
-    		</tr>
-		</table>
+                </table>
             <table table class= "table table-hover" id="myTableBrowser" width="100%">  
                          <thead>  
                            <tr>  
