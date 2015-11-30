@@ -11,18 +11,30 @@
 %% Helper macro for declaring children of supervisor
 -define(CHILD(I, Type), {I, {I, start_link, []}, permanent, 5000, Type, [I]}).
 
+
+
+
 %% ===================================================================
 %% API functions
 %% ===================================================================
 
+
 start_link() ->
-	io:format("starting miner_worker_sup~n"),
-  supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+	io:format("MINER_WORKER_SUP: Starting...~n"),
+  	supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+
+
+
 
 %% ===================================================================
 %% Supervisor callbacks
 %% ===================================================================
 
+
 init([]) ->
 	{ok, {{one_for_one, 5, 5000}, []}}.
+
+
+
+
 
