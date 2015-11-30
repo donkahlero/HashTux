@@ -10,7 +10,7 @@
 %% Record for keeping track of the state, namely, for how many workers
 %% are currently operating so we know when to start distributing the 
 %% work load.
--record(state, {limit=1,
+-record(state, {limit=0,
 				 refs,
 				 queue=queue:new()}).
 
