@@ -62,6 +62,16 @@ handle_call(_Msg, _From, State) ->
 
 %% ========================================================
 
+% Cast: stats
+handle_cast({stats, SourcePID, Term, Options}, State) ->
+	io:format("main_flow_worker: Stats request: ~p~n", [Term]),
+	
+	% Return the result of the helper method to the requesting PID
+	SourcePID ! {self(), stats_query(Term, Options)},
+
+	% Stop this worker 
+	{stop, normal, State};
+
 % Cast: heartbeat
 handle_cast({heartbeat, SourcePID, Term, Options}, State) -> 
 	% Heartbeat from client means miners should cache data for this
@@ -108,6 +118,17 @@ handle_cast({_RequestType, SourcePID, Term, Options}, State) ->
 
 %% ========================================================
 
+
+% Helper function for querying the DB for statistical user habit data.
+stats_query(Term, Options) ->
+	Ref = gen_server:call(db_serv, {get_stats, Term, Options}),
+	receive 
+		{Ref, Result} ->
+			% Just return the result to the using code.
+			Result
+		after 60000 ->
+			[]
+	end.
 
 % Helper functions that checks if there is anything cached in the DB very recently
 % (such as the last minute) by the heartbeat mechanism 
