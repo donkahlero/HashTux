@@ -11,6 +11,7 @@
     <title>HashTux</title>
     
     <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/hashtux.css" rel="stylesheet">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>  
@@ -20,7 +21,7 @@
     {
         var input = document.forms["searchform"]["search"].value;
         
-        if(input == null || input == "")
+        if(input === null || input === "")
         {
             $('#input-error').fadeTo(2000, 500).slideUp(500, function() {
                 $('#input-error').alert('close');
