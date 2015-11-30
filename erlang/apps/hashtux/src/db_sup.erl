@@ -1,7 +1,7 @@
 %% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% @doc Main OTP supervisor for the CouchDB database part of our application.
-%% @version 0.3
+%% @version 0.4
 %% -----------------------------------------------------------------------------
 %% | Sprint 1 // v0.1                                                          |
 %% | Supervisor starts three children: Hashtag reader and writer supervisor as |
@@ -15,8 +15,11 @@
 %% | Added supervisor for the DB Stats readers.                                |
 %% | Added the replicator worker to the supervisor.                            |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.4                                                          |
+%% | Added the eraser worker to the supervisor.                                |
+%% -----------------------------------------------------------------------------
 -module(db_sup).
--version(0.3).
+-version(0.4).
 
 -behavior(supervisor).
 
@@ -51,6 +54,8 @@ init([]) ->
     StatsReadSup = {db_stats_read_sup, {db_worker_sup, start_link,
                    [db_stats_read_sup]}, temporary, 5000, supervisor,
                    [db_worker_sup]},
+    DBEraser = {db_eraser, {db_eraser, start_link, []},
+               permanent, 5000, worker, [db_eraser]},
     DBCleaner = {db_cleaner, {db_cleaner, start_link, []},
                 permanent, 5000, worker, [db_cleaner]},
     DBReplicator = {db_replicator, {db_replicator, start_link, []},
@@ -59,4 +64,5 @@ init([]) ->
              permanent, 5000, worker, [db_serv]},
     io:format("db_sup started...~n", []),
     {ok, {{one_for_one, 1, 10}, [DBAddrServ, HashReadSup, HashWriteSup,
-              StatsWriteSup, StatsReadSup, DBCleaner, DBReplicator, DBServ]}}.
+              StatsWriteSup, StatsReadSup,
+               DBEraser, DBCleaner, DBReplicator, DBServ]}}.

@@ -17,6 +17,7 @@
 
 %% @doc Function checking if the miners cannot find something or there is just
 %% nothing cached yet.
+%% Recheck :) Fun
 check_results([[{<<"results">>, <<"no">>}, {<<"search_term">>, _},
                 {<<"timestamp">>, _}, {<<"options">>, Opt}] | _], Opts) ->
     case(lists:usort(foreach_opt(Opts, Opt, []))) of
