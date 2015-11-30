@@ -15,8 +15,6 @@ RewriteCond %{REQUEST_URI} !^/ajax_post.php$
 RewriteCond %{REQUEST_URI} !^/favicon.ico$
 RewriteCond %{REQUEST_URI} !^/stats.php$
 RewriteCond %{REQUEST_URI} !^/googlemaps.php$
-# Below only for dev - remove later
-RewriteCond %{REQUEST_URI} !^/server_manager.php$
 
 
 #
