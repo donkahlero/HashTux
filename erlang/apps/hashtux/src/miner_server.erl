@@ -7,66 +7,79 @@
 -export([start_link/0, stop/0]).
 -export([search/2]).
 
-%% keeps track of the supervisors started and their pids
-%% also have a queue to know which request to run next
-%% the limit is set to 100 -> after that probably request
-%% help from the other servers running
-%% the ref can be used to monitor any processes started
+%% Record for keeping track of the state, namely, for how many workers
+%% are currently operating so we know when to start distributing the 
+%% work load.
 -record(state, {limit=1000,
 				 refs,
 				 queue=queue:new()}).
-%%% ============================================================
+
+
+
+
+%%% ============================================================================
 %%% PUBLIC API
-%%% ============================================================
+%%% ============================================================================
 
 
-%% for now register as local -> change later
-%% no arguments passed here to callback function init/1
+%% 
+%% @doc Starts the server.
+%%
 start_link() ->	
-	gen_server:start_link({local, miner_server}, ?MODULE, [], []).
+	io:format("MINER_SERVER: Starting...~n"),
+	gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 
-%% for stopping the server - asynchronious call
+%%
+%% @doc Stops the server.
+%%
 stop() ->
 	gen_server:cast(?MODULE, stop).
 
 
-%% for requesting a search
+%%
+%% @doc Searches for the specified term according to the options provided.
+%%
 search(Term, Options) ->
 	gen_server:call(?MODULE, {search, Term, Options}).
 
 
 
-%%% ============================================================
-%%% CALLBACK FUNCTIONS
-%%% ============================================================
 
-%% for initialising the server loop
-%% in this case no treatment of data
+%%% ============================================================================
+%%% CALLBACK FUNCTIONS
+%%% ============================================================================
+
+%% 
+%% @doc Handles the initialisation of the server.
 %%
-%% the worker sup is started dynamically here, to do that
-%% we send a message to ourselves(the server in this case)
-%% this call is handled in handle_info/2, we do this to get
-%% a hold of the pid of the worker sup
 init([]) -> 
 	{ok, #state{refs=gb_sets:empty()}}.
 
 
-%% for abnormal termination
+%%
+%% @doc Handles the termination of the server.
+%%
 terminate(Reason, _State) ->
-	io:format("STOPPING:miner_server, REASON:~p~n", [Reason]),
+	io:format("MINER_SERVER: Stopping for reason: ~p~n", [Reason]),
 	ok.
 
 
-%% for new version of the code
+%% 
+%% @doc Handles code change.
+%%
 code_change(_PrevVersion, State, _Extra) ->
 	{ok, State}.
 
 
-%% handles the down message received from the miner worker
-%% when it has finished with the task (or not)
-handle_info({'DOWN', Ref, process, _Pid, _}, 
+%%
+%% @doc Handles the down message received from the miner worker when it has 
+%% finished with the task (or not).
+%%
+%%% When received a down message from the worker process. 
+handle_info({'DOWN', Ref, process, Pid, _}, 
 						S=#state{limit=N, refs=Refs}) ->
+	io:format("MINER_SERVER: Removing worker [~p] from refs...~n", [Pid]),
 	case gb_sets:is_element(Ref, Refs) of
 		true ->
 			NewRefs = gb_sets:delete(Ref, Refs),
@@ -75,35 +88,56 @@ handle_info({'DOWN', Ref, process, _Pid, _},
 		false ->
 			{noreply, S}
 	end;
-% all other messages -> ignored
-handle_info(_Msg, S) ->
-	{noreply, S}.
+%%% All other messages -> ignored
+handle_info(Msg, State) ->
+	io:format("MINER_SERVER: Unknown message: ~p~n", [Msg]),
+	{noreply, State}.
 
 
-%% handles asynchronous messages
+%%
+%% @doc Handles casts made to the server. Only a cast to stop the server is
+%% handled. All other casts are ignored.
+%%
+%%% Cast to stop the server.
+handle_cast(stop, State) ->
+	{stop, normal, State};
+%%% Other casts ignored.
 handle_cast(Msg, State) ->
-	{noreply, Msg, State}.	
+	io:format("MINER_SERVER: Unknown cast: ~p~n", [Msg]),
+	{noreply, State}.
 
 
-%% handles synchronous messages, search request
+%%
+%% @doc Handles calls to the server.
+%%
+%%% When a search requested and limit for workers running not reached.
 handle_call({search, Term, Options}, From, 
 						S=#state{limit=N, refs=R}) when N > 0 ->
 	{ok, Pid} = start_worker(),
 	Ref = erlang:monitor(process, Pid),
-	gen_server:cast(Pid, {From, Term, Options}),
+	gen_server:call(Pid, {From, Term, Options}),
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
 	{reply, {ok, Pid}, NewS};
-% when too many workers running
+%%% When limit for workers reached.
 handle_call({search, Term, Options}, _From, 
 						S=#state{limit=N}) when N =< 0 ->
 	{reply, {no_alloc, {Term, Options}}, S};
-% all other calls
+%%% All other calls.
 handle_call(Request, _From, State) ->
+	io:format("MINER_SERVER: Unknown call: ~p~n", [Request]),
 	{reply, {undef_call, Request}, State}.
 
 
-%% starts a worker and attaches it to the worker supervisor
+%% 
+%% @doc Starts a worker and attaches it to the worker supervisor responsible.
+%%
 start_worker() ->
 	ChildSpec = {erlang:unique_integer(), {miner_worker, start_link, []},
 							temporary, 5000, worker, [miner_worker]},
 	supervisor:start_child(miner_worker_sup, ChildSpec).
+
+
+
+
+
+
