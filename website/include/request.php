@@ -15,8 +15,8 @@
 
 // This file uses an external library to parse the user agent string into subparts.
 require_once ("lib/UserAgentParser.php");
-require_once ("config.php");
-require_once ("server_manager.php");
+require_once ("conf/config.php");
+require_once ("include/server_manager.php");
 
 
 /*
