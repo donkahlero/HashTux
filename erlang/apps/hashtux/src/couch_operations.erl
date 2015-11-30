@@ -16,6 +16,7 @@
 %% | Small hotfixes. Checking now if the results can be pattern matched.       |
 %% | The document update function works now with the new general design.       |
 %% | Applied changes of db_addr_serv.                                          |
+%% | Added functions to delete and add a database from the server.             |
 %% -----------------------------------------------------------------------------
 -module(couch_operations).
 -version(0.3).
