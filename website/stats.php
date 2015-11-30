@@ -45,19 +45,22 @@ function creatTable(){
     //var x = document.getElementById("test");
      var table = document.createElement('table');
 	 var tableBody = document.createElement('tbody');
+
 		for(i = 0; i < statsList.length; i++)
 			{
-			
+			    var num = i + 1;
 				var row = document.createElement('tr');
-				var cell = document.createElement('td');
-			//	var cellnumber = document.createElement('td');
-				var cellvalue = document.createElement('td');
-				cell.appendChild(document.createTextNode(statsList[i].name));
-			//	cellnumber.appendChild(document.createTextNode(statsList[i + 1]));
-				cellvalue.appendChild(document.createTextNode(statsList[i].value));
-		    	row.appendChild(cell);
-		    	row.appendChild(valuecell);
-		    //	row.appendChild(numbercell);
+				var numberCell = document.createElement('td');
+				var nameCell = document.createElement('td');
+				var valueCell = document.createElement('td');
+				
+				numberCell.appendChild(document.createTextNode(num.toString()));
+				nameCell.appendChild(document.createTextNode(statsList[i].name));
+				valueCell.appendChild(document.createTextNode(statsList[i].value));
+		
+		    	row.appendChild(numberCell);
+		    	row.appendChild(nameCell);
+		    	row.appendChild(valueCell);
 		    	tableBody.appendChild(row);
 		    	
 			}
