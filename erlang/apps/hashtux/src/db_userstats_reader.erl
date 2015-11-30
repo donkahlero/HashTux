@@ -11,7 +11,7 @@
 %% | ct data.                                                                  |
 %% -----------------------------------------------------------------------------
 %% | Sprint 5                                                                  |
-%% | Applied changes of db_addr_serv.                                          |
+%% | Applied changes of db_addr_serv. Changed the DB address.                  |
 %% -----------------------------------------------------------------------------
 -module(db_userstats_reader).
 -version(0.2).
@@ -57,69 +57,13 @@ handle_call(_, _, _) ->
 
 %% @doc Get statistics based on the search term from the server.
 handle_cast({get_stats, Term, Options, Rec}, State) ->
-    R = couch_operations:doc_get_mapreduce_cont({db_addr_serv:main_addr() ++
-             "hashtux_userstats/_design/stat/_view/"++ Term  ++"?" ++
-             db_options_handler:pre_search_opt(Options) ++ "&group=true",
+    R = couch_operations:doc_get_map_cont({db_addr_serv:main_addr() ++
+             "userstats_cached_data/" ++ Term,
              db_addr_serv:main_user(), db_addr_serv:main_pass()}),
-    Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
-    LR = db_options_handler:handle_options(Result, Options),
-    Rec ! {self(), LR},
-    {stop, normal, State};
-
-%% @doc Get statistics based on the browserfrom the server.
-handle_cast({get_stats, get_browser, Options, Rec}, State) ->
-    R = couch_operations:doc_get_mapreduce_cont({db_addr_serv:main_addr() ++
-             "hashtux_userstats/_design/stat/_view/by_browser?" ++
-             db_options_handler:pre_search_opt(Options) ++ "&group=true",
-             db_addr_serv:main_user(), db_addr_serv:main_pass()}),
-    Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
-    LR = db_options_handler:handle_options(Result, Options),
-    Rec ! {self(), LR},
-    {stop, normal, State};
-
-%% @doc Get statistics based the language on from the server.
-handle_cast({get_stats, get_language, Options, Rec}, State) ->
-    R = couch_operations:doc_get_mapreduce_cont({db_addr_serv:main_addr() ++
-             "hashtux_userstats/_design/stat/_view/by_language?" ++
-             db_options_handler:pre_search_opt(Options) ++ "&group=true",
-             db_addr_serv:main_user(), db_addr_serv:main_pass()}),
-    Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
-    LR = db_options_handler:order_options(Result, Options),
-    Rec ! {self(), LR},
-    {stop, normal, State};
-
-%% @doc Get statistics based on the platform from the server.
-handle_cast({get_stats, get_platform, Options, Rec}, State) ->
-    R = couch_operations:doc_get_mapreduce_cont({db_addr_serv:main_addr() ++
-             "hashtux_userstats/_design/stat/_view/by_platform?" ++
-             db_options_handler:pre_search_opt(Options) ++ "&group=true",
-             db_addr_serv:main_user(), db_addr_serv:main_pass()}),
-    Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
-    LR = db_options_handler:order_options(Result, Options),
-    Rec ! {self(), LR},
-    {stop, normal, State};
-
-%% @doc Get statistics based on the browser version from the server.
-handle_cast({get_stats, get_browser_version, Options, Rec}, State) ->
-    R = couch_operations:doc_get_mapreduce_cont({db_addr_serv:main_addr() ++
-             "hashtux_userstats/_design/stat/_view/by_browser_version?" ++
-             db_options_handler:pre_search_opt(Options) ++ "&group=true",
-             db_addr_serv:main_user(), db_addr_serv:main_pass()}),
-    Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
-    LR = db_options_handler:order_options(Options),
-    Rec ! {self(), LR},
-    {stop, normal, State};
-
-%% @doc Get statistics based on the platform/brower from the server.
-handle_cast({get_stats, get_platform_browser, Options, Rec}, State) ->
-    R = couch_operations:doc_get_mapreduce_cont({db_addr_serv:main_addr() ++
-             "hashtux_userstats/_design/stat/_view/by_platform_browser?" ++
-             db_options_handler:pre_search_opt(Options) ++ "&group=true",
-             db_addr_serv:main_user(), db_addr_serv:main_pass()}),
-    Result = db_filter:order_by_value(db_filter:group_by_subkey(R)),
-    LR = db_options_handler:order_options(Result, Options),
+    LR = db_options_handler:handle_options(R, Options),
     Rec ! {self(), LR},
     {stop, normal, State}.
+
 
 %% @doc Normal messages to the server are not supported.
 handle_info(_Info, _State) ->
