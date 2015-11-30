@@ -15,7 +15,7 @@ receive {Ref, Result} -> Result end.
 ```
 
 ##Supported calls
-###Read operations
+###Read operations (for posts)
 ```erlang
 {posts_exist, "Hashtag"}
 ```
@@ -35,15 +35,81 @@ receive {Ref, Result} -> Result end.
 
 #### Search options
 ```erlang
-{limit, Amount}
+{content_type, [<<"image">>, <<"text">>, <<"video">>]}
 ```
-* Limits the amount of results you can get from the database
+* The content_type needs to be send as a list with binary strings
 
 ```erlang
-{time, Time}
+{service, [<<"twitter">>, <<"instagram">>, <<"youtube">>]}
 ```
-* The time where you want to start searching for items
-* The Time var should be an integer
+* The services takes the different services we have in a list with binary strings
+
+```erlang
+{language, <<"en">>}
+```
+* The language is a binary string
+
+```erlang
+{timeframe, StartTime, EndTime}
+```
+* The timeframe in between the post has to be
+* StartTime and EndTime are integers
+
+```erlang
+{minimum_posts, Amount}
+```
+* The minimum amount of posts the database should return or nothing
+
+```erlang
+{limit, Int}
+```
+* Gives you back as many result as you specified in the Int
+
+###Read operations (for stats)
+```erlang
+{get_stats, SearchField, [Options]}
+```
+* List of the popular hashes (maximum as big as specified)
+
+#### Stats Search Field
+* Is always an atom
+* The following atoms are possible
+
+```erlang 
+get_search_term
+```
+
+```erlang
+get_browser
+```
+
+```erlang
+get_platform
+```
+
+```erlang
+get_language
+```
+
+```erlang
+get_browser_version
+```
+```erlang
+get_platform_browser
+```
+
+#### Stats options
+* For getting statistics you can online specify one Option
+* Leaving the Option empty you will get the amount of requests of the DB
+* The following are supported:
+
+```erlang
+{limit, Int}
+```
+
+```erlang
+{time, StartTime, EndTime}
+```
 
 ###Write operations
 ```erlang

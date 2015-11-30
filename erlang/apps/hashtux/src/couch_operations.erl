@@ -2,7 +2,7 @@
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% @doc Specific operations on the database (mostly document based). Uses the
 %% couch_connector module to do them.
-%% @version 0.2
+%% @version 0.3
 %% -----------------------------------------------------------------------------
 %% | Sprint 1 // v0.1                                                          |
 %% | Added all basic functions to this module.                                 |
@@ -12,22 +12,17 @@
 %% | The functions get now the DBAddr, User and Pass passed which is then used |
 %% | for calling the db_connector module.                                      |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.3                                                          |
+%% | Small hotfixes. Checking now if the results can be pattern matched.       |
+%% | The document update function works now with the new general design.       |
+%% | Applied changes of db_addr_serv.                                          |
+%% -----------------------------------------------------------------------------
 -module(couch_operations).
--version(0.2).
+-version(0.3).
 
-%% Document operations
 -export([doc_add/2, doc_get_map_cont/1, doc_get_mapreduce_cont/1]).
--export([doc_change/2, doc_get/1, doc_delete/2, doc_append/2]).
--export([doc_rmval/2, doc_exist/1, get_uuid/0]).
-
-%% Local database params
--define(ADDR, fun() -> {ok, {ADDR, _, _}} =
-              application:get_env(db_conf, localdb), ADDR end).
--define(USER, fun() -> {ok, {_, USER, _}} =
-              application:get_env(db_conf, localdb), USER end).
--define(PASS, fun() -> {ok, {_, _, PASS}} =
-              application:get_env(db_conf, localdb), PASS end).
-
+-export([doc_change/2, doc_get/1, doc_delete/2, doc_append/2, delete_db/1]).
+-export([doc_rmval/2, doc_exist/1, get_uuid/0, add_db/1]).
 
 %% @doc Method to initially add a document to the database.
 %% Encodes the erlang JSon representation to valid JSon.
@@ -36,28 +31,38 @@ doc_add({Addr, User, Pass}, Content) ->
                     jsx:encode(Content), "text/json").
 
 %% @doc Overwrite content of a document.
-doc_change({Addr, User, Pass}, Content) ->
-    Rev = get_tupp(jsx:decode(?MODULE:doc_get(Addr)), "_rev"),
-    couch_connector:put_request({Addr, User, Pass},
-                    binary_to_list(jsx:encode([Rev | Content])), "text/json").
+doc_change(Cred, Content) ->
+    case (?MODULE:doc_get(Cred)) of
+        [{<<"error">>,<<"not_found">>}, _] ->
+            ?MODULE:doc_add(Cred, Content);
+        _ ->
+            Rev = get_tupp(?MODULE:doc_get(Cred), "_rev"),
+            couch_connector:put_request(Cred,
+                 binary_to_list(jsx:encode([Rev | Content])), "text/json")
+    end.
 
 %% @doc Fetches a document from the database.
 %% Returns just the content of this document. HTML header + info are ignored.
 doc_get({Addr, User, Pass}) ->
     {ok, {_HTTP, _Info, Res}} = couch_connector:get_request({Addr, User, Pass}),
-    jsx:decode(Res).
+        jsx:decode(Res).
 
 %% @doc Gets just objects from the database without anything else.
 doc_get_map_cont({Addr, User, Pass}) ->
-    Doc = doc_get({Addr, User, Pass}),
-    [_RowCount, _OffSet | [{_, Rows} | _]] = Doc,
-    [Post || [{<<"_id">>, _ID}, {<<"_rev">>, _Rev} | Post] <-
-             [Posts || {<<"value">>, Posts} <- lists:flatten(Rows)]].
+    case (doc_get({Addr, User, Pass})) of
+         [_RowCount, _OffSet | [{_, Rows} | _]] ->
+             [Post || [{<<"_id">>, _ID}, {<<"_rev">>, _Rev} | Post] <-
+             [Posts || {<<"value">>, Posts} <- lists:flatten(Rows)]];
+        _ -> []
+    end.
 
 doc_get_mapreduce_cont({Addr, User, Pass}) ->
-    Doc = doc_get({Addr, User, Pass}),
-    [{_, List}] = Doc,
-    List.
+    case(doc_get({Addr, User, Pass})) of
+        [{_, List}] ->
+            List;
+        _ ->
+            []
+    end.
 
 %% @doc Deletes a document from the database.
 doc_delete({Addr, User, Pass}, Rev) ->
@@ -75,6 +80,14 @@ doc_rmval({Addr, User, Pass}, Name) ->
     couch_connector:put_request({Addr, User, Pass},
                     binary_to_list(jsx:encode(Doc)), "text/json").
 
+%% @doc Deletes the DB.
+delete_db({Addr, User, Pass}) ->
+    couch_connector:delete_request({Addr, User,Pass}).
+
+%% @doc Adds a DB.
+add_db({Addr, User, Pass}) ->
+    couch_connector:put_request({Addr, User, Pass}, [], []).
+
 %% @doc Helperfunction to remove a value from a JSon document.
 remove_val(Origin, Name) ->
     [{Id, Val} || {Id, Val} <- Origin, Id =/= binary:list_to_bin(Name)].
@@ -90,8 +103,9 @@ get_val(Json, Field) ->
 
 %% @doc Function getting a UUID from the CouchDB
 get_uuid() ->
-    {ok, {_HTTP, _Inf, Res}} = couch_connector:get_request({?ADDR() ++ "_uuids",
-                                                            ?USER(), ?PASS()}),
+    {ok, {_HTTP, _Inf, Res}} =
+    couch_connector:get_request({db_addr_serv:main_addr() ++ "_uuids",
+                    db_addr_serv:main_user(), db_addr_serv:main_pass()}),
     [{<<"uuids">>, [UUID]}] = jsx:decode(Res),
     binary_to_list(UUID).
 
