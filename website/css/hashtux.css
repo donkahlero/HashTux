@@ -172,3 +172,9 @@
     bottom: 0;
     text-align: center;
 }
+
+.spinner {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
