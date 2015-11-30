@@ -1,21 +1,17 @@
 %% @author jerker
 %% @doc 
 %
-% This module handles requests from the Apache server handling the frontend.
+% This module handles requests from the frontend web server.
+% It logs user habit detals about the request and then lets main_flow modules take
+% care of the request. It then returns the reply from main_flow to the web server.
 %
-% The PHP request supplies a number of details about
-% the user, session and client options.
+% The request from the web server supplies a number of details about the user, session
+% and client options.
 %
-% (It would actually be possible to put most of this into JSON already in the 
-% PHP code, reducing the amount of logic around this on the erlang backend. 
-% This is a good candidate for refactoring later if we have time. However then
-% either the client would have to care about what we deem as user habit related
-% and what we see as only relevant as options, OR we would have to separate
-% into two lists on the server anyway, so it's not a magical wand solution that
-% instantly makes everything superbeautiful)
+% The code in http_handler and main_flow* is very agnostic about what is in the options or 
+% user habit data. The only thing that matters is that we can get the request_type value 
+% from the options.
 %
-
-
 % Options (appended at the end of user habit data as well before sent to db)
 % 	language
 %	limit (post count in response) (also stored as user habit right now)
@@ -29,7 +25,6 @@
 %	platform
 %	browser
 %	browserversion
-%
 %
 % Notes on cowboy:
 % URL: the full url, including http://
@@ -74,7 +69,7 @@ handle(Req, State) ->
 	
 	% Send the search term, request type and the options to the main flow by making a call
 	% to main flow server - get the PID of the worker back and wait for a reply from it
-	io:format("http_handler: Options: ~p~n~n", [Options]),
+	io:format("http_handler: Options: ~p~n", [Options]),
 	RequestType = aux:bin_to_atom(aux:get_value(request_type, Options)),
 	{ok, HandlerPid} = gen_server:call(main_flow_server, {RequestType, Term, Options}),
 	io:format("~nhttp_handler: Made main_flow_server call, received worker PID: ~p~n", [HandlerPid]),
