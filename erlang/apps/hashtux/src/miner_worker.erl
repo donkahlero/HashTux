@@ -101,27 +101,25 @@ handle_call({{Pid, _Ref}, Term, Options}, _From, State) ->
 
 %%
 send_results(Pid, [], _UnfilteredResults, Term, Options) ->
-	io:format("Filtered Results returned from search: ~p~n", [[]]),
-	io:format("WORKER: Sending placeholder to db...~n"),	
-	case get_value(request_type, Options) of
+	io:format("MINER_WORKER [~p]: Sending results...~n", [self()]),	
+	case aux:get_value(request_type, Options) of
 		<<"search">> -> 
-			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
+			miner_dbwriter:write(get_no_results(Term, Options)),
 			Pid ! {self(), []};
 		<<"update">> ->
-			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]}),
+			miner_dbwriter:write(get_no_results(Term, Options)),
 			Pid ! {self(), []};
 		<<"heartbeat">> ->
-			gen_server:call(db_serv, {add_doc, [get_no_results(Term, Options)]})
+			miner_dbwriter:write(get_no_results(Term, Options))
 	end;
 send_results(Pid, FilteredResults, UnfilteredResults, _Term, Options) ->
-
-	case get_value(request_type, Options) of
+	io:format("MINER_WORKER [~p]: Sending results...~n", [self()]),
+	case aux:get_value(request_type, Options) of
 		<<"search">> -> 
-			io:format("WORKER: Writing to db...~n"),
-			gen_server:call(db_serv, {add_doc, [UnfilteredResults]}),
+			miner_dbwriter:write(UnfilteredResults),
 			Pid ! {self(), FilteredResults};
 		<<"update">> ->
-			gen_server:call(db_serv, {add_doc, [UnfilteredResults]}),
+			miner_dbwriter:write(UnfilteredResults),
 			Pid ! {self(), FilteredResults};
 		<<"heartbeat">> ->
 			ok
@@ -176,15 +174,12 @@ get_results(Term, Services, ContType, Lang, HistoryTimestamp) ->
 %%
 %%% Instagram search.
 search_services({instagram, {Term, ContType, _Lang, _HistoryTimestamp}}) ->
-	io:format("MINER_WORKER [~p]: Calling ig_search...~n", [self()]),
 	ig_search:search(Term, [ContType]);
 %%% Twitter search.
 search_services({twitter, {Term, ContType, Lang, HistoryTimestamp}}) ->
-	io:format("MINER_WORKER [~p]: Calling twitter_search...~n", [self()]),
 	twitter_search:search_hash_tag(Term, [ContType, Lang, HistoryTimestamp]);
 %%% YouTube search.
 search_services({youtube, {Term, ContType, Lang, HistoryTimestamp}}) ->
-	io:format("MINER_WORKER [~p]: Calling youtube_search...~n", [self()]),
 	youtube_search:search(Term, [ContType, Lang, HistoryTimestamp]).
 
 
@@ -216,15 +211,6 @@ get_no_results(Term, Options) ->
 get_cont_type() ->
 	[<<"image">>, <<"video">>, <<"text">>].
 
-
-%%
-get_value(_Key, [])   -> [];
-get_value(_Key, null) -> [];
-get_value(Key, List)  ->
-	case lists:keyfind(Key, 1, List) of
-		{_K, V}	-> V;
-		false 	-> []
-	end.
 
 %% @author Marco Trifance
 %% @doc Helper function for parse_results/1
