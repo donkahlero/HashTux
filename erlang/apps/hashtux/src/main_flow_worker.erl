@@ -77,7 +77,7 @@ handle_cast({heartbeat, SourcePID, Term, Options}, State) ->
 	% Heartbeat from client means miners should cache data for this
 	% request, that the client can "pick up" later. No data should be 
 	% returned to the client right now, and we don't wait for a reply.
-	miner_cast_only(Term, Options),
+	miner_heartbeat(Term, Options),
 	io:format("main_flow_worker: Heartbeat for term ~p~n", [Term]),
 	
 	% For simplicity, we just return [] to the using code
@@ -130,6 +130,7 @@ stats_query(Term, Options) ->
 			[]
 	end.
 
+
 % Helper functions that checks if there is anything cached in the DB very recently
 % (such as the last minute) by the heartbeat mechanism 
 cache_query(Term, Options) ->
@@ -154,24 +155,10 @@ cache_query(Term, Options) ->
 	end.
 
 
+% Helper function for heartbeat request to miner
+miner_heartbeat(Term, Options) ->	
+	miner_server:heartbeat(Term, Options).
 
-
-%
-%
-% NOTE,
-% Ivo, the functions below could be moved to another module that makes it
-% transparent to the using code in this module whether we use a local miner
-% or remote one. Of course there are challenges, such as whether we keep track
-% of where the last heartbeat was last redirected, and so on. But how do we then
-% identify clients? Hmm. 
-%
-%
-
-% Helper function used by the heartbeat mechanism to trigger precaching.
-% Make sure that the options include reqeust_type: "heartbeat" 
-% so the miner server won't try to send anything back to this process!
-miner_cast_only(Term, Options) ->	
-	miner_server:search(Term, Options).
 
 % Helper function for sending a miner request. Returns results.
 miner_query(Term, Options) ->
@@ -193,8 +180,3 @@ miner_query(Term, Options) ->
 					[]
 			end
 	end.
-
-
-
-
-
