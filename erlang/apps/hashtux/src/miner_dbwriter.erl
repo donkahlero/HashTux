@@ -55,7 +55,7 @@ handle_info(Msg, State) ->
 
 handle_cast({write, Data}, State) ->
 	io:format("MINER_DBWRITER: Writing to database...~n"),
-	gen_server:call(db_serv, {add_doc, [Data]}),
+	gen_server:call(db_serv, {add_doc, Data}),
 	{noreply, State};
 handle_cast(stop, State) ->
 	{stop, normal, State};
