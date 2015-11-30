@@ -19,8 +19,8 @@
 reduce([_, _, {_, L}]) ->
     reduce(L);
 reduce(L) ->
-    {<<"key">>, EndTime} = lists:keyfind(<<"key">>, 1, lists:nth(1, L)),
-    {<<"key">>, StartTime} = lists:keyfind(<<"key">>, 1, lists:last(L)),
+    {<<"key">>, StartTime} = lists:keyfind(<<"key">>, 1, lists:nth(1, L)),
+    {<<"key">>, EndTime} = lists:keyfind(<<"key">>, 1, lists:last(L)),
     PIDs = spawn_workers(splitup(L, gen_tf(StartTime, EndTime), []), []),
     ResList = receive_res(PIDs, []),
     lists:usort([[{<<"key">>, T}, {<<"value">>, Amount}] ||
