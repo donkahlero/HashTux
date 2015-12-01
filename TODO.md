@@ -4,3 +4,4 @@ stats: Add rewrite to htaccess - so /stats is rewritten to stats.php<br />
 Front end: front page look happy<br />
 Front end: tooltips on buttons / button design<br />
 Front end: menu dissapears when you click anywhere, like on a button (event.stopPropagation() on firefox & others?)<br />
+Front end: videos tweaked
