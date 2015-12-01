@@ -12,7 +12,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <link href="css/bootstrap.css" rel="stylesheet">
-        <link href="css/hashtux.css"rel="stylesheet">
+        <link href="css/hashtux.css" rel="stylesheet">
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
@@ -62,6 +62,9 @@
              */
             
             function initialize() {
+                
+                loading();
+                
                 $.ajax({
                     url: "/ajax.php?search=" + searchterm + "&request_type=search",
                     type: "get",
@@ -71,11 +74,15 @@
                         parse_to_items(myString);   // Parse the JSON to items
                         initDisplayed();            // Run the initDisplayed function
                         initGrid();                 // Initialize the grid
+                        stopLoading();
                     }
                 });
             }
             
             function reinitialize() {
+            
+                loading();
+            
                 displayed = [];
                 items = [];
                 $('#grid').html('');
@@ -92,6 +99,7 @@
                         parse_to_items(myString);   // Parse the JSON to items
                         initDisplayed();            // Run the initDisplayed function
                         initGrid();                 // Initialize the grid
+                        stopLoading();
                     }
                 });
                 
@@ -99,6 +107,8 @@
             }
             
             function newSearch() {
+                
+                hideNoResults();
                 
                 var newTerm = $('#searchField').val();
                 
@@ -166,7 +176,19 @@
 
             function parse_to_items(json) {
                 
-                var debug = "";
+//                var debug = "";
+
+                alert(json);
+                
+                if(json === "[]")
+                {
+                    showNoResults();
+                }
+                
+                else
+                {
+                    hideNoResults();
+                }
                 
                 var jsonobj = $.parseJSON(json);    // Parse the JSON object
                 
@@ -283,6 +305,22 @@
                 $('#searchBtn').fadeIn(500);
             }
             
+            function loading() {
+                $('#progress').show();
+            }
+            
+            function stopLoading() {
+                $('#progress').hide();
+            }
+            
+            function showNoResults() {
+                $('#no-results').show();
+            }
+            
+            function hideNoResults() {
+                $('#no-results').hide();
+            }
+            
             function runScript(e) {
                 if (e.keyCode === 13) {
                     newSearch();
@@ -369,7 +407,10 @@
                 You did not enter a hashtag, please try again!
             </div>
             
-            <div class="spinner"></div>
+            <div class="center-container">
+                <div class="spinner" id="progress"></div>
+                <div class="no-results" id="no-results">NO RESULTS</div>
+            </div>
 
             <div class="container con-fill header" id="options" onclick="hideOptions()"
                      style="background-color: rgba(0, 0, 0, 0.5); display: none;" >
