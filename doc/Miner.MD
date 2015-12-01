@@ -13,7 +13,7 @@ Term is the term (hashtag) to search for, passed as a string, eg:
 ```erlang
 miner_server:search("mario", Options).
 ```
-Options is a list containing {key, value} pairs
+Options is a list containing {key, value} pairs. Key is an 
 For now the `Options` can be any valid erlang term (eg atom, []). The above function returns `{ok, Pid}` where `Pid` is the process identifier of the spawned worker to do the search. 
 
 ### Sequence of operations when above call executed (for now):
