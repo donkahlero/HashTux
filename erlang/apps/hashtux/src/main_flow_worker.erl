@@ -145,7 +145,11 @@ cache_query(Term, Options) ->
 	StartTime = EndTime - CacheTimeWindow,
 	Options2 = Options ++ [{timeframe, StartTime, EndTime}, {limit, 50}],
 	
-	Ref = gen_server:call(db_serv, {get_posts, Term, Options2}),
+	% Strip out the request_type field from the options, 
+	% to allow the cached data can have any request type
+	Options3 = aux_functions:ignore_request_type(Options2), 
+		
+	Ref = gen_server:call(db_serv, {get_posts, Term, Options3}),
 	receive 
 		{Ref, Result} ->
 			% Just return the result to the using code.
