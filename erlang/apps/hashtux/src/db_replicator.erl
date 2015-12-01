@@ -18,6 +18,7 @@
 
 %% @doc Starts the replication worker and links it to the calling process
 start_link() ->
+    io:format("db_replicator: started...~n", []),
     {ok, spawn_link(fun() -> replicate() end)}.
 
 %% @doc Function to replicate the database in a given time interval
