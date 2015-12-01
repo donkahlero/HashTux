@@ -17,30 +17,13 @@
 
 %% @doc Function checking if the miners cannot find something or there is just
 %% nothing cached yet.
-%% Recheck :) Fun
+check_results([], _) ->
+    [];
 check_results([[{<<"results">>, <<"no">>}, {<<"search_term">>, _},
-                {<<"timestamp">>, _}, {<<"options">>, Opt}] | _], Opts) ->
-    case(lists:usort(foreach_opt(Opts, Opt, []))) of
-        [true] ->
-            no_miner_res;
-        _ -> []
-    end;
-check_results(_, _) ->
-    [].
-
-%% @doc Function going through all options.
-foreach_opt([], _, Res) ->
-    Res;
-foreach_opt([X|Xs], Opt, Res) ->
-    foreach_opt(Xs, Opt, [in_options(Opt, X) | Res]).
-
-%% @doc Function checking if current option is part of general options.
-in_options([], _) ->
-    false;
-in_options([{_, Val}|_], {_, Val}) ->
-    true;
-in_options([_|Xs], Opt) ->
-    in_options(Xs, Opt).
+                {<<"timestamp">>, _}, {<<"options">>, Opts}] | _], Opts) ->
+    no_miner_res;
+check_results([_|Xs], Opts) ->
+    check_results(Xs, Opts).
 
 %% @doc Function filtering for the type of content.
 %% This can be image, video or text.
