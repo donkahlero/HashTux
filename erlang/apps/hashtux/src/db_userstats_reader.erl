@@ -57,10 +57,12 @@ handle_call(_, _, _) ->
 
 %% @doc Get statistics based on the search term from the server.
 handle_cast({get_stats, Term, Options, Rec}, State) ->
-    R = couch_operations:doc_get_map_cont({db_addr_serv:main_addr() ++
-             "userstats_cached_data/" ++ Term,
+    R = couch_operations:doc_get({db_addr_serv:main_addr() ++
+             "hashtux_userstats_cached_data/" ++ Term,
              db_addr_serv:main_user(), db_addr_serv:main_pass()}),
-    LR = db_options_handler:handle_options(R, Options),
+    [_,_ | List] = R,
+    SR = [[{<<"key">>, String}, {<<"value">>, Value}] || {String, Value} <- List],
+    LR = db_options_handler:handle_options(SR, Options),
     Rec ! {self(), LR},
     {stop, normal, State}.
 
@@ -76,3 +78,4 @@ code_change(_OldVsn, State, _Extra) ->
 %% @doc Terminates the server
 terminate(_Reason, _State) ->
     ok.
+
