@@ -1,9 +1,9 @@
-DB Cache - Always filter out result: no<br />
-DB Cache - Override request_type to heartbeat, update, search<br />
-stats: Add rewrite to htaccess - so /stats is rewritten to stats.php<br />
+stats: switching graphs and timeframes should work<br />
 Front end: front page look happy<br />
 Front end: tooltips on buttons / button design<br />
 Front end: videos tweaked<br />
-Check spaces in search terms
-Media type options - debug!<br />
+Front end: stats visual design<br />
+Check spaces in search terms<br />
+Media type options - are they working?<br />
 Close buttons on options?<br />
+
