@@ -48,6 +48,6 @@ get_twitter_keys() ->
 %% keytake(Key, N, TupleList1) -> {value, Tuple, TupleList2} | false
 %%
 ignore_request_type(Options) ->
-	{_Value, _Tuple, Options2} = keytake(request_type, 1, Options),
+	{_Value, _Tuple, Options2} = lists:keytake(request_type, 1, Options),
 	Options2.
 	
