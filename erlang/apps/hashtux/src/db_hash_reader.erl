@@ -78,8 +78,11 @@ handle_cast({get_posts, Hash, Options, Rec}, State) ->
                  db_addr_serv:main_user(), db_addr_serv:main_pass()}),
     Result = db_options_handler:handle_options(Hash_Result, Options),
     case(Result) of
-        [] ->
-            Rec ! {self(), db_filter:check_results(Hash_Result, Options)};
+        [[{<<"results">>,<<"no">>},
+          {<<"search_term">>, _},
+          {<<"timestamp">>, _},
+          {<<"options">>, _}] | _] ->
+            Rec ! {self(), db_filter:check_results(Result, Options)};
         Res ->
             Rec ! {self(), Res}
     end,
