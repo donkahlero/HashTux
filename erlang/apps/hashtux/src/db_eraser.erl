@@ -15,6 +15,7 @@
 
 %% @doc Starts the cleaner worker and links it to the calling process.
 start_link() ->
+    io:format("db_eraser: started...~n", []),
     {ok, spawn_link(fun() -> eraser() end)}.
 
 %% @doc Cleanup method which calls the acutal compact_db function in a given
@@ -24,7 +25,8 @@ eraser() ->
     couch_connector:post_request({db_addr_serv:main_addr() ++ "_replicate",
                    db_addr_serv:main_user(), db_addr_serv:main_pass()},
                    "{\"source\":\"hashtux\",\"target\":\"hashtux_bu\",
-                   \"create_target\":true}",
+                   \"create_target\":true,
+                   \"filter\": \"filters/deletedfilter\"}",
                    "application/json"),
     %% Erase the original db
     couch_operations:delete_db({db_addr_serv:main_addr() ++ "hashtux",
@@ -33,7 +35,8 @@ eraser() ->
     couch_connector:post_request({db_addr_serv:main_addr() ++ "_replicate",
                    db_addr_serv:main_user(), db_addr_serv:main_pass()},
                    "{\"source\":\"hashtux_bu\",\"target\":\"hashtux\",
-                   \"create_target\":true}",
+                   \"create_target\":true,
+                   \"filter\": \"filters/deletedfilter\"}",
                    "application/json"),
     %% Erase the backup db
     couch_operations:delete_db({db_addr_serv:main_addr() ++ "hashtux_bu",
