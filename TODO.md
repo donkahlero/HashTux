@@ -1,4 +1,4 @@
-stats: switching graphs and timeframes should work<br />
+Stats: switching graphs and timeframes should work<br />
 Front end: front page look happy<br />
 Front end: tooltips on buttons / button design<br />
 Front end: videos tweaked<br />
