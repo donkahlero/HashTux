@@ -48,8 +48,7 @@ search(Term, Options) ->
 %% @doc Handles heartbeat requests from client.
 %%
 heartbeat(Term, Options) ->
-	gen_server:call(?MODULE, {heartbeat, Term, Options}),
-	ok.
+	gen_server:cast(?MODULE, {heartbeat, Term, Options}).
 
 
 
@@ -109,6 +108,21 @@ handle_info(Msg, State) ->
 %%% Cast to stop the server.
 handle_cast(stop, State) ->
 	{stop, normal, State};
+%%% When heartbeat requested and limit for workers not reached.
+handle_cast({heartbeat, Term, Options},
+						S=#state{limit=N, refs=R}) when N > 0 ->
+	{ok, Pid} = start_worker(),
+	Ref = erlang:monitor(process, Pid),
+	% cast to worker with {0, 0} instead of the {Pid, Ref}
+	% we never send back results to original caller when heartbeat
+	% so in this case it doesn't matter
+	gen_server:cast(Pid, {{0, 0}, Term, Options}),
+	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
+	{noreply, NewS};
+%%% When heartbeat requested and limit for workers reached.
+handle_cast({heartbeat, Term, Options}, 
+						S=#state{limit=N}) when N =< 0 ->
+	{noreply, S};
 %%% Other casts ignored.
 handle_cast(Msg, State) ->
 	io:format("MINER_SERVER: Unknown cast: ~p~n", [Msg]),
@@ -123,26 +137,13 @@ handle_call({search, Term, Options}, From,
 						S=#state{limit=N, refs=R}) when N > 0 ->
 	{ok, Pid} = start_worker(),
 	Ref = erlang:monitor(process, Pid),
-	gen_server:call(Pid, {From, Term, Options}),
+	gen_server:cast(Pid, {From, Term, Options}),
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
 	{reply, {ok, Pid}, NewS};
 %%% When limit for workers reached.
 handle_call({search, _Term, _Options}, _From, 
 						S=#state{limit=N}) when N =< 0 ->
-	io:format("MINER_SERVER: no_alloc ~n"),
 	{reply, no_alloc, S};
-%%% When heartbeat requested.
-handle_call({heartbeat, Term, Options}, From, 
-						S=#state{limit=N, refs=R}) when N > 0 ->
-	{ok, Pid} = start_worker(),
-	Ref = erlang:monitor(process, Pid),
-	gen_server:call(Pid, {From, Term, Options}),
-	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
-	{noreply, NewS};
-%%% When heartbeat requested and limit for workers reached.
-handle_call({heartbeat, Term, Options}, From, 
-						S=#state{limit=N}) when N =< 0 ->
-	{noreply, S};
 %%% All other calls.
 handle_call(Request, _From, State) ->
 	io:format("MINER_SERVER: Unknown call: ~p~n", [Request]),
