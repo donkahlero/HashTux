@@ -1,6 +1,6 @@
 -module(db_designdocs).
 
--export([get_post/0, get_stat/0]).
+-export([get_post/0, get_stat/0, get_filter/0]).
 
 get_post() ->
   [
@@ -41,3 +41,10 @@ get_stat() ->
         [{<<"map">>, <<"function(doc) { if (doc.browser && doc.platform && doc.timestamp)  emit(doc.timestamp, [doc.platform, doc.browser]) }">>}]}
       ]}
     ].
+
+get_filter() ->
+    [
+     {<<"_id">>, <<"_design/filters">>},
+     {<<"filters">>,
+      [{<<"deletedfilter">>, <<"function(doc, req) { return !doc._deleted; };">>}]}
+   ].
