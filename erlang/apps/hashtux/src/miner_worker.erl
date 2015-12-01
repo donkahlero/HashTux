@@ -206,7 +206,7 @@ get_no_results(Term, Options) ->
 	io:format("MINER_WORKER [~p]: No results options: ~p~n", [self(), Options]),
 	[ [{<<"results">>, <<"no">>},
 	   {<<"search_term">>, list_to_binary(Term)},
-	   {<<"timestamp">>, dateconv:get_timestamp()},
+	   {<<"insert_timestamp">>, dateconv:get_timestamp()},
 	   {<<"options">>, aux_functions:ignore_request_type(Options)}] ].
 
 
