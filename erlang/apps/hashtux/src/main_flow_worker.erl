@@ -143,7 +143,7 @@ cache_query(Term, Options) ->
 	% time window is from 60 seconds ago to now
 	EndTime = dateconv:get_timestamp(),
 	StartTime = EndTime - CacheTimeWindow,
-	Options2 = Options ++ [{timeframe, StartTime, EndTime}, {limit, 50}],
+	Options2 = Options ++ [{insert_timeframe, StartTime, EndTime}, {limit, 50}],
 	
 	% Strip out the request_type field from the options, 
 	% to allow the cached data can have any request type
