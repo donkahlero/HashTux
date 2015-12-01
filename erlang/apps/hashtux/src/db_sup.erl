@@ -60,9 +60,11 @@ init([]) ->
                 permanent, 5000, worker, [db_cleaner]},
     DBReplicator = {db_replicator, {db_replicator, start_link, []},
                    permanent, 5000, worker, [db_replicator]},
+    DBCacher = {db_cacher, {db_cacher, start_link, []},
+               permanent, 5000, worker, [db_cacher]},
     DBServ = {db_serv, {db_serv, start_link, []},
              permanent, 5000, worker, [db_serv]},
-    io:format("db_sup started...~n", []),
+    io:format("db_sup: started...~n", []),
     {ok, {{one_for_one, 1, 10}, [DBAddrServ, HashReadSup, HashWriteSup,
               StatsWriteSup, StatsReadSup,
-               DBEraser, DBCleaner, DBReplicator, DBServ]}}.
+              DBCacher, DBEraser, DBCleaner, DBReplicator, DBServ]}}.
