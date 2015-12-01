@@ -33,7 +33,6 @@
 % {Qs, _} = cowboy_req:qs(Req),
 %	
 %	TODO: try/catch on malformed jsx?
-%	TODO: check cURL timeout / load balancing on PHP
 %	TODO: Check spaces in search terms
 
 
