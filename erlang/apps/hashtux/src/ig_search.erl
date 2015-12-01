@@ -26,10 +26,9 @@ search(Term, Options) ->
 			{_StatusLine, _Headers, Body} = Result,
 			try jsx:decode(list_to_binary(Body)) of
 				DecodedRes -> 
-					MaxTagId = get_max_tag_id(DecodedRes),
 					DataList = get_value(<<"data">>, DecodedRes),
 					%io:format("Raw results are: ~p~n", [DecodedRes]),
-					Results = parse_results(Term, MaxTagId, DataList),
+					Results = parse_results(Term, DataList),
 					ResLength = length(Results),
 					io:format("INSTAGRAM API RESULT COUNT :~p~n", [ResLength]),
 					Types = get_value(content_type, Options),
@@ -91,19 +90,6 @@ get_token() ->
 
 
 %% 
-%% @doc Gets the max tag id for the time scroll.
-%%
-get_max_tag_id(L) ->
-	PagData = get_value(<<"pagination">>, L),
-	MaxTagId = get_value(<<"next_max_tag_id">>, PagData),
-	case MaxTagId of
-		[] 	   -> 0;
-		_Other -> list_to_integer(binary:bin_to_list(MaxTagId))
-	end.
-	
-
-
-%% 
 %% @doc Checks for the options for which to filter Instagram results. The
 %% options can be 'image' and 'video'. Calls filter_insta_res/2 if needed.
 %% 
@@ -153,20 +139,19 @@ get_value(Key, List)  ->
 %%
 %% @doc Parses the individual result from the data query.
 %%
-parse_results(_Term, _MaxTagId, [])	  -> [];
-parse_results(Term, MaxTagId, [X|Xs]) ->
-	[ parse_details(Term, MaxTagId, X) | parse_results(Term, MaxTagId, Xs) ].
+parse_results(_Term, [])	-> [];
+parse_results(Term, [X|Xs]) ->
+	[ parse_details(Term, X) | parse_results(Term, Xs) ].
 
 
 %%
 %% @doc Parses the details of an individual result.
 %%
-parse_details(_Term, _MaxTagId, []) -> [];
-parse_details(Term, MaxTagId, L)   	-> 
+parse_details(_Term, []) -> [];
+parse_details(Term, L)   -> 
 	[ get_search_term(Term),
 	  get_service(),
 	  get_timestamp(),
-	  get_tag_id(MaxTagId),
 	  get_tags(L), 
 	  get_content_type(L),
 	  get_location(L),
