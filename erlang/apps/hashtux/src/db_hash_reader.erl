@@ -22,6 +22,7 @@
 %% -----------------------------------------------------------------------------
 %% | Sprint 5 // v0.4                                                          |
 %% | Applied changes of db_addr_serv.                                          |
+%% | Fixed the no_miner res functionality.                                     |
 %% -----------------------------------------------------------------------------
 -module(db_hash_reader).
 -version(0.4).
@@ -78,11 +79,9 @@ handle_cast({get_posts, Hash, Options, Rec}, State) ->
                  db_addr_serv:main_user(), db_addr_serv:main_pass()}),
     Result = db_options_handler:handle_options(Hash_Result, Options),
     case(Result) of
-        [[{<<"results">>,<<"no">>},
-          {<<"search_term">>, _},
-          {<<"timestamp">>, _},
-          {<<"options">>, _}] | _] ->
-            Rec ! {self(), db_filter:check_results(Result, Options)};
+        [[{<<"results">>,<<"no">>}, _, _, _] | _] ->
+            Rec ! {self(), db_filter:check_results(Result,
+                   lists:keydelete(timeframe, 1, Options))};
         Res ->
             Rec ! {self(), Res}
     end,
