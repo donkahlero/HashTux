@@ -33,7 +33,7 @@ reduce(L) ->
 gen_tf(StartTime, EndTime) when (EndTime - StartTime) < 86400 ->
     [EndTime];
 gen_tf(StartTime, EndTime) ->
-    lists:usort(lists:seq(StartTime, EndTime, 86400)).
+    lists:usort(lists:append(lists:seq(StartTime, EndTime, 86400), [EndTime])).
 
 %% @doc Splits up the list according to the time frame into chunks foreach day.
 splitup([], _, SplitRes) ->
