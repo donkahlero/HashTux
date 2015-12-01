@@ -48,6 +48,12 @@ get_twitter_keys() ->
 %% keytake(Key, N, TupleList1) -> {value, Tuple, TupleList2} | false
 %%
 ignore_request_type(Options) ->
-	{_Value, _Tuple, Options2} = lists:keytake(request_type, 1, Options),
-	Options2.
+	X = lists:keytake(request_type, 1, Options),
+	case X of 		
+		{_Value, _Tuple, Options2} ->
+			% The key request_type was present. Return the remaining options
+			Options2
+		false ->
+			% The key was not present. Return unchanged options.
+			Options.
 	
