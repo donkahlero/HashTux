@@ -42,7 +42,7 @@ var statsList = [new statsObj("hashtux",31),
 function creatTable(){
      var table = document.createElement('table');
 	 var tableBody = document.createElement('tbody');
-
+            if(items.length != 0){
 		for(i = 0; i < items.length; i++)
 			{
 			    var num = i + 1;
@@ -63,7 +63,10 @@ function creatTable(){
 			}
 		table.appendChild(tableBody);
 		$('#myTableSearchterm').html(table);
-		
+            }
+            else{
+                creatTable();
+            }
     }
     window.onload = function(){
         fetch("search_term_today");
