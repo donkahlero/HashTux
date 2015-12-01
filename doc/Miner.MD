@@ -43,10 +43,23 @@ miner_server:heartbeat(Term, Options)
 ```
 `Term` and `Options` are the same as described above. The only difference is that the above call does not return anything.
 
+##Example calls
+Searches only instagram and twitter for any language and content type, and for the latest posts, twitts, etc.
+```erlang
+miner_server:search("mario", [{service, [<<"instagram">>, <<"twitter">>]}, {request_type, <<"search">>}]).
+```
+Searches all services for specified language and content type, and for the latest posts, twitts, etc.
+```erlang
+miner_server:search("mario", [{service, []}, {content_type, [<<"video">>]}, {language, <<"en">>}, {request_type, <<"search">>}]).
+```
+The above call can also be written as following, omitting the service {key, value} pair.
+```erlang
+miner_server:search("mario", [{content_type, [<<"video">>]}, {language, <<"en">>}, {request_type, <<"search">>}]).
+```
+To search for a certain timeframe, just include the {history_timestamp, 123456} pair.
+
 
 ### Sequence of operations when above call executed (for now):
-1. A new worker is spawned to search for the given term (hashtag). For now search is general, no options or filters applied.
+1. A new worker is spawned to search for the given term (hashtag). The PID of the worker is returned to the caller for reference.
 2. After the search is complete, the worker returns the search results to the original caller.
 
-##To be completed:
-- Specify the `Options` format
