@@ -57,7 +57,8 @@ The above call can also be written as following, omitting the service {key, valu
 miner_server:search("mario", [{content_type, [<<"video">>]}, {language, <<"en">>}, {request_type, <<"search">>}]).
 ```
 To search for a certain timeframe, just include the {history_timestamp, 123456} pair.
-Again, don't forget the `{request_type, Type}` pair in each call. :eyes:
+
+######Again, don't forget the `{request_type, Type}` pair in each call. :eyes:
 
 
 ### Sequence of operations when `miner_server:search/2` called:
