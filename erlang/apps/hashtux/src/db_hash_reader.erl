@@ -81,7 +81,8 @@ handle_cast({get_posts, Hash, Options, Rec}, State) ->
     case(Result) of
         [[{<<"results">>,<<"no">>}, _, _, _] | _] ->
             Rec ! {self(), db_filter:check_results(Result,
-                   lists:keydelete(timeframe, 1, Options))};
+                   lists:keydelete(limit, 1,
+                   lists:keydelete(timeframe, 1, Options)))};
         Res ->
             Rec ! {self(), Res}
     end,
