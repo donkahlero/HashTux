@@ -9,7 +9,7 @@ miner_sup:start_link().
 ```erlang
 miner_server:search(Term, Options).
 ```
-The above function returns `{ok, Pid}` where `Pid` is the process identifier of the spawned worker to do the search. Exception for certain options. Check below.
+The above function returns `{ok, Pid}` where `Pid` is the process identifier of the spawned worker to do the search.
 
 Term is the term (hashtag) to search for, passed as a string, eg:
 ```erlang
