@@ -52,7 +52,8 @@ ignore_request_type(Options) ->
 	case X of 		
 		{_Value, _Tuple, Options2} ->
 			% The key request_type was present. Return the remaining options
-			Options2
+			Options2;
 		false ->
 			% The key was not present. Return unchanged options.
-			Options.
+			Options
+	end.
