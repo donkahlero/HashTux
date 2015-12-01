@@ -14,11 +14,13 @@
 %% | Bugfixes and reducing of code in                                          |
 %% | - check_results                                                           |
 %% | - timeframe                                                               |
+%% | Added function for the new insert timestamp/timeframe                     |
 %% -----------------------------------------------------------------------------
 -module(db_filter).
 
 -export([content_type/2, language/2, service/2, order_by_value/1]).
 -export([limit_result/2, group_by_subkey/1, check_results/2, timeframe/2]).
+-export([insert_timeframe/2]).
 
 %% @doc Function checking if the miners cannot find something or there is just
 %% nothing cached yet.
@@ -62,6 +64,14 @@ timeframe(L, false) ->
 timeframe(L, {timeframe, StartTime, EndTime}) ->
     [X || X <- L, {<<"timestamp">>, T} <-
        [lists:keyfind(<<"timestamp">>, 1, X)],
+       StartTime =< T, T =< EndTime].
+
+%% @doc Function to check if the elemnts in the doc are in a given timeframe.
+insert_timeframe(L, false) ->
+    L;
+insert_timeframe(L, {insert_timeframe, StartTime, EndTime}) ->
+    [X || X <- L, {<<"insert_timestamp">>, T} <-
+       [lists:keyfind(<<"insert_timestamp">>, 1, X)],
        StartTime =< T, T =< EndTime].
 
 %% @doc Function ordering mapreduce results by their value
