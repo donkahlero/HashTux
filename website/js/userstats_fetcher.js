@@ -1,15 +1,13 @@
 var items = [];
 var term = "search_term_year";
-        
+
+//item constructor
 function item(name, value){
     this.name = name;
     this.value = value;
 }
-/*        
-function setSearch(term) {
-    this.term = term;
-}
-*/
+
+// Sends a request to fetch userstats by the given term.
 function fetch(term) {
     items = [];
     var options = {request_type: "stats", options: []};
@@ -19,12 +17,14 @@ function fetch(term) {
         data: JSON.stringify(options),
                     
         success: function (myString) { 
-            alert(myString);
             parse_to_items(myString);
         }
     });
 }
-        
+/*
+Creates an object of the json and creates objects for every single key value 
+pair in the json and then pushes them into the items array.
+*/
 function parse_to_items(json) {
     var jsonobj = $.parseJSON(json);
     for(var i in jsonobj) {
@@ -32,8 +32,3 @@ function parse_to_items(json) {
         items.push(itm);
     }
 }
-    
-/**
-for (var key in data) {          
-       console.log(key + '----' + data[key]);
-   }*/
