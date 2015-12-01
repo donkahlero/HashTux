@@ -3,12 +3,17 @@
 %% @doc Module repsonsible for filtering database results. The functions always
 %% take lists and necessary information as arguments and filter the list
 %% corresponding to that.
-%% @version 0.1
+%% @version 0.2
 %% -----------------------------------------------------------------------------
 %% | Sprint 4 // v0.1:                                                         |
 %% | Added initial version of this module.                                     |
 %% | Module can handle the following filters:                                  |
 %% | - content_type, language and service                                      |
+%% -----------------------------------------------------------------------------
+%% | Sprint % // v0.2:                                                         |
+%% | Bugfixes and reducing of code in                                          |
+%% | - check_results                                                           |
+%% | - timeframe                                                               |
 %% -----------------------------------------------------------------------------
 -module(db_filter).
 
@@ -48,31 +53,16 @@ language(L, {language, Language}) ->
 service(L, false) ->
     L;
 service(L, {service, Services}) ->
-    [X || X <- L, Y <- Services, lists:keyfind(<<"service">>, 1, X) == {<<"service">>, Y}].
+    [X || X <- L, Y <- Services,
+    lists:keyfind(<<"service">>, 1, X) == {<<"service">>, Y}].
 
 %% @doc Function to check if the elemnts in the doc are in a given timeframe.
 timeframe(L, false) ->
     L;
 timeframe(L, {timeframe, StartTime, EndTime}) ->
-    timeframe(L, StartTime, EndTime, []).
-
-timeframe([], _, _, Res) ->
-    Res;
-timeframe([X|Xs], StartTime, EndTime, Res) ->
-    {<<"timestamp">>, TimeStamp} = lists:keyfind(<<"timestamp">>, 1, X),
-    case(timeeval(TimeStamp, StartTime, EndTime)) of
-        true ->
-            timeframe(Xs, StartTime, EndTime, [X | Res]);
-        false ->
-            timeframe(Xs, StartTime, EndTime, Res)
-    end.
-
-timeeval(TimeStamp, StartTime, _) when TimeStamp >= StartTime ->
-    true;
-timeeval(TimeStamp, _, EndTime) when TimeStamp =< EndTime ->
-    true;
-timeeval(_, _, _) ->
-    false.
+    [X || X <- L, {<<"timestamp">>, T} <-
+       [lists:keyfind(<<"timestamp">>, 1, X)],
+       StartTime =< T, T =< EndTime].
 
 %% @doc Function ordering mapreduce results by their value
 order_by_value(L) ->
