@@ -6,3 +6,4 @@ Front end: tooltips on buttons / button design<br />
 Front end: videos tweaked<br />
 Check spaces in search terms
 Media type options - debug!<br />
+Close buttons on options?<br />
