@@ -107,7 +107,7 @@ handle_call(_Request, _From, State) ->
 %%
 send_results(Pid, [], _UnfilteredResults, Term, Options) ->
 	io:format("MINER_WORKER [~p]: Sending results...~n", [self()]),	
-	case aux:get_value(request_type, Options) of
+	case aux_functions:get_value(request_type, Options) of
 		<<"search">> -> 
 			miner_dbwriter:write(get_no_results(Term, Options)),
 			Pid ! {self(), []};
@@ -119,7 +119,7 @@ send_results(Pid, [], _UnfilteredResults, Term, Options) ->
 	end;
 send_results(Pid, FilteredResults, UnfilteredResults, _Term, Options) ->
 	io:format("MINER_WORKER [~p]: Sending results...~n", [self()]),
-	case aux:get_value(request_type, Options) of
+	case aux_functions:get_value(request_type, Options) of
 		<<"search">> -> 
 			miner_dbwriter:write(UnfilteredResults),
 			Pid ! {self(), FilteredResults};
