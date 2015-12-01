@@ -48,7 +48,7 @@ state() ->
 %% -----------------------------------------------------------------------------
 %% @doc db_serv init function. No argument needed to be passed.
 init([]) ->
-    io:format("db_serv started...~n", []),
+    io:format("db_serv: started...~n", []),
     {ok, []}.
 
 %%  @doc handles all kinds of calls to the server. Not supported calls will

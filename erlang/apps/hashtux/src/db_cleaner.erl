@@ -24,6 +24,7 @@
 
 %% @doc Starts the cleaner worker and links it to the calling process.
 start_link() ->
+    io:format("db_cleaner: started...~n", []),
     {ok, spawn_link(fun() -> cleanup() end)}.
 
 %% @doc Cleanup method which calls the acutal compact_db function in a given
