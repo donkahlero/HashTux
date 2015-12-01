@@ -1,7 +1,7 @@
 %% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
-%% %% @doc Initial database actions module
-%% %% @version 0.4
+%% @doc Initial database actions module
+%% @version 0.4
 %% -----------------------------------------------------------------------------
 %% | Sprint 1 // v0.1                                                          |
 %% | Created first as a normal module where the diffrent write operations was  |
@@ -82,7 +82,7 @@ handle_cast({get_posts, Hash, Options, Rec}, State) ->
         [[{<<"results">>,<<"no">>}, _, _, _] | _] ->
             Rec ! {self(), db_filter:check_results(Result,
                    lists:keydelete(limit, 1,
-                   lists:keydelete(timeframe, 1, Options)))};
+                   lists:keydelete(insert_timeframe, 1, Options)))};
         Res ->
             Rec ! {self(), Res}
     end,
