@@ -285,8 +285,8 @@
                 $('#sField').fadeIn(500);           // Fade in the text field
                 $('#searchBtn').hide();             // Hide the search button
                 
-                $('#sField').click(function() {
-                    event.stopPropagation();        // Ignore 
+                $('#sField').click(function(e) {
+                    e.stopPropagation();        // Ignore 
                 });
             }
             
