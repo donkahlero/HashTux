@@ -39,7 +39,7 @@ Options is a list containing {key, value} pairs. Key is an `atom` and value is a
 
 ##Heartbeat only
 ```erlang
-miner_server:heartbeat(Term, Options)
+miner_server:heartbeat(Term, Options).
 ```
 `Term` and `Options` are the same as described above. The only difference is that the above call does not return anything.
 
