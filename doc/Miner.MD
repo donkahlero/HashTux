@@ -9,8 +9,7 @@ miner_sup:start_link().
 ```erlang
 miner_server:search(Term, Options).
 ```
-The above function returns `{ok, Pid}` where `Pid` is the process identifier of the spawned worker to do the search. 
-
+The above function returns `{ok, Pid}` where `Pid` is the process identifier of the spawned worker to do the search. Exception for certain options. Check below.
 
 Term is the term (hashtag) to search for, passed as a string, eg:
 ```erlang
@@ -33,6 +32,16 @@ Options is a list containing {key, value} pairs. Key is an `atom` and value is a
 {history_timestamp, Seconds}
 ```
 `Seconds` is an integer specifying the timestamp in seconds. For example, `{history_timestamp, 123456}`. To search for results for a concrete timeframe, include the foremention {key, value} pair. Otherwise, omit this {key, value} pair.
+```erlang
+{request_type, Type}
+```
+`Type` is an erlang binary specifying the type of the request. Typer supported are **search**, **update** and **heartbeat**. For example, `{request_type, <<"search">>}`. **OBS** This {key, value} pair **must always** be included in the options.
+
+##Heartbeat only
+```erlang
+miner_server:search(Term, Options)
+```
+
 
 
 
