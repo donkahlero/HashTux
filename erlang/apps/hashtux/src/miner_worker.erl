@@ -207,7 +207,7 @@ get_no_results(Term, Options) ->
 	[ [{<<"results">>, <<"no">>},
 	   {<<"search_term">>, list_to_binary(Term)},
 	   {<<"timestamp">>, dateconv:get_timestamp()},
-	   {<<"options">>, Options}] ].
+	   {<<"options">>, aux_functions:ignore_request_type(Options)}] ].
 
 
 %% 
