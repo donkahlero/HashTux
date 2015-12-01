@@ -11,11 +11,11 @@ miner_server:search(Term, Options).
 ```
 The above function returns `{ok, Pid}` where `Pid` is the process identifier of the spawned worker to do the search.
 
-Term is the term (hashtag) to search for, passed as a string, eg:
+**Term** is the term (hashtag) to search for, passed as a string, eg:
 ```erlang
 miner_server:search("mario", Options).
 ```
-Options is a list containing {key, value} pairs. Key is an `atom` and value is a `binary`. Following {key, value} pairs are supported:
+**Options** is a list containing {key, value} pairs. Key is an `atom` and value is a `binary`. Following {key, value} pairs are supported:
 ```erlang
 {service, List}
 ```
