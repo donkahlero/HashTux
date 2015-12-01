@@ -1,5 +1,5 @@
 var items = [];
-var term = "by_search_term";
+var term = "search_term_year";
         
 function item(name, value){
     this.name = name;
@@ -10,9 +10,9 @@ function setSearch(term) {
     this.term = term;
 }
 */
-function fetch() {
+function fetch(term) {
+    items = [];
     var options = {request_type: "stats", options: []};
-    alert("fetch is starting");
     $.ajax({
         url: "/ajax_post.php?search=" + term,
         type: "post",                    
@@ -27,13 +27,10 @@ function fetch() {
         
 function parse_to_items(json) {
     var jsonobj = $.parseJSON(json);
-                
     for(var i in jsonobj) {
-        var itm = item(jsonobj[i].key, jsonobj[i].value);
+        var itm = new item(jsonobj[i].key, jsonobj[i].value);
         items.push(itm);
     }
-    
-        alert(items);
 }
     
 /**
