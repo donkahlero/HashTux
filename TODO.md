@@ -8,4 +8,5 @@ Front end: clarify that it's TILE SIZE that is small/medium/large or otherwiese 
 Check spaces in search terms<br />
 Media type options - are they working?<br />
 Close buttons on options?<br />
+Check after first half with Gabriel about the SAD Document <br />
 
