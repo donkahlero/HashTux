@@ -65,8 +65,8 @@ function saveOptions() {
 
     if(size === "sm")
     {
-        gridWidth = 3;
-        gridHeight = 2;
+        gridWidth = 6;
+        gridHeight = 4;
         totalItems = gridWidth * gridHeight;
     }
 
@@ -79,8 +79,8 @@ function saveOptions() {
 
     else if(size === "lg")
     {
-        gridWidth = 6;
-        gridHeight = 4;
+        gridWidth = 3;
+        gridHeight = 2;
         totalItems = gridWidth * gridHeight;
     }
 
@@ -346,8 +346,8 @@ function showOptions() {
     freeze();
     initOptions();
     
-    $('#optionsPanel').click(function () {
-        event.stopPropagation();
+    $('#optionsPanel').click(function(e) {
+        e.stopPropagation();
     });
 }
 

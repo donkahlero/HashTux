@@ -1,3 +1,8 @@
+<?php
+	/* Start a new session or resume if the client has a cookie ;) */
+	session_start();
+?>
+
 <html lang="en">
     <head>
         
@@ -7,25 +12,51 @@
         <link href="css/bootstrap.css" rel="stylesheet">
         <link href="css/stats.css" rel="stylesheet">  
         <link href="css/hashtux.css" rel="stylesheet">
+        <script src="js/userstats_fetcher.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.css">
+  
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"></script>
         <script type='text/javascript'>
 
-        var no = ["1","2","3","4"];
-        var searchTerms = ["Roger","Steve","Mike","Charlie"];
-        var value = ["8","7","6","2"];
+        var statsItems  = [];
 
-
-        tablegenerate (no,searchTerms,value);
-
-        function tablegenerate (no,searchTerms,value) {
-            for(i=0; i<no.length;i++)
-            {
-                 var $formrow = '<tr><td>'+no[i]+'</td><td>'+searchTerms[i]+'</td><td>'+value[i]+'</td></tr>';
-                $('.searchTermTable').append($formrow);
-            }
+        window.onload = function(){
+            
+        	 fetch("search_term_year");
+        	 alert(items);
         }
 
+        var statsList = items;
+
+		function getItemValues(){
+			   
+			   for(i = 0; i < statsList.length; i++)
+					{
+		              itemName = statsList[i].name; 
+		              itemCount = statsList[i].value;
+
+		              var itemsEx = [itemName, itemCount];
+		              
+		              statsItems.push(itemsEx);
+					}
+			  
+		   }
+			
+        $(document).ready(function() {
+
+			getItemValues();
+            
+            $('#example').DataTable( {
+                data: statsItems,
+                columns: [
+                    { title: "Name" },
+                    { title: "Count" },
+                   
+                ]
+            } );
+        } );
         </script>    
         
     </head>
@@ -33,14 +64,10 @@
    <body >
 
     <div class="container">
-					
-		<table table class="searchTermTable" style="float:justify;">
-    		<tr>
-      			<th width="10%">No.</th>
-        		<th width="80%">Search Term</th>
-       			<th width="10%">Value</th>
-    		</tr>
-		</table>
+        <div class="row">
+					<table id="example" class="display" width="100%"></table>
+		 
+		</div>  			
 	</div>  
     
     
