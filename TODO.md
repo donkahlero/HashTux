@@ -3,7 +3,7 @@
 Stats: switching graphs and timeframes should work<br />
 Front end: front page look happy<br />
 Front end: tooltips on buttons / button design<br />
-Document the history_timestamp option<br />
+Document the history_timestamp option<br />. BTW maybe combine the options datatype with the database options list and clarify which can be used where.
 Front end: videos tweaked<br />
 Front end: visible button for freezing all<br />
 Front end: clarify that it's TILE SIZE that is small/medium/large or otherwiese clarify so it makes sense (size: large can almost feel like you're saying you have a large screen, so more tiles would fit). I'd almost rather have it named something else, like tile amount... but can't come up with the best term right now // J<br />
