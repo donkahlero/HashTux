@@ -8,7 +8,7 @@ function refresh()
         var newItem = items[newIndex];
         var randTileNum = Math.floor((Math.random() * totalItems));
         var randTile = "#tile" + randTileNum;
-        var currentItem;
+        var currentItem = null;
         var currentIndex;
 
             for(i = 0; i < displayed.length; i++)
@@ -20,7 +20,7 @@ function refresh()
                 }
             }
 
-            if(!currentItem.frozen)
+            if(currentItem === null || !currentItem.frozen)
             {
                 if(newItem.service === "instagram")
                 {
