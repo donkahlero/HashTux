@@ -128,7 +128,7 @@
                     $('#grid').html('');
                     
                     searchterm = newTerm;
-                    initialize();
+                    reinitialize();
                 }
             }
             
@@ -279,14 +279,20 @@
                 hoverListener();    // Run the hoverListener function
             };
             
+            // Initialize all bootstrap tooltips on the website
+            
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            });
+            
             // Shows the textfield used to make a new search when you click the search button
             
             function showField() {
                 $('#sField').fadeIn(500);           // Fade in the text field
                 $('#searchBtn').hide();             // Hide the search button
                 
-                $('#sField').click(function() {
-                    event.stopPropagation();        // Ignore 
+                $('#sField').click(function(e) {
+                    e.stopPropagation();        // Ignore 
                 });
             }
             
@@ -374,14 +380,16 @@
                     </div>
                     <div class="col-md-4">
                         <button type="button" class="btn btn-default btn-md" id="optionsBtn"
+                                data-toggle="tooltip" data-placement="bottom" title="Click here to open the options menu"
                                 style="float:right;" onclick="showOptions()">
                             O
                         </button>
-                        <div class="input-group" style="display: none; float:right; width:inherit; margin-right: 15px;" id="sField">
+                        <div class="input-group" style="display: none; float: right; width: 70%; margin-right: 15px;" id="sField">
                             <span class="input-group-addon">#</span>
                             <input type="text" class="form-control" id="searchField" onkeypress="runScript(event)">
                         </div>
                         <button type="button" class="btn btn-default btn-md" id="searchBtn"
+                                data-toggle="tooltip" data-placement="bottom" title="Click here to enter a new search term"
                                 style="float:right; margin-right: 15px;" onclick="showField()">
                             S
                         </button>
@@ -428,10 +436,13 @@
                     <div class="text-center">
                         <div class="btn-group options">
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Small tile size (4x6 grid)"
                                     id="size-sm" onclick="changeSize('size-sm')">SMALL</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Medium tile size (3x4 grid)"
                                     id="size-md" onclick="changeSize('size-md')">MEDIUM</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Large tile size (2x3 grid)"
                                     id="size-lg" onclick="changeSize('size-lg')">LARGE</button>
                         </div>
                     </div>
@@ -440,11 +451,14 @@
 
                     <div class="text-center">
                         <div class="btn-group options">
-                            <button type="button" class="btn btn-default btn-md" 
+                            <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Slow update speed (1 tile every 10 seconds)"
                                     id="ref-slow" onclick="changeRefRate('ref-slow')">SLOW</button>
-                            <button type="button" class="btn btn-default btn-md" 
+                            <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Medium update speed (1 tile every 5 seconds)"
                                     id="ref-md" onclick="changeRefRate('ref-md')">MEDIUM</button>
-                            <button type="button" class="btn btn-default btn-md" 
+                            <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Fast update speed (1 tile every 2 seconds)"
                                     id="ref-fast" onclick="changeRefRate('ref-fast')">FAST</button>
                         </div>
                     </div>
@@ -461,10 +475,13 @@
                     <div class="text-center">
                         <div class="btn-group options">
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any images from showing up in your grid"
                                     id="type-img" onclick="changeType('type-img')">Images</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any videos from showing up in your grid"
                                     id="type-vid" onclick="changeType('type-vid')">Videos</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any pure text content from showing up in your grid"
                                     id="type-txt" onclick="changeType('type-txt')">Text</button>
                         </div>
                     </div>
@@ -475,10 +492,13 @@
                     <div class="text-center">
                         <div class="btn-group options">
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any content from Twitter to show up in your grid"
                                     id="serv-twitter" onclick="changeService('serv-twitter')">Twitter</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any content from Instagram to show up in your grid"
                                     id="serv-instagram" onclick="changeService('serv-instagram')">Instagram</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any content from YouTube to show up in your grid"
                                     id="serv-youtube" onclick="changeService('serv-youtube')">YouTube</button>
                         </div>
                     </div>
@@ -488,25 +508,35 @@
                     <div class="text-center">
                         <div class="btn-group-vertical options">
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="left" title="Only english content will appear in the grid"
                                     id="en" onclick="changeLanguage('en')">English</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="left" title="Only spanish content will appear in the grid"
                                     id="es" onclick="changeLanguage('es')">Español (Spanish)</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="left" title="Only french content will appear in the grid"
                                     id="fr" onclick="changeLanguage('fr')">Français (French)</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="left" title="Only german content will appear in the grid"
                                     id="de" onclick="changeLanguage('de')">Deutsch (German)</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="left" title="Only swedish content will appear in the grid"
                                     id="sv" onclick="changeLanguage('sv')">Svenska (Swedish)</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="left" title="Only bulgarian content will appear in the grid"
                                     id="bg" onclick="changeLanguage('bg')">български език (Bulgarian)</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="left" title="Only italian content will appear in the grid"
                                     id="it" onclick="changeLanguage('it')">Italiano (Italian)</button>
                             <button type="button" class="btn btn-default btn-md"
+                                    data-toggle="tooltip" data-placement="left" title="Only amharic content will appear in the grid"
                                     id="am" onclick="changeLanguage('am')">አማርኛ (Amharic)</button>
                         </div>
                     </div>
 
-                    <button type="button" class="btn btn-default savebutton" id="save" onclick="saveOptions()">Save & Exit</button>
+                    <button type="button" class="btn btn-default savebutton"
+                            data-toggle="tooltip" data-placement="top" title="Save all options (Grid will be refreshed)"
+                            id="save" onclick="saveOptions()">Save & Exit</button>
 
                 </div>
 
