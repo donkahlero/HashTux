@@ -9,4 +9,4 @@ Check spaces in search terms<br />
 Media type options - are they working?<br />
 Close buttons on options?<br />
 Check after first half with Gabriel about the SAD Document <br />
-
+Check the testing/validations lecture slides, and check that all servers are configured properly and that shutting down apache or erlang on 1-3 servers does not bring down the system from a user perspective<br />
