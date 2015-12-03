@@ -1,0 +1,22 @@
+{
+  "_id":"_design/post",
+  "language": "javascript",
+  "views":
+  {
+    "all": {
+      "map": "function(doc) { if (doc.search_term)  emit(null, doc) }"
+    },
+    "by_hashtag": {
+      "map": "function(doc) { if (doc.search_term)  emit(doc.search_term, doc) }"
+    },
+    "by_hashtag_date": {
+      "map": "function(doc) { if (doc.search_term && doc.timestamp)  emit([doc.search_term, doc.timestamp], doc) }"
+    },
+    "by_service": {
+      "map": "function(doc) { if (doc.search_term && doc.social_media) emit([doc_search_term, doc.social_media], doc) }"
+    },
+    "by_insert_timestamp": {
+      "map": "function(doc) { if (doc.insert_timestamp) emit(doc.insert_timestamp, doc) }"
+    }
+  }
+}
