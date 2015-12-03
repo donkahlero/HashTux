@@ -120,7 +120,7 @@ handle_cast({heartbeat, Term, Options},
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
 	{noreply, NewS};
 %%% When heartbeat requested and limit for workers reached.
-handle_cast({heartbeat, Term, Options}, 
+handle_cast({heartbeat, _Term, _Options}, 
 						S=#state{limit=N}) when N =< 0 ->
 	{noreply, S};
 %%% Other casts ignored.
