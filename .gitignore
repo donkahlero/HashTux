@@ -13,6 +13,7 @@ rel/example_project
 .concrete/DEV_MODE
 .rebar
 /website/nbproject/private/
+sys.config
 
 #NetBeans
 nbproject/private/
@@ -74,3 +75,7 @@ local.properties
 _build/*
 _build/
 rebar.lock
+
+##Website
+config.php
+servers.order
