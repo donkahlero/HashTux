@@ -12,6 +12,12 @@ Close buttons on options?<br />
 Check the testing/validations lecture slides, and check that all servers are configured properly and that shutting down apache or erlang on 1-3 servers does not bring down the system from a user perspective<br />
 Front end: maybe list of trending things on the first page<br />
 
+*fix the redeployment diagram 
+-->arrows<br /> 
+-->external service<br />
+-->naming servers properly <br />
+-->port 88 should be open (Jerker) <br />
+
 #During the christmas break:
 Stats final visual touch<br />
-Code review
+Code review <br/>
