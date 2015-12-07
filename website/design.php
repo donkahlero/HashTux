@@ -1,3 +1,8 @@
+<?php
+	/* Start a new session or resume if the client has a cookie ;) */
+	session_start();
+?>
+
 <html lang="en">
     <head>
         
@@ -7,6 +12,7 @@
         <link href="css/bootstrap.css" rel="stylesheet">
         <link href="css/stats.css" rel="stylesheet">  
         <link href="css/hashtux.css" rel="stylesheet">
+        <script src="js/userstats_fetcher.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.css">
@@ -16,22 +22,13 @@
 
         var statsItems  = [];
 
-        function statsObj(name,value) {
-        	  this.name = name;
-        	  this.value = value; 
-        	}
+        window.onload = function(){
+            
+        	 fetch("search_term_year");
+        	 alert(items);
+        }
 
-        var statsList = [new statsObj("hashtux",31),
-        	                    new statsObj("Summer",12),
-        	                    new statsObj("Sunny",13),
-        	                    new statsObj("Candy",14),
-        					    new statsObj("Hash",6),
-        					    new statsObj("tux",9),
-        						new statsObj("lol",10),
-        						new statsObj("Pepperoni",2),
-        						new statsObj("beautiful",5),
-        						new statsObj("beauty",5)
-        					   ];
+        var statsList = items;
 
 		function getItemValues(){
 			   
@@ -40,11 +37,11 @@
 		              itemName = statsList[i].name; 
 		              itemCount = statsList[i].value;
 
-		              var items = [itemName, itemCount];
+		              var itemsEx = [itemName, itemCount];
 		              
-		              statsItems.push(items);
+		              statsItems.push(itemsEx);
 					}
-           
+			  
 		   }
 			
         $(document).ready(function() {
@@ -69,6 +66,7 @@
     <div class="container">
         <div class="row">
 					<table id="example" class="display" width="100%"></table>
+		 
 		</div>  			
 	</div>  
     
