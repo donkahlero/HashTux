@@ -72,30 +72,26 @@ receive {Ref, Result} -> Result end.
 * List of the popular hashes (maximum as big as specified)
 
 #### Stats Search Field
-* Is always an atom
-* The following atoms are possible
+* Is always a string
+* The following strings are possible plus you need to add either: "_today","_week"."_month","_year" to the strings below.
 
 ```erlang 
-get_search_term
+"search_term"
 ```
 
 ```erlang
-get_browser
+"browser"
 ```
 
 ```erlang
-get_platform
+"platform"
 ```
 
 ```erlang
-get_language
-```
-
-```erlang
-get_browser_version
+"browser_version"
 ```
 ```erlang
-get_platform_browser
+"platform_browser"
 ```
 
 #### Stats options
@@ -105,10 +101,6 @@ get_platform_browser
 
 ```erlang
 {limit, Int}
-```
-
-```erlang
-{time, StartTime, EndTime}
 ```
 
 ###Write operations
