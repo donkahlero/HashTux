@@ -3,43 +3,34 @@
 %% @doc Module repsonsible for filtering database results. The functions always
 %% take lists and necessary information as arguments and filter the list
 %% corresponding to that.
-%% @version 0.1
+%% @version 0.2
 %% -----------------------------------------------------------------------------
 %% | Sprint 4 // v0.1:                                                         |
 %% | Added initial version of this module.                                     |
 %% | Module can handle the following filters:                                  |
 %% | - content_type, language and service                                      |
 %% -----------------------------------------------------------------------------
+%% | Sprint % // v0.2:                                                         |
+%% | Bugfixes and reducing of code in                                          |
+%% | - check_results                                                           |
+%% | - timeframe                                                               |
+%% | Added function for the new insert timestamp/timeframe                     |
+%% -----------------------------------------------------------------------------
 -module(db_filter).
 
 -export([content_type/2, language/2, service/2, order_by_value/1]).
 -export([limit_result/2, group_by_subkey/1, check_results/2, timeframe/2]).
+-export([insert_timeframe/2]).
 
 %% @doc Function checking if the miners cannot find something or there is just
 %% nothing cached yet.
+check_results([], _) ->
+    [];
 check_results([[{<<"results">>, <<"no">>}, {<<"search_term">>, _},
-                {<<"timestamp">>, _}, {<<"options">>, Opt}] | _], Opts) ->
-    case(lists:usort(foreach_opt(Opts, Opt, []))) of
-        [true] ->
-            no_miner_res;
-        _ -> []
-    end;
-check_results(_, _) ->
-    [].
-
-%% @doc Function going through all options.
-foreach_opt([], _, Res) ->
-    Res;
-foreach_opt([X|Xs], Opt, Res) ->
-    foreach_opt(Xs, Opt, [in_options(Opt, X) | Res]).
-
-%% @doc Function checking if current option is part of general options.
-in_options([], _) ->
-    false;
-in_options([{_, Val}|_], {_, Val}) ->
-    true;
-in_options([_|Xs], Opt) ->
-    in_options(Xs, Opt).
+                {<<"timestamp">>, _}, {<<"options">>, Opts}] | _], Opts) ->
+    no_miner_res;
+check_results([_|Xs], Opts) ->
+    check_results(Xs, Opts).
 
 %% @doc Function filtering for the type of content.
 %% This can be image, video or text.
@@ -64,31 +55,24 @@ language(L, {language, Language}) ->
 service(L, false) ->
     L;
 service(L, {service, Services}) ->
-    [X || X <- L, Y <- Services, lists:keyfind(<<"service">>, 1, X) == {<<"service">>, Y}].
+    [X || X <- L, Y <- Services,
+    lists:keyfind(<<"service">>, 1, X) == {<<"service">>, Y}].
 
 %% @doc Function to check if the elemnts in the doc are in a given timeframe.
 timeframe(L, false) ->
     L;
 timeframe(L, {timeframe, StartTime, EndTime}) ->
-    timeframe(L, StartTime, EndTime, []).
+    [X || X <- L, {<<"timestamp">>, T} <-
+       [lists:keyfind(<<"timestamp">>, 1, X)],
+       StartTime =< T, T =< EndTime].
 
-timeframe([], _, _, Res) ->
-    Res;
-timeframe([X|Xs], StartTime, EndTime, Res) ->
-    {<<"timestamp">>, TimeStamp} = lists:keyfind(<<"timestamp">>, 1, X),
-    case(timeeval(TimeStamp, StartTime, EndTime)) of
-        true ->
-            timeframe(Xs, StartTime, EndTime, [X | Res]);
-        false ->
-            timeframe(Xs, StartTime, EndTime, Res)
-    end.
-
-timeeval(TimeStamp, StartTime, _) when TimeStamp >= StartTime ->
-    true;
-timeeval(TimeStamp, _, EndTime) when TimeStamp =< EndTime ->
-    true;
-timeeval(_, _, _) ->
-    false.
+%% @doc Function to check if the elemnts in the doc are in a given timeframe.
+insert_timeframe(L, false) ->
+    L;
+insert_timeframe(L, {insert_timeframe, StartTime, EndTime}) ->
+    [X || X <- L, {<<"insert_timestamp">>, T} <-
+       [lists:keyfind(<<"insert_timestamp">>, 1, X)],
+       StartTime =< T, T =< EndTime].
 
 %% @doc Function ordering mapreduce results by their value
 order_by_value(L) ->

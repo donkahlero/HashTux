@@ -39,7 +39,7 @@ put_request({Addr, User, Pass}, Content, Type) ->
 %% @doc This function fetches data from the database.
 get_request({Addr, User, Pass}) ->
     Headers = [auth_header(User, Pass)],
-    HTTPOptions = [{timeout, 1000}],
+    HTTPOptions = [{timeout, 5000}],
     Options = [{body_format, binary}],
     httpc:request(get, {Addr, Headers}, HTTPOptions, Options).
 
