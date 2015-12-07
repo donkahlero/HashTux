@@ -70,8 +70,21 @@ handle_info(Msg, State) ->
 %% @doc Handles casts to the worker. Only casts to stop the worker are 
 %% supported.
 %%
+%%% Cast to stop the worker.
 handle_cast(stop, State) ->
 	{stop, normal, State};
+%%% Cast to search the services.
+handle_cast({{Pid, _Ref}, Term, Options}, State) -> 
+	% get results
+	Results = run_search(Term, Options),
+	% parse_results into filtered and unfiltered
+	{FilteredRes, UnfilteredRes} = parse_results(Results),
+	% send to original caller	
+	send_results(Pid, FilteredRes, UnfilteredRes, Term, Options),
+	io:format("MINER_WORKER [~p]: Finished~n", [self()]),
+	% stop this worker
+	{stop, normal, State};
+%%% All other casts.
 handle_cast(Msg, State) ->
 	io:format("MINER_WORKER [~p]: Unknown cast: ~p~n", [self(), Msg]),
 	{stop, normal, State}.
@@ -80,16 +93,8 @@ handle_cast(Msg, State) ->
 %%
 %% @doc Handles calls to the worker.
 %%
-handle_call({{Pid, _Ref}, Term, Options}, _From, State) -> 
-	% get results
-	Results = run_search(Term, Options),
-	% parse_results into filtered and unfiltered
-	{FilteredRes, UnfiltereRes} = parse_results(Results),
-	% send to original caller	
-	send_results(Pid, FilteredRes, UnfiltereRes, Term, Options),
-	io:format("MINER_WORKER [~p]: Finished~n", [self()]),
-	% stop this worker
-	{stop, normal, ok, State}.
+handle_call(_Request, _From, State) -> 
+	{stop, normal, State}.
 
 
 
@@ -102,7 +107,7 @@ handle_call({{Pid, _Ref}, Term, Options}, _From, State) ->
 %%
 send_results(Pid, [], _UnfilteredResults, Term, Options) ->
 	io:format("MINER_WORKER [~p]: Sending results...~n", [self()]),	
-	case aux:get_value(request_type, Options) of
+	case aux_functions:get_value(request_type, Options) of
 		<<"search">> -> 
 			miner_dbwriter:write(get_no_results(Term, Options)),
 			Pid ! {self(), []};
@@ -114,7 +119,7 @@ send_results(Pid, [], _UnfilteredResults, Term, Options) ->
 	end;
 send_results(Pid, FilteredResults, UnfilteredResults, _Term, Options) ->
 	io:format("MINER_WORKER [~p]: Sending results...~n", [self()]),
-	case aux:get_value(request_type, Options) of
+	case aux_functions:get_value(request_type, Options) of
 		<<"search">> -> 
 			miner_dbwriter:write(UnfilteredResults),
 			Pid ! {self(), FilteredResults};
@@ -173,8 +178,8 @@ get_results(Term, Services, ContType, Lang, HistoryTimestamp) ->
 %% @doc Calls the appropriate search services to perform a search.
 %%
 %%% Instagram search.
-search_services({instagram, {Term, ContType, _Lang, _HistoryTimestamp}}) ->
-	ig_search:search(Term, [ContType]);
+search_services({instagram, {Term, ContType, _Lang, HistoryTimestamp}}) ->
+	ig_search:search(Term, [ContType, HistoryTimestamp]);
 %%% Twitter search.
 search_services({twitter, {Term, ContType, Lang, HistoryTimestamp}}) ->
 	twitter_search:search_hash_tag(Term, [ContType, Lang, HistoryTimestamp]);
@@ -199,10 +204,10 @@ get_services(L)  ->
 %%
 get_no_results(Term, Options) ->
 	io:format("MINER_WORKER [~p]: No results options: ~p~n", [self(), Options]),
-	[ {<<"results">>, <<"no">>},
-	  {<<"search_term">>, list_to_binary(Term)},
-	  {<<"timestamp">>, dateconv:get_timestamp()},
-	  {<<"options">>, Options} ].
+	[ [{<<"results">>, <<"no">>},
+	   {<<"search_term">>, list_to_binary(Term)},
+	   {<<"insert_timestamp">>, dateconv:get_timestamp()},
+	   {<<"options">>, aux_functions:ignore_request_type(Options)}] ].
 
 
 %% 

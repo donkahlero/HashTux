@@ -1,7 +1,7 @@
 %% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
-%% %% @doc Initial database actions module
-%% %% @version 0.4
+%% @doc Initial database actions module
+%% @version 0.4
 %% -----------------------------------------------------------------------------
 %% | Sprint 1 // v0.1                                                          |
 %% | Created first as a normal module where the diffrent write operations was  |
@@ -22,6 +22,7 @@
 %% -----------------------------------------------------------------------------
 %% | Sprint 5 // v0.4                                                          |
 %% | Applied changes of db_addr_serv.                                          |
+%% | Fixed the no_miner res functionality.                                     |
 %% -----------------------------------------------------------------------------
 -module(db_hash_reader).
 -version(0.4).
@@ -78,8 +79,10 @@ handle_cast({get_posts, Hash, Options, Rec}, State) ->
                  db_addr_serv:main_user(), db_addr_serv:main_pass()}),
     Result = db_options_handler:handle_options(Hash_Result, Options),
     case(Result) of
-        [] ->
-            Rec ! {self(), db_filter:check_results(Hash_Result, Options)};
+        [[{<<"results">>,<<"no">>}, _, _, _] | _] ->
+            Rec ! {self(), db_filter:check_results(Result,
+                   lists:keydelete(limit, 1,
+                   lists:keydelete(insert_timeframe, 1, Options)))};
         Res ->
             Rec ! {self(), Res}
     end,

@@ -3,8 +3,12 @@
 -export([search/2]).
 
 -define(URL, "https://api.instagram.com/v1/tags/").
--define(TAIL, "/media/recent?count=50&access_token=").
+-define(TAIL, "/media/recent?count=40").
+-define(MIN_TIME, "min_timestamp=").
+-define(MAX_TIME, "max_timestamp=").
+-define(ACCESS, "access_token=").
 -define(MEDIA, "instagram").
+-define(AND, "&").
 
 
 
@@ -14,17 +18,17 @@
 %% according to the options passed.
 %%
 search(Term, Options) ->
-	Token = get_token(),
-	Url = ?URL ++ Term ++ ?TAIL ++ Token,
+	%Token = get_token(),
+	%Url = ?URL ++ Term ++ ?TAIL ++ Token,
+	Url = build_request(Term, Options),
 	case httpc:request(Url) of
 		{ok, Result} -> 
 			{_StatusLine, _Headers, Body} = Result,
 			try jsx:decode(list_to_binary(Body)) of
 				DecodedRes -> 
-					MaxTagId = get_max_tag_id(DecodedRes),
 					DataList = get_value(<<"data">>, DecodedRes),
 					%io:format("Raw results are: ~p~n", [DecodedRes]),
-					Results = parse_results(Term, MaxTagId, DataList),
+					Results = parse_results(Term, DataList),
 					ResLength = length(Results),
 					io:format("INSTAGRAM API RESULT COUNT :~p~n", [ResLength]),
 					Types = get_value(content_type, Options),
@@ -40,6 +44,38 @@ search(Term, Options) ->
 	end.
 
 
+%%
+%% @doc Builds the Url for a request.
+%%
+build_request(Term, Options) ->
+	Token = get_token(),
+	case get_value(history_timestamp, Options) of
+		[] -> 
+			Url1 = ?URL ++ Term ++ ?TAIL ++ ?AND ++ ?ACCESS ++ Token,
+			%io:format("MINER_WORKER: Build Url: ~p~n", [Url1]),
+			Url1;
+		Value ->
+			MinTime = Value - 43200,
+			MaxTime = get_max_time(Value),
+			Url2 = ?URL ++ Term ++ ?TAIL ++ ?AND ++ ?MIN_TIME ++ 
+					erlang:integer_to_list(MinTime) ++ ?AND ++ ?MAX_TIME ++ 
+					erlang:integer_to_list(MaxTime) ++ ?AND ++ ?ACCESS ++ Token,
+			%io:format("MINER_WORKER: Build Url: ~p~n", [Url2]),
+			Url2
+	end.
+
+
+%%
+%% @doc Returns the max timestamp for a search.
+%%
+get_max_time(Time) ->
+	{_, Secs, _} = os:timestamp(),
+	NewTime = Time + 43200,
+	if 
+		NewTime > Secs -> Secs;
+		NewTime =< Secs -> NewTime
+	end.
+		
 
 %%
 %% @docGets the access token for instagram.
@@ -51,19 +87,6 @@ get_token() ->
 				V  -> V
 		  end,
 	Key.
-
-
-%% 
-%% @doc Gets the max tag id for the time scroll.
-%%
-get_max_tag_id(L) ->
-	PagData = get_value(<<"pagination">>, L),
-	MaxTagId = get_value(<<"next_max_tag_id">>, PagData),
-	case MaxTagId of
-		[] 	   -> 0;
-		_Other -> list_to_integer(binary:bin_to_list(MaxTagId))
-	end.
-	
 
 
 %% 
@@ -116,20 +139,19 @@ get_value(Key, List)  ->
 %%
 %% @doc Parses the individual result from the data query.
 %%
-parse_results(_Term, _MaxTagId, [])	  -> [];
-parse_results(Term, MaxTagId, [X|Xs]) ->
-	[ parse_details(Term, MaxTagId, X) | parse_results(Term, MaxTagId, Xs) ].
+parse_results(_Term, [])	-> [];
+parse_results(Term, [X|Xs]) ->
+	[ parse_details(Term, X) | parse_results(Term, Xs) ].
 
 
 %%
 %% @doc Parses the details of an individual result.
 %%
-parse_details(_Term, _MaxTagId, []) -> [];
-parse_details(Term, MaxTagId, L)   	-> 
+parse_details(_Term, []) -> [];
+parse_details(Term, L)   -> 
 	[ get_search_term(Term),
 	  get_service(),
 	  get_timestamp(),
-	  get_tag_id(MaxTagId),
 	  get_tags(L), 
 	  get_content_type(L),
 	  get_location(L),
