@@ -104,9 +104,9 @@ function refresh()
                     $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
                     $(randTile).css('background-image', '');
                     $(randTile).html(
-                            "<video width='100%' height='100%' autoplay loop muted controls src='" +
-                            newItem.url + 
-                            "'style='object-fit: fill; top: 0; position: absolute;'></video>" +
+                            "<iframe width='100%' height='100%' frameborder='0' src='" +
+                            newItem.url + "" +
+                            "' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
                             "<p class='usernameimage'><a class='greytext' href='" +
                             newItem.userlink + "' target='_blank'>@" +
                             newItem.username + "</a></p>");
