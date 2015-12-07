@@ -1,6 +1,5 @@
 var items = [];
 
-
 //item constructor
 function item(name, value){
     this.name = name;
