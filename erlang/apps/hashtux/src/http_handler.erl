@@ -33,7 +33,6 @@
 % {Qs, _} = cowboy_req:qs(Req),
 %	
 %	TODO: try/catch on malformed jsx?
-%	TODO: check cURL timeout / load balancing on PHP
 %	TODO: Check spaces in search terms
 
 
@@ -70,7 +69,7 @@ handle(Req, State) ->
 	% Send the search term, request type and the options to the main flow by making a call
 	% to main flow server - get the PID of the worker back and wait for a reply from it
 	io:format("http_handler: Options: ~p~n", [Options]),
-	RequestType = aux:bin_to_atom(aux:get_value(request_type, Options)),
+	RequestType = aux_functions:bin_to_atom(aux_functions:get_value(request_type, Options)),
 	{ok, HandlerPid} = gen_server:call(main_flow_server, {RequestType, Term, Options}),
 	io:format("~nhttp_handler: Made main_flow_server call, received worker PID: ~p~n", [HandlerPid]),
 	

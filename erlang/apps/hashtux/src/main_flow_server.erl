@@ -22,7 +22,7 @@
 %% the limit is set to 100 -> after that probably request
 %% help from the other servers running
 %% the ref can be used to monitor any processes started
--record(state, {limit=100, refs, queue=queue:new()}).
+-record(state, {limit=2000, refs, queue=queue:new()}).
 
 
 %%% ============================================================
@@ -96,7 +96,7 @@ handle_cast(Msg, State) ->
 	{noreply, Msg, State}.	
 
 
-%% handles synchronous messages
+%% Handles synchronous messages
 handle_call({RequestType, Term, Options}, From, 
 						S=#state{limit=N, refs=R}) when N > 0 ->
 	
@@ -113,7 +113,12 @@ handle_call({RequestType, Term, Options}, From,
 	
 	% Update the state of the main flow server.
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
-	{reply, {ok, Pid}, NewS}.
+	{reply, {ok, Pid}, NewS};
+
+%% When limit of workers is reached, just return immediately. 
+handle_call({RequestType, Term, Options}, From, 
+						S=#state{limit=N, refs=R}) when N =< 0 ->
+	{reply, no_alloc, S}.
 
 
 %% Starts a worker and attaches it to the worker supervisor
