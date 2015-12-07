@@ -1,15 +1,18 @@
+%% @author Jonas Kahler <jonas@derkahler.de> [www.derkahler.de]
 %% @author Niklas le Comte niklas.lecomte@hotmail.com [www.hashtux.com/niklas]
 %% @doc Handles operations on options for the db_readers
-%% @version 0.1
+%% @version 0.2
 %% -----------------------------------------------------------------------------
-%% | Sprint 4                                                                  |
-%% | Version 0.1                                                               |
+%% | Sprint 4 // v0.1                                                          |
 %% | This module is created for the purpose of handling options for the        |
 %% | advanced search and as well for the user statistics. It orders_options,   |
 %% | search_opt, pre_search_opt.                                               |
 %% -----------------------------------------------------------------------------
+%% | Sprint 5 // v0.2                                                          |
+%% | Added the insert_timestamp to the possible options                        |
+%% -----------------------------------------------------------------------------
 -module(db_options_handler).
--version(0.1).
+-version(0.2).
 
 -export([handle_options/2, pre_search_opt/1, pre_search_opt/2]).
 
@@ -19,7 +22,9 @@ handle_options(L, Options) ->
     FL2 = db_filter:service(FL1, lists:keyfind(service, 1, Options)),
     FL3 = db_filter:language(FL2, lists:keyfind(language, 1, Options)),
     FL4 = db_filter:timeframe(FL3, lists:keyfind(timeframe, 1, Options)),
-    db_filter:limit_result(FL4, lists:keyfind(limit, 1, Options)).
+    FL5 = db_filter:insert_timeframe(FL4,
+                    lists:keyfind(insert_timeframe, 1, Options)),
+    db_filter:limit_result(FL5, lists:keyfind(limit, 1, Options)).
 
 %% @doc This returns an url string for the quering of the db.
 pre_search_opt(L) ->
