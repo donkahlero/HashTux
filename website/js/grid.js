@@ -63,11 +63,13 @@ function initGrid()
                         (12/gridWidth) + 
                         " col-fill fixitem' style='background-image:url(" +
                         displayed[count].url +
-                        ");' id='tile" +
-                        count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        ");' id='tile" + count + "'>" +
                         "<p class='usernameimage'><a class='greytext' href='" +
                         displayed[count].userlink + "' target='_blank'>@" +
                         displayed[count].username + "</a></p>" +
+                        "<button type='submit' class='itemfreezebtn' id='tile" + count +
+                        "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
                         "</div>";
 
                     displayed[count].tile = "tile" + count;
@@ -81,7 +83,7 @@ function initGrid()
                         "<div class='col-xs-" + 
                         (12/gridWidth) + 
                         " col-fill' style='background-image:url('');' id='tile"+
-                        count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        count + "'>" +
                         "<video width='100%' height='100%' autoplay loop muted controls src='" +
                         displayed[count].url + 
                         "' style='object-fit: fill; top: 0; position: absolute;'></video>" +
@@ -89,6 +91,9 @@ function initGrid()
                         displayed[count].userlink + "' target='_blank'>@" +
                         displayed[count].username +
                         "</a></p>" +
+                        "<button type='submit' class='itemfreezebtn' id='tile" + count +
+                        "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
                         "</div>";
 
                     displayed[count].tile = "tile" + count;
@@ -106,13 +111,16 @@ function initGrid()
                         "<div class='col-xs-" +
                         (12/gridWidth) + 
                         " col-fill fixitem' id='tile" +
-                        count + "'onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        count + "'>" +
                         "<div class='twittertext'><p>" +
                         displayed[count].text +
                         "<p class='usernametweet'><a class='greytext' href='" +
                         displayed[count].userlink + "' target='_blank'>@" +
                         displayed[count].username + 
                         "</a></p></p></div>" +
+                        "<button type='submit' class='itemfreezebtn' id='tile" + count +
+                        "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
                         "</div>";
 
                     displayed[count].tile = "tile" + count;
@@ -127,13 +135,16 @@ function initGrid()
                         " col-fill fixitem' style='background-image:url(" +
                         displayed[count].url +
                         ");' id='tile" +
-                        count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        count + "'>" +
                         "<div class='twitterimagetext'><p>" +
                         displayed[count].text +
                         "<p class='usernametweet'><a class='greytext' href='" +
                         displayed[count].userlink + "' target='_blank'>@" +
                         displayed[count].username + 
                         "</a></p></p></div>" +
+                        "<button type='submit' class='itemfreezebtn' id='tile" + count +
+                        "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
                         "</div>";
 
                     displayed[count].tile = "tile" + count;
@@ -147,14 +158,17 @@ function initGrid()
                     "<div class='col-xs-" + 
                     (12/gridWidth) + 
                     " col-fill' style='background-image:url('');' id='tile"+
-                    count + "' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                    count + "'>" +
                     "<iframe width='100%' height='100%' frameborder='0' src='" +
-                    displayed[count].url + "?autoplay=1&loop=1&rel=0" +
+                    displayed[count].url + "" +
                     "' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
                     "<p class='usernameimage'><a class='greytext' href='" +
                     displayed[count].userlink + "' target='_blank'>@" +
                     displayed[count].username +
                     "</a></p>" +
+                    "<button type='submit' class='itemfreezebtn' id='tile" + count +
+                    "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                    "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
                     "</div>";
 
                 displayed[count].tile = "tile" + count;
