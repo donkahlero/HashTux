@@ -4,7 +4,7 @@
     $search = $_GET['search'];
 ?>
 
-<html>
+<html>  
     <head>
         
         <title>HashTux</title>
@@ -128,6 +128,7 @@
                     $('#grid').html('');
                     
                     searchterm = newTerm;
+            $('#searchlabel').html("#" + searchterm);
                     reinitialize();
                 }
             }
@@ -135,7 +136,6 @@
             function heartbeat() {
                 $.ajax({
                     url: "/ajax.php?search=" + searchterm + "&request_type=heartbeat",
-                    type: "get"
                 });
             }
             
@@ -178,7 +178,7 @@
                 
 //                var debug = "";
 
-                alert(json);
+//                alert(json);
                 
                 if(json === "[]")
                 {
@@ -298,11 +298,13 @@
             
             function showMenu() {
                 $('#optionsMenu').fadeIn(500);
+                $('#topbackdrop').fadeIn(500);
             }
             
             function hideMenu() {
                 $('#sField').hide();
                 $('#optionsMenu').fadeOut(500);
+                $('#topbackdrop').fadeOut(500);
                 $('#searchBtn').show();
             }
             
@@ -337,7 +339,7 @@
                 
                 var menuShowing = false;
                 
-                $('body').mouseover(function(e){
+                $('html').mouseover(function(e){
                     var x = e.pageX - this.offsetLeft;
                     var y = e.pageY - this.offsetTop;
                     
@@ -357,7 +359,6 @@
                     }
                 });
             }
-            
 	</script>
 	          
     </head>
@@ -371,27 +372,29 @@
             </div>
 
             <div class="container con-fill-hor">
+                
+                <div class="topbackdrop" id="topbackdrop" style="display: none;"></div>
 
                 <div class="row topbar" id="optionsMenu">
                     <div class="col-md-8">
                         <ol class="breadcrumb" style="background:none; margin: 0; padding: 0;">
-                            <li style="font-weight: bold; color: #ebebeb;">#<?php echo $search; ?></li>
+                            <li id="searchlabel" style="font-weight: bold; color: #ebebeb;"><script>document.write("#" + searchterm);</script></li>
                         </ol>
                     </div>
                     <div class="col-md-4">
-                        <button type="button" class="btn btn-default btn-md" id="optionsBtn"
+                        <button type="submit" class="iconbtn" id="optionsBtn"
                                 data-toggle="tooltip" data-placement="bottom" title="Click here to open the options menu"
                                 style="float:right;" onclick="showOptions()">
-                            O
+                            <img src="images/options.png" width="30px" height="30px"/>
                         </button>
-                        <div class="input-group" style="display: none; float: right; width: 70%; margin-right: 15px;" id="sField">
+                        <div class="input-group" style="display: none; float: right; width: 70%; margin-right: 15px; opacity: 0.9;" id="sField">
                             <span class="input-group-addon">#</span>
                             <input type="text" class="form-control" id="searchField" onkeypress="runScript(event)">
                         </div>
-                        <button type="button" class="btn btn-default btn-md" id="searchBtn"
+                        <button type="submit" class="iconbtn" id="searchBtn"
                                 data-toggle="tooltip" data-placement="bottom" title="Click here to enter a new search term"
-                                style="float:right; margin-right: 15px;" onclick="showField()">
-                            S
+                                style="float:right; margin-right: 15px;" onmouseover="showField()">
+                            <img src="images/search.png" width="30px" height="30px"/>
                         </button>
                         <div class="centered" id="player">
                             <img id="pause" src="http://codropspz.tympanus.netdna-cdn.com/codrops/wp-content/uploads/2010/01/pause1-150x150.png" width="100" height="100" style="display:none;"/>

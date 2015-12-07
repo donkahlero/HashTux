@@ -189,6 +189,19 @@
     display: none;
 }
 
+.iconbtn {
+    background: transparent;
+    border: 0;
+}
+
+.topbackdrop {
+    background: linear-gradient(to top,  rgba(0,0,0,0),rgba(0,0,0,0.5),rgba(0,0,0,1));
+    height: 10%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+}
+
 .spinner {
     height: 100px;
     width: 100px;
