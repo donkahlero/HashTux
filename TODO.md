@@ -15,7 +15,7 @@ Front end: maybe list of trending things on the first page<br />
 Error report / defect backlog - maybe link "click here to report problems"<br />
 Free for personal use, paid for commercial use.<br />
 Back button<br />
-
+In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
