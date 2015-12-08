@@ -1,7 +1,7 @@
 #TODO
 <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
 Stats: switching graphs and timeframes should work<br />
-Front end: front page look happy<br />
+<s>Front end: front page look happy</s><br />
 <s>Front end: tooltips on buttons / button design</s><br />
 Document the history_timestamp option, BTW maybe combine the options datatype with the database options list and clarify which can be used where.<br />
 Front end: videos tweaked<br />
