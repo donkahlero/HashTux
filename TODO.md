@@ -19,7 +19,7 @@ Back button<br />
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
-Make a point that the project is simple by design<br />
+Make a point that the project is simple/intuitive by design choise in terms of UI etc<br />
 
 *fix the redeployment diagram 
 -->arrows<br /> 
