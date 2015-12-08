@@ -10,7 +10,13 @@ Front end: clarify that it's TILE SIZE that is small/medium/large or otherwiese 
 Check spaces in search terms, and decide which special characters should be allowed<br />
 Close buttons on options?<br />
 Check the testing/validations lecture slides, and check that all servers are configured properly and that shutting down apache or erlang on 1-3 servers does not bring down the system from a user perspective<br />
+
 Front end: maybe list of trending things on the first page<br />
+Error report / defect backlog - maybe link "click here to report problems"<br />
+Free for personal use, paid for commercial use.<br />
+Back button<br />
+Make a point that the project is WELL DEFINED IN SCOPE<br />
+Make a point that the project is SIMPLE BY DESIGN<br />
 
 *fix the redeployment diagram 
 -->arrows<br /> 
