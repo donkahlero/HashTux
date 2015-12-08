@@ -15,6 +15,9 @@ Front end: maybe list of trending things on the first page<br />
 Error report / defect backlog - maybe link "click here to report problems"<br />
 Free for personal use, paid for commercial use.<br />
 Back button<br />
+
+
+#Documentation:
 Make a point that the project is well defined in scope<br />
 Make a point that the project is simple by design<br />
 
