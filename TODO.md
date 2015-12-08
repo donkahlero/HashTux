@@ -15,8 +15,8 @@ Front end: maybe list of trending things on the first page<br />
 Error report / defect backlog - maybe link "click here to report problems"<br />
 Free for personal use, paid for commercial use.<br />
 Back button<br />
-Make a point that the project is WELL DEFINED IN SCOPE<br />
-Make a point that the project is SIMPLE BY DESIGN<br />
+Make a point that the project is well defined in scope<br />
+Make a point that the project is simple by design<br />
 
 *fix the redeployment diagram 
 -->arrows<br /> 
