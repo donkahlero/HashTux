@@ -6,9 +6,16 @@
 -define(VIDEOS_URL, "https://www.googleapis.com/youtube/v3/videos?").		% Endpoint for a Videos:list request to Youtube Data API
 
 
-% @doc Send GET request to Youtube Data API filtering results by the given Keyword
-% @params 
-%	HashTag: keyword
+%%
+%% @doc     Sends a GET request to the 'Youtube Data API'.
+%% @return  A list of two tuples in the following format: [{filtered, FilteredRes}, {unfiltered, LangResult}].
+%%          UnfilteredRes: a list of youtube videos in internal representation form matching the specified values
+%%          for history timestamp param;
+%%          FilteredRes: a list of all videos from UnfilteredRes that match the language requestedby the client. 
+%% @params  Types: a list of types [text, image, video] of feeds requested by the client.
+%% @params  Lang: the langauge of the feeds the query will request
+%% @HistoryTimestamp: the publication date of the feeds the query will request (epoch timestamp)
+%%
 search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp, HistoryTimestamp}]) ->
 
 	% True if client filtered by content type and requested videos 
@@ -48,7 +55,9 @@ search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp
 			[{filtered, []}, {unfiltered, []}]																						% return empty list (no data sent to DB)
 	end.
 
-% @doc sends a GET request for a given keyword
+%% 	@doc Helper function for search/2 
+%%	Sends a GET request using the Search:list method for a given keyword
+
 query_youtube_API(HashTag, Count, HistoryTimestamp) ->
 
 	Part = "part=snippet&fields=items(id(videoId))",						%% Partial Request: request only ID 'field' in the Snippet 'part'
@@ -97,7 +106,8 @@ query_youtube_API(HashTag, Count, HistoryTimestamp) ->
 		Other -> io:format("OTHER is ~p~n", [Other])
 	end.
 
-% @doc sends a GET request for a specific videoId 
+%% 	@doc Helper function for search/2 
+%%	Sends a GET request using the Videos:list method for a given VideoId
 video_search(VideoId) ->
 
     Part = "part=snippet,statistics,player,status",							%% request details and statistics 'fields'
