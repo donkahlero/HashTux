@@ -17,6 +17,8 @@ Error report / defect backlog - maybe link "click here to report problems"<br />
 Free for personal use, paid for commercial use.<br />
 "Back to front page" button and icon in top menu<br />
 In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
+Regex check in PHP: see if \w is a good alternative to let through word characters
+
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
