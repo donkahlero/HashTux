@@ -138,13 +138,13 @@
                 {
                     searchterm = newTerm;
             		
-										// Download and display new items for the new search term
-						 				reinitialize();
-               
-										// Update the browser URL and history to reflect the new search term.
-										// If the user then uses back/forward buttons, window.onpopstate will be called.
-										history.pushState({state: searchterm}, null, searchterm);
-								}
+                    // Download and display new items for the new search term
+                    reinitialize();
+
+                    // Update the browser URL and history to reflect the new search term.
+                    // If the user then uses back/forward buttons, window.onpopstate will be called.
+                    history.pushState({state: searchterm}, null, searchterm);
+                }
             }
             
             function heartbeat() {
@@ -291,6 +291,7 @@
                 setInterval(heartbeatFetchHandler, 30000);      // Initialize the heartbeatFetchHandler function on a timer.
                 
                 hoverListener();    // Run the hoverListener function
+                timeScrollListener();
             };
             
             // Initialize all bootstrap tooltips on the website
@@ -384,6 +385,66 @@
                     }
                 });
             }
+            
+            function timeScrollListener() {
+                
+                $('#timeScrollValue').text("NOW");
+                
+                $('#timeScroll').change(function() {
+                    
+                    var halfDay = 60 * 60 * 12;
+                    
+                    var now = new Date();
+                    var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    var timestamp = startOfDay / 1000;
+                
+                    switch($('#timeScroll').val())
+                    {
+                        case "8":
+                            $('#timeScrollValue').text("NOW");
+                            delete options.history_timestamp;
+                            break;
+                            
+                        case "7":
+                            $('#timeScrollValue').text("TODAY");
+                            options.history_timestamp = timestamp;
+                            break;
+                            
+                        case "6":
+                            $('#timeScrollValue').text("YESTERDAY");
+                            options.history_timestamp = timestamp - halfDay;
+                            break;
+                            
+                        case "5":
+                            $('#timeScrollValue').text("2 DAYS AGO");
+                            options.history_timestamp = timestamp - (halfDay * 3);
+                            break;
+                            
+                        case "4":
+                            $('#timeScrollValue').text("3 DAYS AGO");
+                            options.history_timestamp = timestamp - (halfDay * 5);
+                            break;
+                            
+                        case "3":
+                            $('#timeScrollValue').text("4 DAYS AGO");
+                            options.history_timestamp = timestamp - (halfDay * 7);
+                            break;
+                            
+                        case "2":
+                            $('#timeScrollValue').text("5 DAYS AGO");
+                            options.history_timestamp = timestamp - (halfDay * 9);
+                            break;
+                            
+                        case "1":
+                            $('#timeScrollValue').text("1 WEEK AGO");
+                            options.history_timestamp = timestamp - (halfDay * 11);
+                            break;
+                    }
+                    
+                    reinitialize();
+                
+                });
+            }
 	</script>
 	          
     </head>
@@ -441,10 +502,13 @@
                 </div>
                 
                 <div class="row bottombar" id="actionsMenu">
-                    <div class="col-sm-11">
-                        <input type="range" class="timescroll" id="timeScroll">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <p class="timescrollvalue" id="timeScrollValue">
+                        </p>
+                        <input type="range" min="1" max="8" step="1" value="8" class="timescroll" id="timeScroll">
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-3">
                         <button type="submit" class="iconbtn freezebtn" id="freezeBtn"
                                 data-toggle="tooltip" data-placement="top" 
                                 title="Click here to freeze the screen" onclick="screenFreeze()">
