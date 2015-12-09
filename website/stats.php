@@ -74,13 +74,13 @@
 			              
 			              statsItems.push(itemsEx);
 						}
-				  
+				  return itemsEx;
 			   }
 		
 		window.onload =  fetch('search_term_year');	
 			function creatTable() {
 					 getItemValues();
-				
+                                         
 				switch (termtype){
 	
 				 case 'search_term_year':
@@ -414,13 +414,12 @@
         <div class="row" id="tableContainer">
             <div class="col-md-6" id="tableContainer"></div>
             	<div class="col-md-6" id="graphContainer">
-                	<div class="container-fluid" align="center" width="100%" id=""chart_div"">
+                	<div class="container-fluid" align="center" width="100%" id="chart_div">
                 </div> 
             </div>
             
         </div>
     </div>
   </header>
-</body>
 </body>
 </html>

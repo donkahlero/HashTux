@@ -33,21 +33,8 @@
         }
         
         function getStats() {
-            var list = [
-          ['Hashtux', 431],
-          ['Summer', 354],
-          ['Sun', 489],
-          ['Candy', 98],
-          ['Pepperoni', 30],
-          ['Dennis', 170],
-          ['Hashtux', 431],
-          ['Summer', 354],
-          ['Sun', 489],
-          ['Lisaann', 1000],
-          ['Candy', 98],
-          ['Pepperoni', 30],
-          ['Dennis', 170]
-        ];
+            var list = getItemValues();
+            
         return list;
         }
       }
