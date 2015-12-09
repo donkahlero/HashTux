@@ -78,7 +78,7 @@ query_youtube_API(HashTag, Count, HistoryTimestamp) ->
 
 	Type = "type=video&videoCaption=closedCaption&videoEmbeddable=true",	%% filter only VIDEO 'resource type' that contain capion
 
-	Key = "key=" ++ aux:get_youtube_keys(),									%% API KEY parameter
+	Key = "key=" ++ aux_functions:get_youtube_keys(),									%% API KEY parameter
 
 	Url = ?SEARCH_URL ++ Part ++ "&" ++ Q ++ "&" ++ MaxResults ++ "&" ++ After ++ "&" ++ Type ++ "&" ++ Key,
 
@@ -114,7 +114,7 @@ video_search(VideoId) ->
 
     Id = "id=" ++ VideoId,													%% id parameter
 
-    Key = "key=" ++ aux:get_youtube_keys(),
+    Key = "key=" ++ aux_functions:get_youtube_keys(),
 
 	Url = ?VIDEOS_URL ++ Id ++ "&" ++ Key ++ "&" ++ Part,
 

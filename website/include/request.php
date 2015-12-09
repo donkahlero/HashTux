@@ -15,8 +15,8 @@
 
 // This file uses an external library to parse the user agent string into subparts.
 require_once ("lib/UserAgentParser.php");
-require_once ("config.php");
-require_once ("server_manager.php");
+require_once ("conf/config.php");
+require_once ("include/server_manager.php");
 
 
 /*
@@ -80,7 +80,9 @@ function request($term, $options) {
 		$reply = _query_server($server_address, $term, $request_body, $backend_timeout);
 		
 		// If timeout or error occured, try the next backend server
-		if (!$reply) {
+		// \"no_alloc\" means the miner_server was too busy, this is within " because
+		// it's encoded by jsx before it's sent out
+		if (!$reply || $reply == "\"no_alloc\"") {
 			$server_manager->preferred_server_down();
 			$server_address = $server_manager->get_preferred_server();
 		}		
