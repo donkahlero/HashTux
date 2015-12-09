@@ -4,7 +4,7 @@
     $search = $_GET['search'];
 ?>
 
-<html>  
+<html>
     <head>
         
         <title>HashTux</title>
@@ -13,6 +13,8 @@
         
         <link href="css/bootstrap.css" rel="stylesheet">
         <link href="css/hashtux.css" rel="stylesheet">
+        
+        <link href="images/favicon.ico" rel="shortcut icon">
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
@@ -24,7 +26,17 @@
         
         
         <script type="text/javascript">
-            
+            $(document).ready(function() {
+							// When the user has used forward/backward buttons in browser, check the
+							// request path and reinitialize (fetch data and render items).
+							window.onpopstate = function(event) {
+							      searchterm = window.location.pathname.substring(1);
+										
+										// Download and display new items for the new search term
+						 				reinitialize();
+							}
+						});
+
             var searchterm = "<?php echo $search; ?>";
             var options = {request_type: "update"};
             
@@ -36,7 +48,7 @@
             
             var items = [];         // An array to store all items fetched
             var displayed = [];     // An array to temporarily store the currently displayed items
-            
+           
             var gridWidth = 4;      // The width of the grid (in num of tiles)
             var gridHeight = 3;     // The Height of the grid (in num of tiles)
             var totalItems = gridWidth * gridHeight;    // total number of tiles
@@ -81,6 +93,7 @@
             
             function reinitialize() {
             
+								hideNoResults();
                 loading();
             
                 displayed = [];
@@ -88,7 +101,8 @@
                 $('#grid').html('');
                 
                 options.request_type = "search";
-                
+							 	$('#searchlabel').html("#" + searchterm);
+									
                 $.ajax({
                     url: "/ajax_post.php?search=" + searchterm,
                     type: "post",
@@ -108,8 +122,7 @@
             
             function newSearch() {
                 
-                hideNoResults();
-                
+               
                 var newTerm = $('#searchField').val();
                 
 //                alert("New Search: " + newTerm);
@@ -123,14 +136,15 @@
                 
                 else
                 {
-                    displayed = [];
-                    items = [];
-                    $('#grid').html('');
-                    
                     searchterm = newTerm;
-            $('#searchlabel').html("#" + searchterm);
-                    reinitialize();
-                }
+            		
+										// Download and display new items for the new search term
+						 				reinitialize();
+               
+										// Update the browser URL and history to reflect the new search term.
+										// If the user then uses back/forward buttons, window.onpopstate will be called.
+										history.pushState({state: searchterm}, null, searchterm);
+								}
             }
             
             function heartbeat() {
@@ -178,7 +192,7 @@
                 
 //                var debug = "";
 
-//                alert(json);
+             //   alert(json);
                 
                 if(json === "[]")
                 {
@@ -288,29 +302,38 @@
             // Shows the textfield used to make a new search when you click the search button
             
             function showField() {
-                $('#sField').fadeIn(500);           // Fade in the text field
+                $('#searchField').fadeIn(500);           // Fade in the text field
                 $('#searchBtn').hide();             // Hide the search button
                 
-                $('#sField').click(function(e) {
+                $('#searchField').click(function(e) {
                     e.stopPropagation();        // Ignore 
                 });
             }
             
             function showMenu() {
+                $('#menuBtnTop').fadeOut(200);
                 $('#optionsMenu').fadeIn(500);
                 $('#topbackdrop').fadeIn(500);
             }
             
             function hideMenu() {
-                $('#sField').hide();
+                $('#searchField').hide();
                 $('#optionsMenu').fadeOut(500);
                 $('#topbackdrop').fadeOut(500);
                 $('#searchBtn').show();
+                $('#menuBtnTop').fadeIn(200);
             }
             
-            function hideSearchField() {
-                $('#sField').hide();
-                $('#searchBtn').fadeIn(500);
+            function showBottomMenu() {
+                $('#menuBtnBottom').fadeOut(200);
+                $('#bottombackdrop').fadeIn(500);
+                $('#actionsMenu').fadeIn(500);
+            }
+            
+            function hideBottomMenu() {
+                $('#menuBtnBottom').fadeIn(200);
+                $('#bottombackdrop').fadeOut(500);
+                $('#actionsMenu').fadeOut(500);
             }
             
             function loading() {
@@ -337,25 +360,27 @@
             
             function hoverListener() {
                 
-                var menuShowing = false;
-                
-                $('html').mouseover(function(e){
+                $('body').mouseover(function(e){
                     var x = e.pageX - this.offsetLeft;
                     var y = e.pageY - this.offsetTop;
                     
                     var topLimit = ($(document).height()/3);
+                    var bottomLimit = (topLimit * 2);
                     
-                    if(y < topLimit && menuShowing === false)
-                    {
-                        showMenu();
-                        menuShowing = true;
-                    }
+//                    if(y < topLimit && menuShowing === false)
+//                    {
+//                        showMenu();
+//                        menuShowing = true;
+//                    }
                     
-                    if(y > topLimit && menuShowing === true)
+                    if(y > topLimit)
                     {
                         hideMenu();
-                        hideSearchField();
-                        menuShowing = false;
+                    }
+                    
+                    if(y < bottomLimit)
+                    {
+                        hideBottomMenu();
                     }
                 });
             }
@@ -373,24 +398,34 @@
 
             <div class="container con-fill-hor">
                 
-                <div class="topbackdrop" id="topbackdrop" style="display: none;"></div>
+                <div class="topbackdrop" id="topbackdrop"></div>
+                
+                <button type="submit" class="menubtntop" id="menuBtnTop" onmouseover="showMenu()">
+                    <img src="images/menuicon.png" width="50px" height="50px"/>
+                </button>
+                
+                <div class="bottombackdrop" id="bottombackdrop"></div>
+                
+                <button type="submit" class="menubtnbottom" id="menuBtnBottom" onmouseover="showBottomMenu()">
+                    <img src="images/menuicon.png" width="50px" height="50px"/>
+                </button>
 
                 <div class="row topbar" id="optionsMenu">
-                    <div class="col-md-8">
+                    <div class="col-sm-8">
                         <ol class="breadcrumb" style="background:none; margin: 0; padding: 0;">
                             <li id="searchlabel" style="font-weight: bold; color: #ebebeb;"><script>document.write("#" + searchterm);</script></li>
                         </ol>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-sm-4">
                         <button type="submit" class="iconbtn" id="optionsBtn"
                                 data-toggle="tooltip" data-placement="bottom" title="Click here to open the options menu"
                                 style="float:right;" onclick="showOptions()">
                             <img src="images/options.png" width="30px" height="30px"/>
                         </button>
-                        <div class="input-group" style="display: none; float: right; width: 70%; margin-right: 15px; opacity: 0.9;" id="sField">
-                            <span class="input-group-addon">#</span>
-                            <input type="text" class="form-control" id="searchField" onkeypress="runScript(event)">
-                        </div>
+                        
+                        <input type="text" class="searchfield" id="searchField" onkeypress="runScript(event)"
+                            style="display: none; float: right; width: 70%; margin-right: 15px; opacity: 0.9;">
+                            
                         <button type="submit" class="iconbtn" id="searchBtn"
                                 data-toggle="tooltip" data-placement="bottom" title="Click here to enter a new search term"
                                 style="float:right; margin-right: 15px;" onmouseover="showField()">
@@ -402,6 +437,19 @@
                              
                        </div>
                         
+                    </div>
+                </div>
+                
+                <div class="row bottombar" id="actionsMenu">
+                    <div class="col-md-10">
+                        <input type="range" class="timescroll" id="timeScroll">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="iconbtn freezebtn" id="freezeBtn"
+                                data-toggle="tooltip" data-placement="top" 
+                                title="Click here to freeze the screen" onclick="screenFreeze()">
+                            <img src="images/freeze.png" width="40px" height="40px"/>
+                        </button>
                     </div>
                 </div>
             </div>
