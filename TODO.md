@@ -3,6 +3,7 @@
 Stats: switching graphs and timeframes should work<br />
 Move youtube and instagram configs to config file<br />
 <s>Front end: front page look happy</s><br />
+<s>Regex check in PHP: see if \w is a good alternative to let through word characters (not enough)</s><br />
 <s>Front end: tooltips on buttons / button design</s><br />
 <s>Front end: forward and backward button in browser should work reasonably</s><br />
 <s>Document the history_timestamp option</s>
@@ -17,7 +18,7 @@ Error report / defect backlog - maybe link "click here to report problems"<br />
 Free for personal use, paid for commercial use.<br />
 "Back to front page" button and icon in top menu<br />
 In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
-Regex check in PHP: see if \w is a good alternative to let through word characters
+
 
 
 #Documentation:
