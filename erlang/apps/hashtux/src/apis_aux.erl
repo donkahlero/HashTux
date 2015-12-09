@@ -1,7 +1,8 @@
 -module(apis_aux).
 
 -export([generate_twitter_q_param/2]).
--export([youtube_to_epoch/1, back_one_week/1, datetime_to_rfc_339/1, youtube_get_after_param/0, youtube_get_after_before_params/1]).
+-export([youtube_to_epoch/1, back_one_week/1, datetime_to_rfc_339/1, youtube_get_after_param/0, youtube_get_after_before_params/1,
+        format_keyword/1]).
 
 
 %% *****************************************************************************************************
@@ -62,6 +63,9 @@ generate_twitter_timeframe(Timestamp) ->
 %% =================================
 %%	YOUTUBE DATA API AUX FUNCTIONS
 %% =================================
+
+format_keyword(HashTag) -> 
+    lists:append(string:tokens(HashTag, "+")).
 
 %% @doc Function takes the YouTube representation of time and converts it 
 %% to a UNIX epoch timestamp.
