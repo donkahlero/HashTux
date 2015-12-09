@@ -1,3 +1,10 @@
+%%
+%% @author Ivo Vryashkov
+%%
+%% @doc Miner server module. Takes care of the requests coming in for 
+%% search and spawns workers to perform the search.
+%%
+
 -module(miner_server).
 
 -behaviour(gen_server).

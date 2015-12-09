@@ -20,7 +20,8 @@
 search(Term, Options) ->
 	%Token = get_token(),
 	%Url = ?URL ++ Term ++ ?TAIL ++ Token,
-	Url = build_request(Term, Options),
+	FormattedTerm = apis_aux:format_keyword(Term),
+	Url = build_request(FormattedTerm, Options),
 	case httpc:request(Url) of
 		{ok, Result} -> 
 			{_StatusLine, _Headers, Body} = Result,
@@ -30,16 +31,16 @@ search(Term, Options) ->
 					%io:format("Raw results are: ~p~n", [DecodedRes]),
 					Results = parse_results(Term, DataList),
 					ResLength = length(Results),
-					io:format("INSTAGRAM API RESULT COUNT :~p~n", [ResLength]),
+					io:format("IG_SEARCH: Unfiltered result count: ~p~n", [ResLength]),
 					Types = get_value(content_type, Options),
 					FilterRes = filter_insta(Results, Types),
 					FilterResLength = length(FilterRes),
-					io:format("INSTAGRAM API FILTERED RESULT COUNT :~p~n", [FilterResLength]),
+					io:format("IG_SEARCH: Filtered result count: ~p~n", [FilterResLength]),
 					[{filtered, Results}, {unfiltered, FilterRes}]
 			catch _ -> []
 			end;
 		{error, Reason} ->
-			io:format("REQUEST FAILED for reason: ~p~n", [Reason]),
+			io:format("IG_SEARCH: Request failed for reason: ~p~n", [Reason]),
 			[]
 	end.
 
@@ -190,8 +191,8 @@ get_timestamp() ->
 %%
 %% @doc Returns the next max tag id {key, value} pair.
 %%
-get_tag_id(TagId) ->
-	{<<"tag_id">>, TagId}.	
+%%get_tag_id(TagId) ->
+%%	{<<"tag_id">>, TagId}.	
 
 
 %%
