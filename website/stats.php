@@ -295,7 +295,7 @@
         <div class="row">
             <div class="col-md-6" id="tableContainer"></div>
             	<div class="col-md-6" id="graphContainer">
-                	<div class="container-fluid" align="center" width="100%" id=""chart_div"">
+                	<div class="container-fluid" align="center" width="100%" id="chart_div">
                 </div> 
             </div>
             
@@ -303,5 +303,6 @@
     </div> 
     
 </body>
+
 </html>
  
