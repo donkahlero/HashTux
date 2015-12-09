@@ -16,6 +16,7 @@ Error report / defect backlog - maybe link "click here to report problems"<br />
 Free for personal use, paid for commercial use.<br />
 Back button<br />
 In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
+Front end: forward and backward button in browser should work reasonably<br />
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
