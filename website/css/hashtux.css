@@ -239,7 +239,10 @@
     border: 0;
     float: right;
     opacity: 0.5;
+<<<<<<< HEAD
     margin-top: 15px;
+=======
+>>>>>>> fbd5b6f63493488dacfcbaed1abf9e445d24b1b6
 }
 
 .freezebtn:focus {outline: none;}
@@ -349,7 +352,15 @@
 }
 
 .timescroll {
+<<<<<<< HEAD
     margin-top: 30px;
+=======
+    position: relative;
+    top: 50%;
+    transform: translateY(50%);
+    margin-left: 30px;
+    margin-right: 30px;
+>>>>>>> fbd5b6f63493488dacfcbaed1abf9e445d24b1b6
 }
 
 input[type=range] {
@@ -376,6 +387,7 @@ input[type=range]::-ms-track {
 /* Special styling for WebKit/Blink */
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
+<<<<<<< HEAD
   border: 1px solid #cccccc;
   height: 25px;
   width: 25px;
@@ -384,6 +396,16 @@ input[type=range]::-webkit-slider-thumb {
   cursor: pointer;
   margin-top: -11px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
   box-shadow: 1px 1px 1px #000000, 0px 0px 0px #0d0d0d; /* Add cool effects to your sliders! */
+=======
+  border: 1px solid #000000;
+  height: 36px;
+  width: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  margin-top: -14px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+>>>>>>> fbd5b6f63493488dacfcbaed1abf9e445d24b1b6
 }
 
 /* All the same stuff for Firefox */
@@ -413,9 +435,14 @@ input[type=range]::-webkit-slider-runnable-track {
   height: 5px;
   cursor: pointer;
   background: #cccccc;
+<<<<<<< HEAD
   border-radius: 2px;
   border: 1px solid #ffffff;
   box-shadow: 1px 1px 1px #000000, 0px 0px 0px #0d0d0d;
+=======
+  border-radius: 1.3px;
+  border: 1px solid #fff;
+>>>>>>> fbd5b6f63493488dacfcbaed1abf9e445d24b1b6
 }
 
 input[type=range]:focus::-webkit-slider-runnable-track {
