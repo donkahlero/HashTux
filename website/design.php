@@ -316,7 +316,7 @@
 				        	retrieve: true,
 				            data: statsItems,
 				            columns: [
-				                { title: "Top Platforms use with Browser for Last Year" },
+				                { title: "Top Platforms use with Browser for This Year" },
 				                { title: "Count" },
 				               
 				            ]
@@ -364,36 +364,6 @@
 				            ]
 				        } ); 
 					    break;
-	 			case 'browser_platform_year':
-					 
-					 $('#tableContainer').html("<table class='browserPlatformTable' id='browserPlatformTable' width='100%'></table>");
-	
-						 $('#browserPlatformTable').DataTable( {
-				        	retrieve: true,
-				            data: statsItems,
-				            columns: [
-				                { title: "Top Browsers use with Platform for Last Year " },
-				                { title: "Count" },
-				                 
-				            ]
-				        } ); 
-					    break;
-	 			case 'browser_platform_month':
-					 
-					 $('#tableContainer').html("<table class='browserPlatformMonth' id='browserPlatformMonth' width='100%'></table>");
-	
-						 $('#browserPlatformMonth').DataTable( {
-				        	retrieve: true,
-				            data: statsItems,
-				            columns: [
-				                { title: "Top Browsers use with Platform for Last Month " },
-				                { title: "Count" },
-				                 
-				            ]
-				        } ); 
-					    break;
-			    
-	
 				 }
 			
 		           
@@ -403,8 +373,7 @@
 </head>
 
 <body>
-	<div>
-        <h1 align="center">#Hashtux</h1>
+	<div >
         <h2 align="center">Welcome to HashTux User Habits Statistics</h2>
     </div>
 <div class="container">
@@ -421,8 +390,7 @@
        <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">Combinations	
           <ul class="dropdown-menu">
-           <li><a class="btn"	onclick="changeType('platform_browser')">Platform/Browser</a></li>
-          	<li><a class="btn"	onclick="changeType('browser_platform')">Browser/Platform</a></li>
+           <li><a class="btn"		onclick="changeType('platform_browser')">Platform/Browser</a></li>
           	  <li><a class="btn"	onclick="changeType('browser_version')">Browser/Version</a></li>
           </ul>
         </li>
@@ -442,11 +410,11 @@
     </div>  
   </div>
 </div>
-     <div class="container">
-        <div class="row">
+     <div class="container" >
+        <div class="row" >
             <div class="col-md-6" id="tableContainer"></div>
             	<div class="col-md-6" id="graphContainer">
-                	<div class="container-fluid" align="center" width="100%" id=""chart_div">
+                	<div class="container-fluid" align="center" width="100%" id=""chart_div"">
                 </div> 
             </div>
             
@@ -456,4 +424,3 @@
 </body>
 </body>
 </html>
- 
