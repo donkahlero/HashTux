@@ -5,6 +5,7 @@ Move youtube and instagram configs to config file<br />
 <s>Front end: front page look happy</s><br />
 <s>Regex check in PHP: see if \w is a good alternative to let through word characters (not enough)</s><br />
 <s>Front end: tooltips on buttons / button design</s><br />
+<s>Check spaces in search terms, and decide which special characters should be allowed</s><br />
 <s>Front end: forward and backward button in browser should work reasonably</s><br />
 <s>Document the history_timestamp option</s><br />
 <s>Free for personal use, paid for commercial use text.</s><br />
@@ -13,7 +14,6 @@ Front end: videos tweaked<br />
 For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
 Front end: visible button for freezing all<br />
 Front end: clarify that it's TILE SIZE that is small/medium/large or otherwiese clarify so it makes sense (size: large can almost feel like you're saying you have a large screen, so more tiles would fit). I'd almost rather have it named something else, like tile amount... but can't come up with the best term right now // J<br />
-Check spaces in search terms, <s>and decide which special characters should be allowed</s><br />
 Close button at top right in options meny?<br />
 
 Front end: maybe list of trending things on the first page<br />
