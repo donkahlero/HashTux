@@ -25,7 +25,7 @@ search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp
 	if 
 		%% SIMPLE SEARCH or ADVANCED SEARCH that requested Videos
 		VideoReq -> 
-			
+
 			% A list of the languages available to the client
 			LangParams = [<<"en">>, <<"es">>, <<"fr">>, <<"de">>, <<"sv">>, <<"bg">>, <<"it">>, <<"am">>],
 
@@ -62,7 +62,8 @@ query_youtube_API(HashTag, Count, HistoryTimestamp) ->
 
 	Part = "part=snippet&fields=items(id(videoId))",						%% Partial Request: request only ID 'field' in the Snippet 'part'
 
-	Q = "q=" ++ HashTag,													%% keyword parameter
+	Q = lists:append("q=", apis_aux:format_keyword(HashTag)),				%% Handle case for multiple words HashTag
+	io:format("Q is ~p~n", [Q]),
 
 	MaxResults = "maxResults=" ++ integer_to_list(Count),					%% increase max results to 10
 
