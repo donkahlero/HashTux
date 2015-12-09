@@ -77,6 +77,9 @@ rebar.lock
 
 ##TeX
 ## Core latex/pdflatex auxiliary files:
+auto/*
+auto/
+
 *.aux
 *.lof
 *.log
