@@ -1,3 +1,10 @@
+%%
+%% @author Ivo Vryashkov
+%%
+%% @doc Miner worker module. Takes care of searching the different services
+%% available in the application.
+%%
+
 -module(miner_worker).
 
 -behaviour(gen_server).
