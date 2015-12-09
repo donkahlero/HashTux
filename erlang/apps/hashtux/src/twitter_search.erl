@@ -6,8 +6,14 @@
 -define(URL, "https://api.twitter.com/1.1/search/tweets.json").
 
 %%
-%% @doc Return list of Tweets containing the given HashTag.
-%% Tweets are stored in the DB and formatted in 'internal representation' form.
+%% @doc     Sends a GET request to the 'Twitter Search API'.
+%% @return  A list of two tuples in the following format: [{filtered, FilteredRes}, {unfiltered, LangResult}].
+%%          UnfilteredRes: a list of tweets in internal representation matching the specified values
+%%          for language and history timestamp params;
+%%          FilteredRes: a list of all tweets from UnfilteredRes that match the content_type requestedby the client. 
+%% @params  Types: a list of types [text, image, video] of feeds requested by the client.
+%% @params  Lang: the langauge of the feeds the query will request
+%% @HistoryTimestamp: the publication date of the feeds the query will request (epoch timestamp)
 %%
 search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_timestamp, HistoryTimestamp}]) -> 
 
@@ -42,16 +48,17 @@ search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_time
 
     print_response_info(Status),
 
-    %% Decode response body 
+    % Decode response body 
     DecodedBody = jsx:decode(ResponseBody),
-    %% LangResult is a list of Internal JSX objects mined for a specified language (all languages if not specified)
+    
+    % Get a List of Internal JSX objects mined for a specified language (all languages if not specified)
     LangResult = parser:parse_tweet_response_body(Keyword, DecodedBody),
 
     % Debug Filtered Result size
     LangResLength = length(LangResult),
     io:format("TWITTER SIMPLE SEARCH RETURNED ~p TWEETS~n", [LangResLength]),
 
-    %% FILTER LangResult by content_type
+    % FILTER LangResult by content_type
     FilteredRes = [H || H <- LangResult, parser:filter_by_content_type(H, TypeFilter)],
 
     % Debug Filtered Result size
@@ -61,7 +68,9 @@ search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_time
     % Return Filtered Result
     [{filtered, FilteredRes}, {unfiltered, LangResult}].         %% Return Result
 
-% Print request status information
+%%
+%% Print Twitter API request status information
+%%
 print_response_info(Status) ->
     case Status of
         "200" -> io:format("Twitter Request was fulfilled\n");
