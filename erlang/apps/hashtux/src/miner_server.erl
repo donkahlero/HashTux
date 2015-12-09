@@ -1,3 +1,10 @@
+%%
+%% @author Ivo Vryashkov
+%%
+%% @doc Miner server module. Takes care of the requests coming in for 
+%% search and spawns workers to perform the search.
+%%
+
 -module(miner_server).
 
 -behaviour(gen_server).
@@ -102,8 +109,7 @@ handle_info(Msg, State) ->
 
 
 %%
-%% @doc Handles casts made to the server. Only a cast to stop the server is
-%% handled. All other casts are ignored.
+%% @doc Handles casts made to the server.
 %%
 %%% Cast to stop the server.
 handle_cast(stop, State) ->
