@@ -34,6 +34,7 @@
         
         function getStats() {
             var list = getItemValues();
+            
         return list;
         }
       }

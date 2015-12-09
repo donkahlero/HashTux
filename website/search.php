@@ -441,10 +441,11 @@
                 </div>
                 
                 <div class="row bottombar" id="actionsMenu">
-                    <div class="col-md-10">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
                         <input type="range" class="timescroll" id="timeScroll">
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <button type="submit" class="iconbtn freezebtn" id="freezeBtn"
                                 data-toggle="tooltip" data-placement="top" 
                                 title="Click here to freeze the screen" onclick="screenFreeze()">
