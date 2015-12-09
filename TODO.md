@@ -1,6 +1,7 @@
 #TODO
 <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
 Stats: switching graphs and timeframes should work<br />
+Move youtube and instagram configs to config file<br />
 <s>Front end: front page look happy</s><br />
 <s>Front end: tooltips on buttons / button design</s><br />
 <s>Front end: forward and backward button in browser should work reasonably</s><br />
