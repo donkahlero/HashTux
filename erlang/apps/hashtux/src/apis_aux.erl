@@ -65,7 +65,7 @@ generate_twitter_timeframe(Timestamp) ->
 %% =================================
 
 format_keyword(HashTag) -> 
-    lists:append(string:tokens(HashTag, " ")).
+    lists:append(string:tokens(HashTag, "+")).
 
 %% @doc Function takes the YouTube representation of time and converts it 
 %% to a UNIX epoch timestamp.
