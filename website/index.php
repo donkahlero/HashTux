@@ -154,7 +154,7 @@
                         <form action="search.php" method="get" id="searchform" onsubmit="
                                 if (checkInput() == true) 
                                     {					
-                                    window.location.replace(document.getElementById('search').value);
+                                    	window.location.href = document.getElementById('search').value;
                                     } return false; ">
 
                             <input type="text" class="searchfield" id="search" name="search" style="width: 50%;"/>
