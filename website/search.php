@@ -433,9 +433,9 @@
                     <div class="col-sm-11">
                     </div>
                     <div class="col-sm-1">
-                        <button type="submit" class="iconbtn" id="freezeBtn"
-                                data-toggle="tooltip" data-placement="top" title="Click here to freeze the screen"
-                                style="float: right;" onclick="screenFreeze()">
+                        <button type="submit" class="iconbtn freezebtn" id="freezeBtn"
+                                data-toggle="tooltip" data-placement="top" 
+                                title="Click here to freeze the screen" onclick="screenFreeze()">
                             <img src="images/freeze.png" width="40px" height="40px"/>
                         </button>
                     </div>
