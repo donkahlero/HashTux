@@ -34,17 +34,7 @@ init([]) ->
 	%%
 	%% Here we can start supervisors responsible for the sub-task
 	%% data fetching, DB servers and main program flow
-	
-	%% Start the DB supervisor
-	%db_sup:start_link(),
-	
-	%% Start the miner supervisor
-	%miner_sup:start_link(),
-	
-	%% Start the main flow supervisor
-	%main_flow_sup:start_link(),
-	
-	
+		
 	DB_sup = {db_sup, 
 				 {db_sup, start_link, []},
 			 		permanent, 
@@ -64,8 +54,10 @@ init([]) ->
 					worker, 
 					[main_flow_sup]},
 	
-	%{ok, { {one_for_all, 0, 1}, []} }.
-	{ok, { {one_for_one, 3, 1800}, [DB_sup, Miner_sup, Main_flow_sup]}}.
+	% One for one: "If a child process terminates, only that process is restarted."
+	% Intensity 1, period 1: allow children to fail once every second before terminating
+	% the top level supervisor.  
+	{ok, { {one_for_one, 1, 1}, [DB_sup, Miner_sup, Main_flow_sup]}}.
 	
 	
 

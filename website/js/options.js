@@ -346,8 +346,8 @@ function showOptions() {
     freeze();
     initOptions();
     
-    $('#optionsPanel').click(function () {
-        event.stopPropagation();
+    $('#optionsPanel').click(function(e) {
+        e.stopPropagation();
     });
 }
 
