@@ -102,8 +102,7 @@ handle_info(Msg, State) ->
 
 
 %%
-%% @doc Handles casts made to the server. Only a cast to stop the server is
-%% handled. All other casts are ignored.
+%% @doc Handles casts made to the server.
 %%
 %%% Cast to stop the server.
 handle_cast(stop, State) ->
