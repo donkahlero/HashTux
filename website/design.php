@@ -364,6 +364,36 @@
 				            ]
 				        } ); 
 					    break;
+	 			case 'browser_platform_year':
+					 
+					 $('#tableContainer').html("<table class='browserPlatformTable' id='browserPlatformTable' width='100%'></table>");
+	
+						 $('#browserPlatformTable').DataTable( {
+				        	retrieve: true,
+				            data: statsItems,
+				            columns: [
+				                { title: "Top Browsers use with Platform for Last Year " },
+				                { title: "Count" },
+				                 
+				            ]
+				        } ); 
+					    break;
+	 			case 'browser_platform_month':
+					 
+					 $('#tableContainer').html("<table class='browserPlatformMonth' id='browserPlatformMonth' width='100%'></table>");
+	
+						 $('#browserPlatformMonth').DataTable( {
+				        	retrieve: true,
+				            data: statsItems,
+				            columns: [
+				                { title: "Top Browsers use with Platform for Last Month " },
+				                { title: "Count" },
+				                 
+				            ]
+				        } ); 
+					    break;
+			    
+	
 				 }
 			
 		           
@@ -373,7 +403,8 @@
 </head>
 
 <body>
-	<div >
+	<div>
+        <h1 align="center">#Hashtux</h1>
         <h2 align="center">Welcome to HashTux User Habits Statistics</h2>
     </div>
 <div class="container">
