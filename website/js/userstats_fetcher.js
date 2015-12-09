@@ -1,5 +1,7 @@
 var items = [];
 
+var term = "search_term_year";
+
 //item constructor
 function item(name, value){
     this.name = name;
