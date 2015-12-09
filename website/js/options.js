@@ -50,16 +50,6 @@ function initOptions() {
 
 function saveOptions() {
 
-    alert("Types\n" +
-            "Images: " + types.image + "\n" +
-            "Videos: " + types.video + "\n" +
-            "Text: " + types.text + "\n\n" +
-            "Services\n" +
-            "Twitter: " + services.twitter + "\n" +
-            "Instagram: " + services.instagram + "\n" +
-            "YouTube: " + services.youtube + "\n\n" +
-            "Language: " + language);
-
     // Check if the size tracker is small, medium or large. Then
     // set the gridWidth, gridHeight and totalItems acoordingly.
 
