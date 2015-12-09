@@ -4,20 +4,22 @@
 -export([extract_youtube_ids/1, parse_youtube_video/2, clean_result/1, is_language/2]).						% YOUTUBE Functions
 -export([filter_by_content_type/2, parse_tweet_response_body/2]).																				% TWITTER Functions
 
-% *****************************************************************************
-% @doc A parser for decoded JSON Items
-%       Handle conversion from decoded FEEDS to internal representation format
-% *****************************************************************************
+%% *****************************************************************************************************
+%% @Author Marco Trifance
+%% @doc A parser for decoded JSON Items. Handle information conversion 
+%%      and formatting from decoded Twitter and Youtube FEEDS into internal representation format
+%% *****************************************************************************************************
 
-% the value of a key from decoded JSON message.
+% Search the value of a given key 'K' from a given list 'L' decoded JSON message.
 extract(K, L) ->
   case lists:keyfind(K, 1, L) of
     {_, M} -> {found, M};
     false  -> not_found
   end.
 
-% @doc extract a field from a parent node. 
-% return value if field was found, null if it was not found 
+%%
+%% @doc extract the value of a field from a parent node. 
+%% return value if field was found, null if it was not found 
 extract_from_node(_Field, null) -> null;
 extract_from_node(Field, Node) -> 
 	case extract(Field, Node) of
@@ -26,7 +28,7 @@ extract_from_node(Field, Node) ->
     end.
 
 %%
-%% Remove empty fields from parsed item (i.e. removes fields that returned null)
+%% @doc Remove all fields with null value from parsed feed 
 %%
 clean_result(L) -> [X || X <- L, has_null_value(X) == false].
 
@@ -39,42 +41,56 @@ has_null_value({_, _}) -> false.
 atom_to_binarystring(Atom) ->
     list_to_binary(atom_to_list(Atom)).
 
-% ****************************************
-% PARSE YOUTUBE decoded JSON
-% ****************************************
+%% ****************************************
+%% PARSE YOUTUBE decoded JSON
+%% ****************************************
 
-% @ doc extract the Id from a list of decoded Youtube feeds returned by a Keyword search 
+%%
+%% @doc extract the Id from a list of decoded Youtube feeds returned by a Keyword search 
+%%
 extract_youtube_ids(List) ->
 	extract_ids(List, []).
-
+%%
+%% @doc Helper function for extract_youtube_ids/1
+%%
 extract_ids([], Result) -> Result;
 extract_ids([H|T], Result) ->
 	NewResult = Result ++ [extract_id(H)],
 	extract_ids(T, NewResult).
 
+%%
+%% @doc Helper function for extract_ids/2
+%%      Return the videoId in binary-string form from a youtube "id" node
+%%
 extract_id([{<<"id">>, [{<<"videoId">>, VideoId}]}]) -> binary_to_list(VideoId);
 extract_id(_) -> parser_error.
 
-% Builds a Youtube Channel URL for a given channelId
+%%
+%% @doc Generates a Youtube Channel URL for a given channelId
+%%
 build_youtube_channel_link(null) -> null;
 build_youtube_channel_link(ChannelId) -> 
     A = lists:append("https://youtube.com/channel/", binary_to_list(ChannelId)),
     list_to_binary(A).
 
-% Builds a Youtube Video URL for a given videoId
+%%
+%% @doc Generates a Youtube Video URL for a given channelId
+%%
 build_youtube_video_link(null) -> null;
 build_youtube_video_link(VideoId) -> 
     A = lists:append("https://www.youtube.com/watch?v=", binary_to_list(VideoId)),
     list_to_binary(A).
 
-% Builds a Youtube 'Embedded Video' URL for a given videoId
+%%
+%% @doc Generates a Youtube 'Embedded Video' URL for a given videoId
+%%
 build_youtube_embedded_link(null) -> null;
 build_youtube_embedded_link(VideoId) -> 
     A = lists:append("https://www.youtube.com/embed/", binary_to_list(VideoId)),
     list_to_binary(A).
 
 %%
-%% @doc convert a decoded youtube Video resource to internal representation
+%% @doc Convert a decoded youtube Video resource to internal representation
 %%
 parse_youtube_video(Video, HashTag) -> 
 	
@@ -135,7 +151,9 @@ parse_youtube_video(Video, HashTag) ->
     clean_result(A).
 
 %% 
-%% @doc Tells if a given Youtube video matches the Language Filter
+%% @doc Compare the value in the language field of an internal youtube video resource with 
+%%      the given LanguageFilter.
+%%      Return True if a given Youtube video matches the Language Filter, false otherwise.
 %%
 is_language(Status, LangFilter) ->
 	
@@ -148,22 +166,18 @@ is_language(Status, LangFilter) ->
 
 			Extracted_Lang = lists:sublist(binary_to_list(Lang), 2), 
 
-			io:format("EXTRACTED LANG IS ~p~n", [Extracted_Lang]),
-			io:format("LANG FILTER IS ~p~n", [LangFilter]),
-
-			A = binary_to_list(LangFilter) == Extracted_Lang,            
-			
-			io:format("RETURNING ~p~n", [A]),	
-
-			A
+			binary_to_list(LangFilter) == Extracted_Lang
 	end.
 
 
-% ****************************************
-% PARSE TWITTER decoded JSON
-% ****************************************
+%% ****************************************
+%% PARSE TWITTER decoded JSON
+%% ****************************************
 
-% Decode Response Body and parses result
+%%
+%% @doc Decode Response Body and extract list of twitter statuses
+%%      in internal representation form.
+%%
 parse_tweet_response_body(HashTag, DecodedBody) ->
 
     %% Parse the list of Tweets returned by the Twitter API
@@ -173,16 +187,19 @@ parse_tweet_response_body(HashTag, DecodedBody) ->
         not_found -> []                                         %% return empty list if result was empty
     end.
 
-%% 
-%% Parse a list of tweets
-%% Calls parse_status_details on all statuses included in a given List
-%% Sends the document to DB and returns it
+%%
+%% Helper function for parse_tweet_response_body/2
+%% Parse a list of JSX decoded tweets
+%%
 parse_tweet_status_list(_HashTag, [], Result) -> Result;                        %% return doc
 parse_tweet_status_list(HashTag, [H|T], Result) -> 
     NewResult = Result ++ [parse_tweet_details(HashTag, H)],
     parse_tweet_status_list(HashTag, T, NewResult).
 
-%% Convert single Tweet Object to internal representation form
+%%
+%% Helper function for parse_tweet_response_body/2
+%% @doc Convert a single decoded Tweet Object to internal representation form
+%%
 parse_tweet_details(HashTag, Status) ->
 
     %% Register the time the document was sent to DB
@@ -248,32 +265,48 @@ parse_tweet_details(HashTag, Status) ->
     A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"service">>, <<"twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"timestamp">>, Date}, {<<"insert_timestamp">>, Timestamp}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Media_URL}, {<<"resource_link_low">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"free_text_name">>, UserName}, {<<"username">>, ScreenName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
     clean_result(A).
 
-% Convert int to binary. Return null if Id is null
+%%
+%% @doc Convert Twitter user_ID int to binary. Return null if Id is null
+%%
 convert_user_ID(null) -> null;
 convert_user_ID(Id) -> integer_to_binary(Id).
 
-% Format decoded Tweet Tags node 
+%%
+%% @doc Format decoded Tweet Tags node 
+%%
 format_tweet_tags(Tags_List) -> 
     format_tweet_tags(Tags_List, []).
 
+%%
+%% @doc Helper function for format_tweet_tags/1
+%%
 format_tweet_tags([], Result) -> Result;
 format_tweet_tags([H|T], Result) -> 
     NewResult = Result ++ [get_single_tag(H)],
     format_tweet_tags(T, NewResult).
 
+%%
+%% @doc Helper function for format_tweet_tags/2
+%%
 get_single_tag([{<<"text">>, A}, _]) -> A;
 get_single_tag([{_B, A}, _]) -> A.
 
-% Builds Profile URL for a given user screen_name
+%% @doc Builds a Twitter profile URL for a given user screen_name
+%%
 build_tweet_profile_link(null) -> null;
 build_tweet_profile_link(Screen_Name) -> 
     A = lists:append("https://twitter.com/", binary_to_list(Screen_Name)),
     list_to_binary(A).
 
-% Returns ONLY the first media element information (URL and Type).
+%%
+%% @doc Returns ONLY the first media element information (URL and Type).
+%%
 format_media_entity([]) -> {null, null};
 format_media_entity([H|_T]) -> format_single_media(H).          %% return info related to first media element
 
+%%
+%% @doc Extract "media_url" and "type" fields information from a Media node in a Twitter status resource.
+%%
 format_single_media(Media) ->
     Media_Url = case extract (<<"media_url">>, Media) of
         {found, Url} -> Url;
@@ -290,8 +323,10 @@ format_single_media(Media) ->
     end,
 
     {Media_Url, Media_Type}.
+
 %%
-%% @doc Tells if a given Tweet feed is of one of the types (content-types: text, image, video) included in the list AllowedTypes.
+%% @doc True if a given Twitter Status is of one of the types 
+%%      (content-types: text, image, video) included in the list AllowedTypes.
 %%
 filter_by_content_type(Status, AllowedTypes) -> 
 

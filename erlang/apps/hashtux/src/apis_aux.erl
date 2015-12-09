@@ -4,6 +4,11 @@
 -export([youtube_to_epoch/1, back_one_week/1, datetime_to_rfc_339/1, youtube_get_after_param/0, youtube_get_after_before_params/1]).
 
 
+%% *****************************************************************************************************
+%% @Author Marco Trifance
+%% @doc A helper module to generate Twitter API and Youtube Data API request parameters
+%% *****************************************************************************************************
+
 %% =================================
 %%	TWITTER API AUX FUNCTIONS
 %% =================================
