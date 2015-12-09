@@ -431,6 +431,7 @@
                 
                 <div class="row bottombar" id="actionsMenu">
                     <div class="col-sm-11">
+                        <input type="range" class="timescroll" id="timeScroll">
                     </div>
                     <div class="col-sm-1">
                         <button type="submit" class="iconbtn freezebtn" id="freezeBtn"
