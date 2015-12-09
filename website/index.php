@@ -18,7 +18,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/frontpagegrid.js"></script>
+    <script src="js/general.js"></script>
     
+
     <script>
         
     var searchterm = "hashtux";
@@ -96,9 +98,8 @@
 //                alert(debug);
             }
         
-    function checkInput()
+    function checkInput(input)
     {
-        var input = document.forms["searchform"]["search"].value;
         
         if(input === null || input === "")
         {
@@ -152,9 +153,10 @@
                         <p class="greytext" align="center">Please search for a hashtag!</p>
 
                         <form action="search.php" method="get" id="searchform" onsubmit="
-                                if (checkInput() == true) 
+															searchterm = strip_illegal_characters(document.getElementById('search').value);
+                                if (checkInput(searchterm) == true) 
                                     {					
-                                    	window.location.href = document.getElementById('search').value;
+                                    	window.location.href = searchterm;
                                     } return false; ">
 
                             <input type="text" class="searchfield" id="search" name="search" style="width: 50%;"/>
