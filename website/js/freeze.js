@@ -22,11 +22,11 @@ function freeze()
     {
         displayed[i].frozen = true;
 
-        $('#' + displayed[i].tile).css('border', '1px solid #FFF');
+        $('#' + displayed[i].tile + "freeze").css('opacity', '1');
 
     }
-
-    $('#grid').css('border', '1px solid #FFF');
+    
+    $('#freezeBtn').css('opacity', '1');
     screenFrozen = true;
 }
 
@@ -36,10 +36,10 @@ function unfreeze()
     {
         displayed[i].frozen = false;
 
-        $('#' + displayed[i].tile).css('border', '');
+        $('#' + displayed[i].tile + "freeze").css('opacity', '0.5');
     }
 
-    $('#grid').css('border', '');
+    $('#freezeBtn').css('opacity', '0.35');
     screenFrozen = false;
 }
 
@@ -53,14 +53,14 @@ function tileFreeze(){
         {
             displayed[i].frozen = true;
 
-            $('#' + tile).css('border', '1px solid #FFF');
+            $('#' + tile + "freeze").css('opacity', '1');
         }
 
         else if(displayed[i].tile === tile && displayed[i].frozen)
         {
             displayed[i].frozen = false;
 
-            $('#' + tile).css('border', '');
+            $('#' + tile + "freeze").css('opacity', '0.5');
         }
     }
 }
