@@ -22,6 +22,8 @@
     <script>
         
     var searchterm = "hashtux";
+    
+    var donationBtnDisplayed = false; 
         
     var items = [];         // An array to store all items fetched
     var displayed = [];     // An array to temporarily store the currently displayed items
@@ -50,7 +52,7 @@
         $.ajax({
             url: "/ajax.php?search=" + searchterm,
             type: "get",
-            data: JSON.stringify({request_type:"search", service:["instagram"], content_type:["image"]}),
+            data: JSON.stringify({request_type:"update", service:["instagram"], content_type:["image"]}),
 
             success: function (myString) {
                 parse_to_items(myString);   // Parse the JSON to items
@@ -111,6 +113,20 @@
         }
     }
     
+    function showDonationBtn()
+    {
+        if(!donationBtnDisplayed)
+        {
+            $('#donationbtn').fadeIn(500);
+            donationBtnDisplayed = true;
+        }
+        else
+        {
+            $('#donationbtn').fadeOut(500);
+            donationBtnDisplayed = false;
+        }
+    }
+    
     </script>
     
   </head>
@@ -119,42 +135,62 @@
       
     <div class="container con-fill header mainpagegrid" id="grid"></div>
       
-    <div class="container">
+    <div class="container con-fill-hor">
 
-        <div class="row">
-              
-            <div class="col-md-4"></div>
+        <div class="row" style="margin: 0;">
 
-            <div class="col-md-4 col-fill">
+            <div class="col-xs-12 col-fill">
+                
+                <div class="text-center">
                   
-                <div class="logo">
-                    <div class="text-center">
+                    <div class="logo">
                         <img src="images/logotext.png" height="30%">
                     </div>
-                </div>
 
-                <div class="search">
+                    <div class="search">
 
-                    <p class="greytext" align="center">Please search for a hashtag!</p>
+                        <p class="greytext" align="center">Please search for a hashtag!</p>
 
-                    <form action="search.php" method="get" id="searchform" onsubmit="
-                            if (checkInput() == true) 
-                                {					
-                                window.location.replace(document.getElementById('search').value);
-                                } return false; ">
+                        <form action="search.php" method="get" id="searchform" onsubmit="
+                                if (checkInput() == true) 
+                                    {					
+                                    window.location.replace(document.getElementById('search').value);
+                                    } return false; ">
 
-                        <input type="text" class="searchfield" id="search" name="search" style="width: 100%;"/>
-                    </form>
+                            <input type="text" class="searchfield" id="search" name="search" style="width: 50%;"/>
+                        </form>
 
-                    <div class="alert-warning fixalert" id="input-error">
-                        You did not enter a hashtag, please try again!
+                        <div class="alert-warning fixalert" id="input-error">
+                            You did not enter a hashtag, please try again!
+                        </div>
+
                     </div>
 
-                </div>
+                    <div class="footer">
 
+                        <div class="donationbtn" id="donationbtn">
+                                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                                <input type="hidden" name="cmd" value="_s-xclick">
+                                <input type="hidden" name="hosted_button_id" value="EUPGXJH6CA6BL">
+                                <input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+                                <img alt="" border="0" src="https://www.paypalobjects.com/sv_SE/i/scr/pixel.gif" width="1" height="1">
+                                </form>
+                        </div>
+
+                        <p class="greytext" align="center">
+
+                            This product is free of charge for private use. For commercial use, <a href="#">click here</a>.
+                            <br>
+                            If you like the product and would like to support us, you can throw a 
+                            <button type="button" class="btn btn-link linkbtn" onclick="showDonationBtn()">donation</button> our way. Every little bit helps!
+                            <br>
+                            <br>
+                            © 2015 HashTux
+                        </p>
+
+                    </div>
+                </div>
             </div>
-              	
-            <div class="col-md-4" style="color: #bbbbbb; margin-top: 50px;"></div>
           
         </div>
 
