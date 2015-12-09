@@ -9,39 +9,67 @@
         <link href="css/hashtux.css" rel="stylesheet">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.css">
+  
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"></script>
         <script type='text/javascript'>
 
-        var no = ["1","2","3","4"];
-        var searchTerms = ["Roger","Steve","Mike","Charlie"];
-        var value = ["8","7","6","2"];
+        var statsItems  = [];
 
+        function statsObj(name,value) {
+        	  this.name = name;
+        	  this.value = value; 
+        	}
 
-        tablegenerate(no,searchTerms,value);
+        var statsList = [new statsObj("hashtux",31),
+        	                    new statsObj("Summer",12),
+        	                    new statsObj("Sunny",13),
+        	                    new statsObj("Candy",14),
+        					    new statsObj("Hash",6),
+        					    new statsObj("tux",9),
+        						new statsObj("lol",10),
+        						new statsObj("Pepperoni",2),
+        						new statsObj("beautiful",5),
+        						new statsObj("beauty",5)
+        					   ];
 
-        function tablegenerate(no,searchTerms,value) {
-            for(i=0; i<no.length;i++)
-            {
-                alert("in for loop...");
-//                var $formrow = '<tr><td>'+no[i]+'</td><td>'+searchTerms[i]+'</td><td>'+value[i]+'</td></tr>';
-                $('#searchTermTable').append('<tr><td>'+no[i]+'</td><td>'+searchTerms[i]+'</td><td>'+value[i]+'</td></tr>');
-            }
-        }
+		function getItemValues(){
+			   
+			   for(i = 0; i < statsList.length; i++)
+					{
+		              itemName = statsList[i].name; 
+		              itemCount = statsList[i].value;
 
-        </script>
+		              var items = [itemName, itemCount];
+		              
+		              statsItems.push(items);
+					}
+           
+		   }
+			
+        $(document).ready(function() {
+
+			getItemValues();
+            
+            $('#example').DataTable( {
+                data: statsItems,
+                columns: [
+                    { title: "Name" },
+                    { title: "Count" },
+                   
+                ]
+            } );
+        } );
+        </script>    
         
     </head>
     
    <body >
 
     <div class="container">
-					
-		<table table class="searchTermTable" id="searchTermTable">
-    		<tr>
-      			<th width="10%">No.</th>
-        		<th width="80%">Search Term</th>
-       			<th width="10%">Value</th>
-    		</tr>
-		</table>
+        <div class="row">
+					<table id="example" class="display" width="100%"></table>
+		</div>  			
 	</div>  
     
     

@@ -58,7 +58,7 @@ external_dbs() ->
 %% -----------------------------------------------------------------------------
 %% @doc db_serv init function. No argument needed to be passed.
 init([]) ->
-    io:format("db_addr_server started...\n", []),
+    io:format("db_addr_serv: started...\n", []),
     [MainDB | ExternalDBs] = get_dbs(),
     init_designdocs(MainDB),
     {ok, {MainDB, ExternalDBs}}.
@@ -109,4 +109,6 @@ init_designdocs({Addr, User, Pass}) ->
     couch_operations:doc_change({Addr ++ "hashtux/_design/post",
                                  User, Pass}, db_designdocs:get_post()),
     couch_operations:doc_change({Addr ++ "hashtux_userstats/_design/stat",
-                                 User, Pass}, db_designdocs:get_stat()).
+                                 User, Pass}, db_designdocs:get_stat()),
+    couch_operations:doc_change({Addr ++ "hashtux/_design/filters",
+                                 User, Pass}, db_designdocs:get_filter()).
