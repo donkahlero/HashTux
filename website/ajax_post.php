@@ -14,7 +14,7 @@
 	
 	/* Start a new session or resume if the client has a cookie ;) */
 	session_start();
-	require_once ("request.php");
+	require_once ("include/request.php");
         
 	/* Here we take an options object for the search as the POST body. */
 	$options_json = file_get_contents('php://input');

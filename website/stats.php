@@ -39,190 +39,120 @@ var statsList = [new statsObj("hashtux",31),
 					   ];
 
 
-
 function creatTable(){
-  //  fetch();
-    //var x = document.getElementById("test");
      var table = document.createElement('table');
 	 var tableBody = document.createElement('tbody');
-		for(i = 0; i < statsList.length; i++)
+            if(items.length != 0){
+		for(i = 0; i < items.length; i++)
 			{
-			
+			    var num = i + 1;
 				var row = document.createElement('tr');
-				var cell = document.createElement('td');
-			//	var cellnumber = document.createElement('td');
-				var cellvalue = document.createElement('td');
-				cell.appendChild(document.createTextNode(statsList[i].name));
-			//	cellnumber.appendChild(document.createTextNode(statsList[i + 1]));
-				cellvalue.appendChild(document.createTextNode(statsList[i].value));
-		    	row.appendChild(cell);
-		    	row.appendChild(valuecell);
-		    //	row.appendChild(numbercell);
+				var numberCell = document.createElement('td');
+				var nameCell = document.createElement('td');
+				var valueCell = document.createElement('td');
+				
+				numberCell.appendChild(document.createTextNode(num.toString()));
+				nameCell.appendChild(document.createTextNode(items[i].name));
+				valueCell.appendChild(document.createTextNode(items[i].value));
+		
+		    	row.appendChild(numberCell);
+		    	row.appendChild(nameCell);
+		    	row.appendChild(valueCell);
 		    	tableBody.appendChild(row);
 		    	
 			}
 		table.appendChild(tableBody);
-		$('#test').html(table);
+		$('#myTableSearchterm').html(table);
+            }
+            else{
+                creatTable();
+            }
     }
+    window.onload = function(){
+        fetch("search_term_today");
+    }
+
     </script>
     
   </head>
   
-  <body>
-      
-    <div>
-        <h1 align="center">#hashtux</h1>
-        <h2 align="center">Welcome to HashTux User Habits Statistics</h2>
-    </div>
-        
-    <div class="container" align="center">
-               <div class="input-group" style="float:left;" >
-                 	<div class="dropdown">
-              			<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select a sorting Field  
-                			  <span class="caret"></span></button>
-                      			<ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
-                        			<li><a href="#" id="search_termButton" onclick="creatTable();return false;"> Search Terms </a></li>
-      								<li><a href="#" id="browserButton"     onclick="showBrowserTable();return false;"> Browsers </a></li>
-     								<li><a href="#" id="platformButton"    onclick="showPlatformTable();return false;"> Platforms </a></li>
-      								<li><a href="#" id="languageButton"    onclick="showLanguageTable();return false;"> Languages </a></li>
-      								<li class="divider"></li>
-      								<li class="dropdown-submenu">
-						                <a tabindex="-1" href="#">Top Search Terms&nbsp;&nbsp;</a>
-						                <ul class="dropdown-menu">
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;To Day&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Week&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Month&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Year&nbsp;&nbsp;</a></li>
-						                </ul>
-						              </li>
-								   <li class="dropdown-submenu">
-			                           <a tabindex="-1" href="#">Top Browsers</a>
-						                <ul class="dropdown-menu">
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;To Day&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Week&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Month&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Year&nbsp;&nbsp;</a></li>
-						                </ul>
-						              </li>
-						              <li class="dropdown-submenu">
-						                <a tabindex="-1" href="#">Top Platforms</a>
-						                <ul class="dropdown-menu">
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;To Day&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Week&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Month&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Year&nbsp;&nbsp;</a></li>
-						                </ul>
-						              </li>
-						              <li class="dropdown-submenu">
-						                <a tabindex="-1" href="#">Top Languages</a>
-						                <ul class="dropdown-menu">
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;To Day&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Week&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Month&nbsp;&nbsp;</a></li>
-						                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Year&nbsp;&nbsp;</a></li>
-						                </ul>
-						              </li>
-   						 		</ul>
- 			     	</div>
-            </div>
-              <div class="input-group" style="float:right;" >
-                   <div class="dropdown">   
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Sort by Time Span  
-                			  <span class="caret"></span></button>
-                      			<ul class="dropdown-menu">
-                        			<li><a href="#" id="sortTodayButton" onclick="showSearchtermTable();return false;"> Today</a></li>
-      								<li><a href="#" id="sortLastweekButton"     onclick="showBrowserTable();return false;"> Last Week </a></li>
-     								<li><a href="#" id="sortLastmonthButton"    onclick="showPlatformTable();return false;"> Last Month </a></li>
-      								<li><a href="#" id="sortYearButton"    onclick="showLanguageTable();return false;"> Year </a></li>
-   						 		</ul>
-                   </div>
-             </div>
-    </div>
-      
-    <div class="container">
-          <h3>User Habits </h3>
-        <div class="row">
-            <div class="col-md-6">
-        <table  table class= "table table-hover"  id="myTableSearchterm" width="100%" >  
-                 <thead>  
-                   <tr>  
-                     <th>Top 10 search terms</th>
-                   </tr>  
-                 </thead>  
-                 <tbody>  
-                   <tr id="test">
-                   <td> 
-                     </td>  
-                   </tr>
-                 </tbody>  
-                </table>
-            <table table class= "table table-hover" id="myTableBrowser" width="100%">  
-                         <thead>  
-                           <tr>  
-                             <th>Top 10 Browsers</th>   
-                           </tr>  
-                         </thead>  
-                         <tbody>  
-                           <tr>  
-                           <td>
-                             1.Safari<br>
-                             2.Firefox<br>   
-                             3.Chrome<br>  
-                             4.Internet Explorer<br>  
-                             5.Opera<br> 
-                             </td>  
-                           </tr>  
-                         </tbody>  
-                       </table>
-
-                 <table table class= "table table-hover" id="myTablePlatform" width="100%">  
-                         <thead>  
-                           <tr>  
-                             <th>Platforms</th>   
-                           </tr>  
-                         </thead>  
-                         <tbody>  
-                           <tr>  
-                           <td>
-                             1.Microsoft Windows<br>
-                             2.Linux<br>   
-                             3.iOS<br>  
-                             4.Android<br>  
-                             </td>  
-                           </tr>  
-                         </tbody>  
-                       </table>
-
-                 <table table class= "table table-hover" id="myTableLanguage" width="100%">  
-                         <thead>  
-                           <tr>  
-                             <th>Top 10 Languages</th>   
-                           </tr>  
-                         </thead>  
-                         <tbody>  
-                           <tr>  
-                           <td>
-                             1.English<br>
-                             2.French<br>   
-                             3.German<br>  
-                             4.Spanish<br> 
-                             5.Swedish<br>    
-                             </td>  
-                           </tr>  
-                         </tbody>  
-                       </table>
-            </div>
-            
-            <div class="col-md-6">
-             <!--Div that will hold the pie chart-->
-               <div class="container-fluid" align="center" width="100%" id="""chart_div">
-                </div> 
-            </div>
-
-        </div>
-    </div> 
-		 
-  </body>
+	  <body>
+	      
+	    <div>
+	        <h1 align="center">#hashtux</h1>
+	        <h2 align="center">Welcome to HashTux User Habits Statistics</h2>
+	    </div>
+	        
+	    <div class="container" align="center">
+	               <div class="input-group" style="float:left;" >
+	                 	<div class="dropdown">
+	              			<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select a sorting Field  
+	                			  <span class="caret"></span></button>
+	                      			<ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+	                        			<li><a href="#" id="search_termButton" onclick="creatTable();return false;"> Search Terms </a></li>
+	      								<li><a href="#" id="browserButton"     onclick="showBrowserTable();return false;"> Browsers </a></li>
+	     								<li><a href="#" id="platformButton"    onclick="showPlatformTable();return false;"> Platforms </a></li>
+	      								<li class="divider"></li>
+	      								<li class="dropdown-submenu">
+							                <a tabindex="-1" href="#">Top Search Terms&nbsp;&nbsp;</a>
+							                <ul class="dropdown-menu">
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;To Day&nbsp;&nbsp;</a></li>
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Week&nbsp;&nbsp;</a></li>
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Month&nbsp;&nbsp;</a></li>
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Year&nbsp;&nbsp;</a></li>
+							                </ul>
+							              </li>
+									   <li class="dropdown-submenu">
+				                           <a tabindex="-1" href="#">Top Browsers</a>
+							                <ul class="dropdown-menu">
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;To Day&nbsp;&nbsp;</a></li>
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Week&nbsp;&nbsp;</a></li>
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Month&nbsp;&nbsp;</a></li>
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Year&nbsp;&nbsp;</a></li>
+							                </ul>
+							              </li>
+							              <li class="dropdown-submenu">
+							                <a tabindex="-1" href="#">Top Platforms</a>
+							                <ul class="dropdown-menu">
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;To Day&nbsp;&nbsp;</a></li>
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Week&nbsp;&nbsp;</a></li>
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Month&nbsp;&nbsp;</a></li>
+							                  <li><a tabindex="-1" href="#">&nbsp;&nbsp;Last Year&nbsp;&nbsp;</a></li>
+							                </ul>
+							              </li>
+	   						 		</ul>
+	 			     	</div>
+	            </div>
+	              
+	    </div>
+			      
+			    <div class="container">
+			        <div class="row">
+			            <div class="col-md-6">
+			        <table  table class= "table table-hover"  id="myTableSearchterm" width="100%" > 
+			                 <h3>Search terms </h3> 
+			         </table>
+			            
+			        <table table class= "table table-hover" id="myTableBrowser" width="100%">  
+			                <h3>Top 10 Browsers </h3> 
+			                  
+			         </table>
+			
+			        <table table class= "table table-hover" id="myTablePlatform" width="100%">  
+			                <h3>Platforms </h3>       
+			        </table>
+			            </div>
+			            
+			            <div class="col-md-6">
+			             <!--Div that will hold the pie chart-->
+			               <div class="container-fluid" align="center" width="100%" id="""chart_div">
+			                </div> 
+			            </div>
+			
+			        </div>
+			    </div> 
+					 
+	  </body>
 </html>
 
 
