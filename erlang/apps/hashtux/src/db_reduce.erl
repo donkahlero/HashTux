@@ -19,11 +19,11 @@
 reduce([_, _, {_, L}]) ->
     reduce(L);
 reduce(L) ->
-    {<<"key">>, EndTime} = lists:keyfind(<<"key">>, 1, lists:nth(1, L)),
-    {<<"key">>, StartTime} = lists:keyfind(<<"key">>, 1, lists:last(L)),
+    {<<"key">>, StartTime} = lists:keyfind(<<"key">>, 1, lists:nth(1, L)),
+    {<<"key">>, EndTime} = lists:keyfind(<<"key">>, 1, lists:last(L)),
     PIDs = spawn_workers(splitup(L, gen_tf(StartTime, EndTime), []), []),
     ResList = receive_res(PIDs, []),
-    lists:usort([[{<<"key">>, T}, {<<"value">>, Amount}] ||
+    lists:usort([{gen_key(T), Amount} ||
       [{<<"key">>, T}, {<<"value">>, _}] <- ResList,
       Amount <- [lists:sum([Counter || [{<<"key">>, T2},
       {<<"value">>, Counter}] <- ResList, T2 =:= T])]]).
@@ -33,7 +33,7 @@ reduce(L) ->
 gen_tf(StartTime, EndTime) when (EndTime - StartTime) < 86400 ->
     [EndTime];
 gen_tf(StartTime, EndTime) ->
-    lists:usort(lists:seq(StartTime, EndTime, 86400)).
+    lists:usort(lists:append(lists:seq(StartTime, EndTime, 86400), [EndTime])).
 
 %% @doc Splits up the list according to the time frame into chunks foreach day.
 splitup([], _, SplitRes) ->
@@ -43,6 +43,12 @@ splitup(L, [Time|Times], SplitRes) ->
           eval_time(CurrTime, Time) end,
     {L1, L2} = lists:partition(F, L),
     splitup(L2, Times, [L1|SplitRes]).
+
+%% @doc Generate the key (if it consists out of seperate keys).
+gen_key([K1, K2]) ->
+    binary:list_to_bin(binary_to_list(K1) ++ ", " ++ binary_to_list(K2));
+gen_key(K) ->
+    K.
 
 %% @doc Helperfunction evaluating if a Time is within hat timeframe.
 eval_time(Time, CompareTime) when Time =< CompareTime ->
