@@ -28,17 +28,17 @@ get_stat() ->
       [{<<"all">>,
         [{<<"map">>, <<"function(doc) { emit(null, doc) }">>}]},
        {<<"by_search_term">>,
-        [{<<"map">>, <<"function(doc) { if (doc.term && doc.timestamp)  emit(doc.timestamp, doc.term) }">>}]},
+        [{<<"map">>, <<"function(doc) { if (doc.term && doc.timestamp && doc.request_type == 'search')  emit(doc.timestamp, doc.term) }">>}]},
        {<<"by_browser">>,
-        [{<<"map">>, <<"function(doc) { if (doc.browser && doc.timestamp)  emit(doc.timestamp, doc.browser) }">>}]},
+        [{<<"map">>, <<"function(doc) { if (doc.browser && doc.timestamp && doc.request_type == 'search')  emit(doc.timestamp, doc.browser) }">>}]},
        {<<"by_language">>,
-        [{<<"map">>, <<"function(doc) { if (doc.language && doc.timestamp)  emit(doc.timestamp, doc.language) }">>}]},
+        [{<<"map">>, <<"function(doc) { if (doc.language && doc.timestamp && doc.request_type == 'search')  emit(doc.timestamp, doc.language) }">>}]},
        {<<"by_platform">>,
-        [{<<"map">>, <<"function(doc) { if (doc.platform && doc.timestamp)  emit(doc.timestamp, doc.platform) }">>}]},
+        [{<<"map">>, <<"function(doc) { if (doc.platform && doc.timestamp && doc.request_type == 'search')  emit(doc.timestamp, doc.platform) }">>}]},
        {<<"by_browser_version">>,
-        [{<<"map">>, <<"function(doc) { if (doc.browser && doc.browser_version && doc.timestamp)  emit(doc.timestamp, [doc.browser, doc.browser_version]) }">>}]},
+        [{<<"map">>, <<"function(doc) { if (doc.browser && doc.browser_version && doc.timestamp && doc.request_type == 'search')  emit(doc.timestamp, [doc.browser, doc.browser_version]) }">>}]},
        {<<"by_platform_browser">>,
-        [{<<"map">>, <<"function(doc) { if (doc.browser && doc.platform && doc.timestamp)  emit(doc.timestamp, [doc.platform, doc.browser]) }">>}]}
+        [{<<"map">>, <<"function(doc) { if (doc.browser && doc.platform && doc.timestamp && doc.request_type == 'search')  emit(doc.timestamp, [doc.platform, doc.browser]) }">>}]}
       ]}
     ].
 
