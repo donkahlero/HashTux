@@ -5,7 +5,7 @@ Make twitter posts conform to their guidelines <br />
 
 Stats: switching graphs and timeframes should work<br />
 Move youtube and instagram configs to config file<br />
-Popup if you click commercial use, with license and pay button<br />
+Popup if you click commercial use, with license and pay button // Mr. Jerk-Off<br />
 Front end: videos tweaked<br />
 For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
 Front end: visible button for freezing all<br />
