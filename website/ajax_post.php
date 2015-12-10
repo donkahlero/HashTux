@@ -25,6 +25,6 @@
 	/* Only handle if the search term is specified */
 	if (isset($_GET['search']) && $_GET['search'] != "") {          
 		$search = $_GET['search'];
-		echo request($search, $options);
+		echo request::make_request($search, $options);
 	} 
 ?>
