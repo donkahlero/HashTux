@@ -24,7 +24,7 @@
 	/* Only handle if the search term is specified */
 	if (isset($_GET['search']) && $_GET['search'] != "") {
 		$search = $_GET['search'];
-		$options = build_request_options($request_type);
-		echo request($search, $options);
+		$options = request::build_request_options($request_type);
+		echo request::make_request($search, $options);
 	}
 ?>
