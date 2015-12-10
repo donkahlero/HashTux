@@ -18,6 +18,7 @@ Error report / defect backlog - maybe link "click here to report problems"<br />
 In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 
 Safari: timescroll blinks while hovering <br />
+Instagram timescroll is not working, pictures from yesterday are showing up when you set it to i.e. 1 week ago.<br />
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
