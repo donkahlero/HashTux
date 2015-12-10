@@ -1,4 +1,5 @@
 var items = [];
+
 var term = "search_term_year";
 
 //item constructor

@@ -50,23 +50,13 @@ function initOptions() {
 
 function saveOptions() {
 
-    alert("Types\n" +
-            "Images: " + types.image + "\n" +
-            "Videos: " + types.video + "\n" +
-            "Text: " + types.text + "\n\n" +
-            "Services\n" +
-            "Twitter: " + services.twitter + "\n" +
-            "Instagram: " + services.instagram + "\n" +
-            "YouTube: " + services.youtube + "\n\n" +
-            "Language: " + language);
-
     // Check if the size tracker is small, medium or large. Then
     // set the gridWidth, gridHeight and totalItems acoordingly.
 
     if(size === "sm")
     {
-        gridWidth = 3;
-        gridHeight = 2;
+        gridWidth = 6;
+        gridHeight = 4;
         totalItems = gridWidth * gridHeight;
     }
 
@@ -79,8 +69,8 @@ function saveOptions() {
 
     else if(size === "lg")
     {
-        gridWidth = 6;
-        gridHeight = 4;
+        gridWidth = 3;
+        gridHeight = 2;
         totalItems = gridWidth * gridHeight;
     }
 

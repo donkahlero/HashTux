@@ -5,6 +5,9 @@
 	$config['backend_servers'] = ["http://localhost:8080", "http://taco.hashtux.com:8080", "http://ivo.hashtux.com:8080"];
 
 	// Timeout in seconds before chosing another server
-	$config['backend_timeout'] = 5;
+	$config['backend_timeout'] = 7;
 
+	// Instances of known downtime will be forgotten and servers will be considered for use again
+	// after this interval in seconds 
+	$config['backend_reconsider_time'] = 3600;
 ?>
