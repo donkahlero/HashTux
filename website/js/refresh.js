@@ -8,7 +8,7 @@ function refresh()
         var newItem = items[newIndex];
         var randTileNum = Math.floor((Math.random() * totalItems));
         var randTile = "#tile" + randTileNum;
-        var currentItem;
+        var currentItem = null;
         var currentIndex;
 
             for(i = 0; i < displayed.length; i++)
@@ -20,7 +20,7 @@ function refresh()
                 }
             }
 
-            if(!currentItem.frozen)
+            if(currentItem === null || !currentItem.frozen)
             {
                 if(newItem.service === "instagram")
                 {
@@ -29,11 +29,13 @@ function refresh()
                         $(randTile).animate({height: "0", opacity: "0"}, 0);
 
                         $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill fixitem');
-                        $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
                         $(randTile).css('background-image', 'url(' + newItem.url + ')');
                         $(randTile).html("<p class='usernameimage'><a class='greytext' href='" +
                                 newItem.userlink + "' target='_blank'>@" +
-                                newItem.username + "</a></p>");
+                                newItem.username + "</a></p>" +
+                                "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
+                                "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
+                                "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
 
                         $(randTile).animate({height: "100%", opacity: "1"}, 1000);
                     }
@@ -43,7 +45,6 @@ function refresh()
                         $(randTile).animate({height: "0", opacity: "0"}, 0);
 
                         $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill');
-                        $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
                         $(randTile).css('background-image', '');
                         $(randTile).html(
                                 "<p class='usernameimage'><a class='greytext' href='" +
@@ -51,7 +52,10 @@ function refresh()
                                 newItem.username + "</a></p>" +
                                 "<video width='100%' height='100%' autoplay loop muted controls src='" +
                                 newItem.url + 
-                                "'style='object-fit: fill; top: 0; position: absolute;'></video>");
+                                "'style='object-fit: fill; top: 0; position: absolute;'></video>" +
+                                "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
+                                "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
+                                "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
 
                         $(randTile).animate({height: "100%", opacity: "1"}, 1000);
                     }
@@ -64,7 +68,6 @@ function refresh()
                         $(randTile).animate({height: "0", opacity: "0"}, 0);
 
                         $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill fixitem');
-                        $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
                         $(randTile).css('background-image', '');
                         $(randTile).html(
                                 "<div class='twittertext'><p>" +
@@ -72,7 +75,10 @@ function refresh()
                                 "</p><p class='usernametweet'><a class='greytext' href='" +
                                 newItem.userlink + "' target='_blank'>@" +
                                 newItem.username + "</a></p>" +
-                                "</div>");
+                                "</div>" +
+                                "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
+                                "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
+                                "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
 
                         $(randTile).animate({height: "100%", opacity: "1"}, 1000);
                     }
@@ -82,7 +88,6 @@ function refresh()
                         $(randTile).animate({height: "0", opacity: "0"}, 0);
 
                         $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill fixitem');
-                        $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
                         $(randTile).css('background-image', 'url(' + newItem.url + ')');
                         $(randTile).html(
                                 "<div class='twitterimagetext'><p>" +
@@ -90,7 +95,10 @@ function refresh()
                                 "</p><p class='usernametweet'><a class='greytext' href='" +
                                 newItem.userlink + "' target='_blank'>@" +
                                 newItem.username + "</a></p>" +
-                                "</div>");
+                                "</div>" + 
+                                "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
+                                "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
+                                "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
 
                         $(randTile).animate({height: "100%", opacity: "1"}, 1000);
                     }
@@ -101,15 +109,17 @@ function refresh()
                     $(randTile).animate({height: "0", opacity: "0"}, 0);
 
                     $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill');
-                    $(randTile).attr('onclick', 'tileFreeze(tile' + randTileNum + ')');
                     $(randTile).css('background-image', '');
                     $(randTile).html(
-                            "<video width='100%' height='100%' autoplay loop muted controls src='" +
-                            newItem.url + 
-                            "'style='object-fit: fill; top: 0; position: absolute;'></video>" +
+                            "<iframe width='100%' height='100%' frameborder='0' src='" +
+                            newItem.url + "" +
+                            "' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
                             "<p class='usernameimage'><a class='greytext' href='" +
                             newItem.userlink + "' target='_blank'>@" +
-                            newItem.username + "</a></p>");
+                            newItem.username + "</a></p>" +
+                            "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
+                            "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
+                            "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
 
                     $(randTile).animate({height: "100%", opacity: "1"}, 1000);
                 }
