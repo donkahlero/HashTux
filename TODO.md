@@ -1,5 +1,8 @@
 #TODO
 <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
+
+Make twitter posts conform to their guidelines <br />
+
 Stats: switching graphs and timeframes should work<br />
 Move youtube and instagram configs to config file<br />
 Popup if you click commercial use, with license and pay button<br />
