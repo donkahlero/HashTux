@@ -82,12 +82,13 @@ get_max_time(Time) ->
 %% @docGets the access token for instagram.
 %%
 get_token() ->
-	{ok, Account} = application:get_env(hashtux, instagram_account),
-	Key = case get_value(access_token, Account) of
-				[] -> [];
-				V  -> V
-		  end,
-	Key.
+	{ok, Token} = application:get_env(instagram_account, access_token),
+	Token.
+%	Key = case get_value(access_token, Account) of
+%				[] -> [];
+%				V  -> V
+%		  end,
+%	Key.
 
 
 %% 

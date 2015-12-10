@@ -15,5 +15,8 @@
 	    	{access_token_secret, "W1raFk3kqVEj38QFjDus2qCfk8IU8ilWgfTqAgk3T5Lv6"}
 		]}
 	]}
-]}
+]},
+{instagram_account, [
+	{access_token, "2253641420.43956b9.2ce7ad96329647ffa756501b24fbed3e"}
+	]}
 ].
