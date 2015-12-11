@@ -96,30 +96,30 @@ get_token() ->
 %% @doc Checks for the options for which to filter Instagram results. The
 %% options can be 'image' and 'video'. Calls filter_insta_res/2 if needed.
 %% 
-filter_insta([], _L)  -> [];
-filter_insta(Res, []) -> Res;
-filter_insta(Res, L) ->
-	[X || X <- Res, Option <- L, lists:member(Option, X)].
-
 %filter_insta([], _L)  -> [];
 %filter_insta(Res, []) -> Res;
-%filter_insta(Res, L)  ->
-%	io:format("IG_SEARCH: Types boolean: ~p : ~p~n", [lists:member(<<"image">>, L), lists:member(<<"video">>, L)]),
-%	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
-%		{true, true}   -> Res;
-%		{false, false} -> [];
-%		{true, false}  -> filter_insta_res(Res, <<"image">>);
-%		{false, true}  -> filter_insta_res(Res, <<"video">>)
-%	end.
+%filter_insta(Res, L) ->
+%	[X || X <- Res, Option <- L, lists:member(Option, X)].
+
+filter_insta([], _L)  -> [];
+filter_insta(Res, []) -> Res;
+filter_insta(Res, L)  ->
+	io:format("IG_SEARCH: Types boolean: ~p : ~p~n", [lists:member(<<"image">>, L), lists:member(<<"video">>, L)]),
+	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
+		{true, true}   -> Res;
+		{false, false} -> [];
+		{true, false}  -> filter_insta_res(Res, <<"image">>);
+		{false, true}  -> filter_insta_res(Res, <<"video">>)
+	end.
 
 
 %%
 %% @doc Filters the results returned from Instagram based on the key 
 %% passed. 
 %% 
-%filter_insta_res([], _Key)	 -> [];
-%filter_insta_res(List, Key) ->
-%	[N || N <- List, get_value(binary:list_to_bin("content_type"), N) =:= Key]. 
+filter_insta_res([], _Key)	 -> [];
+filter_insta_res(List, Key) ->
+	[N || N <- List, io:format("~p~n", [get_value(binary:list_to_bin("content_type"), N)]), get_value(binary:list_to_bin("content_type"), N) =:= Key]. 
 
 
 %%
