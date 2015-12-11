@@ -70,8 +70,13 @@ function refresh()
                         $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill fixitem');
                         $(randTile).css('background-image', '');
                         $(randTile).html(
-                                "<div class='twittertext'><p>" +
-                                newItem.text +
+                                "<div class='twittertext'>" + 
+                                "<div class='twittertop'>" + 
+                                "<div class='twitterlogo'><img src='images/TwitterLogo_white.png' width='20px' height='20px'></div>" +
+                                "<div class='profilepic'><img src='images/TwitterLogo_white.png' width='20px' height='20px'></div>" + 
+                                "<div class='twitterusername'>" + newItem.displayname + "</div>" +
+                                "</div>" + 
+                                "<p>" + newItem.text +
                                 "</p><p class='usernametweet'><a class='greytext' href='" +
                                 newItem.userlink + "' target='_blank'>@" +
                                 newItem.username + "</a></p>" +
@@ -90,7 +95,13 @@ function refresh()
                         $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill fixitem');
                         $(randTile).css('background-image', 'url(' + newItem.url + ')');
                         $(randTile).html(
-                                "<div class='twitterimagetext'><p>" +
+                                "<div class='twitterimagetext'>" + 
+                                "<div class='twittertop'>" + 
+                                "<div class='twitterlogo'><img src='images/TwitterLogo_white.png' width='20px' height='20px'></div>" +
+                                "<div class='profilepic'><img src='images/TwitterLogo_white.png' width='20px' height='20px'></div>" + 
+                                "<div class='twitterusername'>" + newItem.displayname + "</div>" +
+                                "</div>" + 
+                                "<p>" +
                                 newItem.text +
                                 "</p><p class='usernametweet'><a class='greytext' href='" +
                                 newItem.userlink + "' target='_blank'>@" +
