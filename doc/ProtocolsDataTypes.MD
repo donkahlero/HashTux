@@ -22,6 +22,8 @@ The format of the document is the following (written in Erlang compatible with P
 {<<"location">>, {lat, long, place},
 {<<"view_count">>, view_count_as_integer},
 {<<"like_count">>, like_count_as_integer},
+{<<"date_string">>, <<"Readable date string"">>},
+{<<"profile_image_url">>, <<"URL of profile image">>},
 {<<"tags">>, [The Tags]}]
 ```
 
