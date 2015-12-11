@@ -8,8 +8,6 @@ Move youtube and twitter configs to config file<br />
 Popup if you click commercial use, with license and pay button // Mr. Jerk-Off<br />
 Front end: videos tweaked<br />
 For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
-Front end: visible button for freezing all<br />
-Front end: clarify that it's TILE SIZE that is small/medium/large or otherwiese clarify so it makes sense (size: large can almost feel like you're saying you have a large screen, so more tiles would fit). I'd almost rather have it named something else, like tile amount... but can't come up with the best term right now // J<br />
 Close button at top right in options meny?<br />
 
 Front end: maybe list of trending things on the first page<br />
@@ -17,7 +15,6 @@ Error report / defect backlog - maybe link "click here to report problems"<br />
 "Back to front page" button and icon in top menu<br />
 In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 
-Safari: timescroll blinks while hovering <br />
 Instagram timescroll is not working, pictures from yesterday are showing up when you set it to i.e. 1 week ago.<br />
 
 #Documentation:
