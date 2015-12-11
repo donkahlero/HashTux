@@ -147,6 +147,26 @@
     font-size: 10px;
 }
 
+.twittertop {
+    text-align: center;
+}
+
+.twitterlogo {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.profilepic {
+    float: left;
+}
+
+.twitterusername {
+    font-size: 10px;
+    color: #cccccc;
+    margin-bottom: 5px;
+}
+
 .topbar {
     padding-top: 15px;
     padding-bottom: 15px;
