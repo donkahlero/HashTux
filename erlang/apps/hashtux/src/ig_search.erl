@@ -33,6 +33,7 @@ search(Term, Options) ->
 					ResLength = length(Results),
 					io:format("IG_SEARCH: Unfiltered result count: ~p~n", [ResLength]),
 					Types = get_value(content_type, Options),
+					io:format("IG_SEARCH: Types are : ~p~n", [Types]),
 					FilterRes = filter_insta(Results, Types),
 					FilterResLength = length(FilterRes),
 					io:format("IG_SEARCH: Filtered result count: ~p~n", [FilterResLength]),
@@ -97,22 +98,28 @@ get_token() ->
 %% 
 filter_insta([], _L)  -> [];
 filter_insta(Res, []) -> Res;
-filter_insta(Res, L)  ->
-	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
-		{true, true}   -> Res;
-		{false, false} -> Res;
- 		{true, false}  -> filter_insta_res(Res, <<"image">>);
-		{false, true}  -> filter_insta_res(Res, <<"video">>)
-	end.
+filter_insta(Res, L) ->
+	[X || X <- Res, Option <- L, lists:member(Option, X)].
+
+%filter_insta([], _L)  -> [];
+%filter_insta(Res, []) -> Res;
+%filter_insta(Res, L)  ->
+%	io:format("IG_SEARCH: Types boolean: ~p : ~p~n", [lists:member(<<"image">>, L), lists:member(<<"video">>, L)]),
+%	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
+%		{true, true}   -> Res;
+%		{false, false} -> [];
+%		{true, false}  -> filter_insta_res(Res, <<"image">>);
+%		{false, true}  -> filter_insta_res(Res, <<"video">>)
+%	end.
 
 
 %%
 %% @doc Filters the results returned from Instagram based on the key 
 %% passed. 
 %% 
-filter_insta_res([], _Key)	 -> [];
-filter_insta_res(List, Key) ->
-	[N || N <- List, get_value(<<"content_type">>, N) == Key]. 
+%filter_insta_res([], _Key)	 -> [];
+%filter_insta_res(List, Key) ->
+%	[N || N <- List, get_value(binary:list_to_bin("content_type"), N) =:= Key]. 
 
 
 %%
@@ -209,6 +216,7 @@ get_tags(L)  ->
 %%
 get_content_type([]) -> [];
 get_content_type(L)  ->
+	%io:format("IG_SEARCH: Content type is: ~p~n", [get_value(<<"type">>, L)]),
 	{<<"content_type">>, get_value(<<"type">>, L)}.
 
 
