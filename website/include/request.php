@@ -122,7 +122,7 @@ class request {
 		
 		// Set the URL, including urlencoded (helps if there are special characters) search term
 		curl_setopt ($ch, CURLOPT_URL, $address . "/" . urlencode(request::clean_searchterm($term)));
-		
+
 		// Execute the request
 		$output = curl_exec ($ch);
 		
@@ -165,7 +165,7 @@ class request {
 	 * Remove special characters from string using regex.
 	 */
 	private static function clean_searchterm($string) {
-		return preg_replace ('/[^A-Öa-ö1-9\-\_\+ ]/', '', $string); // Removes special chars.
+		return preg_replace ('/[^\p{Common}\p{Latin}1-9\-\_\+ ]/', '', $string); // Removes special chars.
 	}
 }
 ?>
