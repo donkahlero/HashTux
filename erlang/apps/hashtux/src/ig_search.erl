@@ -119,7 +119,8 @@ filter_insta(Res, L)  ->
 %% 
 filter_insta_res([], _Key)	 -> [];
 filter_insta_res(List, Key) ->
-	[N || N <- List, io:format("~p~n", [get_value(binary:list_to_bin("content_type"), N)]), get_value(binary:list_to_bin("content_type"), N) =:= Key]. 
+	% get_value(<<"content_type"), N) =:= Key
+	[N || N <- List, io:format("~p~n", [get_value(binary:list_to_bin("content_type"), N)])]. 
 
 
 %%
