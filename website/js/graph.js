@@ -1,4 +1,5 @@
-// Load the Visualization API and the piechart package.
+
+      // Load the Visualization API and the piechart package.
       google.load('visualization', '1.0', {'packages':['corechart', 'bar']});
 
       // Set a callback to run when the Google Visualization API is loaded.
@@ -33,9 +34,22 @@
         }
         
         function getStats() {
-            var list = getItemValues();
-            
+            var list = [
+          ['Hashtux', 431],
+          ['Summer', 354],
+          ['Sun', 489],
+          ['Candy', 98],
+          ['Pepperoni', 30],
+          ['Dennis', 170],
+          ['Hashtux', 431],
+          ['Summer', 354],
+          ['Sun', 489],
+          ['Lisaann', 1000],
+          ['Candy', 98],
+          ['Pepperoni', 30],
+          ['Dennis', 170]
+        ];
         return list;
         }
       }
-
+    
