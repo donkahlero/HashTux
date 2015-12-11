@@ -16,6 +16,14 @@
 %%====================================================================
 
 start(_StartType, _StartArgs) ->
+	%%
+	%% Bring up the Cowboy HTTP listener.
+	%%
+	http_cowboy:start(),
+	
+	%%
+	%% Start the main supervisor
+	%%
     'hashtux_sup':start_link().
 
 %%--------------------------------------------------------------------
