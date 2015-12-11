@@ -13,6 +13,7 @@ rel/example_project
 .concrete/DEV_MODE
 .rebar
 /website/nbproject/private/
+sys.config
 
 #NetBeans
 nbproject/private/
@@ -75,6 +76,7 @@ _build/*
 _build/
 rebar.lock
 
+<<<<<<< HEAD
 ##TeX
 ## Core latex/pdflatex auxiliary files:
 auto/*
@@ -224,3 +226,8 @@ pythontex-files-*/
 # endfloat
 *.ttt
 *.fff
+=======
+##Website
+config.php
+servers.order
+>>>>>>> 23e4b00467a54cbd0530f28222db2e774736f0ad
