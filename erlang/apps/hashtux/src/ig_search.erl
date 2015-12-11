@@ -120,11 +120,13 @@ filter_insta(Res, L)  ->
 filter_insta_res([], _Key)	 -> [];
 filter_insta_res(List, Key) ->
 	% get_value(<<"content_type"), N) =:= Key
-	[N || N <- List, truee(N)]. 
+	[N || N <- List, filter_check(N, Key)]. 
 
-truee(N) ->
-	io:format("~p~n", [get_value(binary:list_to_bin("content_type"), N)]),
-	true.
+filter_check(CurrentPost, Key) ->
+	PostContentType = get_value(binary:list_to_bin("content_type"), CurrentPost),
+	io:format("IG: Testing if ~p matches requested type ~p: ~p~n", 
+			  [PostContentType, Key, PostContentType =:= Key]),
+	PostContentType =:= Key.
 
 %%
 %% @doc Gets the value from the key-value pair with key content_type
