@@ -18,8 +18,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/frontpagegrid.js"></script>
-    <script src="js/general.js"></script>
-    
+    <script src="js/general.js"></script>    
 
     <script>
         
@@ -168,6 +167,45 @@
 
                     </div>
 
+
+		            <div class="container con-fill header optionsbackground" id="commercial_use" onclick="hideCommercialUseInfo()">
+		
+		                <div class="panel optionspanel commercial_use_panel" id="commercial_panel">
+		
+		                    <h4 align="center">Commercial Use</h4>
+		
+		                    <hr />
+							<p>
+								HashTux is free for personal use. For commercial use, please purchase either a Lifetime
+								Access license, or a one year license.
+							</p>
+		
+							<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+							<input type="hidden" name="cmd" value="_s-xclick">
+							<input type="hidden" name="hosted_button_id" value="V6UA6S9LKLTKL">
+							
+							<div class="commercial_use_section">
+								<input type="hidden" name="on0" value="License:">License:
+								<select name="os0">
+									<option value="Lifetime License">Lifetime License €29,99 EUR</option>
+									<option value="1 Year License">1 Year License €9,99 EUR</option>
+								</select> 
+							</div>
+							<div class="commercial_use_section">
+								<input type="hidden" name="currency_code" value="EUR">
+								<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+								<img alt="" border="0" src="https://www.paypalobjects.com/sv_SE/i/scr/pixel.gif" width="1" height="1">
+							</div>
+							</form>
+		
+		                    <button type="button" class="btn btn-default savebutton"
+		                            data-toggle="tooltip" data-placement="top" title="Save all options (Grid will be refreshed)"
+		                            id="save" onclick="hideCommercialUseInfo()">Close</button>		
+		                </div>
+		
+		            </div>
+
+
                     <div class="footer">
 
                         <div class="donationbtn" id="donationbtn">
@@ -181,7 +219,7 @@
 
                         <p class="greytext" align="center">
 
-                            This product is free of charge for private use. For commercial use, <a href="#">click here</a>.
+                            HashTux is free for personal use. For commercial use, <a onclick="showCommercialUseInfo(); return false;">click here to read more</a>.
                             <br>
                             If you like the product and would like to support us, you can throw a 
                             <button type="button" class="btn btn-link linkbtn" onclick="showDonationBtn()">donation</button> our way. Every little bit helps!

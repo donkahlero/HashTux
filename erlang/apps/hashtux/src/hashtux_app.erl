@@ -17,15 +17,9 @@
 
 start(_StartType, _StartArgs) ->
 	%%
-	%% Start the http listener
+	%% Bring up the Cowboy HTTP listener.
 	%%
-	Dispatch = cowboy_router:compile([
-        {'_', [{'_', http_handler, []}]}
-    ]),
-    cowboy:start_http(my_http_listener, 100, [{port, 8080}],
-        [{env, [{dispatch, Dispatch}]}]
-    ),
-	io:format("~n~nhashtux_app: Started the cowboy http_handler.~n~n", []),
+	http_cowboy:start(),
 	
 	%%
 	%% Start the main supervisor
