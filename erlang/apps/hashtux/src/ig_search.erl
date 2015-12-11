@@ -120,8 +120,11 @@ filter_insta(Res, L)  ->
 filter_insta_res([], _Key)	 -> [];
 filter_insta_res(List, Key) ->
 	% get_value(<<"content_type"), N) =:= Key
-	[N || N <- List, io:format("~p~n", [get_value(binary:list_to_bin("content_type"), N)])]. 
+	[N || N <- List, truee(N)]. 
 
+truee(N) ->
+	io:format("~p~n", [get_value(binary:list_to_bin("content_type"), N)]),
+	true.
 
 %%
 %% @doc Gets the value from the key-value pair with key content_type
