@@ -112,8 +112,13 @@ function initGrid()
                         (12/gridWidth) + 
                         " col-fill fixitem' id='tile" +
                         count + "'>" +
-                        "<div class='twittertext'><p>" +
-                        displayed[count].text +
+                        "<div class='twittertext'>" +
+                        "<div class='twittertop'>" + 
+                        "<div class='twitterlogo'><img src='images/TwitterLogo_white.png' width='20px' height='20px'></div>" +
+                        "<div class='profilepic'><img src='images/TwitterLogo_white.png' width='20px' height='20px'></div>" + 
+                        "<div class='twitterusername'>" + displayed[count].displayname + "</div>" +
+                        "</div>" + 
+                        "<p>" + displayed[count].text +
                         "<p class='usernametweet'><a class='greytext' href='" +
                         displayed[count].userlink + "' target='_blank'>@" +
                         displayed[count].username + 
@@ -136,8 +141,13 @@ function initGrid()
                         displayed[count].url +
                         ");' id='tile" +
                         count + "'>" +
-                        "<div class='twitterimagetext'><p>" +
-                        displayed[count].text +
+                        "<div class='twitterimagetext'>" +
+                        "<div class='twittertop'>" + 
+                        "<div class='twitterlogo'><img src='images/TwitterLogo_white.png' width='20px' height='20px'></div>" +
+                        "<div class='profilepic'><img src='images/TwitterLogo_white.png' width='20px' height='20px'></div>" + 
+                        "<div class='twitterusername'>" + displayed[count].displayname + "</div>" +
+                        "</div>" + 
+                        "<p>" + displayed[count].text +
                         "<p class='usernametweet'><a class='greytext' href='" +
                         displayed[count].userlink + "' target='_blank'>@" +
                         displayed[count].username + 
