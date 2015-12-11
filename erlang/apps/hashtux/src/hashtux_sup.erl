@@ -28,19 +28,38 @@ start_link() ->
 
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
-	%% For now, start the HTTP handler here.
-	%% Later, we probably will just start a sub-supervisor for each task
-	%% (mining, db handling and http handling).
+	io:format("hashtux_sup: Started the top level supervisor! Welcome to hashtux.~n~n"),
+	%%
+	%% The cowboy HTTP handler is already set up.
+	%%
+	%% Here we can start supervisors responsible for the sub-task
+	%% data fetching, DB servers and main program flow
+		
+	DB_sup = {db_sup, 
+				 {db_sup, start_link, []},
+			 		permanent, 
+					10000, 
+					worker, 
+					[db_sup]},
+	Miner_sup = {miner_sup, 
+				 {miner_sup, start_link, []},
+			 		permanent, 
+					10000, 
+					worker, 
+					[miner_sup]},
+	Main_flow_sup = {main_flow_sup, 
+				 {main_flow_sup, start_link, []},
+			 		permanent, 
+					10000, 
+					worker, 
+					[main_flow_sup]},
 	
-	Dispatch = cowboy_router:compile([
-        {'_', [{'_', http_handler, []}]}
-    ]),
-    cowboy:start_http(my_http_listener, 100, [{port, 8080}],
-        [{env, [{dispatch, Dispatch}]}]
-    ),
-	io:format("~n~nStarted the cowboy http_handler~n~n", []),
-    
-	{ok, { {one_for_all, 0, 1}, []} }.
+	% One for one: "If a child process terminates, only that process is restarted."
+	% Intensity 1, period 1: allow children to fail once every second before terminating
+	% the top level supervisor.  
+	{ok, { {one_for_one, 1, 1}, [DB_sup, Miner_sup, Main_flow_sup]}}.
+	
+	
 
 %%====================================================================
 %% Internal functions
