@@ -1,3 +1,7 @@
+a {
+    color: #cccccc;
+}
+
 .logo {
     width: 100%;
     margin-top: 30px;
@@ -149,22 +153,18 @@
 
 .twittertop {
     text-align: center;
+    margin-bottom: 10px;
 }
 
 .twitterlogo {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 5px;
+    right: 5px;
 }
 
-.profilepic {
-    float: left;
-}
-
-.twitterusername {
+.twitterlink {
     font-size: 10px;
     color: #cccccc;
-    margin-bottom: 5px;
 }
 
 .topbar {

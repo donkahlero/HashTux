@@ -68,10 +68,10 @@ session_start ();
 		
 		var statsItems  = [];//	An array to store all fetched itmes 
 		var  itemsEx = [];	//	An array to store an array of itmes (itemName) and(itemCount). 
-		//	This function is used to get the JSON object and put them in a new array.
+		//	This function is used to put the JSON object in items array in to a new array statsItems.
 		function getItemValues(){
-			statsItems  = [];
-			itemsEx = [];
+			statsItems  = [];	//	A new array to store the JSON objects in a list to be used in creatTable().
+			itemsEx = [];		//	Array of lists of items.name and items.value.  		
 			
 			for(i = 0; i < items.length; i++)
 							{
@@ -85,23 +85,24 @@ session_start ();
 				  
 			   }
 		
-		window.onload =  fetch('search_term_year');	
-
+		window.onload =  fetch('search_term_year');	//	search term of the year is shown to start with when the page loads.
+		//	creatTable is function used to creat tables, Each table is created using 
+		//	a library called DataTable. Multiple case statments are used to creat the diffrent tables. 
 		function creatTable() {
 				 getItemValues();
-			
+			//	This is the switch statement with termtype as a case to check for diffrent terms requested.  	
 			switch (termtype){
 
 			 case 'search_term_year':
-                             
+				 	 // Here the table for search term year is created in tableContainer           
                $('#tableContainer').html("<table class='searchTermTableYear' id='searchTermTableYear' width='100%'></table>");
-             	        
+           			 //	Here the table for search term year is rendered using DataTable   
 					 $('#searchTermTableYear').DataTable( {
-					    	retrieve: true,
-					    	"aaSorting": [[1,'desc'], ],
-					        data: statsItems,
+					    	retrieve: true, //	retrieve is a boolean that allows the table to be rendered after initializing. 
+					    	"aaSorting": [[1,'desc'], ],//	aaSorting sorts the count in descending order. 
+					        data: statsItems, // The table is generated using data from statsItems array. 
 					        
-					       	columns: [		      																			
+					       	columns: [		  // colums assigns the titles for the table. 	      																			
 					        	{ title: "Top Search Terms for This Year" },
 					            { title: "Count" },
 					           
