@@ -470,23 +470,23 @@
 
                 <div class="row topbar" id="optionsMenu">
                     <div class="col-sm-8">
-                        <ol class="breadcrumb" style="background:none; margin: 0; padding: 0;">
-                            <li id="searchlabel" style="font-weight: bold; color: #ebebeb;"><script>document.write("#" + searchterm);</script></li>
+                        <ol class="breadcrumb searchlabel">
+                            <li id="searchlabel"><script>document.write("#" + searchterm);</script></li>
                         </ol>
                     </div>
                     <div class="col-sm-4">
                         <button type="submit" class="iconbtn" id="optionsBtn"
-                                data-toggle="tooltip" data-placement="bottom" title="Click here to open the options menu"
-                                style="float:right;" onclick="showOptions()">
+                                data-toggle="tooltip" data-placement="bottom" 
+                                title="Click here to open the options menu" onclick="showOptions()">
                             <img src="images/options.png" width="30px" height="30px"/>
                         </button>
                         
-                        <input type="text" class="searchfield" id="searchField" onkeypress="runScript(event)"
-                            style="display: none; float: right; width: 70%; margin-right: 15px; opacity: 0.9;">
+                        <input type="text" class="searchfield searchfieldgrid" 
+                               id="searchField" onkeypress="runScript(event)">
                             
                         <button type="submit" class="iconbtn" id="searchBtn"
-                                data-toggle="tooltip" data-placement="bottom" title="Click here to enter a new search term"
-                                style="float:right; margin-right: 15px;" onmouseover="showField()">
+                                data-toggle="tooltip" data-placement="bottom" 
+                                title="Click here to enter a new search term" onmouseover="showField()">
                             <img src="images/search.png" width="30px" height="30px"/>
                         </button>
                         <div class="centered" id="player">
@@ -500,8 +500,8 @@
                 
                 <div class="row topbar" id="actionsMenu">
                     <div class="col-sm-3">
-                        <ol class="breadcrumb" style="background:none; margin: 0; padding: 0;">
-                            <li id="searchlabel" style="font-weight: bold; color: #ebebeb;"><script>document.write("#" + searchterm);</script></li>
+                        <ol class="breadcrumb searchlabel">
+                            <li id="searchlabel"><script>document.write("#" + searchterm);</script></li>
                         </ol>
                     </div>
                     <div class="col-sm-6">
@@ -536,8 +536,7 @@
                 <div class="no-results" id="no-results">NO RESULTS</div>
             </div>
 
-            <div class="container con-fill header" id="options" onclick="hideOptions()"
-                     style="background-color: rgba(0, 0, 0, 0.5); display: none;" >
+            <div class="container con-fill header optionsbackground" id="options" onclick="hideOptions()">
 
                 <div class="panel optionspanel" style="margin: auto;" id="optionsPanel">
 
