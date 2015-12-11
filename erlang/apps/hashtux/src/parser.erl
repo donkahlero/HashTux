@@ -108,7 +108,9 @@ parse_youtube_video(Video, HashTag) ->
 
 			Snippet = extract_from_node(<<"snippet">>, Items),
 
-			PubDate = apis_aux:youtube_to_epoch(binary_to_list(extract_from_node(<<"publishedAt">>, Snippet))),		%% convert to EPOCH
+			Date = extract_from_node(<<"publishedAt">>, Snippet),
+
+            PubDate = apis_aux:youtube_to_epoch(binary_to_list(extract_from_node(<<"publishedAt">>, Snippet))),		%% convert to EPOCH
 
 			Description = extract_from_node(<<"description">>, Snippet),
 			
@@ -133,7 +135,8 @@ parse_youtube_video(Video, HashTag) ->
 			Id = null,
             Resource_URL = null,
             Embed_URL = null,
-			PubDate = null,
+			Date = null,
+            PubDate = null,
 			Description = null,
 			Language = null,
 			ViewCount = null,
@@ -145,7 +148,7 @@ parse_youtube_video(Video, HashTag) ->
     end,
 
     % NOTE: add 'Clean Result'
-    A = [{<<"search_term">>, list_to_binary(HashTag)}, {<<"service">>, <<"youtube">>}, {<<"insert_timestamp">>, Timestamp}, {<<"timestamp">>, PubDate}, {<<"content_type">>, <<"video">>}, {<<"service_id">>, Id}, {<<"text">>, Description}, {<<"language">>, Language}, {<<"view_count">>, ViewCount}, {<<"likes">>, LikeCount}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Embed_URL}, {<<"resource_link_low">>, Resource_URL}, {<<"username">>, ChannelTitle}, {<<"profile_link">>, Channel_URL}, {<<"user_id">>, ChannelId}],
+    A = [{<<"search_term">>, list_to_binary(HashTag)}, {<<"service">>, <<"youtube">>}, {<<"insert_timestamp">>, Timestamp}, {<<"timestamp">>, PubDate}, {<<"date_string">>, Date}, {<<"content_type">>, <<"video">>}, {<<"service_id">>, Id}, {<<"text">>, Description}, {<<"language">>, Language}, {<<"view_count">>, ViewCount}, {<<"likes">>, LikeCount}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Embed_URL}, {<<"resource_link_low">>, Resource_URL}, {<<"username">>, ChannelTitle}, {<<"profile_link">>, Channel_URL}, {<<"user_id">>, ChannelId}],
 
     % return clean result
     clean_result(A).
@@ -211,6 +214,8 @@ parse_tweet_details(HashTag, Status) ->
         not_found -> null
     end,
 
+    StringDate = extract_from_node(<<"created_at">>, Status),
+
     Date = case extract(<<"created_at">>, Status) of
         {found, X2} -> 
             dateconv:twitter_to_epoch(binary_to_list(X2));
@@ -260,9 +265,11 @@ parse_tweet_details(HashTag, Status) ->
     UserName = extract_from_node(<<"name">>, UserInfo),
     ScreenName = extract_from_node(<<"screen_name">>, UserInfo),
     User_Profile_Link = build_tweet_profile_link(ScreenName),
+    User_Profile_Image_Url = extract_from_node(<<"profile_image_url_https">>, UserInfo),
+
     UserID = convert_user_ID(extract_from_node(<<"id">>, UserInfo)),
 
-    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"service">>, <<"twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"timestamp">>, Date}, {<<"insert_timestamp">>, Timestamp}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Media_URL}, {<<"resource_link_low">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"free_text_name">>, UserName}, {<<"username">>, ScreenName}, {<<"profile_link">>, User_Profile_Link}, {<<"user_id">>, UserID}],
+    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"service">>, <<"twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"timestamp">>, Date}, {<<"date_string">>, StringDate}, {<<"insert_timestamp">>, Timestamp}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Media_URL}, {<<"resource_link_low">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"free_text_name">>, UserName}, {<<"username">>, ScreenName}, {<<"profile_link">>, User_Profile_Link}, {<<"profile_image_url">>, User_Profile_Image_Url}, {<<"user_id">>, UserID}],
     clean_result(A).
 
 %%
