@@ -303,7 +303,7 @@
             // Shows the textfield used to make a new search when you click the search button
             
             function showField() {
-                $('#searchField').fadeIn(500);           // Fade in the text field
+                $('#searchField').fadeIn(500);      // Fade in the text field
                 $('#searchBtn').hide();             // Hide the search button
                 
                 $('#searchField').click(function(e) {
@@ -312,7 +312,8 @@
             }
             
             function showMenu() {
-                $('#menuBtnTop').fadeOut(200);
+                $('#menuBtn').fadeOut(200);
+                $('#actionsBtn').fadeOut(200);
                 $('#optionsMenu').fadeIn(500);
                 $('#topbackdrop').fadeIn(500);
             }
@@ -322,18 +323,20 @@
                 $('#optionsMenu').fadeOut(500);
                 $('#topbackdrop').fadeOut(500);
                 $('#searchBtn').show();
-                $('#menuBtnTop').fadeIn(200);
+                $('#menuBtn').fadeIn(200);
+                $('#actionsBtn').fadeIn(200);
             }
             
-            function showBottomMenu() {
-                $('#menuBtnBottom').fadeOut(200);
-                $('#bottombackdrop').fadeIn(500);
+            function showActionsMenu() {
+                $('#actionsBtn').fadeOut(200);
+                $('#menuBtn').fadeOut(200);
                 $('#actionsMenu').fadeIn(500);
+                $('#topbackdrop').fadeIn(500);
             }
             
-            function hideBottomMenu() {
-                $('#menuBtnBottom').fadeIn(200);
-                $('#bottombackdrop').fadeOut(500);
+            function hideActionsMenu() {
+                $('#actionsBtn').fadeIn(200);
+                $('#menuBtn').fadeIn(200);
                 $('#actionsMenu').fadeOut(500);
             }
             
@@ -377,11 +380,7 @@
                     if(y > topLimit)
                     {
                         hideMenu();
-                    }
-                    
-                    if(y < bottomLimit)
-                    {
-                        hideBottomMenu();
+                        hideActionsMenu();
                     }
                 });
             }
@@ -461,14 +460,12 @@
                 
                 <div class="topbackdrop" id="topbackdrop"></div>
                 
-                <button type="submit" class="menubtntop" id="menuBtnTop" onmouseover="showMenu()">
+                <button type="submit" class="menubtn" id="menuBtn" onmouseover="showMenu()">
                     <img src="images/menuicon.png" width="50px" height="50px"/>
                 </button>
                 
-                <div class="bottombackdrop" id="bottombackdrop"></div>
-                
-                <button type="submit" class="menubtnbottom" id="menuBtnBottom" onmouseover="showBottomMenu()">
-                    <img src="images/menuicon.png" width="50px" height="50px"/>
+                <button type="submit" class="actionsbtn" id="actionsBtn" onmouseover="showActionsMenu()">
+                    <img src="images/menuiconbottom.png" width="50px" height="50px"/>
                 </button>
 
                 <div class="row topbar" id="optionsMenu">
@@ -501,8 +498,12 @@
                     </div>
                 </div>
                 
-                <div class="row bottombar" id="actionsMenu">
-                    <div class="col-sm-3"></div>
+                <div class="row topbar" id="actionsMenu">
+                    <div class="col-sm-3">
+                        <ol class="breadcrumb" style="background:none; margin: 0; padding: 0;">
+                            <li id="searchlabel" style="font-weight: bold; color: #ebebeb;"><script>document.write("#" + searchterm);</script></li>
+                        </ol>
+                    </div>
                     <div class="col-sm-6">
                         <p class="timescrollvalue" id="timeScrollValue">
                         </p>
