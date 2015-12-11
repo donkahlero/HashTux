@@ -1,7 +1,4 @@
-<?php
-	/* Start a new session or resume if the client has a cookie ;) */
-	session_start();
-?>
+
 <html lang="en">
     <head>
         
@@ -14,12 +11,18 @@
         <link href="css/hashtux.css" rel="stylesheet">
         <script src="js/userstats_fetcher.js"></script>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script src="js/graph.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"></script>
         <script type='text/javascript'>
+        window.onload =  fetch('search_term_year');	
+		
+        // Load the Visualization API and the piechart package.
+        google.load('visualization', '1.0', {'packages':['corechart', 'bar']});
 
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.setOnLoadCallback(drawChart);
+        
 
 		var termtype;
 		var type = "search_term";
@@ -39,6 +42,7 @@
 		            parse_to_items(myString);
 		            creatTable();
 		            
+		            
 		        }
 		    });
 		}
@@ -57,7 +61,7 @@
 			fetch(type + '_' + period);
 			
 			}
-		
+		 
 		var statsItems  = [];
 		var  itemsEx = [];
 		
@@ -69,15 +73,41 @@
 							{
 			              itemName = items[i].name; 
 			              itemCount = items[i].value;
-			
 			              itemsEx = [itemName, itemCount];
 			              
 			              statsItems.push(itemsEx);
 						}
-				  
+			
 			   }
+
+	      function drawChart() {
+			var chartItems = [];
+				chartItems = statsItems.slice(Math.max(statsItems.length - 10, 1));
+	        // Create the data table.
+	        var data = new google.visualization.DataTable();
+	        data.addColumn('string', 'Hashtag');
+	        data.addColumn('number', 'Times searched');
+	        data.addRows(chartItems);
+
+	        // Set chart options
+	        var options = {
+	            'title': getTitle(),
+	            'width':600,
+	            'height':400,
+	            animation: {"startup":true, "duration":5000}
+	        };
+
+	        // Instantiate and draw our chart, passing in some options.
+	        var chart = new google.visualization.BarChart(document.getElementById('graphContainer'));
+	        chart.draw(data, options);
+	        
+	        function getTitle($Name) {
+	            $Name = 'NameOfChart';
+	            return $Name;
+	        }
+	      }
+			   
 		
-		window.onload =  fetch('search_term_year');	
 			function creatTable() {
 					 getItemValues();
 				
@@ -89,12 +119,14 @@
 	             	        
 						 $('#searchTermTableYear').DataTable( {
 						    	retrieve: true,
+						    	"aaSorting": [[1,'desc'], ],
 						        data: statsItems,
-						       	columns: [																				
+						        
+						       	columns: [		      																			
 						        	{ title: "Top Search Terms for This Year" },
 						            { title: "Count" },
 						           
-						     	]
+						     	] 
 						    } );
 						    break; 
 				 case 'search_term_month': 
@@ -103,6 +135,7 @@
 					
 				    	 $('#searchTermTableMonth').DataTable( {
 				    		 	retrieve: true,
+				    		 	"aaSorting": [[1,'desc']],
 					            data: statsItems,
 					            columns: [
 					                { title: "Top Search Terms for Last Month" },
@@ -117,6 +150,7 @@
 	
 						$('#searchTermTableWeek').DataTable( {
 					        	retrieve: true,
+					        	"aaSorting": [[1,'desc']],
 					            data: statsItems,
 					            columns: [
 					                { title: "Top Search Terms for Last Week" },
@@ -131,6 +165,7 @@
 					 
 					    $('#searchTermTableToday').DataTable( {
 					        	retrieve: true,
+					        	"aaSorting": [[1,'desc']],
 					            data: statsItems,
 					            columns: [
 					                { title: "Top Search Terms for the Last 24H" },
@@ -145,6 +180,7 @@
 	
 						 $('#browserVersionTableYear').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Browsers with Version for This Year" },
@@ -159,6 +195,7 @@
 	
 						 $('#browserVersionTableMonth').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Browsers with Version for Last Month" },
@@ -173,6 +210,7 @@
 		
 							 $('#browserVersionTableWeek').DataTable( {
 					        	retrieve: true,
+					        	"aaSorting": [[1,'desc']],
 					            data: statsItems,
 					            columns: [
 					                { title: "Top Browsers with Version for Last Week" },
@@ -187,6 +225,7 @@
 	
 						 $('#browserVersionTableToday').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Browsers with Version for Last 24H" },
@@ -201,6 +240,7 @@
 	
 						 $('#browserTableYear').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Browsers for This Year" },
@@ -215,6 +255,7 @@
 	
 						 $('#browserTableMonth').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Browsers for Last Month" },
@@ -229,6 +270,7 @@
 	
 						 $('#browserTableWeek').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Browsers for Last Week" },
@@ -243,6 +285,7 @@
 	
 						 $('#browserTableToday').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Browsers for Last Today" },
@@ -258,6 +301,7 @@
 	
 						 $('#platformTableYear').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Platforms This Year" },
@@ -272,6 +316,7 @@
 	
 						 $('#platformTableMonth').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Platforms For Last Month" },
@@ -286,6 +331,7 @@
 	
 						 $('#platformTableWeek').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Platforms For Last Week" },
@@ -300,6 +346,7 @@
 	
 						 $('#platformTabletoday').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Platforms For Last 24H" },
@@ -314,9 +361,10 @@
 	
 						 $('#platformBrowserTable').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
-				                { title: "Top Platforms use with Browser for Last Year" },
+				                { title: "Top Platforms use with Browser for This Year" },
 				                { title: "Count" },
 				               
 				            ]
@@ -328,6 +376,7 @@
 	
 						 $('#platformBrowserMonth').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Platforms use with Browser for Last Month" },
@@ -342,6 +391,7 @@
 	
 						 $('#platformBrowserWeek').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Platforms use with Browser for Last Week" },
@@ -356,6 +406,7 @@
 	
 						 $('#platformBrowserDay').DataTable( {
 				        	retrieve: true,
+				        	"aaSorting": [[1,'desc']],
 				            data: statsItems,
 				            columns: [
 				                { title: "Top Platforms use with Browser for Last 24H" },
@@ -364,36 +415,6 @@
 				            ]
 				        } ); 
 					    break;
-	 			case 'browser_platform_year':
-					 
-					 $('#tableContainer').html("<table class='browserPlatformTable' id='browserPlatformTable' width='100%'></table>");
-	
-						 $('#browserPlatformTable').DataTable( {
-				        	retrieve: true,
-				            data: statsItems,
-				            columns: [
-				                { title: "Top Browsers use with Platform for Last Year " },
-				                { title: "Count" },
-				                 
-				            ]
-				        } ); 
-					    break;
-	 			case 'browser_platform_month':
-					 
-					 $('#tableContainer').html("<table class='browserPlatformMonth' id='browserPlatformMonth' width='100%'></table>");
-	
-						 $('#browserPlatformMonth').DataTable( {
-				        	retrieve: true,
-				            data: statsItems,
-				            columns: [
-				                { title: "Top Browsers use with Platform for Last Month " },
-				                { title: "Count" },
-				                 
-				            ]
-				        } ); 
-					    break;
-			    
-	
 				 }
 			
 		           
@@ -403,8 +424,7 @@
 </head>
 
 <body>
-	<div>
-        <h1 align="center">#Hashtux</h1>
+	<div >
         <h2 align="center">Welcome to HashTux User Habits Statistics</h2>
     </div>
 <div class="container">
@@ -421,8 +441,7 @@
        <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">Combinations	
           <ul class="dropdown-menu">
-           <li><a class="btn"	onclick="changeType('platform_browser')">Platform/Browser</a></li>
-          	<li><a class="btn"	onclick="changeType('browser_platform')">Browser/Platform</a></li>
+           <li><a class="btn"		onclick="changeType('platform_browser')">Platform/Browser</a></li>
           	  <li><a class="btn"	onclick="changeType('browser_version')">Browser/Version</a></li>
           </ul>
         </li>
@@ -442,11 +461,10 @@
     </div>  
   </div>
 </div>
-     <div class="container">
-        <div class="row">
+     <div class="container" >
+        <div class="row" >
             <div class="col-md-6" id="tableContainer"></div>
             	<div class="col-md-6" id="graphContainer">
-                	<div class="container-fluid" align="center" width="100%" id=""chart_div">
                 </div> 
             </div>
             
@@ -454,6 +472,4 @@
     </div>
   </header>
 </body>
-</body>
 </html>
- 
