@@ -54,7 +54,7 @@ build_request(Term, Options) ->
 	case get_value(history_timestamp, Options) of
 		[] -> 
 			Url1 = ?URL ++ Term ++ ?TAIL ++ ?AND ++ ?ACCESS ++ Token,
-			%io:format("MINER_WORKER: Build Url: ~p~n", [Url1]),
+			io:format("MINER_WORKER: Build Url: ~p~n", [Url1]),
 			Url1;
 		Value ->
 			MinTime = Value - 43200,
@@ -62,7 +62,7 @@ build_request(Term, Options) ->
 			Url2 = ?URL ++ Term ++ ?TAIL ++ ?AND ++ ?MIN_TIME ++ 
 					erlang:integer_to_list(MinTime) ++ ?AND ++ ?MAX_TIME ++ 
 					erlang:integer_to_list(MaxTime) ++ ?AND ++ ?ACCESS ++ Token,
-			%io:format("MINER_WORKER: Build Url: ~p~n", [Url2]),
+			io:format("MINER_WORKER: Build Url: ~p~n", [Url2]),
 			Url2
 	end.
 
