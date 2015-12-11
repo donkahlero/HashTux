@@ -1,29 +1,30 @@
 
 <html lang="en">
-    <head>
-        
-        <title>HashTux</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.css">
-        <link href="css/bootstrap.css" rel="stylesheet">
-        <link href="css/stats.css" rel="stylesheet">  
-        <link href="css/hashtux.css" rel="stylesheet">
-        <script src="js/userstats_fetcher.js"></script>
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"></script>
-        <script type='text/javascript'>
-        window.onload =  fetch('search_term_year');	
-		
-        // Load the Visualization API and the piechart package.
+<head>
+
+<title>HashTux</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css"
+	href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.css">
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/stats.css" rel="stylesheet">
+<link href="css/hashtux.css" rel="stylesheet">
+<script src="js/userstats_fetcher.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf8"
+	src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"></script>
+<script type='text/javascript'>
+	    // Load the Visualization API and the piechart package.
         google.load('visualization', '1.0', {'packages':['corechart', 'bar']});
 
         // Set a callback to run when the Google Visualization API is loaded.
-        google.setOnLoadCallback(drawChart);
+       google.setOnLoadCallback(drawChart);
         
-
+        window.onload =  fetch('search_term_year');	
 		var termtype;
 		var type = "search_term";
 		var period = "year"; 
@@ -80,41 +81,14 @@
 			
 			   }
 
-	      function drawChart() {
-			var chartItems = [];
-				chartItems = statsItems.slice(Math.max(statsItems.length - 10, 1));
-	        // Create the data table.
-	        var data = new google.visualization.DataTable();
-	        data.addColumn('string', 'Hashtag');
-	        data.addColumn('number', 'Times searched');
-	        data.addRows(chartItems);
-
-	        // Set chart options
-	        var options = {
-	            'title': getTitle(),
-	            'width':600,
-	            'height':400,
-	            animation: {"startup":true, "duration":5000}
-	        };
-
-	        // Instantiate and draw our chart, passing in some options.
-	        var chart = new google.visualization.BarChart(document.getElementById('graphContainer'));
-	        chart.draw(data, options);
-	        
-	        function getTitle($Name) {
-	            $Name = 'NameOfChart';
-	            return $Name;
-	        }
-	      }
 			   
 		
 			function creatTable() {
 					 getItemValues();
-				
 				switch (termtype){
 	
 				 case 'search_term_year':
-	                             
+
 	               $('#tableContainer').html("<table class='searchTermTableYear' id='searchTermTableYear' width='100%'></table>");
 	             	        
 						 $('#searchTermTableYear').DataTable( {
@@ -420,56 +394,53 @@
 		           
 		}  
     </script>
-    
+
 </head>
 
 <body>
-	<div >
-        <h2 align="center">Welcome to HashTux User Habits Statistics</h2>
-    </div>
-<div class="container">
- <nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="">HashTux</a>
-    </div>
-    <div>
-      <ul class="nav navbar-nav ">
-        <li><a class="btn" 	onclick="changeType('search_term')">Search Term</a></li>
-        <li><a class="btn"	onclick="changeType('browser')">Browser</a></li>
-        <li><a class="btn"	onclick="changeType('platform')">Platform</a></li>     
-       <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Combinations	
-          <ul class="dropdown-menu">
-           <li><a class="btn"		onclick="changeType('platform_browser')">Platform/Browser</a></li>
-          	  <li><a class="btn"	onclick="changeType('browser_version')">Browser/Version</a></li>
-          </ul>
-        </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right"> 
-       <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Period
-          <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a class="btn" 	onclick="changePeriod('today')">Last 24H</a></li>
-            <li><a class="btn" 	onclick="changePeriod('week')">Last Week</a></li>
-            <li><a class="btn" 	onclick="changePeriod('month')">Last Month</a></li>
-            <li><a class="btn" 	onclick="changePeriod('year')">Last Year</a></li>
-          </ul>
-        </li>
-      </ul> 
-    </div>  
-  </div>
-</div>
-     <div class="container" >
-        <div class="row" >
-            <div class="col-md-6" id="tableContainer"></div>
-            	<div class="col-md-6" id="graphContainer">
-                </div> 
-            </div>
-            
-        </div>
-    </div>
-  </header>
+	<div>
+		<h2 align="center">Welcome to HashTux User Habits Statistics</h2>
+	</div>
+	<div class="container">
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="">HashTux</a>
+				</div>
+				<div>
+					<ul class="nav navbar-nav ">
+						<li><a class="btn" onclick="changeType('search_term')">Search Term</a></li>
+						<li><a class="btn" onclick="changeType('browser')">Browser</a></li>
+						<li><a class="btn" onclick="changeType('platform')">Platform</a></li>
+						<li class="dropdown"><a class="dropdown-toggle"
+							data-toggle="dropdown" href="#">Combinations
+								<ul class="dropdown-menu">
+									<li><a class="btn" onclick="changeType('platform_browser')">Platform/Browser</a></li>
+									<li><a class="btn" onclick="changeType('browser_version')">Browser/Version</a></li>
+								</ul></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown"><a class="dropdown-toggle"
+							data-toggle="dropdown" href="#">Period <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a class="btn" onclick="changePeriod('today')">Last 24H</a></li>
+								<li><a class="btn" onclick="changePeriod('week')">Last Week</a></li>
+								<li><a class="btn" onclick="changePeriod('month')">Last Month</a></li>
+								<li><a class="btn" onclick="changePeriod('year')">Last Year</a></li>
+							</ul></li>
+					</ul>
+				</div>
+			</div>
+	
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6" id="tableContainer"></div>
+			<div class="col-md-6" id="graphContainer"></div>
+		</div>
+
+	</div>
+	</div>
+	</header>
 </body>
 </html>
