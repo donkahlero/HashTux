@@ -37,7 +37,7 @@ search(Term, Options) ->
 					FilterRes = filter_insta(Results, Types),
 					FilterResLength = length(FilterRes),
 					io:format("IG_SEARCH: Filtered result count: ~p~n", [FilterResLength]),
-					[{filtered, Results}, {unfiltered, FilterRes}]
+					[{filtered, FilterRes}, {unfiltered, Results}]
 			catch _ -> []
 			end;
 		{error, Reason} ->
