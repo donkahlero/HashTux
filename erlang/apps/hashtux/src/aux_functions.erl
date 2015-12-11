@@ -27,20 +27,20 @@ get_value(Key, List)  ->
 %% @doc Gets the Youtube Data API 'SERVER KEY'
 %%
 get_youtube_keys() ->
-	{ok, Account} = application:get_env(hashtux, youtube_account),
-	get_value(server_key, Account). 
+	{ok, Account} = application:get_env(youtube_account, server_key),
+	Account.
 
 %%
 %% @doc Gets the Twitter API Keys
 %%
 get_twitter_keys() ->
-	{ok, Account} = application:get_env(hashtux, twitter_account),
-	AccessToken = get_value(access_token, Account),
-	AccessTokenSecret = get_value(access_token_secret, Account),
-	ConsumerKey = get_value(consumer_key, Account),
-	ConsumerKeySecret = get_value(consumer_key_secret, Account),
-	Keys = {AccessToken, AccessTokenSecret, ConsumerKey, ConsumerKeySecret},
-	Keys.
+	{ok, AccessToken} = application:get_env(twitter_account, access_token),
+	{ok, AccessTokenSecret} = application:get_env(twitter_account, access_token_secret),
+	{ok, ConsumerKey} = application:get_env(twitter_account, consumer_key),
+	{ok, ConsumerKeySecret} = application:get_env(twitter_account, consumer_key_secret),
+
+	{AccessToken, AccessTokenSecret, ConsumerKey, ConsumerKeySecret}.
+	
 
 %%
 %% @doc Strip away request_type field from the options list
