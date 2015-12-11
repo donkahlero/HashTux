@@ -36,6 +36,7 @@ Here is the format of the request:
 Options - a JSON object with the following key-value pairs:
  - request_type: "search" for initial search (more results) or "update" for subsequent (ajax) requests. Use "heartbeat" to trigger precaching.
  - service: a list, any combination of "twitter", "instagram", "youtube". Omitting this options means allow all.
+ - history_timestamp, an epoch timestamp which the history search will center around.
  - content_type: a list, any combination of "image", "text", "video".  Omitting this options means allow all.
  - language: two lowercase characters representation. Omitting this options means allow all.
 
@@ -50,8 +51,8 @@ User Habit Data - a JSON object with the following key-value pairs:
 Example of the whole [options, user_habit_data] request body: 
 ```json
 [{"request_type":"search",
-  "services":[],
-  "content_type":[],
+  "services":["twitter", "instagram"],
+  "content_type":["images"],
   "language":"en"},
  {"timestamp":1447435268,
   "session_id":"1t8iv8lt4c54h9ht3gc1ml2997",
@@ -64,8 +65,8 @@ Example of the whole [options, user_habit_data] request body:
 When decoded to erlang by JSX, the option part looks like this:
 ```erlang
 [{"request_type", <<"search">>},
-  {"services", []},
-  {"content_type", []},
+  {"services", [<<"twitter">>, <<"instagram">>]},
+  {"content_type", ["<<images">>]},
   {"language", <<"en">>}]
 ```
 
