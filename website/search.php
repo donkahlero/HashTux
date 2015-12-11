@@ -57,12 +57,13 @@
             // object which in this case is a representation of the JSON objects
             // retreived from the backend.
             
-            function item(type, service, url, text, username, userlink, frozen, tile) {
+            function item(type, service, url, text, username, displayname, userlink, frozen, tile) {
                 this.type = type;               // The content type
                 this.service = service;         // The service the content is from
                 this.url = url;                 // URL (img/video)
                 this.text = text;               // Text content (tweet)
                 this.username = username;       // The username of content provider
+                this.displayname = displayname;
                 this.userlink = userlink;       // The link to the profile/channel page, depending on the service
                 this.frozen = frozen;           // A boolean to check if the content is frozen (frozen will not refresh)
                 this.tile = tile;               // Corresponding to the tile ID if the content is being displayed
@@ -82,7 +83,6 @@
                     type: "get",
                     
                     success: function (myString) {
-//                        $('#debug').html("<p>" + myString + "</p>");
                         parse_to_items(myString);   // Parse the JSON to items
                         initDisplayed();            // Run the initDisplayed function
                         initGrid();                 // Initialize the grid
@@ -93,15 +93,16 @@
             
             function reinitialize() {
             
-								hideNoResults();
+		hideNoResults();
                 loading();
             
                 displayed = [];
                 items = [];
                 $('#grid').html('');
                 
+                $('#searchlabel').html("#" + searchterm);
+                
                 options.request_type = "search";
-							 	$('#searchlabel').html("#" + searchterm);
 									
                 $.ajax({
                     url: "/ajax_post.php?search=" + searchterm,
@@ -147,6 +148,9 @@
                 }
             }
             
+            // Sends a heartbeat message to the http server to let the miners
+            // know that the user is still on the website and that they should keep mining.
+            
             function heartbeat() {
                 $.ajax({
                     url: "/ajax.php?search=" + searchterm + "&request_type=heartbeat",
@@ -169,6 +173,10 @@
                 });
             }
             
+            // A function that runs on a 30 second interval and sends a heartbeat
+            // or fetch message every other time it runs. If a heartbeat was sent
+            // last, it sends a fetch request and vice versa.
+            
             function heartbeatFetchHandler() {
                 
                 if(heartbeats === true)
@@ -190,18 +198,14 @@
 
             function parse_to_items(json) {
                 
-//                var debug = "";
-
-             //   alert(json);
-                
                 if(json === "[]")
                 {
-                    showNoResults();
+                    showNoResults();    // Show the "No Results" message
                 }
                 
                 else
                 {
-                    hideNoResults();
+                    hideNoResults();    // Hide the "No Results" message
                 }
                 
                 var jsonobj = $.parseJSON(json);    // Parse the JSON object
@@ -216,9 +220,7 @@
                     var incItem = new item(
                                 jsonobj[i].content_type, jsonobj[i].service,
                                 jsonobj[i].resource_link_high, jsonobj[i].text,
-                                jsonobj[i].username, jsonobj[i].profile_link, false, "");
-                    
-//                    debug += jsonobj[i].service;
+                                jsonobj[i].username, jsonobj[i].free_text_name, jsonobj[i].profile_link, false, "");
                                 
                     var ignore = false;     // A boolean to keep track of whether to insert the item or not
 
@@ -268,15 +270,6 @@
                         }
                     }
                 }
-                
-//                debug += "\n\n";
-//                
-//                for(k = 0; k < items.length; k++)
-//                {
-//                    debug += items[k].service + " ";
-//                }
-//                
-//                alert(debug);
             }
             
           /**
@@ -307,9 +300,11 @@
                 $('#searchBtn').hide();             // Hide the search button
                 
                 $('#searchField').click(function(e) {
-                    e.stopPropagation();        // Ignore 
+                    e.stopPropagation();        // Ignore hover events
                 });
             }
+            
+            // A function to show the menu
             
             function showMenu() {
                 $('#menuBtn').fadeOut(200);
@@ -317,6 +312,8 @@
                 $('#optionsMenu').fadeIn(500);
                 $('#topbackdrop').fadeIn(500);
             }
+            
+            // A function to hide the menu
             
             function hideMenu() {
                 $('#searchField').hide();
@@ -327,6 +324,8 @@
                 $('#actionsBtn').fadeIn(200);
             }
             
+            // A function to show the actions menu
+            
             function showActionsMenu() {
                 $('#actionsBtn').fadeOut(200);
                 $('#menuBtn').fadeOut(200);
@@ -334,31 +333,44 @@
                 $('#topbackdrop').fadeIn(500);
             }
             
+            // A function to hide the actions menu
+            
             function hideActionsMenu() {
                 $('#actionsBtn').fadeIn(200);
                 $('#menuBtn').fadeIn(200);
                 $('#actionsMenu').fadeOut(500);
             }
             
+            // A function to show the loading circle
+            
             function loading() {
                 $('#progress').show();
             }
+            
+            // A function to hide the loading circle
             
             function stopLoading() {
                 $('#progress').hide();
             }
             
+            // A function to show the "No Results" message
+            
             function showNoResults() {
                 $('#no-results').show();
             }
+            
+            // A function to hide the "No Results" message
             
             function hideNoResults() {
                 $('#no-results').hide();
             }
             
+            // A function that listens to whether the "ENTER" key is pressed, runs
+            // when you press a key when focusing on the searchfield.
+            
             function runScript(e) {
                 if (e.keyCode === 13) {
-                    newSearch();
+                    newSearch();    // Run a new search
                 }
             }
             
@@ -369,13 +381,6 @@
                     var y = e.pageY - this.offsetTop;
                     
                     var topLimit = ($(document).height()/3);
-                    var bottomLimit = (topLimit * 2);
-                    
-//                    if(y < topLimit && menuShowing === false)
-//                    {
-//                        showMenu();
-//                        menuShowing = true;
-//                    }
                     
                     if(y > topLimit)
                     {
@@ -400,7 +405,7 @@
                     switch($('#timeScroll').val())
                     {
                         case "8":
-                            $('#timeScrollValue').text("NOW");
+                            $('#timeScrollValue').text("RECENT");
                             delete options.history_timestamp;
                             break;
                             
@@ -452,9 +457,7 @@
  
         <div class="container con-fill">
 
-            <div class="container con-fill header" id="grid">
-                <!--<div class="panel" id="debug"></div>-->
-            </div>
+            <div class="container con-fill header" id="grid"></div>
 
             <div class="container con-fill-hor">
                 
@@ -538,7 +541,7 @@
 
             <div class="container con-fill header optionsbackground" id="options" onclick="hideOptions()">
 
-                <div class="panel optionspanel" style="margin: auto;" id="optionsPanel">
+                <div class="panel optionspanel" id="optionsPanel">
 
                     <hr />
 
@@ -546,7 +549,7 @@
 
                     <hr />
 
-                    <div class="optiontext" align="center">Size</div> 
+                    <div class="optiontext" align="center">Tile Size</div> 
 
                     <div class="text-center">
                         <div class="btn-group options">
@@ -590,13 +593,13 @@
                     <div class="text-center">
                         <div class="btn-group options">
                             <button type="button" class="btn btn-default btn-md"
-                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any images from showing up in your grid"
+                                    data-toggle="tooltip" data-placement="bottom" title="Stop any images from showing up in your grid"
                                     id="type-img" onclick="changeType('type-img')">Images</button>
                             <button type="button" class="btn btn-default btn-md"
-                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any videos from showing up in your grid"
+                                    data-toggle="tooltip" data-placement="bottom" title="Stop any videos from showing up in your grid"
                                     id="type-vid" onclick="changeType('type-vid')">Videos</button>
                             <button type="button" class="btn btn-default btn-md"
-                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any pure text content from showing up in your grid"
+                                    data-toggle="tooltip" data-placement="bottom" title="Stop any pure text content from showing up in your grid"
                                     id="type-txt" onclick="changeType('type-txt')">Text</button>
                         </div>
                     </div>
@@ -607,13 +610,13 @@
                     <div class="text-center">
                         <div class="btn-group options">
                             <button type="button" class="btn btn-default btn-md"
-                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any content from Twitter to show up in your grid"
+                                    data-toggle="tooltip" data-placement="bottom" title="Stop any Twitter content from show up in your grid"
                                     id="serv-twitter" onclick="changeService('serv-twitter')">Twitter</button>
                             <button type="button" class="btn btn-default btn-md"
-                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any content from Instagram to show up in your grid"
+                                    data-toggle="tooltip" data-placement="bottom" title="Stop any Instagram content from show up in your grid"
                                     id="serv-instagram" onclick="changeService('serv-instagram')">Instagram</button>
                             <button type="button" class="btn btn-default btn-md"
-                                    data-toggle="tooltip" data-placement="bottom" title="Restrict any content from YouTube to show up in your grid"
+                                    data-toggle="tooltip" data-placement="bottom" title="Stop any Youtube content from show up in your grid"
                                     id="serv-youtube" onclick="changeService('serv-youtube')">YouTube</button>
                         </div>
                     </div>
