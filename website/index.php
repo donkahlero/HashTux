@@ -176,8 +176,7 @@
 		
 		                    <hr />
 							<p>
-								HashTux is free for personal use. For commercial use, please purchase either a Lifetime
-								Access license, or a one year license.
+								HashTux is free for personal use. For commercial use, please purchase either a <i>Lifetime Access License</i>, or a <i>1 Year License</i>.
 							</p>
 		
 							<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
@@ -235,7 +234,7 @@
         </div>
 
     </div>
-    
+    <!-- Served by <?php echo gethostname(); ?> -->
   </body>
 </html>
 
