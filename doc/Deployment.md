@@ -1,4 +1,4 @@
-#How to deploy Hashtux
+#How to install and deploy Hashtux
 
 ##Web application
 We use Apache with a dedicated vhost for the HashTux web application. 
