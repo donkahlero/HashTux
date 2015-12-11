@@ -23,6 +23,7 @@
         <script src="js/refresh.js"></script>
         <script src="js/freeze.js"></script>
         <script src="js/options.js"></script>
+        <script src="js/general.js"></script>
         
         
         <script type="text/javascript">
@@ -124,7 +125,7 @@
             function newSearch() {
                 
                
-                var newTerm = $('#searchField').val();
+                var newTerm = strip_illegal_characters($('#searchField').val());
                 
 //                alert("New Search: " + newTerm);
                 
