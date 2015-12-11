@@ -18,6 +18,7 @@
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery.tweet-linkify.js"></script>
         
         <script src="js/grid.js"></script>
         <script src="js/refresh.js"></script>
@@ -28,15 +29,15 @@
         
         <script type="text/javascript">
             $(document).ready(function() {
-							// When the user has used forward/backward buttons in browser, check the
-							// request path and reinitialize (fetch data and render items).
-							window.onpopstate = function(event) {
-							      searchterm = window.location.pathname.substring(1);
-										
-										// Download and display new items for the new search term
-						 				reinitialize();
-							}
-						});
+                // When the user has used forward/backward buttons in browser, check the
+                // request path and reinitialize (fetch data and render items).
+                window.onpopstate = function(event) {
+                      searchterm = window.location.pathname.substring(1);
+
+                                        // Download and display new items for the new search term
+                                        reinitialize();
+                };
+            });
 
             var searchterm = "<?php echo $search; ?>";
             var options = {request_type: "update"};
@@ -58,16 +59,18 @@
             // object which in this case is a representation of the JSON objects
             // retreived from the backend.
             
-            function item(type, service, url, text, username, displayname, userlink, frozen, tile) {
-                this.type = type;               // The content type
-                this.service = service;         // The service the content is from
-                this.url = url;                 // URL (img/video)
-                this.text = text;               // Text content (tweet)
-                this.username = username;       // The username of content provider
-                this.displayname = displayname;
-                this.userlink = userlink;       // The link to the profile/channel page, depending on the service
-                this.frozen = frozen;           // A boolean to check if the content is frozen (frozen will not refresh)
-                this.tile = tile;               // Corresponding to the tile ID if the content is being displayed
+            function item(type, service, url, text, username, displayname, profilepic, postdate, userlink, frozen, tile) {
+                this.type = type;                   // The content type
+                this.service = service;             // The service the content is from
+                this.url = url;                     // URL (img/video)
+                this.text = text;                   // Text content (twitter)
+                this.username = username;           // The username of content poster
+                this.displayname = displayname;     // The full display name of the poster (twitter)
+                this.profilepic = profilepic;       // The porfile picture of the poster (twitter)
+                this.postdate = postdate;           // The date the post was made (twitter)
+                this.userlink = userlink;           // The link to the profile/channel page, depending on the service
+                this.frozen = frozen;               // A boolean to check if the content is frozen (frozen will not refresh)
+                this.tile = tile;                   // Corresponding to the tile ID if the content is being displayed
             }
             
             /**
@@ -221,7 +224,9 @@
                     var incItem = new item(
                                 jsonobj[i].content_type, jsonobj[i].service,
                                 jsonobj[i].resource_link_high, jsonobj[i].text,
-                                jsonobj[i].username, jsonobj[i].free_text_name, jsonobj[i].profile_link, false, "");
+                                jsonobj[i].username, jsonobj[i].free_text_name,
+                                jsonobj[i].profile_image_url, jsonobj[i].date_string,
+                                jsonobj[i].profile_link, false, "");
                                 
                     var ignore = false;     // A boolean to keep track of whether to insert the item or not
 
@@ -663,5 +668,7 @@
 
         </div>
 	    
+        <!-- Served by <?php echo gethostname(); ?> -->
+        
     </body>
 </html>
