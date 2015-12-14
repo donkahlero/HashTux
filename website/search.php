@@ -139,13 +139,13 @@
                 {
                     searchterm = newTerm;
             		
-										// Download and display new items for the new search term
-						 				reinitialize();
-               
-										// Update the browser URL and history to reflect the new search term.
-										// If the user then uses back/forward buttons, window.onpopstate will be called.
-										history.pushState({state: searchterm}, null, searchterm);
-								}
+                    // Download and display new items for the new search term
+                    reinitialize();
+
+                    // Update the browser URL and history to reflect the new search term.
+                    // If the user then uses back/forward buttons, window.onpopstate will be called.
+                    history.pushState({state: searchterm}, null, searchterm);
+                }
             }
             
             function heartbeat() {
@@ -292,6 +292,7 @@
                 setInterval(heartbeatFetchHandler, 30000);      // Initialize the heartbeatFetchHandler function on a timer.
                 
                 hoverListener();    // Run the hoverListener function
+                timeScrollListener();
             };
             
             // Initialize all bootstrap tooltips on the website
@@ -303,7 +304,7 @@
             // Shows the textfield used to make a new search when you click the search button
             
             function showField() {
-                $('#searchField').fadeIn(500);           // Fade in the text field
+                $('#searchField').fadeIn(500);      // Fade in the text field
                 $('#searchBtn').hide();             // Hide the search button
                 
                 $('#searchField').click(function(e) {
@@ -312,7 +313,8 @@
             }
             
             function showMenu() {
-                $('#menuBtnTop').fadeOut(200);
+                $('#menuBtn').fadeOut(200);
+                $('#actionsBtn').fadeOut(200);
                 $('#optionsMenu').fadeIn(500);
                 $('#topbackdrop').fadeIn(500);
             }
@@ -322,18 +324,20 @@
                 $('#optionsMenu').fadeOut(500);
                 $('#topbackdrop').fadeOut(500);
                 $('#searchBtn').show();
-                $('#menuBtnTop').fadeIn(200);
+                $('#menuBtn').fadeIn(200);
+                $('#actionsBtn').fadeIn(200);
             }
             
-            function showBottomMenu() {
-                $('#menuBtnBottom').fadeOut(200);
-                $('#bottombackdrop').fadeIn(500);
+            function showActionsMenu() {
+                $('#actionsBtn').fadeOut(200);
+                $('#menuBtn').fadeOut(200);
                 $('#actionsMenu').fadeIn(500);
+                $('#topbackdrop').fadeIn(500);
             }
             
-            function hideBottomMenu() {
-                $('#menuBtnBottom').fadeIn(200);
-                $('#bottombackdrop').fadeOut(500);
+            function hideActionsMenu() {
+                $('#actionsBtn').fadeIn(200);
+                $('#menuBtn').fadeIn(200);
                 $('#actionsMenu').fadeOut(500);
             }
             
@@ -377,12 +381,68 @@
                     if(y > topLimit)
                     {
                         hideMenu();
+                        hideActionsMenu();
+                    }
+                });
+            }
+            
+            function timeScrollListener() {
+                
+                $('#timeScrollValue').text("NOW");
+                
+                $('#timeScroll').change(function() {
+                    
+                    var halfDay = 60 * 60 * 12;
+                    
+                    var now = new Date();
+                    var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    var timestamp = startOfDay / 1000;
+                
+                    switch($('#timeScroll').val())
+                    {
+                        case "8":
+                            $('#timeScrollValue').text("NOW");
+                            delete options.history_timestamp;
+                            break;
+                            
+                        case "7":
+                            $('#timeScrollValue').text("TODAY");
+                            options.history_timestamp = timestamp;
+                            break;
+                            
+                        case "6":
+                            $('#timeScrollValue').text("YESTERDAY");
+                            options.history_timestamp = timestamp - halfDay;
+                            break;
+                            
+                        case "5":
+                            $('#timeScrollValue').text("2 DAYS AGO");
+                            options.history_timestamp = timestamp - (halfDay * 3);
+                            break;
+                            
+                        case "4":
+                            $('#timeScrollValue').text("3 DAYS AGO");
+                            options.history_timestamp = timestamp - (halfDay * 5);
+                            break;
+                            
+                        case "3":
+                            $('#timeScrollValue').text("4 DAYS AGO");
+                            options.history_timestamp = timestamp - (halfDay * 7);
+                            break;
+                            
+                        case "2":
+                            $('#timeScrollValue').text("5 DAYS AGO");
+                            options.history_timestamp = timestamp - (halfDay * 9);
+                            break;
+                            
+                        case "1":
+                            $('#timeScrollValue').text("1 WEEK AGO");
+                            options.history_timestamp = timestamp - (halfDay * 11);
+                            break;
                     }
                     
-                    if(y < bottomLimit)
-                    {
-                        hideBottomMenu();
-                    }
+                    reinitialize();
+                
                 });
             }
 	</script>
@@ -401,35 +461,33 @@
                 
                 <div class="topbackdrop" id="topbackdrop"></div>
                 
-                <button type="submit" class="menubtntop" id="menuBtnTop" onmouseover="showMenu()">
+                <button type="submit" class="menubtn" id="menuBtn" onmouseover="showMenu()">
                     <img src="images/menuicon.png" width="50px" height="50px"/>
                 </button>
                 
-                <div class="bottombackdrop" id="bottombackdrop"></div>
-                
-                <button type="submit" class="menubtnbottom" id="menuBtnBottom" onmouseover="showBottomMenu()">
-                    <img src="images/menuicon.png" width="50px" height="50px"/>
+                <button type="submit" class="actionsbtn" id="actionsBtn" onmouseover="showActionsMenu()">
+                    <img src="images/menuiconbottom.png" width="50px" height="50px"/>
                 </button>
 
                 <div class="row topbar" id="optionsMenu">
                     <div class="col-sm-8">
-                        <ol class="breadcrumb" style="background:none; margin: 0; padding: 0;">
-                            <li id="searchlabel" style="font-weight: bold; color: #ebebeb;"><script>document.write("#" + searchterm);</script></li>
+                        <ol class="breadcrumb searchlabel">
+                            <li id="searchlabel"><script>document.write("#" + searchterm);</script></li>
                         </ol>
                     </div>
                     <div class="col-sm-4">
                         <button type="submit" class="iconbtn" id="optionsBtn"
-                                data-toggle="tooltip" data-placement="bottom" title="Click here to open the options menu"
-                                style="float:right;" onclick="showOptions()">
+                                data-toggle="tooltip" data-placement="bottom" 
+                                title="Click here to open the options menu" onclick="showOptions()">
                             <img src="images/options.png" width="30px" height="30px"/>
                         </button>
                         
-                        <input type="text" class="searchfield" id="searchField" onkeypress="runScript(event)"
-                            style="display: none; float: right; width: 70%; margin-right: 15px; opacity: 0.9;">
+                        <input type="text" class="searchfield searchfieldgrid" 
+                               id="searchField" onkeypress="runScript(event)">
                             
                         <button type="submit" class="iconbtn" id="searchBtn"
-                                data-toggle="tooltip" data-placement="bottom" title="Click here to enter a new search term"
-                                style="float:right; margin-right: 15px;" onmouseover="showField()">
+                                data-toggle="tooltip" data-placement="bottom" 
+                                title="Click here to enter a new search term" onmouseover="showField()">
                             <img src="images/search.png" width="30px" height="30px"/>
                         </button>
                         <div class="centered" id="player">
@@ -441,10 +499,18 @@
                     </div>
                 </div>
                 
-                <div class="row bottombar" id="actionsMenu">
-                    <div class="col-sm-11">
+                <div class="row topbar" id="actionsMenu">
+                    <div class="col-sm-3">
+                        <ol class="breadcrumb searchlabel">
+                            <li id="searchlabel"><script>document.write("#" + searchterm);</script></li>
+                        </ol>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-6">
+                        <p class="timescrollvalue" id="timeScrollValue">
+                        </p>
+                        <input type="range" min="1" max="8" step="1" value="8" class="timescroll" id="timeScroll">
+                    </div>
+                    <div class="col-sm-3">
                         <button type="submit" class="iconbtn freezebtn" id="freezeBtn"
                                 data-toggle="tooltip" data-placement="top" 
                                 title="Click here to freeze the screen" onclick="screenFreeze()">
@@ -471,8 +537,7 @@
                 <div class="no-results" id="no-results">NO RESULTS</div>
             </div>
 
-            <div class="container con-fill header" id="options" onclick="hideOptions()"
-                     style="background-color: rgba(0, 0, 0, 0.5); display: none;" >
+            <div class="container con-fill header optionsbackground" id="options" onclick="hideOptions()">
 
                 <div class="panel optionspanel" style="margin: auto;" id="optionsPanel">
 
