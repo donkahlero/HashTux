@@ -2,16 +2,20 @@
 //	and unfreeze functions. 
 function screenFreeze() {
 
-	for (i = 0; i < displayed.length; i++) {
-		if (!displayed[i].frozen) {
-			freeze();
-		}
+        var anyFrozen = false;
 
-		else {
-			unfreeze();
-			break;
+	for (i = 0; i < displayed.length; i++) {
+		if (displayed[i].frozen === true) {
+                    anyFrozen = true;
+                    break;
 		}
 	}
+        
+        if(!anyFrozen)
+            freeze();
+        
+        else
+            unfreeze();
 }
 // freeze is used to check for a displayed tiles and pause it if its not paused
 // using the
