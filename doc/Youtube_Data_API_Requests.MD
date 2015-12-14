@@ -31,10 +31,15 @@ where `Keyword` is the term requested by the user, while `Options` is a list con
 
 Parameters must be provided according to the following guidelines:
 
-* **content_type:** `{content_type, TypeList}`, where `TypeList` contains the required types of feeds specified as binary-strings. For example, if we want to send a request without filtering results by content-type, TypeList must be provided as `[<<"text">>, <<"image">>, <<"video">>]`.
+* **content_type:** `{content_type, TypeList}`, where `TypeList` contains the required content-types specified as binary-strings. Note that if the client is not requesting Video feeds, this function will NOT query the API and will return directly the value `[{filtered, []}, {unfiltered, []}]`.
 
-* **language:** `{language, Language}`, where `Language` is the language requested by the user in binary-string format. To retrive Tweets available in all langages, `Language` must be provided as an empty list.
+* **language:** `{language, Language}`, where `Language` is the language requested by the user in binary-string format. To retrive Videos available in all langages, `Language` must be provided as an empty list.
 
 * **history_timestamp:** `{history_timestamp, Timestamp}`, where `Timestamp` is the creation date of the Youtube videos that we want to fetch from the Youtube Data API. `Timestamp` must be provided in epoch-timestamp format. If we want to retrieve the most recent Videos without requesting a specific date, `Timestamp` must be provided as an empty list.
 
+Once the API has returned a response, the *Videos* list is decoded and converted in *"internal representation format"*  through the module **parser.erl**. For more information on the specifications of HashTux *"internal representation format"* read **Protocols & DataType specification**.
 
+`youtube_search:search/2` returns a list of two tuples formatted as `[{filtered, FilteredRes}, {unfiltered, LangResult}]`, where:
+
+* **UnfilteredRes** is a list of videos in *"internal representation format"* matching the specified optional value for the history timestamp params;
+* **FilteredRes**: the resulting list after filtering UnfilteredRes by the language requested by the user. 
