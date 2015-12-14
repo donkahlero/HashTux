@@ -21,3 +21,5 @@ Parameters must be provided according to the following guidelines:
 
 * **UnfilteredRes** is a list of tweets in *internal representation format* matching the specified values for language and history timestamp params;
 * **FilteredRes**: the resulting list after filtering UnfilteredRes by the content_type requested by the user. 
+
+For more information on the specifications of HashTux *internal representation format* read **Protocols & DataType specification**.
