@@ -1,16 +1,16 @@
 #TODO
-<b>bugs.hashtux.com - please create subdomain and point it to derkahler.de</b>
-All domains which point to Jonas' derkahler.de server please as an SNAME to hashtux.derkahler.de :) [jonas.hashtux.com and the www.hashtux.com and bugs.hashtux.com] - taco.hashtux.com stays the same due to it has a static IP
 
 - <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
-- <b>Instagram timescroll is not working, pictures from yesterday are showing up when you set it to i.e. 1 week ago. We will probably omit instagram from timescroll, but let's discuss tomorrow</b><br />
+- <b>Ivo: Omit instagram from timescroll</b><br />
+- <b>Jerker: bugs.hashtux.com - please create subdomain and point it to derkahler.de</b>
+All domains which point to Jonas' derkahler.de server please as an SNAME to hashtux.derkahler.de :) [jonas.hashtux.com and the www.hashtux.com and bugs.hashtux.com] - taco.hashtux.com stays the same due to it has a static IP
+- Jerker: Front end: maybe list of trending things on the first page <b>Ideally both from HashTux search stats AND trending on twitter</b><br />
 - Terms of use text that says "btw we use cookies, and we store information about what users search for to provide a better user experience".<br />
 - Stats: take away leftmost hashtux link (confusing), set default to at least 25 entries and maybe week. add some space under the table. add numbers to all entries in the table, in order of popularity/occurence<br />
 - Front end: videos tweaked<br />
 - Posts should have higher chance of appearing in RECENT the newer they are<br />
 - Close button at top right in options meny?<br />
 - "Back to front page" button and icon in top menu<br />
-- Front end: maybe list of trending things on the first page <b>Ideally both from HashTux search stats AND trending on twitter</b><br />
 - Error report / defect backlog - maybe link "click here to report problems"<br />
 - In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 - For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
