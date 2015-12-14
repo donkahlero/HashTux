@@ -1,6 +1,6 @@
 #TODO
 <b>bugs.hashtux.com - please create subdomain and point it to derkahler.de</b>
-All domains which point to Jonas' derkahler.de server please as an SNAME to hashtux.derkahler.de :) [jonas.hashtux.com and the www.hashtux.com and bugs.hashtux.com]
+All domains which point to Jonas' derkahler.de server please as an SNAME to hashtux.derkahler.de :) [jonas.hashtux.com and the www.hashtux.com and bugs.hashtux.com] - taco.hashtux.com stays the same due to it has a static IP
 
 - <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
 - <b>Instagram timescroll is not working, pictures from yesterday are showing up when you set it to i.e. 1 week ago. We will probably omit instagram from timescroll, but let's discuss tomorrow</b><br />
