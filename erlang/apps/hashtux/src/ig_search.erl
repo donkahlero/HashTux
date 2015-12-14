@@ -1,3 +1,9 @@
+%%
+%% @author Ivo Vryashkov
+%%
+%% @doc Instagram search module. Responsible for querying Instagram and 
+%% filtering of the returned results.
+%%
 -module(ig_search).
 
 -export([search/2]).
@@ -18,17 +24,17 @@
 %% according to the options passed.
 %%
 search(Term, Options) ->
-	%Token = get_token(),
-	%Url = ?URL ++ Term ++ ?TAIL ++ Token,
+	% format the search term (get rid of + if any)
 	FormattedTerm = apis_aux:format_keyword(Term),
-	Url = build_request(FormattedTerm, Options),
+	% build the request url
+	Url = build_request(FormattedTerm, []),
+	% perform a search
 	case httpc:request(Url) of
 		{ok, Result} -> 
 			{_StatusLine, _Headers, Body} = Result,
 			try jsx:decode(list_to_binary(Body)) of
 				DecodedRes -> 
 					DataList = get_value(<<"data">>, DecodedRes),
-					%io:format("Raw results are: ~p~n", [DecodedRes]),
 					Results = parse_results(Term, DataList),
 					io:format("IG_SEARCH: Unfiltered result count: ~p~n", [length(Results)]),
 					Types = get_value(content_type, Options),
@@ -47,6 +53,13 @@ search(Term, Options) ->
 %%
 %% @doc Builds the Url for a request.
 %%
+build_request(Term, []) ->
+	Url = ?URL ++ Term ++ ?TAIL ++ ?AND ++ ?ACCESS ++ Token,
+	io:format("MINER_WORKER: Build Url: ~p~n", [Url]),
+	Url;
+%%% This function clause will never match because of the fact that we 
+%%% don't send any history_timestamp to Instagram search. Left here for
+%%% future use.
 build_request(Term, Options) ->
 	Token = get_token(),
 	case get_value(history_timestamp, Options) of
@@ -109,13 +122,6 @@ filter_insta_res(List, Key) ->
 	[N || N <- List, get_value(<<"content_type">>, N) =:= Key]. 
 
 
-%filter_check(CurrentPost, Key) ->
-%	PostContentType = get_value(binary:list_to_bin("content_type"), CurrentPost),
-%	io:format("IG: Testing if ~p matches requested type ~p: ~p~n", 
-%			  [PostContentType, Key, PostContentType =:= Key]),
-%	PostContentType =:= Key.
-
-
 %%
 %% @doc Gets the value from the key-value pair with key content_type
 %% in the results from Instagram. Returns this value name as atom or 
@@ -129,6 +135,8 @@ filter_insta_res(List, Key) ->
 %	X.
 
 
+%%
+%% @doc Returns the value from a {key, value} pair in a list.
 %%
 get_value(_Key, [])	  -> [];
 get_value(_Key, null) -> [];
