@@ -1,25 +1,23 @@
+%% @author Marco trifance <marco.trifance@gmail.com>
+%% @doc A parser for decoded JSON Items. Handle information conversion 
+%%      and formatting from decoded Twitter and Youtube FEEDS into internal representation format
+
 -module(parser).
 
 -export([extract/2, atom_to_binarystring/1]).
--export([extract_youtube_ids/1, parse_youtube_video/2, clean_result/1, is_language/2]).						% YOUTUBE Functions
--export([filter_by_content_type/2, parse_tweet_response_body/2]).																				% TWITTER Functions
+-export([extract_youtube_ids/1, parse_youtube_video/2, clean_result/1, is_language/2]).						
+-export([filter_by_content_type/2, parse_tweet_response_body/2]).											
 
-%% *****************************************************************************************************
-%% @Author Marco Trifance
-%% @doc A parser for decoded JSON Items. Handle information conversion 
-%%      and formatting from decoded Twitter and Youtube FEEDS into internal representation format
-%% *****************************************************************************************************
-
-% Search the value of a given key 'K' from a given list 'L' decoded JSON message.
+%% @doc Search the value of a given key 'K' from a given list 'L' decoded JSON message.
 extract(K, L) ->
   case lists:keyfind(K, 1, L) of
     {_, M} -> {found, M};
     false  -> not_found
   end.
 
-%%
-%% @doc extract the value of a field from a parent node. 
-%% return value if field was found, null if it was not found 
+
+%% @doc Extract the value of a field from a parent node. 
+%%      Return value if field was found, null if it was not found 
 extract_from_node(_Field, null) -> null;
 extract_from_node(Field, Node) -> 
 	case extract(Field, Node) of
@@ -27,27 +25,19 @@ extract_from_node(Field, Node) ->
 		not_found -> null
     end.
 
-%%
 %% @doc Remove all fields with null value from parsed feed 
-%%
 clean_result(L) -> [X || X <- L, has_null_value(X) == false].
 
+%% @doc Helper function for clean_result/1
+%%      Return True if a field in a converted feed has null value.
 has_null_value({_, null}) -> true;
 has_null_value({_, _}) -> false.
 
-%%
 %% @doc Convert an atom to binary_string
-%%
 atom_to_binarystring(Atom) ->
     list_to_binary(atom_to_list(Atom)).
 
-%% ****************************************
-%% PARSE YOUTUBE decoded JSON
-%% ****************************************
-
-%%
-%% @doc extract the Id from a list of decoded Youtube feeds returned by a Keyword search 
-%%
+%% @doc Extract the Id from a list of decoded Youtube feeds returned by a Keyword search 
 extract_youtube_ids(List) ->
 	extract_ids(List, []).
 %%
