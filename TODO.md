@@ -2,7 +2,6 @@
 <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
 
 Stats: take away leftmost hashtux link (confusing), set default to at least 25 entries and maybe week. add some space under the table. add numbers to all entries in the table, in order of popularity/occurence<br />
-Make twitter posts conform to their guidelines <br />
 Move youtube and twitter configs to config file<br />
 Front end: videos tweaked<br />
 For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
@@ -16,7 +15,6 @@ In stats and possibly in main UI, show RELATED searches (users that searched for
 
 Instagram timescroll is not working, pictures from yesterday are showing up when you set it to i.e. 1 week ago.<br />
 
-Twitter Icon broken <br />
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
