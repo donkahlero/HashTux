@@ -194,9 +194,9 @@ get_results(Term, Services, ContType, Lang, HistoryTimestamp) ->
 %%
 %% @doc Calls the appropriate search services to perform a search.
 %%
-%%% Instagram search.
-search_services({instagram, {Term, ContType, _Lang, HistoryTimestamp}}) ->
-	ig_search:search(Term, [ContType, HistoryTimestamp]);
+%%% Instagram search. For this search ignore all options but content type.
+search_services({instagram, {Term, ContType, _Lang, _HistoryTimestamp}}) ->
+	ig_search:search(Term, [ContType]);
 %%% Twitter search.
 search_services({twitter, {Term, ContType, Lang, HistoryTimestamp}}) ->
 	twitter_search:search_hash_tag(Term, [ContType, Lang, HistoryTimestamp]);
@@ -244,7 +244,8 @@ get_cont_type() ->
 get_aggregated_results(RawList, FilterType) ->
 	get_aggregated_results(RawList, FilterType, []).
 
-get_aggregated_results([], _FilterType, AggregatedResult) -> AggregatedResult;
+get_aggregated_results([], _FilterType, AggregatedResult) -> 
+	AggregatedResult;
 get_aggregated_results([H|T], FilterType, AggregatedResult) ->
 	case (is_type(H, FilterType)) of
 		true -> 
