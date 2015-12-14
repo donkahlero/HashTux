@@ -13,13 +13,15 @@
       // Callback that creates and populates a data table,
       // instantiates the pie chart, passes in the data and
       // draws it.
+      
+    
       function drawChart() {
 
         // Create the data table.
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Hashtag');
         data.addColumn('number', 'Times searched');
-        data.addRows(getStats());
+        data.addRows(getItemValues());
 
         // Set chart options
         var options = {
@@ -37,25 +39,6 @@
             $Name = 'NameOfChart';
             return $Name;
         }
-        
-        function getStats() {
-            var list = [
-          ['Hashtux', 431],
-          ['Summer', 354],
-          ['Sun', 489],
-          ['Candy', 98],
-          ['Pepperoni', 30],
-          ['Dennis', 170],
-          ['Hashtux', 431],
-          ['Summer', 354],
-          ['Sun', 489],
-          ['Lisaann', 1000],
-          ['Candy', 98],
-          ['Pepperoni', 30],
-          ['Dennis', 170]
-        ];
-        return list;
-        }
       }
     </script>
   </head>
@@ -68,4 +51,5 @@
                 style="float:right; margin-right: 760px;" onclick="drawChart()"> reload</button>
     </div>
   </body>
-</html>
+</html
+>
