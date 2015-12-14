@@ -8,7 +8,7 @@ All domains which point to Jonas' derkahler.de server please as an SNAME to hash
 - Jerker: # sign needs to be filtered out
 - Dennis: Front end: videos tweaked<br />
 - Terms of use text that says "btw we use cookies, and we store information about what users search for to provide a better user experience".<br />
-- Stats: take away leftmost hashtux link (confusing), set default to at least 25 entries and maybe week. add some space under the table. add numbers to all entries in the table, in order of popularity/occurence<br />
+- Stats: take away leftmost hashtux link (confusing), set default to at least 25 entries and maybe week. add some space under the table. add numbers to all entries in the table, in order of popularity/occurence, add a total that is the total number av searches for the given interval<br />
 - Posts should have higher chance of appearing in RECENT the newer they are<br />
 - Close button at top right in options meny?<br />
 - "Back to front page" button and icon in top menu<br />
