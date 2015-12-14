@@ -54,6 +54,7 @@ search(Term, Options) ->
 %% @doc Builds the Url for a request.
 %%
 build_request(Term, []) ->
+	Token = get_token(),
 	Url = ?URL ++ Term ++ ?TAIL ++ ?AND ++ ?ACCESS ++ Token,
 	io:format("MINER_WORKER: Build Url: ~p~n", [Url]),
 	Url;
