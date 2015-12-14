@@ -23,7 +23,7 @@ Make a point that the project is well defined in scope<br />
 Make a point that the project is simple/intuitive by design choise in terms of UI etc<br />
 Maybe combine the options datatype with the database options list and clarify which can be used where.<br />
 
-*fix the redeployment diagram 
+*fix the redeployment diagram (done)
 -->arrows<br /> 
 -->external service<br />
 -->naming servers properly <br />
