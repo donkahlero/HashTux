@@ -72,8 +72,8 @@ function refresh()
                         $(randTile).html(
                                 "<div class='twittertext'>" + 
                                 "<div class='twittertop'>" + 
-                                "<img src='" + newItem.profilepic + "' width='20px' height='20px'> | " + "'>" + 
-                                "<a class='twitterlink' href='" + newItem.userlink +
+                                "<img src='" + newItem.profilepic + "' width='20px' height='20px'> | " +
+                                "<a class='twitterlink' href='" + newItem.userlink + "'>" +
                                 newItem.displayname + " (@" + newItem.username + ")" + "</a>" +
                                 "</div><p class='tweet'>" + newItem.text + "</p></div>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
@@ -92,8 +92,8 @@ function refresh()
                         $(randTile).html(
                                 "<div class='twitterimagetext'>" + 
                                 "<div class='twittertop'>" + 
-                                "<img src='" + newItem.profilepic + "' width='20px' height='20px'> | " + "'>" + 
-                                "<a class='twitterlink' href='" + newItem.userlink +
+                                "<img src='" + newItem.profilepic + "' width='20px' height='20px'> | " +
+                                "<a class='twitterlink' href='" + newItem.userlink + "'>" +
                                 newItem.displayname + " (@" + newItem.username + ")" + "</a>" +
                                 "</div><p class='tweet'>" + newItem.text + "</p></div>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
