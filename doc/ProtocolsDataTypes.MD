@@ -16,6 +16,7 @@ The format of the document is the following (written in Erlang compatible with P
 {<<"content_type">>, <<"image or video or text">>},
 {<<"resource_link_low">>, <<"resource link in low res">>},
 {<<"resource_link_high">>, <<"resourch link in high res">>},
+{<<"insert_timestamp">>, the time the document is stored in the DB},
 {<<"timestamp">>, timestamp_as_integer},
 {<<"text">>, <<"The content text">>},
 {<<"language">>, <<"the language like en">>},
