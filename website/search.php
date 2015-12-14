@@ -398,7 +398,7 @@
             
             function timeScrollListener() {
                 
-                $('#timeScrollValue').text("NOW");
+                $('#timeScrollValue').text("RECENT");
                 
                 $('#timeScroll').change(function() {
                     
@@ -474,7 +474,7 @@
                 </button>
                 
                 <button type="submit" class="actionsbtn" id="actionsBtn" onmouseover="showActionsMenu()">
-                    <img src="images/menuiconbottom.png" width="50px" height="50px"/>
+                    <img src="images/actionsmenu.png" width="50px" height="50px"/>
                 </button>
 
                 <div class="row topbar" id="optionsMenu">

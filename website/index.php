@@ -99,6 +99,7 @@
         
     function checkInput(input)
     {
+        input = strip_illegal_characters(input);
         
         if(input === null || input === "")
         {
