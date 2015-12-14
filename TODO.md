@@ -8,6 +8,7 @@ Move youtube and twitter configs to config file<br />
 Popup if you click commercial use, with license and pay button // Mr. Jerk-Off<br />
 Front end: videos tweaked<br />
 For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
+And higher chance off appearing in RECENT the newer they are<br />
 Close button at top right in options meny?<br />
 
 Front end: maybe list of trending things on the first page<br />
