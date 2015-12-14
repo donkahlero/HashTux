@@ -1,7 +1,9 @@
 # Twitter API Requests
 =================================================================
+HashTux requests to Twitter API are handled in the module `twitter_search.erl`. HashTux requests to Twitter use the REST [Search API] (https://dev.twitter.com/rest/public/search).
+
 ##To request Tweets statuses
-To send a GET request to the Twitter Search API use `search_hashtag/2`:
+To send a GET request to the Twitter Search API use `twitter_search:search_hashtag/2`:
 ```erlang
 twitter_search:search_hashtag(Keyword, Options).
 ```
@@ -14,3 +16,6 @@ Parameters must be provided according to the following guidelines:
 * **language:** `{language, Language}`, where `Language` is the language requested by the user in binary-string format. To retrive Tweets available in all langages, `Language` must be provided as an empty list.
 
 * **history_timestamp:** `{history_timestamp, Timestamp}`, where `Timestamp` is the creation date of the Twitter feeds we want to fetch from the Twitter API. `Timestamp` must be provided in epoch-timestamp format. If we want to retrieve the most recent Tweets without requesting a specific date, `Timestamp` must be provided as an empty list.
+
+
+
