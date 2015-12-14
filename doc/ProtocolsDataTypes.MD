@@ -1,5 +1,6 @@
 #Protocols & DataType specification
 ##Social Media Post Datatype / Document
+**Insert MARCO's TABLE here instead of following list**
 This is the format in which we store the social media posts in the database or return them to the client.
 We usually pass several posts around at a time. Hence generally the posts need to be wrapped in a list:
 ```erlang
