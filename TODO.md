@@ -17,7 +17,7 @@ All domains which point to Jonas' derkahler.de server please as an SNAME to hash
 - For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
 - Index page should link to stats page
 - Dennis: Use another word than "Hashtag" on the front page, (we don't use hashtax on youtube etc).
-_ Dennis: Fullscreen button in the actionsmenu. 
+- Dennis: Fullscreen button in the actionsmenu. 
 - Dennis: Action buttos in tweets (like etc.) to conform with the twitter guidelines. 
 
 #Documentation:
