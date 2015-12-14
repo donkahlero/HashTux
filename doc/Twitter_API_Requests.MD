@@ -10,7 +10,7 @@ The Twitter API accepts authenticated requests sent by Twitter Applications. To 
 * [ibrowse](https://github.com/cmullaparthi/ibrowse): HTTP Erlang client.
 * [jsx](https://github.com/cmullaparthi/ibrowse): used to parse a json text (utf8 encoded binary) and convert it into erlang terms.
 
-##To request Tweets statuses
+##To request Twitter statuses
 To send a GET request to the Twitter Search API use `twitter_search:search_hashtag/2`:
 ```erlang
 twitter_search:search_hashtag(Keyword, Options).
