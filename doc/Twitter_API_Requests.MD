@@ -2,6 +2,11 @@
 =================================================================
 HashTux requests to Twitter API are handled in the module `twitter_search.erl`. HashTux requests to Twitter use the [Twitter Search API] (https://dev.twitter.com/rest/public/search).
 
+##External Dependencies
+* [erlang-oauth](https://github.com/tim/erlang-oauth/): erlang client used to generate signed request parameters.
+* [ibrowse](https://github.com/cmullaparthi/ibrowse):HTTP Erlang client.
+* [jsx](https://github.com/cmullaparthi/ibrowse): used to parse a json text (utf8 encoded binary) and convert it into erlang terms.
+
 ##To request Tweets statuses
 To send a GET request to the Twitter Search API use `twitter_search:search_hashtag/2`:
 ```erlang
