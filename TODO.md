@@ -11,12 +11,14 @@ All domains which point to Jonas' derkahler.de server please as an SNAME to hash
 - Stats: take away leftmost hashtux link (confusing), set default to at least 25 entries and maybe week. add some space under the table. add numbers to all entries in the table, in order of popularity/occurence, add a total that is the total number av searches for the given interval<br />
 - Posts should have higher chance of appearing in RECENT the newer they are<br />
 - Close button at top right in options meny?<br />
-- "Back to front page" button and icon in top menu<br />
+- Dennis: "Back to front page" button and icon in top menu<br />
 - Error report / defect backlog - maybe link "click here to report problems"<br />
 - In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 - For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
 - Index page should link to stats page
-- Use another word than "Hashtag" on the front page, (we don't use hashtax on youtube etc).
+- Dennis: Use another word than "Hashtag" on the front page, (we don't use hashtax on youtube etc).
+_ Dennis: Fullscreen button in the actionsmenu. 
+- Dennis: Action buttos in tweets (like etc.) to conform with the twitter guidelines. 
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
