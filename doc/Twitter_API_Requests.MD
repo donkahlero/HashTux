@@ -4,7 +4,7 @@ HashTux requests to Twitter API are handled in the module `twitter_search.erl`. 
 
 ##External Dependencies
 * [erlang-oauth](https://github.com/tim/erlang-oauth/): erlang client used to generate signed request parameters.
-* [ibrowse](https://github.com/cmullaparthi/ibrowse):HTTP Erlang client.
+* [ibrowse](https://github.com/cmullaparthi/ibrowse): HTTP Erlang client.
 * [jsx](https://github.com/cmullaparthi/ibrowse): used to parse a json text (utf8 encoded binary) and convert it into erlang terms.
 
 ##To request Tweets statuses
@@ -22,9 +22,9 @@ Parameters must be provided according to the following guidelines:
 
 * **history_timestamp:** `{history_timestamp, Timestamp}`, where `Timestamp` is the creation date of the Twitter feeds we want to fetch from the Twitter API. `Timestamp` must be provided in epoch-timestamp format. If we want to retrieve the most recent Tweets without requesting a specific date, `Timestamp` must be provided as an empty list.
 
+Once the API has returned a response, the *Statuses* list is decoded and converted in *"internal representation format"*  through the module **parser.erl**. For more information on the specifications of HashTux *"internal representation format"* read **Protocols & DataType specification**.
+
 `twitter_search:search_hashtag/2` returns a list of two tuples formatted as `[{filtered, FilteredRes}, {unfiltered, LangResult}]`, where:
 
 * **UnfilteredRes** is a list of tweets in *"internal representation format"* matching the specified values for language and history timestamp params;
 * **FilteredRes**: the resulting list after filtering UnfilteredRes by the content_type requested by the user. 
-
-For more information on the specifications of HashTux *"internal representation format"* read **Protocols & DataType specification**.
