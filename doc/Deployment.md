@@ -17,4 +17,11 @@ The Erlang backend requires Erlang 18. Dependencies are handled by Rebar 3. Ther
 - You should then be able to run "./rebar3 shell" in the erlang folder to try the Erlang backend.
 
 ##CouchDB
-Installation, requirements, erlang version, making a user and the databases required
+Hashtux recommend installing CouchDB on a Linux or Unixoid operating system.
+For the major Linux distros CouchDB is in their repositories. Just install it that way and the dependencies will get fetched as well.
+For all other OS without this possibilty check out http://couchdb.apache.org/ and find the fitting installation package.
+For the running hashtux three databases are required:
+- hashtux
+- hashtux_userstats
+- hashtux_userstats_chached_data
+A user for accessing the database is also required. Password and name is at the admins discretion. Just change the config file accordingly.
