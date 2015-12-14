@@ -18,6 +18,8 @@ In stats and possibly in main UI, show RELATED searches (users that searched for
 Instagram timescroll is not working, pictures from yesterday are showing up when you set it to i.e. 1 week ago.<br />
 The content type option is not working properly (Only Instagram) - Ivo<br />
 
+Twitter Icon broken <br />
+
 #Documentation:
 Make a point that the project is well defined in scope<br />
 Make a point that the project is simple/intuitive by design choise in terms of UI etc<br />
