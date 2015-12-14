@@ -24,4 +24,4 @@ For the running hashtux three databases are required:
 - hashtux
 - hashtux_userstats
 - hashtux_userstats_chached_data
-A user for accessing the database is also required. Password and name is at the admins discretion. Just change the config file accordingly.
+<br />A user for accessing the database is also required. Password and name is at the admins discretion. Just change the config file accordingly.
