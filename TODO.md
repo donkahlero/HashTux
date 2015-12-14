@@ -8,7 +8,7 @@
 - Posts should have higher chance of appearing in RECENT the newer they are<br />
 - Close button at top right in options meny?<br />
 - "Back to front page" button and icon in top menu<br />
-- Front end: maybe list of trending things on the first page<br />
+- Front end: maybe list of trending things on the first page <b>Ideally both from HashTux search stats AND trending on twitter</b><br />
 - Error report / defect backlog - maybe link "click here to report problems"<br />
 - In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 - For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
