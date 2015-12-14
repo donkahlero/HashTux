@@ -77,8 +77,8 @@ session_start ();
 							{
 			              itemName = items[i].name; 
 			              itemCount = items[i].value;
-			
-			              itemsEx = [itemName, itemCount];
+			              itemIndex  = [];
+			              itemsEx = [itemIndex,itemName, itemCount];
 			              
 			              statsItems.push(itemsEx);
 						}
@@ -99,13 +99,24 @@ session_start ();
            			 //	Here the table for search term year is rendered using DataTable   
 					 $('#searchTermTableYear').DataTable( {
 					    	retrieve: true, //	retrieve is a boolean that allows the table to be rendered after initializing. 
-					    	"aaSorting": [[1,'desc'], ],//	aaSorting sorts the count in descending order. 
+					    	"aaSorting": [[2,'desc'], ],//	aaSorting sorts the count in descending order. 
+					    	"iDisplayLength": 50,     
+					        "fnDrawCallback": function ( oSettings ) {
+					            /* Need to redo the counters if filtered or sorted */
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 					        data: statsItems, // The table is generated using data from statsItems array. 
-					        
-					       	columns: [		  // colums assigns the titles for the table. 	      																			
+					       	columns: [		  // colums assigns the titles for the table. 	 
+					       	    { title: "Index"},																		
 					        	{ title: "Top Search Terms for This Year" },
 					            { title: "Count" },
-					           
+					        
 					     	] 
 					    } );
 					    break; 
@@ -115,9 +126,21 @@ session_start ();
 				
 			    	 $('#searchTermTableMonth').DataTable( {
 			    		 	retrieve: true,
-			    		 	"aaSorting": [[1,'desc']],
+			    		 	"zeroRecords": "No matching records found",
+			    		 	"aaSorting": [[2,'desc']],
+			    		 	"iDisplayLength": 50,
+			    		 	 "fnDrawCallback": function ( oSettings ) {
+						            if ( oSettings.bSorted || oSettings.bFiltered )
+						            {
+						                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+						                {
+						                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+						                }
+						            }
+						        },
 				            data: statsItems,
-				            columns: [
+				            columns: [ 
+								{ title: "Index"},	
 				                { title: "Top Search Terms for Last Month" },
 				                { title: "Count" },
 				               
@@ -130,9 +153,30 @@ session_start ();
 
 					$('#searchTermTableWeek').DataTable( {
 				        	retrieve: true,
-				        	"aaSorting": [[1,'desc']],
+				        	"zeroRecords": "No matching records found",
+				        	"aaSorting": [[2,'desc']],
+			    		 	"iDisplayLength": 50,
+			    		 	 "fnDrawCallback": function ( oSettings ) {
+						            if ( oSettings.bSorted || oSettings.bFiltered )
+						            {
+						                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+						                {
+						                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+						                }
+						            }
+						        },
 				            data: statsItems,
+				            "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 				            columns: [
+								{ title: "Index"},	       
 				                { title: "Top Search Terms for Last Week" },
 				                { title: "Count" },
 				               
@@ -145,9 +189,30 @@ session_start ();
 				 
 				    $('#searchTermTableToday').DataTable( {
 				        	retrieve: true,
-				        	"aaSorting": [[1,'desc']],
+				        	"zeroRecords": "No matching records found",
+				        	"aaSorting": [[2,'desc']],
+			    		 	"iDisplayLength": 50,
+			    		 	 "fnDrawCallback": function ( oSettings ) {
+						            if ( oSettings.bSorted || oSettings.bFiltered )
+						            {
+						                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+						                {
+						                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+						                }
+						            }
+						        },
 				            data: statsItems,
+				            "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 				            columns: [
+								{ title: "Index"},	
 				                { title: "Top Search Terms for the Last 24H" },
 				                { title: "Count" },
 				               
@@ -160,9 +225,21 @@ session_start ();
 
 					 $('#browserVersionTableYear').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	
 			                { title: "Top Browsers with Version for This Year" },
 			                { title: "Count" },
 			               
@@ -175,9 +252,21 @@ session_start ();
 
 					 $('#browserVersionTableMonth').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
+			        	"iDisplayLength": 50,
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	        
 			                { title: "Top Browsers with Version for Last Month" },
 			                { title: "Count" },
 			               
@@ -190,9 +279,21 @@ session_start ();
 	
 						 $('#browserVersionTableWeek').DataTable( {
 				        	retrieve: true,
-				        	"aaSorting": [[1,'desc']],
+				        	"zeroRecords": "No matching records found",
+				        	"aaSorting": [[2,'desc']],
+			    		 	"iDisplayLength": 50,
+			    		 	 "fnDrawCallback": function ( oSettings ) {
+						            if ( oSettings.bSorted || oSettings.bFiltered )
+						            {
+						                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+						                {
+						                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+						                }
+						            }
+						        },
 				            data: statsItems,
 				            columns: [
+								{ title: "Index"},	
 				                { title: "Top Browsers with Version for Last Week" },
 				                { title: "Count" },
 				               
@@ -205,9 +306,21 @@ session_start ();
 
 					 $('#browserVersionTableToday').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	       
 			                { title: "Top Browsers with Version for Last 24H" },
 			                { title: "Count" },
 			               
@@ -220,9 +333,21 @@ session_start ();
 
 					 $('#browserTableYear').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	
 			                { title: "Top Browsers for This Year" },
 			                { title: "Count" },
 			               
@@ -235,9 +360,21 @@ session_start ();
 
 					 $('#browserTableMonth').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	       
 			                { title: "Top Browsers for Last Month" },
 			                { title: "Count" },
 			               
@@ -250,9 +387,21 @@ session_start ();
 
 					 $('#browserTableWeek').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	
 			                { title: "Top Browsers for Last Week" },
 			                { title: "Count" },
 			               
@@ -265,9 +414,21 @@ session_start ();
 
 					 $('#browserTableToday').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	         
 			                { title: "Top Browsers for Last Today" },
 			                { title: "Count" },
 			               
@@ -281,9 +442,21 @@ session_start ();
 
 					 $('#platformTableYear').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	
 			                { title: "Top Platforms This Year" },
 			                { title: "Count" },
 			               
@@ -296,9 +469,21 @@ session_start ();
 
 					 $('#platformTableMonth').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	
 			                { title: "Top Platforms For Last Month" },
 			                { title: "Count" },
 			               
@@ -311,9 +496,21 @@ session_start ();
 
 					 $('#platformTableWeek').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	
 			                { title: "Top Platforms For Last Week" },
 			                { title: "Count" },
 			               
@@ -326,9 +523,21 @@ session_start ();
 
 					 $('#platformTabletoday').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	
 			                { title: "Top Platforms For Last 24H" },
 			                { title: "Count" },
 			               
@@ -341,9 +550,21 @@ session_start ();
 
 					 $('#platformBrowserTable').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	
 			                { title: "Top Platforms use with Browser for This Year" },
 			                { title: "Count" },
 			               
@@ -356,12 +577,24 @@ session_start ();
 
 					 $('#platformBrowserMonth').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	
 			                { title: "Top Platforms use with Browser for Last Month" },
 			                { title: "Count" },
-			               
+			                
 			            ]
 			        } ); 
 				    break;
@@ -371,9 +604,21 @@ session_start ();
 
 					 $('#platformBrowserWeek').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	
 			                { title: "Top Platforms use with Browser for Last Week" },
 			                { title: "Count" },
 			               
@@ -386,9 +631,21 @@ session_start ();
 
 					 $('#platformBrowserDay').DataTable( {
 			        	retrieve: true,
-			        	"aaSorting": [[1,'desc']],
+			        	"zeroRecords": "No matching records found",
+			        	"aaSorting": [[2,'desc']],
+		    		 	"iDisplayLength": 50,
+		    		 	 "fnDrawCallback": function ( oSettings ) {
+					            if ( oSettings.bSorted || oSettings.bFiltered )
+					            {
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                {
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                }
+					            }
+					        },
 			            data: statsItems,
 			            columns: [
+							{ title: "Index"},	
 			                { title: "Top Platforms use with Browser for Last 24H" },
 			                { title: "Count" },
 			               
@@ -411,7 +668,7 @@ session_start ();
 		<nav class="navbar navbar-inverse">
 			<div class="container-fluid">
 				<div class="navbar-header">
-					<a class="navbar-brand" href="">HashTux</a>
+					<a class="navbar-brand" href=""></a>
 				</div>
 				<div>
 					<ul class="nav navbar-nav ">
