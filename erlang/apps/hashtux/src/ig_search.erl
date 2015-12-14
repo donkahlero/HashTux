@@ -30,13 +30,12 @@ search(Term, Options) ->
 					DataList = get_value(<<"data">>, DecodedRes),
 					%io:format("Raw results are: ~p~n", [DecodedRes]),
 					Results = parse_results(Term, DataList),
-					ResLength = length(Results),
-					io:format("IG_SEARCH: Unfiltered result count: ~p~n", [ResLength]),
+					io:format("IG_SEARCH: Unfiltered result count: ~p~n", [length(Results)]),
 					Types = get_value(content_type, Options),
+					io:format("IG_SEARCH: Types are : ~p~n", [Types]),
 					FilterRes = filter_insta(Results, Types),
-					FilterResLength = length(FilterRes),
-					io:format("IG_SEARCH: Filtered result count: ~p~n", [FilterResLength]),
-					[{filtered, Results}, {unfiltered, FilterRes}]
+					io:format("IG_SEARCH: Filtered result count: ~p~n", [length(FilterRes)]),
+					[{filtered, FilterRes}, {unfiltered, Results}]
 			catch _ -> []
 			end;
 		{error, Reason} ->
@@ -53,7 +52,7 @@ build_request(Term, Options) ->
 	case get_value(history_timestamp, Options) of
 		[] -> 
 			Url1 = ?URL ++ Term ++ ?TAIL ++ ?AND ++ ?ACCESS ++ Token,
-			%io:format("MINER_WORKER: Build Url: ~p~n", [Url1]),
+			io:format("MINER_WORKER: Build Url: ~p~n", [Url1]),
 			Url1;
 		Value ->
 			MinTime = Value - 43200,
@@ -61,7 +60,7 @@ build_request(Term, Options) ->
 			Url2 = ?URL ++ Term ++ ?TAIL ++ ?AND ++ ?MIN_TIME ++ 
 					erlang:integer_to_list(MinTime) ++ ?AND ++ ?MAX_TIME ++ 
 					erlang:integer_to_list(MaxTime) ++ ?AND ++ ?ACCESS ++ Token,
-			%io:format("MINER_WORKER: Build Url: ~p~n", [Url2]),
+			io:format("MINER_WORKER: Build Url: ~p~n", [Url2]),
 			Url2
 	end.
 
@@ -84,11 +83,6 @@ get_max_time(Time) ->
 get_token() ->
 	{ok, Token} = application:get_env(instagram_account, access_token),
 	Token.
-%	Key = case get_value(access_token, Account) of
-%				[] -> [];
-%				V  -> V
-%		  end,
-%	Key.
 
 
 %% 
@@ -100,8 +94,8 @@ filter_insta(Res, []) -> Res;
 filter_insta(Res, L)  ->
 	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
 		{true, true}   -> Res;
-		{false, false} -> Res;
- 		{true, false}  -> filter_insta_res(Res, <<"image">>);
+		{false, false} -> [];
+		{true, false}  -> filter_insta_res(Res, <<"image">>);
 		{false, true}  -> filter_insta_res(Res, <<"video">>)
 	end.
 
@@ -112,7 +106,14 @@ filter_insta(Res, L)  ->
 %% 
 filter_insta_res([], _Key)	 -> [];
 filter_insta_res(List, Key) ->
-	[N || N <- List, get_value(<<"content_type">>, N) == Key]. 
+	[N || N <- List, get_value(<<"content_type">>, N) =:= Key]. 
+
+
+%filter_check(CurrentPost, Key) ->
+%	PostContentType = get_value(binary:list_to_bin("content_type"), CurrentPost),
+%	io:format("IG: Testing if ~p matches requested type ~p: ~p~n", 
+%			  [PostContentType, Key, PostContentType =:= Key]),
+%	PostContentType =:= Key.
 
 
 %%
@@ -209,6 +210,7 @@ get_tags(L)  ->
 %%
 get_content_type([]) -> [];
 get_content_type(L)  ->
+	%io:format("IG_SEARCH: Content type is: ~p~n", [get_value(<<"type">>, L)]),
 	{<<"content_type">>, get_value(<<"type">>, L)}.
 
 
