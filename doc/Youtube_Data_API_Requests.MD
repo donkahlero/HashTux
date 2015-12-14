@@ -21,3 +21,16 @@ To prevent users from affecting the quality and performance of the service, the 
 HashTux requests to the Youtube API are carried out in two steps:
 * first we send a **Search request** using the [Search:list] (https://developers.google.com/youtube/v3/docs/search/list) method to identify the videos that match query parameters specified by the user. This request will return a list of *N* video IDs.
 * Second, we send a **Video request** using the [Video:list](https://developers.google.com/youtube/v3/docs/videos/list) method to retrieve all the relevant information on the IDs returned by the Search request. Note that in this context *N* is the number of Video items returned by the Search request.
+
+## To request Youtube Videos
+To send a request to the Youtube Data API use `youtube_search:search/2`:
+```erlang
+youtube_search:search(Keyword, Options).
+```
+where `Keyword` is the term requested by the user, while `Options` is a list containing the key-value tuples for the **content_type**, **language** and **history_timestamp** requested by the user.
+
+Parameters must be provided according to the following guidelines:
+
+* **content_type:** `{content_type, TypeList}`, where `TypeList` contains the required types of feeds specified as binary-strings. For example, if we want to send a request without filtering results by content-type, TypeList must be provided as `[<<"text">>, <<"image">>, <<"video">>]`.
+* 
+
