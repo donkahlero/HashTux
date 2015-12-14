@@ -1,8 +1,12 @@
 # Youtube Data API Requests
 =================================================================
-HashTux requests to the Youtube Data API are handled in the module `youtube_search.erl`. HashTux requests to the Youtube API are carried out in two steps:
-* first we send a **Search request** using the [Search:list] (https://developers.google.com/youtube/v3/docs/search/list) method to identify the videos that match query parameters specified by the user. This request will return a list of *N* video IDs.
-* Second, we send a **Video request** using the [Video:list](https://developers.google.com/youtube/v3/docs/videos/list) method to retrieve all the relevant information on the IDs returned by the Search request. Note that in this context *N* is the number of Video items returned by the Search request.
+HashTux requests to the Youtube Data API are handled in the module `youtube_search.erl`. 
+
+## Setting a Youtube Application
+To create a Youtube application, follow the steps listed below:
+* create a Google Account to access the Google Developer Console (GDC);
+* create a project in the GDC;
+* get authorization credentials.
 
 ## Authorization Credentials 
 Requests to the Youtube Data API must be [authenticated](https://developers.google.com/youtube/registering_an_application) with OAuth 2.0 credentials or by an API Key. OAuth 2.0 requests are intended to access private user data. Since HashTux.com is not focused on user-specific information, our requests use an **API Server Key**.
@@ -12,3 +16,8 @@ To prevent users from affecting the quality and performance of the service, the 
 
 ##External Dependencies
 * [jsx](https://github.com/cmullaparthi/ibrowse): used to parse a json text (utf8 encoded binary) and convert it into erlang terms.
+
+## Youtube Data API requests logic
+HashTux requests to the Youtube API are carried out in two steps:
+* first we send a **Search request** using the [Search:list] (https://developers.google.com/youtube/v3/docs/search/list) method to identify the videos that match query parameters specified by the user. This request will return a list of *N* video IDs.
+* Second, we send a **Video request** using the [Video:list](https://developers.google.com/youtube/v3/docs/videos/list) method to retrieve all the relevant information on the IDs returned by the Search request. Note that in this context *N* is the number of Video items returned by the Search request.
