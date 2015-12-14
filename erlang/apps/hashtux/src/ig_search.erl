@@ -30,13 +30,11 @@ search(Term, Options) ->
 					DataList = get_value(<<"data">>, DecodedRes),
 					%io:format("Raw results are: ~p~n", [DecodedRes]),
 					Results = parse_results(Term, DataList),
-					ResLength = length(Results),
-					io:format("IG_SEARCH: Unfiltered result count: ~p~n", [ResLength]),
+					io:format("IG_SEARCH: Unfiltered result count: ~p~n", [length(Results)]),
 					Types = get_value(content_type, Options),
 					io:format("IG_SEARCH: Types are : ~p~n", [Types]),
 					FilterRes = filter_insta(Results, Types),
-					FilterResLength = length(FilterRes),
-					io:format("IG_SEARCH: Filtered result count: ~p~n", [FilterResLength]),
+					io:format("IG_SEARCH: Filtered result count: ~p~n", [length(FilterRes)]),
 					[{filtered, FilterRes}, {unfiltered, Results}]
 			catch _ -> []
 			end;
@@ -85,26 +83,15 @@ get_max_time(Time) ->
 get_token() ->
 	{ok, Token} = application:get_env(instagram_account, access_token),
 	Token.
-%	Key = case get_value(access_token, Account) of
-%				[] -> [];
-%				V  -> V
-%		  end,
-%	Key.
 
 
 %% 
 %% @doc Checks for the options for which to filter Instagram results. The
 %% options can be 'image' and 'video'. Calls filter_insta_res/2 if needed.
 %% 
-%filter_insta([], _L)  -> [];
-%filter_insta(Res, []) -> Res;
-%filter_insta(Res, L) ->
-%	[X || X <- Res, Option <- L, lists:member(Option, X)].
-
 filter_insta([], _L)  -> [];
 filter_insta(Res, []) -> Res;
 filter_insta(Res, L)  ->
-	io:format("IG_SEARCH: Types boolean: ~p : ~p~n", [lists:member(<<"image">>, L), lists:member(<<"video">>, L)]),
 	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
 		{true, true}   -> Res;
 		{false, false} -> [];
@@ -119,14 +106,15 @@ filter_insta(Res, L)  ->
 %% 
 filter_insta_res([], _Key)	 -> [];
 filter_insta_res(List, Key) ->
-	% get_value(<<"content_type"), N) =:= Key
-	[N || N <- List, filter_check(N, Key)]. 
+	[N || N <- List, get_value(<<"content_type">>, N) =:= Key]. 
 
-filter_check(CurrentPost, Key) ->
-	PostContentType = get_value(binary:list_to_bin("content_type"), CurrentPost),
-	io:format("IG: Testing if ~p matches requested type ~p: ~p~n", 
-			  [PostContentType, Key, PostContentType =:= Key]),
-	PostContentType =:= Key.
+
+%filter_check(CurrentPost, Key) ->
+%	PostContentType = get_value(binary:list_to_bin("content_type"), CurrentPost),
+%	io:format("IG: Testing if ~p matches requested type ~p: ~p~n", 
+%			  [PostContentType, Key, PostContentType =:= Key]),
+%	PostContentType =:= Key.
+
 
 %%
 %% @doc Gets the value from the key-value pair with key content_type
