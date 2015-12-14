@@ -1,19 +1,17 @@
 #TODO
-<b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
+- <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
+- <b>Instagram timescroll is not working, pictures from yesterday are showing up when you set it to i.e. 1 week ago. We will probably omit instagram from timescroll, but let's discuss tomorrow</b><br />
+- Stats: take away leftmost hashtux link (confusing), set default to at least 25 entries and maybe week. add some space under the table. add numbers to all entries in the table, in order of popularity/occurence<br />
+- Move youtube and twitter configs to config file<br />
+- Front end: videos tweaked<br />
+- For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
+- And higher chance off appearing in RECENT the newer they are<br />
+- Close button at top right in options meny?<br />
 
-Stats: take away leftmost hashtux link (confusing), set default to at least 25 entries and maybe week. add some space under the table. add numbers to all entries in the table, in order of popularity/occurence<br />
-Move youtube and twitter configs to config file<br />
-Front end: videos tweaked<br />
-For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
-And higher chance off appearing in RECENT the newer they are<br />
-Close button at top right in options meny?<br />
-
-Front end: maybe list of trending things on the first page<br />
-Error report / defect backlog - maybe link "click here to report problems"<br />
-"Back to front page" button and icon in top menu<br />
-In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
-
-Instagram timescroll is not working, pictures from yesterday are showing up when you set it to i.e. 1 week ago.<br />
+- Front end: maybe list of trending things on the first page<br />
+- Error report / defect backlog - maybe link "click here to report problems"<br />
+- "Back to front page" button and icon in top menu<br />
+- In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 
 
 #Documentation:
