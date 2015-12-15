@@ -1,3 +1,10 @@
+%%
+%% @author Ivo Vryashkov
+%%
+%% @doc Miner supervisor module. Top supervisor for the miner operations.
+%% Responsible for the miner_server, miner_dbwriter and miner_worker_sup
+%% modules.
+%%
 -module(miner_sup).
 
 -behaviour(supervisor).
@@ -19,6 +26,9 @@
 %% =============================================================================
 
 
+%%
+%% @doc Starts the supervisor and its children.
+%%
 start_link() ->
 	io:format("MINER_SUP: Starting...~n"),
   	supervisor:start_link({local, ?MODULE}, ?MODULE, []).
@@ -31,6 +41,10 @@ start_link() ->
 %% =============================================================================
 
 
+%%
+%% @doc Initialises the children and the restart strategy for this 
+%% supervisor.
+%%
 init([]) ->
 	MinerDBWriter = {miner_dbwriter, 
 							 {miner_dbwriter, start_link, []},
@@ -50,7 +64,7 @@ init([]) ->
 								10000,
 								worker,
 								[miner_worker_sup]},
-	{ok, { {one_for_one, 3, 1800}, [MinerDBWriter, MinerServer, MinerWorkerSup]} }.
+	{ok, {{one_for_one, 3, 1800}, [MinerDBWriter, MinerServer, MinerWorkerSup]}}.
 
 
 
