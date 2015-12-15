@@ -6,15 +6,14 @@
 {listener_conf, [{listen_port, 8080}]},
 {db_conf,[
 	{localdb,{"http://localhost:1994/", "hashtux", "grouptux"}},
-	{external, [{"http://tikser.se:1984/", "hashtux", "grouptux"}]}]},
-{tux_miner, [
-	{tux_miner_accounts, [
-    	{account1, [
-	   		{api_key, "8zASL19iVZ6IpMa0imBbRDJlo"},
-	    	{api_secret, "u4BL8BIGb6NllmZJwlnO2zpf0H5vzv2wMP4s5aYquZvBFEd0ux"},
-	    	{access_token, "3947085676-R5GaAeZAz2ns7wEcfZZ9Fw4Npt62kS4irnkgHcT"},
-	    	{access_token_secret, "W1raFk3kqVEj38QFjDus2qCfk8IU8ilWgfTqAgk3T5Lv6"}
-		]}
-	]}
-]}
+	{external, [{"http://jonas.hashtux.com:1994/", "hashtux", "grouptux"},
+		{"http://svu.hashtux.com:1986/", "hashtux", "grouptux"}]}]},
+{instagram_account, [
+	{access_token, "2253641420.43956b9.2ce7ad96329647ffa756501b24fbed3e"}
+	]},
+{twitter_account, [{access_token, "3947085676-R5GaAeZAz2ns7wEcfZZ9Fw4Npt62kS4irnkgHcT"},
+		{access_token_secret, "W1raFk3kqVEj38QFjDus2qCfk8IU8ilWgfTqAgk3T5Lv6"},
+		{consumer_key, "8zASL19iVZ6IpMa0imBbRDJlo"},
+		{consumer_key_secret, "u4BL8BIGb6NllmZJwlnO2zpf0H5vzv2wMP4s5aYquZvBFEd0ux"}]},
+{youtube_account, [{server_key, "AIzaSyAT27JOYa8DAQKFK_2vPfxWagLxMXqbXFY"}]}
 ].

@@ -1,3 +1,9 @@
+%%
+%% @author Ivo Vryashkov
+%%
+%% @doc Instagram search module. Responsible for querying Instagram and 
+%% filtering of the returned results.
+%%
 -module(ig_search).
 
 -export([search/2]).
@@ -18,28 +24,28 @@
 %% according to the options passed.
 %%
 search(Term, Options) ->
-	%Token = get_token(),
-	%Url = ?URL ++ Term ++ ?TAIL ++ Token,
-	Url = build_request(Term, Options),
+	% format the search term (get rid of + if any)
+	FormattedTerm = apis_aux:format_keyword(Term),
+	% build the request url
+	Url = build_request(FormattedTerm, []),
+	% perform a search
 	case httpc:request(Url) of
 		{ok, Result} -> 
 			{_StatusLine, _Headers, Body} = Result,
 			try jsx:decode(list_to_binary(Body)) of
 				DecodedRes -> 
 					DataList = get_value(<<"data">>, DecodedRes),
-					%io:format("Raw results are: ~p~n", [DecodedRes]),
 					Results = parse_results(Term, DataList),
-					ResLength = length(Results),
-					io:format("INSTAGRAM API RESULT COUNT :~p~n", [ResLength]),
+					io:format("IG_SEARCH: Unfiltered result count: ~p~n", [length(Results)]),
 					Types = get_value(content_type, Options),
+					io:format("IG_SEARCH: Types are : ~p~n", [Types]),
 					FilterRes = filter_insta(Results, Types),
-					FilterResLength = length(FilterRes),
-					io:format("INSTAGRAM API FILTERED RESULT COUNT :~p~n", [FilterResLength]),
-					[{filtered, Results}, {unfiltered, FilterRes}]
+					io:format("IG_SEARCH: Filtered result count: ~p~n", [length(FilterRes)]),
+					[{filtered, FilterRes}, {unfiltered, Results}]
 			catch _ -> []
 			end;
 		{error, Reason} ->
-			io:format("REQUEST FAILED for reason: ~p~n", [Reason]),
+			io:format("IG_SEARCH: Request failed for reason: ~p~n", [Reason]),
 			[]
 	end.
 
@@ -47,12 +53,20 @@ search(Term, Options) ->
 %%
 %% @doc Builds the Url for a request.
 %%
+build_request(Term, []) ->
+	Token = get_token(),
+	Url = ?URL ++ Term ++ ?TAIL ++ ?AND ++ ?ACCESS ++ Token,
+	io:format("MINER_WORKER: Build Url: ~p~n", [Url]),
+	Url;
+%%% This function clause will never match because of the fact that we 
+%%% don't send any history_timestamp to Instagram search. Left here for
+%%% future use.
 build_request(Term, Options) ->
 	Token = get_token(),
 	case get_value(history_timestamp, Options) of
 		[] -> 
 			Url1 = ?URL ++ Term ++ ?TAIL ++ ?AND ++ ?ACCESS ++ Token,
-			%io:format("MINER_WORKER: Build Url: ~p~n", [Url1]),
+			io:format("MINER_WORKER: Build Url: ~p~n", [Url1]),
 			Url1;
 		Value ->
 			MinTime = Value - 43200,
@@ -60,7 +74,7 @@ build_request(Term, Options) ->
 			Url2 = ?URL ++ Term ++ ?TAIL ++ ?AND ++ ?MIN_TIME ++ 
 					erlang:integer_to_list(MinTime) ++ ?AND ++ ?MAX_TIME ++ 
 					erlang:integer_to_list(MaxTime) ++ ?AND ++ ?ACCESS ++ Token,
-			%io:format("MINER_WORKER: Build Url: ~p~n", [Url2]),
+			io:format("MINER_WORKER: Build Url: ~p~n", [Url2]),
 			Url2
 	end.
 
@@ -81,12 +95,8 @@ get_max_time(Time) ->
 %% @docGets the access token for instagram.
 %%
 get_token() ->
-	{ok, Account} = application:get_env(hashtux, instagram_account),
-	Key = case get_value(access_token, Account) of
-				[] -> [];
-				V  -> V
-		  end,
-	Key.
+	{ok, Token} = application:get_env(instagram_account, access_token),
+	Token.
 
 
 %% 
@@ -98,8 +108,8 @@ filter_insta(Res, []) -> Res;
 filter_insta(Res, L)  ->
 	case {lists:member(<<"image">>, L), lists:member(<<"video">>, L)} of
 		{true, true}   -> Res;
-		{false, false} -> Res;
- 		{true, false}  -> filter_insta_res(Res, <<"image">>);
+		{false, false} -> [];
+		{true, false}  -> filter_insta_res(Res, <<"image">>);
 		{false, true}  -> filter_insta_res(Res, <<"video">>)
 	end.
 
@@ -110,7 +120,7 @@ filter_insta(Res, L)  ->
 %% 
 filter_insta_res([], _Key)	 -> [];
 filter_insta_res(List, Key) ->
-	[N || N <- List, get_value(<<"content_type">>, N) == Key]. 
+	[N || N <- List, get_value(<<"content_type">>, N) =:= Key]. 
 
 
 %%
@@ -126,6 +136,8 @@ filter_insta_res(List, Key) ->
 %	X.
 
 
+%%
+%% @doc Returns the value from a {key, value} pair in a list.
 %%
 get_value(_Key, [])	  -> [];
 get_value(_Key, null) -> [];
@@ -190,8 +202,8 @@ get_timestamp() ->
 %%
 %% @doc Returns the next max tag id {key, value} pair.
 %%
-get_tag_id(TagId) ->
-	{<<"tag_id">>, TagId}.	
+%%get_tag_id(TagId) ->
+%%	{<<"tag_id">>, TagId}.	
 
 
 %%
@@ -207,6 +219,7 @@ get_tags(L)  ->
 %%
 get_content_type([]) -> [];
 get_content_type(L)  ->
+	%io:format("IG_SEARCH: Content type is: ~p~n", [get_value(<<"type">>, L)]),
 	{<<"content_type">>, get_value(<<"type">>, L)}.
 
 
