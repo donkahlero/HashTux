@@ -111,13 +111,15 @@ function initGrid()
                         "<div class='col-xs-" +
                         (12/gridWidth) + 
                         " col-fill fixitem' id='tile" +
-                        count + "'>" +
-                        "<div class='twittertext'><p>" +
-                        displayed[count].text +
-                        "<p class='usernametweet'><a class='greytext' href='" +
-                        displayed[count].userlink + "' target='_blank'>@" +
-                        displayed[count].username + 
-                        "</a></p></p></div>" +
+                        count + "' style='background-image:url(images/TwitterLogo_blue.png);'>" +
+                        "<div class='twittertext'>" +
+                        "<div class='twittertop'>" + 
+                        "<img src='" + displayed[count].profilepic + "' width='20px' height='20px'> | " + 
+                        "<a class='twitterlink' href='" + displayed[count].userlink + "'>" + 
+                        displayed[count].displayname + " (@" + displayed[count].username + ")" + "</a>" +
+                        "</div>" + "<p class='tweet'>" + displayed[count].text + "</p>" +
+                        "<a class='twitterlink' href='" + displayed[count].userlink + "'>" +
+                        displayed[count].postdate + "</a></div>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
                         "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
                         "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
@@ -136,15 +138,18 @@ function initGrid()
                         displayed[count].url +
                         ");' id='tile" +
                         count + "'>" +
-                        "<div class='twitterimagetext'><p>" +
-                        displayed[count].text +
-                        "<p class='usernametweet'><a class='greytext' href='" +
-                        displayed[count].userlink + "' target='_blank'>@" +
-                        displayed[count].username + 
-                        "</a></p></p></div>" +
+                        "<div class='twitterimagetext'>" +
+                        "<div class='twittertop'>" + 
+                        "<img src='" + displayed[count].profilepic + "' width='20px' height='20px'> | " + 
+                        "<a class='twitterlink' href='" + displayed[count].userlink + "'>" + 
+                        displayed[count].displayname + " (@" + displayed[count].username + ")" + "</a>" +
+                        "</div>" + "<p class='tweet'>" + displayed[count].text + "</p>" + 
+                        "<a class='twitterlink' href='" + displayed[count].userlink + "'>" +
+                        displayed[count].postdate + "</a></div>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
                         "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
                         "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
+                        "<div class='twitterlogo'><img src='images/TwitterLogo_blue.png' width='40px' height='40px'></div>" +
                         "</div>";
 
                     displayed[count].tile = "tile" + count;
@@ -181,4 +186,7 @@ function initGrid()
             (12/gridHeight) + "' id='row" +
             i + "'>" + cols + "</div>");
     }
+    
+    $('p.tweet').tweetLinkify();
+    
 }
