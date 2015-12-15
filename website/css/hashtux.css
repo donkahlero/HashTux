@@ -315,6 +315,8 @@ a {
     margin-right: 10px;
 }
 
+.backbtn:focus {outline: none;}
+
 .menubtn {
     background: transparent;
     border: 0;
