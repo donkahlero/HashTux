@@ -219,7 +219,7 @@
 
                         <p class="greytext" align="center">
 
-                            HashTux is free for personal use. For commercial use, <a onclick="showCommercialUseInfo(); return false;">click here to read more</a>.
+                            HashTux is free for personal use. For commercial use, <button type="button" class="btn btn-link linkbtn" onclick="showCommercialUseInfo();">click here to read more</button>.
                             <br>
                             If you like the product and would like to support us, you can throw a 
                             <button type="button" class="btn btn-link linkbtn" onclick="showDonationBtn()">donation</button> our way. Every little bit helps!

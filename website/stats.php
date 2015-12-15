@@ -15,7 +15,6 @@ session_start ();
 <link href="css/hashtux.css" rel="stylesheet">
 <script src="js/userstats_fetcher.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script src="js/graph.js"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -85,7 +84,7 @@ session_start ();
 				  
 			   }
 		
-		window.onload =  fetch('search_term_year');	//	search term of the year is shown to start with when the page loads.
+		window.onload =  fetch('search_term_week');	//	search term of the year is shown to start with when the page loads.
 		//	creatTable is function used to creat tables, Each table is created using 
 		//	a library called DataTable. Multiple case statments are used to creat the diffrent tables. 
 		function creatTable() {
@@ -114,7 +113,7 @@ session_start ();
 					        data: statsItems, // The table is generated using data from statsItems array. 
 					       	columns: [		  // colums assigns the titles for the table. 	 
 					       	    { title: "Index"},																		
-					        	{ title: "Top Search Terms for This Year" },
+					        	{ title: "Top search terms for this year" },
 					            { title: "Count" },
 					        
 					     	] 
@@ -141,7 +140,7 @@ session_start ();
 				            data: statsItems,
 				            columns: [ 
 								{ title: "Index"},	
-				                { title: "Top Search Terms for Last Month" },
+				                { title: "Top search terms for last month" },
 				                { title: "Count" },
 				               
 				            ]
@@ -177,7 +176,7 @@ session_start ();
 					        },
 				            columns: [
 								{ title: "Index"},	       
-				                { title: "Top Search Terms for Last Week" },
+				                { title: "Top search terms for last week" },
 				                { title: "Count" },
 				               
 				            ]
@@ -213,7 +212,7 @@ session_start ();
 					        },
 				            columns: [
 								{ title: "Index"},	
-				                { title: "Top Search Terms for the Last 24H" },
+				                { title: "Top search terms for the last 24H" },
 				                { title: "Count" },
 				               
 				            ]
@@ -240,7 +239,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top Browsers with Version for This Year" },
+			                { title: "Top browsers with version for this year" },
 			                { title: "Count" },
 			               
 			            ]
@@ -267,7 +266,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	        
-			                { title: "Top Browsers with Version for Last Month" },
+			                { title: "Top browsers with version for last month" },
 			                { title: "Count" },
 			               
 			            ]
@@ -294,7 +293,7 @@ session_start ();
 				            data: statsItems,
 				            columns: [
 								{ title: "Index"},	
-				                { title: "Top Browsers with Version for Last Week" },
+				                { title: "Top browsers with version for last week" },
 				                { title: "Count" },
 				               
 				            ]
@@ -321,7 +320,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	       
-			                { title: "Top Browsers with Version for Last 24H" },
+			                { title: "Top browsers with version for the last 24H" },
 			                { title: "Count" },
 			               
 			            ]
@@ -348,7 +347,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top Browsers for This Year" },
+			                { title: "Top browsers for this year" },
 			                { title: "Count" },
 			               
 			            ]
@@ -375,7 +374,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	       
-			                { title: "Top Browsers for Last Month" },
+			                { title: "Top browsers for last month" },
 			                { title: "Count" },
 			               
 			            ]
@@ -402,7 +401,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top Browsers for Last Week" },
+			                { title: "Top browsers for last week" },
 			                { title: "Count" },
 			               
 			            ]
@@ -429,7 +428,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	         
-			                { title: "Top Browsers for Last Today" },
+			                { title: "Top browsers for the last 24H" },
 			                { title: "Count" },
 			               
 			            ]
@@ -457,7 +456,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top Platforms This Year" },
+			                { title: "Top platforms this year" },
 			                { title: "Count" },
 			               
 			            ]
@@ -484,7 +483,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top Platforms For Last Month" },
+			                { title: "Top platforms for last month" },
 			                { title: "Count" },
 			               
 			            ]
@@ -511,7 +510,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top Platforms For Last Week" },
+			                { title: "Top platforms for last week" },
 			                { title: "Count" },
 			               
 			            ]
@@ -538,7 +537,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top Platforms For Last 24H" },
+			                { title: "Top platforms for the last 24H" },
 			                { title: "Count" },
 			               
 			            ]
@@ -565,9 +564,9 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top Platforms use with Browser for This Year" },
+			                { title: "Top platforms use with browsers for this year" },
 			                { title: "Count" },
-			               
+			                 
 			            ]
 			        } ); 
 				    break;
@@ -592,7 +591,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top Platforms use with Browser for Last Month" },
+			                { title: "Top platforms use with browsers for last month" },
 			                { title: "Count" },
 			                
 			            ]
@@ -619,7 +618,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top Platforms use with Browser for Last Week" },
+			                { title: "Top platforms use with browsers for last week" },
 			                { title: "Count" },
 			               
 			            ]
@@ -646,7 +645,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top Platforms use with Browser for Last 24H" },
+			                { title: "Top platforms use with browser for the last 24H" },
 			                { title: "Count" },
 			               
 			            ]
@@ -697,14 +696,7 @@ session_start ();
 	
 	</div>
 	<div class="container">
-		<div class="row" id="tableContainer">
-			<div class="col-md-6" id="tableContainer"></div>
-			<div class="col-md-6" id="graphContainer">
-				<div class="container-fluid" align="center" width="100%" id=""chart_div"">
-				</div>
-			</div>
-
-		</div>
+		<div class="row" id="tableContainer"></div>
 	</div>
 	</header>
 </body>
