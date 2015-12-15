@@ -13,7 +13,7 @@
 - Index page should link to stats page
 - Dennis: Use another word than "Hashtag" on the front page, (we don't use hashtax on youtube etc).
 - Dennis: Action buttos in tweets (like etc.) to conform with the twitter guidelines. 
-- Front-end: Ipad is scrolling, can not search when in grid page.
+- Front-end: Ipad can not search when in grid page.
 - Fix indentation in index.php, search.php etc
 
 #Documentation:
