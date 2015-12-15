@@ -2,7 +2,6 @@
 
 - <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
 - Jerker: Front end: maybe list of trending things on the first page <b>Ideally both from HashTux search stats AND trending on twitter</b><br />
-- Jerker: # sign needs to be filtered out
 - Dennis: Front end: videos tweaked<br />
 - Terms of use text that says "btw we use cookies, and we store information about what users search for to provide a better user experience".<br />
 - Aman: Stats:add some space under the table. add numbers to all entries in the table, in order of popularity/occurence[Done].
