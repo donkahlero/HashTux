@@ -10,8 +10,6 @@
 - In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 - For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
 - Index page should link to stats page
-- Dennis: Action buttos in tweets (like etc.) to conform with the twitter guidelines. 
-- Front-end: Ipad can not search when in grid page.
 - Fix indentation in index.php, search.php etc
 
 #Documentation:
