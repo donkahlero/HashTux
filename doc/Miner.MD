@@ -65,3 +65,9 @@ To search for a certain timeframe, just include the {history_timestamp, 123456} 
 1. A new worker is spawned to search for the given term (hashtag). The PID of the worker is returned to the caller for reference.
 2. After the search is complete, the worker returns the search results to the original caller.
 
+### Sample use:
+```erlang
+{ok, Pid} = miner_server:search("mario", [{request_type, <<"search">>}]).
+receive {Pid, Result} -> Result end.
+```
+
