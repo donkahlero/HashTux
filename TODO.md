@@ -18,6 +18,7 @@
 Make a point that the project is well defined in scope<br />
 Make a point that the project is simple/intuitive by design choise in terms of UI etc<br />
 Maybe combine the options datatype with the database options list and clarify which can be used where.<br />
+Remember to discuss the libraries used in php (libs/ folder)<br />
 
 *fix the redeployment diagram (done)<br /> 
 -->arrows<br /> 
