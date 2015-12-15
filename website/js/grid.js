@@ -115,10 +115,10 @@ function initGrid()
                         "<div class='twittertext'>" +
                         "<div class='twittertop'>" + 
                         "<img src='" + displayed[count].profilepic + "' width='20px' height='20px'> | " + 
-                        "<a class='twitterlink' href='" + displayed[count].userlink + "'>" + 
+                        "<a class='twitterlink' href='" + displayed[count].userlink + "' target='_blank'>" + 
                         displayed[count].displayname + " (@" + displayed[count].username + ")" + "</a>" +
                         "</div>" + "<p class='tweet'>" + displayed[count].text + "</p>" +
-                        "<a class='twitterlink' href='" + displayed[count].userlink + "'>" +
+                        "<a class='twitterlink' href='" + displayed[count].userlink + "' target='_blank'>" +
                         displayed[count].postdate + "</a></div>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
                         "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
@@ -141,10 +141,10 @@ function initGrid()
                         "<div class='twitterimagetext'>" +
                         "<div class='twittertop'>" + 
                         "<img src='" + displayed[count].profilepic + "' width='20px' height='20px'> | " + 
-                        "<a class='twitterlink' href='" + displayed[count].userlink + "'>" + 
+                        "<a class='twitterlink' href='" + displayed[count].userlink + "'target='_blank'>" + 
                         displayed[count].displayname + " (@" + displayed[count].username + ")" + "</a>" +
                         "</div>" + "<p class='tweet'>" + displayed[count].text + "</p>" + 
-                        "<a class='twitterlink' href='" + displayed[count].userlink + "'>" +
+                        "<a class='twitterlink' href='" + displayed[count].userlink + "' target='_blank'>" +
                         displayed[count].postdate + "</a></div>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
                         "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
@@ -165,7 +165,7 @@ function initGrid()
                     " col-fill' style='background-image:url('');' id='tile"+
                     count + "'>" +
                     "<iframe width='100%' height='100%' frameborder='0' src='" +
-                    displayed[count].url + "" +
+                    displayed[count].url + "?autoplay=1" +
                     "' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
                     "<p class='usernameimage'><a class='greytext' href='" +
                     displayed[count].userlink + "' target='_blank'>@" +
@@ -188,5 +188,10 @@ function initGrid()
     }
     
     $('p.tweet').tweetLinkify();
+    
+    function onPlayerReady(event) {
+        event.target.mute();
+        // Anything else you want to do, like start playback...
+    }
     
 }
