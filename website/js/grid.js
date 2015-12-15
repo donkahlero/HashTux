@@ -118,8 +118,11 @@ function initGrid()
                         "<a class='twitterlink' href='" + displayed[count].userlink + "' target='_blank'>" + 
                         displayed[count].displayname + " (@" + displayed[count].username + ")" + "</a>" +
                         "</div>" + "<p class='tweet'>" + displayed[count].text + "</p>" +
-                        "<a class='twitterlink' href='" + displayed[count].userlink + "' target='_blank'>" +
-                        displayed[count].postdate + "</a></div>" +
+                        "<div class='smalltext'><a href='" + displayed[count].userlink + "' target='_blank'>" +
+                        displayed[count].postdate + "</a><br />" + 
+                        "<a href='https://twitter.com/intent/like?tweet_id=463440424141459456'>like</a> | " +
+                        "<a href='https://twitter.com/intent/retweet?tweet_id=463440424141459456'>retweet</a> | " +
+                        "<a href='https://twitter.com/intent/tweet?in_reply_to=463440424141459456'>reply</a>" +"</div></div>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
                         "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
                         "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
@@ -144,8 +147,11 @@ function initGrid()
                         "<a class='twitterlink' href='" + displayed[count].userlink + "'target='_blank'>" + 
                         displayed[count].displayname + " (@" + displayed[count].username + ")" + "</a>" +
                         "</div>" + "<p class='tweet'>" + displayed[count].text + "</p>" + 
-                        "<a class='twitterlink' href='" + displayed[count].userlink + "' target='_blank'>" +
-                        displayed[count].postdate + "</a></div>" +
+                        "<div class='smalltext'><a href='" + displayed[count].userlink + "' target='_blank'>" +
+                        displayed[count].postdate + "</a><br />" + 
+                        "<a href='https://twitter.com/intent/like?tweet_id=463440424141459456'>like</a> | " +
+                        "<a href='https://twitter.com/intent/retweet?tweet_id=463440424141459456'>retweet</a> | " +
+                        "<a href='https://twitter.com/intent/tweet?in_reply_to=463440424141459456'>reply</a>" +"</div></div>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
                         "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
                         "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
@@ -165,7 +171,7 @@ function initGrid()
                     " col-fill' style='background-image:url('');' id='tile"+
                     count + "'>" +
                     "<iframe width='100%' height='100%' frameborder='0' src='" +
-                    displayed[count].url + "?autoplay=1" +
+                    displayed[count].url + "?autoplay=1&loop=1" +
                     "' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
                     "<p class='usernameimage'><a class='greytext' href='" +
                     displayed[count].userlink + "' target='_blank'>@" +
@@ -188,10 +194,5 @@ function initGrid()
     }
     
     $('p.tweet').tweetLinkify();
-    
-    function onPlayerReady(event) {
-        event.target.mute();
-        // Anything else you want to do, like start playback...
-    }
     
 }
