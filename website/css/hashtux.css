@@ -232,12 +232,24 @@ a {
     margin-top: 15px;
 }
 
-.savebutton {
-    width: 100%; 
+.closebtn {
+    width: 20%;
     height: 10%;
+    margin: 0;
+    margin-top: 20px;
+    border: none;
+    border-radius: 0;
+    float: right;
+}
+
+.savebutton {
+    width: 80%; 
+    height: 10%;
+    margin: 0;
     margin-top: 20px;
     border: none; 
     border-radius: 0;
+    float:left;
 }
 
 .gridalert {
