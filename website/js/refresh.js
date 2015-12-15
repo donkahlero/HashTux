@@ -68,14 +68,14 @@ function refresh()
                         $(randTile).animate({height: "0", opacity: "0"}, 0);
 
                         $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill fixitem');
-                        $(randTile).css('background-image', '');
+                        $(randTile).css('background-image', 'url(images/TwitterLogo_blue.png)');
                         $(randTile).html(
-                                "<div class='twittertext'><p>" +
-                                newItem.text +
-                                "</p><p class='usernametweet'><a class='greytext' href='" +
-                                newItem.userlink + "' target='_blank'>@" +
-                                newItem.username + "</a></p>" +
-                                "</div>" +
+                                "<div class='twittertext'>" + 
+                                "<div class='twittertop'>" + 
+                                "<img src='" + newItem.profilepic + "' width='20px' height='20px'> | " +
+                                "<a class='twitterlink' href='" + newItem.userlink + "'>" +
+                                newItem.displayname + " (@" + newItem.username + ")" + "</a>" +
+                                "</div><p class='tweet'>" + newItem.text + "</p></div>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
                                 "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
                                 "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
@@ -90,15 +90,16 @@ function refresh()
                         $(randTile).attr('class', 'col-xs-' + (12/gridWidth) + ' col-fill fixitem');
                         $(randTile).css('background-image', 'url(' + newItem.url + ')');
                         $(randTile).html(
-                                "<div class='twitterimagetext'><p>" +
-                                newItem.text +
-                                "</p><p class='usernametweet'><a class='greytext' href='" +
-                                newItem.userlink + "' target='_blank'>@" +
-                                newItem.username + "</a></p>" +
-                                "</div>" + 
+                                "<div class='twitterimagetext'>" + 
+                                "<div class='twittertop'>" + 
+                                "<img src='" + newItem.profilepic + "' width='20px' height='20px'> | " +
+                                "<a class='twitterlink' href='" + newItem.userlink + "'>" +
+                                newItem.displayname + " (@" + newItem.username + ")" + "</a>" +
+                                "</div><p class='tweet'>" + newItem.text + "</p></div>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
                                 "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
-                                "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
+                                "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
+                                "<div class='twitterlogo'><img src='images/TwitterLogo_blue.png' width='40px' height='40px'></div>");
 
                         $(randTile).animate({height: "100%", opacity: "1"}, 1000);
                     }
