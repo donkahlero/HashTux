@@ -1,3 +1,9 @@
+%%
+%% @author Ivo Vryashkov
+%%
+%% @doc Miner database writer module. Responsible for writing the results
+%% returned from searching the social media services to the database.
+%%
 -module(miner_dbwriter).
 
 -behaviour(gen_server).
