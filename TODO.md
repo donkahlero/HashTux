@@ -1,8 +1,7 @@
 #TODO
 
 - <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
-- Jerker: Front end: maybe list of trending things on the first page <b>Ideally both from HashTux search stats AND trending on twitter</b><br />
-- Dennis: Front end: videos tweaked<br />
+- Jerker: Front end: maybe list of trending things on twitter</b><br />
 - Terms of use text that says "btw we use cookies, and we store information about what users search for to provide a better user experience".<br />
 - Aman: Stats:add some space under the table.
 - add a total that is the total number av searches for the given interval<br />
@@ -11,7 +10,6 @@
 - In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 - For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
 - Index page should link to stats page
-- Dennis: Use another word than "Hashtag" on the front page, (we don't use hashtax on youtube etc).
 - Dennis: Action buttos in tweets (like etc.) to conform with the twitter guidelines. 
 - Front-end: Ipad can not search when in grid page.
 - Fix indentation in index.php, search.php etc
