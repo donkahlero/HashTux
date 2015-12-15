@@ -1,14 +1,14 @@
 #TODO
 
 - <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
-- Jerker: Front end: maybe list of trending things on twitter</b><br />
+- Dennis: integrate and design trending topics lists<br />
+- Dennis: Index page should link to stats page
 - Terms of use text that says "btw we use cookies, and we store information about what users search for to provide a better user experience".<br />
-- add a total that is the total number av searches for the given interval<br />
+- Aman or Niklas: add a total that is the total number av searches for the given interval<br />
 - Posts should have higher chance of appearing in RECENT the newer they are<br />
 - Error report / defect backlog - maybe link "click here to report problems"<br />
 - In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 - For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
-- Index page should link to stats page
 - Fix indentation in index.php, search.php etc
 
 #Documentation:
