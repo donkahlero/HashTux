@@ -13,6 +13,7 @@ RewriteCond $1 !^stats.php$
 
 RewriteCond %{REQUEST_URI} !^/$ 
 RewriteCond %{REQUEST_URI} !^/index.php$ 
+RewriteCond %{REQUEST_URI} !^/index2.php$ 
 RewriteCond %{REQUEST_URI} !^/css/(.+)$ 
 RewriteCond %{REQUEST_URI} !^/js/(.+)$
 RewriteCond %{REQUEST_URI} !^/design.php$
