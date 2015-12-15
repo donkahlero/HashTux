@@ -3,7 +3,6 @@
 - <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
 - Jerker: Front end: maybe list of trending things on twitter</b><br />
 - Terms of use text that says "btw we use cookies, and we store information about what users search for to provide a better user experience".<br />
-- Aman: Stats:add some space under the table.
 - add a total that is the total number av searches for the given interval<br />
 - Posts should have higher chance of appearing in RECENT the newer they are<br />
 - Error report / defect backlog - maybe link "click here to report problems"<br />
