@@ -75,7 +75,9 @@ function refresh()
                                 "<img src='" + newItem.profilepic + "' width='20px' height='20px'> | " +
                                 "<a class='twitterlink' href='" + newItem.userlink + "'>" +
                                 newItem.displayname + " (@" + newItem.username + ")" + "</a>" +
-                                "</div><p class='tweet'>" + newItem.text + "</p></div>" +
+                                "</div><p class='tweet'>" + newItem.text + "</p>" +
+                                "<a class='twitterlink' href='" + newItem.userlink + "'>" +
+                                newItem.postdate + "</a></div>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
                                 "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
                                 "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
@@ -95,7 +97,9 @@ function refresh()
                                 "<img src='" + newItem.profilepic + "' width='20px' height='20px'> | " +
                                 "<a class='twitterlink' href='" + newItem.userlink + "'>" +
                                 newItem.displayname + " (@" + newItem.username + ")" + "</a>" +
-                                "</div><p class='tweet'>" + newItem.text + "</p></div>" +
+                                "</div><p class='tweet'>" + newItem.text + "</p>" +
+                                "<a class='twitterlink' href='" + newItem.userlink + "'>" +
+                                newItem.postdate + "</a></div>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
                                 "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
                                 "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
@@ -113,7 +117,7 @@ function refresh()
                     $(randTile).css('background-image', '');
                     $(randTile).html(
                             "<iframe width='100%' height='100%' frameborder='0' src='" +
-                            newItem.url + "" +
+                            newItem.url + "?autoplay=1" +
                             "' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
                             "<p class='usernameimage'><a class='greytext' href='" +
                             newItem.userlink + "' target='_blank'>@" +
