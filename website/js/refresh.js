@@ -76,8 +76,11 @@ function refresh()
                                 "<a class='twitterlink' href='" + newItem.userlink + "'>" +
                                 newItem.displayname + " (@" + newItem.username + ")" + "</a>" +
                                 "</div><p class='tweet'>" + newItem.text + "</p>" +
-                                "<a class='twitterlink' href='" + newItem.userlink + "'>" +
-                                newItem.postdate + "</a></div>" +
+                                "<div class='smalltext'><a href='" + newItem.userlink + "' target='_blank'>" +
+                                newItem.postdate + "</a><br />" + 
+                                "<a href='https://twitter.com/intent/like?tweet_id=463440424141459456'>like</a> | " +
+                                "<a href='https://twitter.com/intent/retweet?tweet_id=463440424141459456'>retweet</a> | " +
+                                "<a href='https://twitter.com/intent/tweet?in_reply_to=463440424141459456'>reply</a>" +"</div></div>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
                                 "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
                                 "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
@@ -98,8 +101,11 @@ function refresh()
                                 "<a class='twitterlink' href='" + newItem.userlink + "'>" +
                                 newItem.displayname + " (@" + newItem.username + ")" + "</a>" +
                                 "</div><p class='tweet'>" + newItem.text + "</p>" +
-                                "<a class='twitterlink' href='" + newItem.userlink + "'>" +
-                                newItem.postdate + "</a></div>" +
+                                "<div class='smalltext'><a href='" + newItem.userlink + "' target='_blank'>" +
+                                newItem.postdate + "</a><br />" + 
+                                "<a href='https://twitter.com/intent/like?tweet_id=463440424141459456'>like</a> | " +
+                                "<a href='https://twitter.com/intent/retweet?tweet_id=463440424141459456'>retweet</a> | " +
+                                "<a href='https://twitter.com/intent/tweet?in_reply_to=463440424141459456'>reply</a>" +"</div></div>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
                                 "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
                                 "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
@@ -117,7 +123,7 @@ function refresh()
                     $(randTile).css('background-image', '');
                     $(randTile).html(
                             "<iframe width='100%' height='100%' frameborder='0' src='" +
-                            newItem.url + "?autoplay=1" +
+                            newItem.url + "?autoplay=1&loop=1" +
                             "' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
                             "<p class='usernameimage'><a class='greytext' href='" +
                             newItem.userlink + "' target='_blank'>@" +
@@ -139,6 +145,8 @@ function refresh()
                 newItem.tile = "tile" + randTileNum;
                 displayed.push(newItem);
                 items.splice(newIndex, 1);
+                
+                $('p.tweet').tweetLinkify();
             }
 
             else

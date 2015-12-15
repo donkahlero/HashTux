@@ -87,6 +87,8 @@ th {
     background:#abcdef;
 }
 .space {
+	font-size: 20px;
+  	text-align: left;
     position: relative;
     padding-top: 20px;
     padding-bottom: 35px;
