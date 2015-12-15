@@ -1,3 +1,6 @@
+%% @author Marco Trifance <marco.trifance@gmail.com>
+%% @doc Handle Twitter API search requests according to HashTux filters and parameters.
+
 -module(twitter_search).
 
 -export([search_hash_tag/2]).
@@ -5,7 +8,6 @@
 %% Twitter Search API Endpoint
 -define(URL, "https://api.twitter.com/1.1/search/tweets.json").
 
-%%
 %% @doc     Sends a GET request to the 'Twitter Search API'.
 %% @return  A list of two tuples in the following format: [{filtered, FilteredRes}, {unfiltered, LangResult}].
 %%          UnfilteredRes: a list of tweets in internal representation matching the specified values
@@ -13,8 +15,7 @@
 %%          FilteredRes: a list of all tweets from UnfilteredRes that match the content_type requestedby the client. 
 %% @params  Types: a list of types [text, image, video] of feeds requested by the client.
 %% @params  Lang: the langauge of the feeds the query will request
-%% @HistoryTimestamp: the publication date of the feeds the query will request (epoch timestamp)
-%%
+%% @params  HistoryTimestamp: the publication date of the feeds the query will request (epoch timestamp)
 search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_timestamp, HistoryTimestamp}]) -> 
 
     HashTag = "#" ++ Keyword,
@@ -52,7 +53,7 @@ search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_time
     DecodedBody = jsx:decode(ResponseBody),
     
     % Get a List of Internal JSX objects mined for a specified language (all languages if not specified)
-    LangResult = parser:parse_tweet_response_body(Keyword, DecodedBody),
+    LangResult = parser:parse_twitter_response_body(Keyword, DecodedBody),
 
     % Debug Filtered Result size
     LangResLength = length(LangResult),
@@ -68,7 +69,6 @@ search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_time
     % Return Filtered Result
     [{filtered, FilteredRes}, {unfiltered, LangResult}].         %% Return Result
 
-%%
 %% Print Twitter API request status information
 %%
 print_response_info(Status) ->
