@@ -1,7 +1,6 @@
 #TODO
 
 - <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
-- <b>Ivo: Omit instagram from timescroll</b><br />
 - <b>Jerker: bugs.hashtux.com - please create subdomain and point it to derkahler.de</b>
 All domains which point to Jonas' derkahler.de server please as an SNAME to hashtux.derkahler.de :) [jonas.hashtux.com and the www.hashtux.com and bugs.hashtux.com] - taco.hashtux.com stays the same due to it has a static IP
 - Jerker: Front end: maybe list of trending things on the first page <b>Ideally both from HashTux search stats AND trending on twitter</b><br />
@@ -19,6 +18,9 @@ All domains which point to Jonas' derkahler.de server please as an SNAME to hash
 - Dennis: Use another word than "Hashtag" on the front page, (we don't use hashtax on youtube etc).
 - Dennis: Fullscreen button in the actionsmenu. 
 - Dennis: Action buttos in tweets (like etc.) to conform with the twitter guidelines. 
+
+-Front-end: Ipad is scrolling, can not search when in grid page.
+-Front-end: Hints for options need to be fixed - eg when no image or video is selected, the hint still says "Stop any ..."
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
