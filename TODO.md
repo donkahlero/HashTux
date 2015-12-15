@@ -18,9 +18,8 @@ All domains which point to Jonas' derkahler.de server please as an SNAME to hash
 - Dennis: Use another word than "Hashtag" on the front page, (we don't use hashtax on youtube etc).
 - Dennis: Fullscreen button in the actionsmenu. 
 - Dennis: Action buttos in tweets (like etc.) to conform with the twitter guidelines. 
-
--Front-end: Ipad is scrolling, can not search when in grid page.
--Front-end: Hints for options need to be fixed - eg when no image or video is selected, the hint still says "Stop any ..."
+- Front-end: Ipad is scrolling, can not search when in grid page.
+- Front-end: Hints for options need to be fixed - eg when no image or video is selected, the hint still says "Stop any ..."
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
