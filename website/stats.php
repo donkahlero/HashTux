@@ -696,7 +696,8 @@ session_start ();
 	
 	</div>
 	<div class="container">
-		<div class="row" id="tableContainer"></div>
+				<div class="row" id="tableContainer"></div>
+					<div class="space"></div>
 	</div>
 	</header>
 </body>

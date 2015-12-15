@@ -181,6 +181,7 @@ a {
     padding: 0;
     font-weight: bold;
     color: #ebebeb;
+    margin-top: 6px;
 }
 
 .greytext {
@@ -306,6 +307,13 @@ a {
 }
 
 .itemfreezebtn:focus {outline: none;}
+
+.backbtn {
+    background: transparent;
+    border: 0;
+    float: left;
+    margin-right: 10px;
+}
 
 .menubtn {
     background: transparent;
