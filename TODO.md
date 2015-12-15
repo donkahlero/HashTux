@@ -4,7 +4,7 @@
 - Jerker: Front end: maybe list of trending things on the first page <b>Ideally both from HashTux search stats AND trending on twitter</b><br />
 - Dennis: Front end: videos tweaked<br />
 - Terms of use text that says "btw we use cookies, and we store information about what users search for to provide a better user experience".<br />
-- Aman: Stats:add some space under the table. add numbers to all entries in the table, in order of popularity/occurence[Done].
+- Aman: Stats:add some space under the table.
 - add a total that is the total number av searches for the given interval<br />
 - Posts should have higher chance of appearing in RECENT the newer they are<br />
 - Close button at top right in options meny?<br />
