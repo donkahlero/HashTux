@@ -479,6 +479,9 @@
 
                 <div class="row topbar" id="optionsMenu">
                     <div class="col-sm-8">
+                        <button type="submit" class="backbtn" id="backBtn" onclick="goBack()">
+                            <img src="images/options.png" width="30px" height="30px">
+                        </button>
                         <ol class="breadcrumb searchlabel">
                             <li id="searchlabel"><script>document.write("#" + searchterm);</script></li>
                         </ol>
@@ -508,7 +511,10 @@
                 </div>
                 
                 <div class="row topbar" id="actionsMenu">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3"> 
+                        <button type="submit" class="backbtn" id="backBtn" onclick="goBack()">
+                            <img src="images/options.png" width="30px" height="30px">
+                        </button>
                         <ol class="breadcrumb searchlabel">
                             <li id="searchlabel"><script>document.write("#" + searchterm);</script></li>
                         </ol>
