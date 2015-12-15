@@ -660,7 +660,12 @@
 
                     <button type="button" class="btn btn-default savebutton"
                             data-toggle="tooltip" data-placement="top" title="Save all options (Grid will be refreshed)"
-                            id="save" onclick="saveOptions()">Save & Exit</button>
+                            id="save" onclick="saveOptions()">Save & Exit
+                    </button>
+                    
+                    <button type="button" class="btn btn-danger closebtn" onclick="hideOptions()">
+                        Abort
+                    </button>
 
                 </div>
 
