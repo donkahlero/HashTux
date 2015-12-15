@@ -212,7 +212,7 @@ session_start ();
 					        },
 				            columns: [
 								{ title: "Index"},	
-				                { title: "Top search terms for the last 24H" },
+				                { title: "Top search terms for the last 24 Hours" },
 				                { title: "Count" },
 				               
 				            ]
@@ -320,7 +320,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	       
-			                { title: "Top browsers with version for the last 24H" },
+			                { title: "Top browsers with version for the last 24 Hours" },
 			                { title: "Count" },
 			               
 			            ]
@@ -428,7 +428,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	         
-			                { title: "Top browsers for the last 24H" },
+			                { title: "Top browsers for the last 24 Hours" },
 			                { title: "Count" },
 			               
 			            ]
@@ -537,7 +537,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top platforms for the last 24H" },
+			                { title: "Top platforms for the last 24 Hours" },
 			                { title: "Count" },
 			               
 			            ]
@@ -645,7 +645,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top platforms use with browser for the last 24H" },
+			                { title: "Top platforms use with browser for the last 24 Hours" },
 			                { title: "Count" },
 			               
 			            ]
@@ -685,10 +685,10 @@ session_start ();
 						<li class="dropdown"><a class="dropdown-toggle"
 							data-toggle="dropdown" href="#">Period <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a class="btn" onclick="changePeriod('today')">Last 24H</a></li>
-								<li><a class="btn" onclick="changePeriod('week')">Last Week</a></li>
-								<li><a class="btn" onclick="changePeriod('month')">Last Month</a></li>
-								<li><a class="btn" onclick="changePeriod('year')">Last Year</a></li>
+								<li class="btn" onclick="changePeriod('today')">Last 24 Hours</li>
+								<li	class="btn" onclick="changePeriod('week')">Last Week</li>
+								<li	class="btn" onclick="changePeriod('month')">Last Month</li>
+								<li	class="btn" onclick="changePeriod('year')">Last Year</li>
 							</ul></li>
 					</ul>
 				</div>
