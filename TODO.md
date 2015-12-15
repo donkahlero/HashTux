@@ -10,6 +10,7 @@
 - In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 - For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
 - Fix indentation in index.php, search.php etc
+- Remove twitter_popular.php from htaccess
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
