@@ -235,14 +235,14 @@ function changeType(id) {
         {
             types.image = false;
             $('#type-img').attr('class', 'btn btn-default btn-md');
-            $('#type-img').prop('title', 'Let any images show up in your grid');
+            $('#type-img').attr('data-original-title', 'Allow images to show up in your grid');
         }
 
         else
         {
             types.image = true;
             $('#type-img').attr('class', 'btn btn-primary btn-md');
-            $('#type-img').prop('title', 'Stop any images from showing up in your grid');
+            $('#type-img').attr('data-original-title', 'Stop any images from showing up in your grid');
         }           
     }
 
@@ -252,14 +252,14 @@ function changeType(id) {
         {
             types.video = false;
             $('#type-vid').attr('class', 'btn btn-default btn-md');
-            $('#type-vid').prop('title', 'Let any videos show up in your grid');
+            $('#type-vid').attr('data-original-title', 'Allow videos to show up in your grid');
         }
 
         else
         {
             types.video = true;
             $('#type-vid').attr('class', 'btn btn-primary btn-md');
-            $('#type-vid').prop('title', 'Stop any videos from showing up in your grid');
+            $('#type-vid').attr('data-original-title', 'Stop any videos from showing up in your grid');
         } 
     }
 
@@ -269,14 +269,14 @@ function changeType(id) {
         {
             types.text = false;
             $('#type-txt').attr('class', 'btn btn-default btn-md');
-            $('#type-txt').aprop('title', 'Let any pure text content show up in your grid');
+            $('#type-txt').attr('data-original-title', 'Allow pure text content to show up in your grid');
         }
 
         else
         {
             types.text = true;
             $('#type-txt').attr('class', 'btn btn-primary btn-md');
-            $('#type-txt').prop('title', 'Stop any pure text content from showing up in your grid');
+            $('#type-txt').attr('data-original-title', 'Stop any pure text content from showing up in your grid');
         } 
     }
 }
@@ -289,14 +289,14 @@ function changeService(id) {
         {
             services.twitter = false;
             $('#serv-twitter').attr('class', 'btn btn-default btn-md');
-            $('#serv-twitter').prop('title', 'Let any content from Twitter show up in your grid');
+            $('#serv-twitter').attr('data-original-title', 'Allow content from Twitter to show up in your grid');
         }
 
         else
         {
             services.twitter = true;
             $('#serv-twitter').attr('class', 'btn btn-primary btn-md');
-            $('#serv-twitter').prop('title', 'Stop any Twitter content from show up in your grid');
+            $('#serv-twitter').attr('data-original-title', 'Stop any Twitter content from show up in your grid');
         }           
     }
 
@@ -306,14 +306,14 @@ function changeService(id) {
         {
             services.instagram = false;
             $('#serv-instagram').attr('class', 'btn btn-default btn-md');
-            $('#serv-instagram').prop('title', 'Let any content from Instagram show up in your grid');
+            $('#serv-instagram').attr('data-original-title', 'Allow content from Instagram to show up in your grid');
         }
 
         else
         {
             services.instagram = true;
             $('#serv-instagram').attr('class', 'btn btn-primary btn-md');
-            $('#serv-instagram').prop('title', 'Stop any Instagram content from show up in your grid');
+            $('#serv-instagram').attr('data-original-title', 'Stop any Instagram content from show up in your grid');
         }           
     }
 
@@ -323,14 +323,14 @@ function changeService(id) {
         {
             services.youtube = false;
             $('#serv-youtube').attr('class', 'btn btn-default btn-md');
-            $('#serv-youtube').prop('title', 'Let any content from YouTube show up in your grid');
+            $('#serv-youtube').attr('data-original-title', 'Allow content from YouTube to show up in your grid');
         }
 
         else
         {
             services.youtube = true;
             $('#serv-youtube').attr('class', 'btn btn-primary btn-md');
-            $('#serv-youtube').prop('title', 'Stop any YouTube content from show up in your grid');
+            $('#serv-youtube').attr('data-original-title', 'Stop any YouTube content from show up in your grid');
         }           
     }
 }
