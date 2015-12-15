@@ -2,10 +2,6 @@ a {
     color: #cccccc;
 }
 
-body {
-    overflow: hidden;
-}
-
 .logo {
     width: 100%;
     margin-top: 30px;
@@ -169,6 +165,10 @@ body {
 .twitterlink {
     font-size: 10px;
     color: #cccccc;
+}
+
+.smalltext {
+    font-size: 7px;
 }
 
 .topbar {
