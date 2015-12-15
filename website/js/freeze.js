@@ -71,7 +71,7 @@ function tileFreeze() {
 // When pressed it trigger screenFreeze() and togglePlay();
 $(document).keypress(function(e) {
     if ((e.which && e.which == 32) || (e.keyCode && e.keyCode == 32)) {
-        togglePlay();
+//        togglePlay();
         screenFreeze();
         return false;
     }
@@ -83,23 +83,24 @@ $(document).keypress(function(e) {
 
 // This function animates the play and pause pictures
 // The two pictures fade in and out.
-function togglePlay() {
-    var $elem = $('#player').children(':first');
-    $elem.stop().show().animate({
-        'marginTop' : '-175px',
-        'marginLeft' : '-175px',
-        'width' : '350px',
-        'height' : '350px',
-        'opacity' : '0'
-    }, function() {
-        $(this).css({
-            'width' : '100px',
-            'height' : '100px',
-            'margin-left' : '-50px',
-            'margin-top' : '-50px',
-            'opacity' : '1',
-            'display' : 'none'
-        });
-    });
-    $elem.parent().append($elem);
-}
+//function togglePlay() {
+//    var $elem = $('#player').children(':first');
+//    
+//    $elem.stop().show().animate(
+//    {
+//        'width' : '350px',
+//        'height' : '350px',
+//        'opacity' : '0'
+//    }, function() {
+//        
+//        $(this).css(
+//        {
+//            'width' : '100px',
+//            'height' : '100px',
+//            'opacity' : '1',
+//            'display' : 'none'
+//        });
+//    
+//    });
+//    $elem.parent().append($elem);
+//}

@@ -77,7 +77,8 @@ session_start ();
 			              itemName = items[i].name; 
 			              itemCount = items[i].value;
 			              itemIndex  = [];
-			              itemsEx = [itemIndex,itemName, itemCount];
+			              itemSum  = [items.length];
+			              itemsEx = [itemIndex,itemName,itemCount,itemSum];
 			              
 			              statsItems.push(itemsEx);
 						}
@@ -95,7 +96,8 @@ session_start ();
 			 case 'search_term_year':
 				 	 // Here the table for search term year is created in tableContainer           
                $('#tableContainer').html("<table class='searchTermTableYear' id='searchTermTableYear' width='100%'></table>");
-           			 //	Here the table for search term year is rendered using DataTable   
+           			 //	Here the table for search term year is rendered using DataTable
+           			 document.getElementById("test").innerHTML = "Sum of search terms =" +" "+ itemSum;
 					 $('#searchTermTableYear').DataTable( {
 					    	retrieve: true, //	retrieve is a boolean that allows the table to be rendered after initializing. 
 					    	"aaSorting": [[2,'desc'], ],//	aaSorting sorts the count in descending order. 
@@ -113,9 +115,9 @@ session_start ();
 					        data: statsItems, // The table is generated using data from statsItems array. 
 					       	columns: [		  // colums assigns the titles for the table. 	 
 					       	    { title: "Index"},																		
-					        	{ title: "Top search terms for this year" },
+					        	{ title: "Top search terms for this year"},
 					            { title: "Count" },
-					        
+					          
 					     	] 
 					    } );
 					    break; 
@@ -212,7 +214,7 @@ session_start ();
 					        },
 				            columns: [
 								{ title: "Index"},	
-				                { title: "Top search terms for the last 24H" },
+				                { title: "Top search terms for the last 24 Hours" },
 				                { title: "Count" },
 				               
 				            ]
@@ -320,7 +322,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	       
-			                { title: "Top browsers with version for the last 24H" },
+			                { title: "Top browsers with version for the last 24 Hours" },
 			                { title: "Count" },
 			               
 			            ]
@@ -428,7 +430,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	         
-			                { title: "Top browsers for the last 24H" },
+			                { title: "Top browsers for the last 24 Hours" },
 			                { title: "Count" },
 			               
 			            ]
@@ -537,7 +539,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top platforms for the last 24H" },
+			                { title: "Top platforms for the last 24 Hours" },
 			                { title: "Count" },
 			               
 			            ]
@@ -645,7 +647,7 @@ session_start ();
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	
-			                { title: "Top platforms use with browser for the last 24H" },
+			                { title: "Top platforms use with browser for the last 24 Hours" },
 			                { title: "Count" },
 			               
 			            ]
@@ -685,18 +687,19 @@ session_start ();
 						<li class="dropdown"><a class="dropdown-toggle"
 							data-toggle="dropdown" href="#">Period <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a class="btn" onclick="changePeriod('today')">Last 24H</a></li>
-								<li><a class="btn" onclick="changePeriod('week')">Last Week</a></li>
-								<li><a class="btn" onclick="changePeriod('month')">Last Month</a></li>
-								<li><a class="btn" onclick="changePeriod('year')">Last Year</a></li>
-							</ul></li>
+								<li class="btn" onclick="changePeriod('today')">Last 24 Hours</li>
+								<li	class="btn" onclick="changePeriod('week')">Last Week</li>
+								<li	class="btn" onclick="changePeriod('month')">Last Month</li>
+								<li	class="btn" onclick="changePeriod('year')">Last Year</li>
+							</ul>
 					</ul>
 				</div>
 			</div>
 	
 	</div>
 	<div class="container">
-		<div class="row" id="tableContainer"></div>
+				<div class="row" id="tableContainer"></div>
+						<div class="space"id="test"></div>
 	</div>
 	</header>
 </body>
