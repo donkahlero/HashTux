@@ -459,6 +459,41 @@
                 
                 });
             }
+            
+            function fullScreen() {
+                if (!document.fullscreenElement && !document.mozFullScreenElement &&
+                        !document.webkitFullscreenElement && !document.msFullscreenElement ) {
+                    
+                    $('#fullscreenBtn').html("<img src='images/options.png' width='40px' height='40px'>");
+                    $('#fullscreenBtn').attr('data-original-title', 'Click here to exit fullscreen mode');
+                        
+                    if (document.documentElement.requestFullscreen)
+                        document.documentElement.requestFullscreen();
+                    else if (document.documentElement.msRequestFullscreen)
+                        document.documentElement.msRequestFullscreen();
+                    else if (document.documentElement.mozRequestFullScreen)
+                        document.documentElement.mozRequestFullScreen();
+                    else if (document.documentElement.webkitRequestFullscreen)
+                        document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                    
+                } 
+                
+                else {
+                    
+                    $('#fullscreenBtn').html("<img src='images/freeze.png' width='40px' height='40px'>");
+                    $('#fullscreenBtn').attr('data-original-title', 'Click here to enter fullscreen mode');
+                    
+                    if (document.exitFullscreen)
+                        document.exitFullscreen();
+                    else if (document.msExitFullscreen)
+                        document.msExitFullscreen();
+                    else if (document.mozCancelFullScreen)
+                        document.mozCancelFullScreen();
+                    else if (document.webkitExitFullscreen)
+                        document.webkitExitFullscreen();
+                    
+                }
+            }
 	</script>
 	          
     </head>
@@ -529,8 +564,13 @@
                         <input type="range" min="1" max="8" step="1" value="8" class="timescroll" id="timeScroll">
                     </div>
                     <div class="col-sm-3">
+                        <button type="submit" class="iconbtn fullscreenbtn" id="fullscreenBtn"
+                                data-toggle="tooltip" data-placement="bottom" 
+                                title="Click here to enter fullscreen mode" onclick="fullScreen()">
+                            <img src="images/freeze.png" width="40px" height="40px"/>
+                        </button>
                         <button type="submit" class="iconbtn freezebtn" id="freezeBtn"
-                                data-toggle="tooltip" data-placement="top" 
+                                data-toggle="tooltip" data-placement="bottom" 
                                 title="Click here to freeze the screen" onclick="screenFreeze()">
                             <img src="images/freeze.png" width="40px" height="40px"/>
                         </button>
