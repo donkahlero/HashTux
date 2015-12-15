@@ -1,8 +1,6 @@
 #TODO
 
 - <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
-- <b>Jerker: bugs.hashtux.com - please create subdomain and point it to derkahler.de</b>
-All domains which point to Jonas' derkahler.de server please as an SNAME to hashtux.derkahler.de :) [jonas.hashtux.com and the www.hashtux.com and bugs.hashtux.com] - taco.hashtux.com stays the same due to it has a static IP
 - Jerker: Front end: maybe list of trending things on the first page <b>Ideally both from HashTux search stats AND trending on twitter</b><br />
 - Jerker: # sign needs to be filtered out
 - Dennis: Front end: videos tweaked<br />
