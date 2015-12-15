@@ -16,6 +16,7 @@
 - Dennis: Fullscreen button in the actionsmenu. 
 - Dennis: Action buttos in tweets (like etc.) to conform with the twitter guidelines. 
 - Front-end: Ipad is scrolling, can not search when in grid page.
+- Fix indentation in index.php, search.php etc
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
