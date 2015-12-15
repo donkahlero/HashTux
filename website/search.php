@@ -9,7 +9,7 @@
         
         <title>HashTux</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
         
         <link href="css/bootstrap.css" rel="stylesheet">
         <link href="css/hashtux.css" rel="stylesheet">
@@ -19,6 +19,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/jquery.tweet-linkify.js"></script>
+        <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
         
         <script src="js/grid.js"></script>
         <script src="js/refresh.js"></script>
@@ -498,7 +499,7 @@
 	          
     </head>
     
-    <body style="background-color: #3d3d3d">
+    <body style="background-color: #3d3d3d; overflow: hidden;">
  
         <div class="container con-fill">
 
@@ -517,6 +518,7 @@
                 </button>
 
                 <div class="row topbar" id="optionsMenu">
+                    
                     <div class="col-sm-8">
                         <button type="submit" class="backbtn" id="backBtn" onclick="goBack()">
                             <img src="images/options.png" width="30px" height="30px">
@@ -525,6 +527,7 @@
                             <li id="searchlabel"><script>document.write("#" + searchterm);</script></li>
                         </ol>
                     </div>
+                    
                     <div class="col-sm-4">
                         <button type="submit" class="iconbtn" id="optionsBtn"
                                 data-toggle="tooltip" data-placement="bottom" 
@@ -533,23 +536,23 @@
                         </button>
                         
                         <input type="text" class="searchfield searchfieldgrid" 
-                               id="searchField" onkeypress="runScript(event)">
+                               id="searchField" onkeypress="runScript(event)" onsubmit="">
                             
                         <button type="submit" class="iconbtn" id="searchBtn"
                                 data-toggle="tooltip" data-placement="bottom" 
                                 title="Click here to enter a new search term" onmouseover="showField()">
                             <img src="images/search.png" width="30px" height="30px"/>
                         </button>
-                        <div class="centered" id="player">
+<!--                        <div class="center-container" id="player" style="opacity: 1;">
                             <img id="pause" src="http://codropspz.tympanus.netdna-cdn.com/codrops/wp-content/uploads/2010/01/pause1-150x150.png" width="100" height="100" style="display:none;"/>
-                            <img id="play" src="http://codropspz.tympanus.netdna-cdn.com/codrops/wp-content/uploads/2010/01/play1-150x150.png" width="100" height="100" style="display:none;"/>
-                             
-                       </div>
+                            <img id="play" src="http://codropspz.tympanus.netdna-cdn.com/codrops/wp-content/uploads/2010/01/play1-150x150.png" width="100" height="100" style="display:none;"/>  
+                        </div>-->
                         
                     </div>
                 </div>
                 
                 <div class="row topbar" id="actionsMenu">
+                    
                     <div class="col-sm-3"> 
                         <button type="submit" class="backbtn" id="backBtn" onclick="goBack()">
                             <img src="images/options.png" width="30px" height="30px">
@@ -558,11 +561,13 @@
                             <li id="searchlabel"><script>document.write("#" + searchterm);</script></li>
                         </ol>
                     </div>
+                    
                     <div class="col-sm-6">
                         <p class="timescrollvalue" id="timeScrollValue">
                         </p>
                         <input type="range" min="1" max="8" step="1" value="8" class="timescroll" id="timeScroll">
                     </div>
+                    
                     <div class="col-sm-3">
                         <button type="submit" class="iconbtn fullscreenbtn" id="fullscreenBtn"
                                 data-toggle="tooltip" data-placement="bottom" 
@@ -575,7 +580,9 @@
                             <img src="images/freeze.png" width="40px" height="40px"/>
                         </button>
                     </div>
+                    
                 </div>
+                
             </div>
                 
             <div class="alert-warning gridalert" id="aborted">
@@ -710,7 +717,8 @@
 
                     <button type="button" class="btn btn-default savebutton"
                             data-toggle="tooltip" data-placement="top" title="Save all options (Grid will be refreshed)"
-                            id="save" onclick="saveOptions()">Save & Exit
+                            id="save" onclick="saveOptions()">
+                        Save & Exit
                     </button>
                     
                     <button type="button" class="btn btn-danger closebtn" onclick="hideOptions()">
