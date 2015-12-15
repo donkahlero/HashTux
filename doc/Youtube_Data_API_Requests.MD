@@ -37,7 +37,7 @@ Parameters must be provided according to the following guidelines:
 
 * **history_timestamp:** `{history_timestamp, Timestamp}`, where `Timestamp` is the creation date of the Youtube videos that we want to fetch from the Youtube Data API. `Timestamp` must be provided in epoch-timestamp format. If we want to retrieve the most recent Videos without requesting a specific date, `Timestamp` must be provided as an empty list.
 
-Once the API has returned a response, the *Videos* list is decoded and converted in *"internal representation format"*  through the module **parser.erl**. For more information on the specifications of HashTux *"internal representation format"* read **Protocols & DataType specification**.
+Once the API has returned a response, fetched Video resources are decoded and converted in *"internal representation format"*  through the module **parser.erl**. For more information on the specifications of HashTux *"internal representation format"* read **Protocols & DataType specification**.
 
 `youtube_search:search/2` returns a list of two tuples formatted as `[{filtered, FilteredRes}, {unfiltered, LangResult}]`, where:
 
