@@ -7,7 +7,6 @@
 - Aman: Stats:add some space under the table.
 - add a total that is the total number av searches for the given interval<br />
 - Posts should have higher chance of appearing in RECENT the newer they are<br />
-- Dennis: "Back to front page" button and icon in top menu<br />
 - Error report / defect backlog - maybe link "click here to report problems"<br />
 - In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
 - For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
