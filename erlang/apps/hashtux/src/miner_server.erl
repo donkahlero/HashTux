@@ -90,7 +90,8 @@ code_change(_PrevVersion, State, _Extra) ->
 %% @doc Handles the down message received from the miner worker when it has 
 %% finished with the task (or not).
 %%
-%%% When received a down message from the worker process. 
+%%% When received a down message from the worker process, remove that 
+%%% worker reference from the state.
 handle_info({'DOWN', Ref, process, Pid, _}, 
 						S=#state{limit=N, refs=Refs}) ->
 	io:format("MINER_SERVER: Removing worker [~p] from refs...~n", [Pid]),
@@ -139,6 +140,8 @@ handle_cast(Msg, State) ->
 %% @doc Handles calls to the server.
 %%
 %%% When a search requested and limit for workers running not reached.
+%%% Spawn a new worker to perform a search and create a reference to it
+%%% to keep in the state.
 handle_call({search, Term, Options}, From, 
 						S=#state{limit=N, refs=R}) when N > 0 ->
 	{ok, Pid} = start_worker(),
@@ -146,7 +149,9 @@ handle_call({search, Term, Options}, From,
 	gen_server:cast(Pid, {From, Term, Options}),
 	NewS = S#state{limit=N-1, refs=gb_sets:add(Ref, R)},
 	{reply, {ok, Pid}, NewS};
-%%% When limit for workers reached.
+%%% When limit for workers reached. Send back to the original caller
+%%% a reply that limit for workers is reached so that a different server
+%%% is tried to handle the request.
 handle_call({search, _Term, _Options}, _From, 
 						S=#state{limit=N}) when N =< 0 ->
 	{reply, no_alloc, S};
