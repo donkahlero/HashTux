@@ -1,3 +1,10 @@
+%%
+%% @author Ivo Vryashkov
+%%
+%% @doc Miner worker module. Takes care of searching the different services
+%% available in the application.
+%%
+
 -module(miner_worker).
 
 -behaviour(gen_server).
@@ -67,8 +74,7 @@ handle_info(Msg, State) ->
 
 
 %%
-%% @doc Handles casts to the worker. Only casts to stop the worker are 
-%% supported.
+%% @doc Handles casts to the worker.
 %%
 %%% Cast to stop the worker.
 handle_cast(stop, State) ->
@@ -105,6 +111,14 @@ handle_call(_Request, _From, State) ->
 
 
 %%
+%% @doc Sends back the results from the search to the original caller 
+%% and makes a call to the miner_dbwriter to write the results to the
+%% database.
+%%
+%%% When no results from the search. In the case of request_type being
+%%% search or update -> write no results to database and send back an
+%%% empty list. For request_type of heartbeat -> just write to database,
+%%% no results sent back to original caller.
 send_results(Pid, [], _UnfilteredResults, Term, Options) ->
 	io:format("MINER_WORKER [~p]: Sending results...~n", [self()]),	
 	case aux_functions:get_value(request_type, Options) of
@@ -117,6 +131,9 @@ send_results(Pid, [], _UnfilteredResults, Term, Options) ->
 		<<"heartbeat">> ->
 			miner_dbwriter:write(get_no_results(Term, Options))
 	end;
+%%% When results fetched from the search. In the case of request_type being
+%%% search or update -> write to database the unfiltered results and send
+%%% back the filtered results. For request_type of heartbeat -> do nothing.
 send_results(Pid, FilteredResults, UnfilteredResults, _Term, Options) ->
 	io:format("MINER_WORKER [~p]: Sending results...~n", [self()]),
 	case aux_functions:get_value(request_type, Options) of
@@ -177,9 +194,9 @@ get_results(Term, Services, ContType, Lang, HistoryTimestamp) ->
 %%
 %% @doc Calls the appropriate search services to perform a search.
 %%
-%%% Instagram search.
-search_services({instagram, {Term, ContType, _Lang, HistoryTimestamp}}) ->
-	ig_search:search(Term, [ContType, HistoryTimestamp]);
+%%% Instagram search. For this search ignore all options but content type.
+search_services({instagram, {Term, ContType, _Lang, _HistoryTimestamp}}) ->
+	ig_search:search(Term, [ContType]);
 %%% Twitter search.
 search_services({twitter, {Term, ContType, Lang, HistoryTimestamp}}) ->
 	twitter_search:search_hash_tag(Term, [ContType, Lang, HistoryTimestamp]);
@@ -200,7 +217,7 @@ get_services(L)  ->
 
 
 %%
-%% @doc Returns the no results options to be written to database.
+%% @doc Returns the no results options to be written to the database.
 %%
 get_no_results(Term, Options) ->
 	io:format("MINER_WORKER [~p]: No results options: ~p~n", [self(), Options]),
@@ -217,14 +234,18 @@ get_cont_type() ->
 	[<<"image">>, <<"video">>, <<"text">>].
 
 
+%%
 %% @author Marco Trifance
-%% @doc Helper function for parse_results/1
-%%		Gets a list of raw results (filtered and unfiltered for all social medias) and return 
-%% 		an aggregated list from all three social medias for the specified FilterType (filtered/unfiltered)
+%%
+%% @doc Helper function for parse_results/1. Gets a list of raw results 
+%% (filtered and unfiltered for all social medias) and return an aggregated 
+%% list from all three social medias for the specified FilterType.
+%%
 get_aggregated_results(RawList, FilterType) ->
 	get_aggregated_results(RawList, FilterType, []).
 
-get_aggregated_results([], _FilterType, AggregatedResult) -> AggregatedResult;
+get_aggregated_results([], _FilterType, AggregatedResult) -> 
+	AggregatedResult;
 get_aggregated_results([H|T], FilterType, AggregatedResult) ->
 	case (is_type(H, FilterType)) of
 		true -> 
@@ -235,18 +256,27 @@ get_aggregated_results([H|T], FilterType, AggregatedResult) ->
 			get_aggregated_results(T, FilterType, AggregatedResult)
 	end.
 
+
+%%
 %% @author Marco Trifance
-%% @doc Helper function for get_aggregated_results/3
+%%
+%% @doc Helper function for get_aggregated_results/3.
+%%
 is_type({FilterType, _Any}, FilterType) -> true;
 is_type({_OtherType, _Any}, _FilterType) -> false.
 
-%% @author Marco Trifance
-%% @doc Gets a list of raw results (filtered and unfiltered for all social medias) and returns 
-%% 		a tuple of two lists containing filtered and unfiltered results for all social medias
-parse_results(Results) -> 
 
+%%
+%% @author Marco Trifance
+%%
+%% @doc Gets a list of raw results (filtered and unfiltered for all social medias) 
+%% and returns a tuple of two lists containing filtered and unfiltered results 
+%% for all social medias.
+%%
+parse_results(Results) -> 
 	FilteredResults = get_aggregated_results(Results, filtered),
 	UnfilteredResults = get_aggregated_results(Results, unfiltered),
-
 	{FilteredResults, UnfilteredResults}.
+
+
 
