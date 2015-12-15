@@ -308,6 +308,15 @@ a {
 
 .itemfreezebtn:focus {outline: none;}
 
+.fullscreenbtn {
+    background: transparent;
+    border: 0;
+    float: right;
+    margin-right: 10px;
+}
+
+.fullscreenbtn:focus {outline: none;}
+
 .backbtn {
     background: transparent;
     border: 0;
