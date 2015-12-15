@@ -32,10 +32,10 @@
                 // When the user has used forward/backward buttons in browser, check the
                 // request path and reinitialize (fetch data and render items).
                 window.onpopstate = function(event) {
-                      searchterm = window.location.pathname.substring(1);
+                    searchterm = window.location.pathname.substring(1);
 
-                                        // Download and display new items for the new search term
-                                        reinitialize();
+                    // Download and display new items for the new search term
+                    reinitialize();
                 };
             });
 
@@ -196,6 +196,10 @@
                 }
             }
             
+            function goBack() {
+                history.back();
+            }
+            
             // A function to extract all the information from the JSON object and
             // convert it to an amount of item objects that we store in the items
             // array.
@@ -296,7 +300,7 @@
             // Initialize all bootstrap tooltips on the website
             
             $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
+                $('[data-toggle="tooltip"]').tooltip();
             });
             
             // Shows the textfield used to make a new search when you click the search button
