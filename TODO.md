@@ -7,7 +7,6 @@
 - Aman: Stats:add some space under the table.
 - add a total that is the total number av searches for the given interval<br />
 - Posts should have higher chance of appearing in RECENT the newer they are<br />
-- Close button at top right in options meny?<br />
 - Dennis: "Back to front page" button and icon in top menu<br />
 - Error report / defect backlog - maybe link "click here to report problems"<br />
 - In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
@@ -17,7 +16,6 @@
 - Dennis: Fullscreen button in the actionsmenu. 
 - Dennis: Action buttos in tweets (like etc.) to conform with the twitter guidelines. 
 - Front-end: Ipad is scrolling, can not search when in grid page.
-- Front-end: Hints for options need to be fixed - eg when no image or video is selected, the hint still says "Stop any ..."
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
