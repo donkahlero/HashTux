@@ -8,7 +8,7 @@ The Twitter API accepts authenticated requests sent by Twitter Applications. To 
 ##External Dependencies
 * [erlang-oauth](https://github.com/tim/erlang-oauth/): erlang client used to generate signed request parameters.
 * [ibrowse](https://github.com/cmullaparthi/ibrowse): HTTP Erlang client.
-* [jsx](https://github.com/cmullaparthi/ibrowse): used to parse a json text (utf8 encoded binary) and convert it into erlang terms.
+* [jsx](https://github.com/talentdeficit/jsx): used to parse a json text (utf8 encoded binary) and convert it into erlang terms.
 
 ##To request Twitter statuses
 To send a GET request to the Twitter Search API use `twitter_search:search_hashtag/2`:
