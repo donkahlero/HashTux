@@ -34,7 +34,7 @@ function refresh()
                                 newItem.userlink + "' target='_blank'>@" +
                                 newItem.username + "</a></p>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
-                                "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
+                                "freeze' onclick='tileFreeze(" + randTileNum + ")'>" +
                                 "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
 
                         $(randTile).animate({height: "100%", opacity: "1"}, 1000);
@@ -54,7 +54,7 @@ function refresh()
                                 newItem.url + 
                                 "'style='object-fit: fill; top: 0; position: absolute;'></video>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
-                                "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
+                                "freeze' onclick='tileFreeze(" + randTileNum + ")'>" +
                                 "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
 
                         $(randTile).animate({height: "100%", opacity: "1"}, 1000);
@@ -82,7 +82,7 @@ function refresh()
                                 "<a href='https://twitter.com/intent/retweet?tweet_id=463440424141459456'>retweet</a> | " +
                                 "<a href='https://twitter.com/intent/tweet?in_reply_to=463440424141459456'>reply</a>" +"</div></div>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
-                                "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
+                                "freeze' onclick='tileFreeze(" + randTileNum + ")'>" +
                                 "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
 
                         $(randTile).animate({height: "100%", opacity: "1"}, 1000);
@@ -107,7 +107,7 @@ function refresh()
                                 "<a href='https://twitter.com/intent/retweet?tweet_id=463440424141459456'>retweet</a> | " +
                                 "<a href='https://twitter.com/intent/tweet?in_reply_to=463440424141459456'>reply</a>" +"</div></div>" +
                                 "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
-                                "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
+                                "freeze' onclick='tileFreeze(" + randTileNum + ")'>" +
                                 "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
                                 "<div class='twitterlogo'><img src='images/TwitterLogo_blue.png' width='40px' height='40px'></div>");
 
@@ -129,7 +129,7 @@ function refresh()
                             newItem.userlink + "' target='_blank'>@" +
                             newItem.username + "</a></p>" +
                             "<button type='submit' class='itemfreezebtn' id='tile" + randTileNum +
-                            "freeze' onclick='tileFreeze(" + "tile" + randTileNum + ")'>" +
+                            "freeze' onclick='tileFreeze(" + randTileNum + ")'>" +
                             "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>");
 
                     $(randTile).animate({height: "100%", opacity: "1"}, 1000);
