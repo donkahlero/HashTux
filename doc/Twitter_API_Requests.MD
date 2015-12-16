@@ -17,6 +17,10 @@ twitter_search:search_hashtag(Keyword, Options).
 ```
 where `Keyword` is the term requested by the user, while `Options` is a list containing the key-value tuples for the **content_type**, **language** and **history_timestamp** requested by the user.
 
+```erlang
+Options = [{content_type, TypeList}, {language, Language}, {history_timestamp, Timestamp}]
+```
+
 Parameters must be provided according to the following guidelines:
 
 * **content_type:** `{content_type, TypeList}`, where `TypeList` contains the required types of feeds specified as binary-strings. For example, if we want to send a request without filtering results by content-type, TypeList must be provided as `[<<"text">>, <<"image">>, <<"video">>]`.
