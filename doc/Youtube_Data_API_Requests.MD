@@ -15,7 +15,7 @@ Requests to the Youtube Data API must be [authenticated](https://developers.goog
 To prevent users from affecting the quality and performance of the service, the Youtube Data API applies a cost named [quota-cost](https://developers.google.com/youtube/v3/getting-started) to any request. The quota-cost associated to a single request depends on the *type* of request and the resource *parts* that are requested.
 
 ##External Dependencies
-* [jsx](https://github.com/cmullaparthi/ibrowse): used to parse a json text (utf8 encoded binary) and convert it into erlang terms.
+* [jsx](https://github.com/talentdeficit/jsx): used to parse a json text (utf8 encoded binary) and convert it into erlang terms.
 
 ## Youtube Data API requests logic
 HashTux requests to the Youtube API are carried out in two steps:
