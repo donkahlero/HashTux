@@ -1,5 +1,5 @@
 # Youtube Data API Requests
-=================================================================
+
 HashTux requests to the Youtube Data API are handled in the module `youtube_search.erl`. 
 
 ## Setting a Youtube Application
