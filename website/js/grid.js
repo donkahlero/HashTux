@@ -68,7 +68,7 @@ function initGrid()
                         displayed[count].userlink + "' target='_blank'>@" +
                         displayed[count].username + "</a></p>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
-                        "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        "freeze' onclick='tileFreeze(" + count + ")'>" +
                         "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
                         "</div>";
 
@@ -92,7 +92,7 @@ function initGrid()
                         displayed[count].username +
                         "</a></p>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
-                        "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        "freeze' onclick='tileFreeze(" + count + ")'>" +
                         "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
                         "</div>";
 
@@ -124,7 +124,7 @@ function initGrid()
                         "<a href='https://twitter.com/intent/retweet?tweet_id=463440424141459456'>retweet</a> | " +
                         "<a href='https://twitter.com/intent/tweet?in_reply_to=463440424141459456'>reply</a>" +"</div></div>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
-                        "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        "freeze' onclick='tileFreeze(" + count + ")'>" +
                         "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
                         "</div>";
 
@@ -153,7 +153,7 @@ function initGrid()
                         "<a href='https://twitter.com/intent/retweet?tweet_id=463440424141459456'>retweet</a> | " +
                         "<a href='https://twitter.com/intent/tweet?in_reply_to=463440424141459456'>reply</a>" +"</div></div>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
-                        "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                        "freeze' onclick='tileFreeze(" + count + ")'>" +
                         "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
                         "<div class='twitterlogo'><img src='images/TwitterLogo_blue.png' width='40px' height='40px'></div>" +
                         "</div>";
@@ -178,7 +178,7 @@ function initGrid()
                     displayed[count].username +
                     "</a></p>" +
                     "<button type='submit' class='itemfreezebtn' id='tile" + count +
-                    "freeze' onclick='tileFreeze(" + "tile" + count + ")'>" +
+                    "freeze' onclick='tileFreeze(" + count + ")'>" +
                     "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
                     "</div>";
 
