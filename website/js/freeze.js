@@ -48,9 +48,9 @@ function unfreeze() {
 // that tileFreeze checks
 // individual tiles and if they are frozen it unfreezes and if unfrozen it
 // freezes the tile.
-function tileFreeze() {
+function tileFreeze(tilenum) {
 
-    var tile = arguments[0].id;
+    var tile = "tile" + tilenum;
 
     for (i = 0; i < displayed.length; i++) {
         if (displayed[i].tile === tile && !displayed[i].frozen) {
