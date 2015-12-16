@@ -123,8 +123,8 @@ function refresh()
                     $(randTile).css('background-image', '');
                     $(randTile).html(
                             "<iframe width='100%' height='100%' frameborder='0' src='" +
-                            newItem.url + "?autoplay=1&loop=1" +
-                            "' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
+                            newItem.url + "?autoplay=1" +
+                            "' id='ytvid' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
                             "<p class='usernameimage'><a class='greytext' href='" +
                             newItem.userlink + "' target='_blank'>@" +
                             newItem.username + "</a></p>" +
