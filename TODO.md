@@ -28,3 +28,9 @@ Stats final visual touch<br />
 Check the testing/validations lecture slides, and check that all servers are configured properly and that shutting down apache or erlang on 1-3 servers does not bring down the system from a user perspective<br />
 Code review <br/>
 Add links to our social media profiles: facebook, insta, twitter<br />
+
+#Privacy Policy
+Information obtained from Instagram is displayed and stored according to the Instagram's Terms and Policies. We do not store any sensitive information like users credentials or similar. Content displayed in our application, like pictures and comments, is the one publicly accessible in the users' accounts.  
+
+
+
