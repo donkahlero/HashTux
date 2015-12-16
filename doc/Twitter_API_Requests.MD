@@ -15,7 +15,7 @@ To send a GET request to the Twitter Search API use `twitter_search:search_hasht
 ```erlang
 twitter_search:search_hashtag(Keyword, Options).
 ```
-where `Keyword` is the term requested by the user, while `Options` is a list containing the key-value tuples for the **content_type**, **language** and **history_timestamp** requested by the user.
+where `Keyword` is the term requested by the user, while `Options` is a list containing the key-value tuples for the **content_type**, **language** and **history_timestamp** requested by the user. Notice that if you are looking for an hashtag you should provide the `Keyword` without prepending the # to it. 
 
 ```erlang
 Options = [{content_type, TypeList}, {language, Language}, {history_timestamp, Timestamp}]
