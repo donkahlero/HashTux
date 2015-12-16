@@ -198,7 +198,13 @@ parse_tweet_details(HashTag, Status) ->
         not_found -> null
     end,
 
-    StringDate = extract_from_node(<<"created_at">>, Status),
+    Feed_URL = build_tweet_url(binary_to_list(Tweet_ID)),
+
+    io:format("FEED URL is ~p~n", [Feed_URL]),
+
+    %%StringDate = extract_from_node(<<"created_at">>, Status),
+
+    StringDate = list_to_binary(format_twitter_string_date(extract_from_node(<<"created_at">>, Status))),
 
     Date = case extract(<<"created_at">>, Status) of
         {found, X2} -> 
@@ -265,7 +271,7 @@ parse_tweet_details(HashTag, Status) ->
         {<<"location">>, Coordinates},
         {<<"tags">>, Tags},
         {<<"resource_link_high">>, Media_URL},
-        {<<"resource_link_low">>, Media_URL},
+        {<<"resource_link_low">>, Feed_URL},
         {<<"content_type">>, Media_Type},
         {<<"free_text_name">>, UserName},
         {<<"username">>, ScreenName},
@@ -299,6 +305,24 @@ build_tweet_profile_link(null) -> null;
 build_tweet_profile_link(Screen_Name) -> 
     A = lists:append("https://twitter.com/", binary_to_list(Screen_Name)),
     list_to_binary(A).
+
+%% @doc Create a URL link to the a specific Tweet
+build_tweet_url(TweetID) -> 
+    A = "https://twitter.com/statuses/" ++ TweetID,
+    list_to_binary(A).
+
+%% @doc Format string date to be displayed in front end
+format_twitter_string_date(StringDate) ->   
+    io:format("String DATE ~p~n", [StringDate]),
+
+    [DayName, Month, DayNum, Time, _, Year] = string:tokens(binary_to_list(StringDate), " "),
+
+    [Hour, Minute, _] = string:tokens(Time, ":"),
+    NewTimeString = Hour ++ ":" ++ Minute,
+    io:format("FORMATTED TIME STRING ~p~n", [NewTimeString]),
+
+    NewTimeString ++ " - " ++ DayName ++ " " ++ DayNum ++ " " ++ Month ++ " " ++ Year.
+    
 
 %% @doc Returns ONLY the FIRST media element information (URL and Type).
 format_media_entity([]) -> {null, null};
