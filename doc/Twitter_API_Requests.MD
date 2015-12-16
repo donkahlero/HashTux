@@ -1,5 +1,5 @@
 # Twitter API Requests
-=================================================================
+
 HashTux requests to Twitter API are handled in the module `twitter_search.erl`. HashTux requests to Twitter use the [Twitter Search API] (https://dev.twitter.com/rest/public/search).
 
 ## Setting a Twitter Application
