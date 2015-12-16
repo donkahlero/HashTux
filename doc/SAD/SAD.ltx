@@ -1,15 +1,49 @@
 % Hashtux SAD document
-%
-% Template by Jonas Kahler
+% Template by Jonas Kahler, jonas@derkahler.de
 % December 2015
 % Preamble
 \documentclass[11pt,a4paper]{report}
 
+% Used packages
+% Euro symbol
+\usepackage{eurosym}
+
+% For specific chapter titles
 \usepackage{titlesec}
 \titleformat{\chapter}[display]
         {\normalfont\huge\bfseries}
         {\chaptertitlename\ \thechapter}{20pt}{\Huge}
 \titlespacing*{\chapter}{0pt}{-80pt}{20pt}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=false,
+}
+
+% Header
+\usepackage{fancyhdr}
+\lhead{}
+\chead{}
+\rhead{{\it HashTux} - SAD Document}
+\lfoot{Group 5 - {\it Tux}}
+\cfoot{}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.2pt}
+\renewcommand{\footrulewidth}{0.2pt}
+\pagestyle{fancy}
+
+% For including images
+\usepackage{graphicx}
+\graphicspath{ {../diagrams/pictures/} }
+
+% Tabu for tables
+\usepackage{tabu}
+
+% For having row merges
+\usepackage{multirow}
+
+% Color tables
+\usepackage[table]{xcolor}
 
 % Begin of document
 \begin{document}
@@ -26,52 +60,51 @@
 % Table of content
 \tableofcontents
 
-
 % Beginning of text
 % Introduction Chapter
 \chapter{Introduction}
 
 % Product Vision
-\section{Vision}
+\section{Product Vision (Updated)}
 \begin{quote}
-\textit{``HashTux is a platform for easy access to multiple social media feeds
-based on user’s search where the user has the option to filter information based
-on his/her preferences.''}
+\textit{``Tagline: HashTux is a platform for easy access to multiple social
+media feeds based on user search where the user has the option to filter
+information based on his or her preferences.''}
 \end{quote}
-{\it HashTux} is a web-based service that displays the latest pictures, videos
-and status updates for a given hashtag. Media files and status updates are
-fetched from multiple social media sources and displayed in a web interface
-optimized for full­screen view ­ ideal for a conference or party context, having
-a screen illustrating the different viewpoints of the chosen keyword subject.
-\newline
+{\it HashTux} is a web based service that displays the latest pictures, videos
+and other social media posts for a given hashtag. Media content is fetched from
+multiple social media sources and displayed in a web interface optimized for
+fullscreen view ideal for a conference or event context, having a screen
+illustrating different viewpoints of the chosen keyword subject. \\
+
 As time passes, the different content objects come and go, new ones fade in
 replacing the old ones. Videos start playing automatically. The objects on the
 screen are ordered automatically so that all space on the screen is used
-properly.\newline
-There is already successful software that does this for twitter only
-(Tweetdeck). Our selling point is that in addition to this we want to include
-content from multiple sources (also including instagram and youtube, but ideally
-with a modular implementation that easily allows adding more) and also combine
-it with multiple media formats, including video automatically playing.\newline
-If there is a massive amount of content within a short time interval, our
-application will display the content rated as most popular or from the most
-trusted sources. To fetch older information we want to include a time scroll
-functionality.\newline
-We use CouchDB as our document-based database. Also, to ensure the system to
-have a constant up-time even in the case of a failure or maintenance in one or
-more servers. Our goal is to have the system running on several servers, so that
-the system will have a constant uptime even though one or more of the servers
-will be offline or in maintenance.\newline
+properly. \\
+
+There is already successful software that does something similar but with slight
+differences, like including only twitter (Tweetdeck). Our selling point is that
+we include content from multiple sources (also including instagram and youtube,
+designed with a modular implementation that easily allows adding more) and also
+combine it with multiple media formats, including videos automatically playing.
+To fetch older information we want to include a time scroll functionality. \\
+
+To ensure the system is available even in the case of a failure or maintenance
+in one or more servers, our goal is to have the system running on several
+servers. As a part of the constraints, a significant part of the software will
+be implemented in Erlang. We were also encouraged to use a NoSQL database, and
+therefore use CouchDB. \newpage
 
 % Target audience
 \section{Target Audience}
 \begin{description}
   \item[Event and conference hosts.] \hfill \\
-  To easily show the latest multimedia from your event.
+  To easily show the latest multimedia from an event.
   \item[Social media users.] \hfill \\
-  For the ease of use, fun experience, and the all-in-one solution.
+  For the ease of use, fun experience, and the nice overview provided by our
+  all-in-one solution.
   \item[General commercial use.] \hfill \\
-  Illustrate recent updates for a product or company name.
+  Illustrate recent updates for a product or company name or other term.
 \end{description}
 
 % Domain
@@ -81,28 +114,318 @@ will be offline or in maintenance.\newline
   \item Social Media
   \item Trends
 \end{itemize}
-Giving internet users information on current trends, news and events on social
+Giving internet users easy access to multimedia content for a particular search
+term, as well as information on current trends in search habits and on social
 media.
 
 % Business Cases
 \section{Business Cases}
+\begin{description}
+  \item[Main business case] \hfill \\
+  Our service is free for personal use, but requires buying a licence for
+  commercial use. Right now we have the alternatives of buying either a 1-year
+  license for \EUR{9.99}, or a lifetime licence for \EUR{29.99}.
+  \item[Secondary business cases] \hfill
+  \begin{itemize}
+    \item Aim for an acquisition by a third party.
+    \item Collect general data about user habits, which could be valuable
+          especially if we choose to integrate with a larger company that tracks
+          user behaviour for marketing purposes or similar. \\
+          Examples: search terms, related search terms, trends.
+   \end{itemize}
+\end{description}
+We also have a donate button that lets users to donate money if they want to.
 
 % Scope
 \section{Scope}
+The main purpose of our application is to provide the users with content
+gathered from several popular social media platforms and show it in an appealing
+way in the user’s web browser. \newline
+For this project we decided to integrate Twitter, Instagram and Youtube as our
+data sources. After the end of this University project, we will possibly add
+more services (see \hyperlink{future}{Future}). \\
+
+The application comes with a time scroll functionality which supports Twitter
+and Youtube. Instagram is not supported at this time due to API limitations.
+\newline
+Our application is easily deployable and uses CouchDB as the data storage for
+user habit data as well as the applications cache. \\
+
+From the beginning we wanted HashTux to have a very clean, uncluttered user
+interface to emphasize how easy it is to use. We also wanted to avoid a trap we
+fell into during our last terms project, of adding more and more features and
+not having enough time in the end to wrap up, debug and document everything
+properly. This is why we have focused quite a lot of our attention on things
+like availability tactics and making the whole application resilient, instead of
+adding a lot of flashy features. \\
+
+We also consider improving this product after the scope of this university
+project, which is why we have also put some effort into providing a good
+infrastructure for that, such as using an issue tracker.
+
+% Definitions
+\section{Definitions}
+See later chapters for elaborations on why we settled on the architecture we
+use. To make it easier to understand this document, here are some terms we want
+to introduce:
+
+% Components
+\subsection{Components}
+{\tabulinesep=1.4mm
+\begin{tabu}{l l}
+  \textbf{Client UI}
+     & \parbox[t]{8cm}{Runs in the end users web browser. We use Javascript for
+     dynamic elements.} \\
+  \hline
+  \textbf{PHP application}
+      & Runs on our Apache web servers. Written in PHP. \\
+  \hline
+  \textbf{Backend server} & \parbox[t]{8cm}{
+     Written in Erlang. Handles contacting external APIs and writing and
+     reading to/from database.}
+\end{tabu}}
+
+% External Components and APIs
+\subsection{External Components and APIs}
+{\tabulinesep=1.4mm
+\begin{tabu}{l l}
+  \textbf{CouchDB}
+     & \parbox[t]{10cm}{Used to cache social media post information as well as
+     user habit data (related to how our system is used).}
+\end{tabu} \\
+\textbf{Twitter API}, \textbf{Instagram API}, \textbf{YouTube API} \\ \\
+
+% Other Terms
+\subsection{Other Terms}
+{\tabulinesep=1.4mm
+\begin{tabu}{l l}
+  \textbf{DB}
+     & \parbox[t]{8cm}{Short for Database or CouchDB} \\
+  \hline
+  \textbf{Miner}
+     & \parbox[t]{8cm}{Our word for the part of our backend server that connects
+     to an external API to get data.} \\
+  \hline
+  \textbf{Miner component}
+     & \parbox[t]{8cm}{The part of our backend server that relates to the above.
+     We are considering making this it’s own component in a future release.} \\
+  \hline
+  \textbf{DB component}
+     & \parbox[t]{8cm}{The part of our backend server that connects to CouchDB.
+     We are considering making this it’s own component in a future release.}
+\end{tabu}}
 
 
-% Archutectural Drivers
+% Architectural Drivers
+\label{ad}
 \chapter{Architectural Drivers}
+% Functional Reqs
 \section{Functional Requirements}
-\section{Quality Requirements}
-\subsection{Scenario Analysis}
+{\tabulinesep=1.4mm
+\begin{tabu}{|l|l|}
+\hline
+\taburowcolors{gray!25..white}
+\multicolumn{2}{|l|}{Must} \\
+\hline
+\taburowcolors{}
+FR1 & \parbox[t]{105mm}{The user must be able to search for a term and get
+   matching results in the form of multimedia content from social media services
+   (initially we focus on Twitter, Instagram and Youtube). The way in which the
+   content is displayed must conform to the terms and conditions for each social
+   media API respectively.} \\
+\hline
+FR2 & \parbox[t]{105mm}{The user must be able to select different options when
+   searching for a term. Options are which services to search for (eg only
+   twitter), content type (eg only images and videos), languages (eg only
+   french).} \\
+\hline
+FR3 & \parbox[t]{105mm}{The user must be able to select different options for
+   how the content is displayed, such as tile size for displayed results
+   (eg small) and refresh rate for updating the grid (eg fast).} \\
+\hline
+FR4 & \parbox[t]{105mm}{The user can``freeze'' (and then ``unfreeze'') a certain
+   media item (tile in the grid), which means it will not be swapped out for a
+   more recent media item in subsequent updates while it is ``frozen''.} \\
+\hline
+FR5 & \parbox[t]{105mm}{The user must be able to search for content that is
+   non-recent, for example content from two days ago.} \\
+\hline
+FR6 & \parbox[t]{105mm}{The client UI must provide the user with the option of
+   buying a license for commercial use. All users should also be able to donate
+   money to our project through PayPal.} \\
+\hline
+FR7 & \parbox[t]{105mm}{The client UI must be optimized for full-screen view and
+   continue to show content if left unattended for an extended period of
+   time.} \\
+\hline
+\end{tabu}}
+% New page
+\newpage
+{\tabulinesep=1.4mm
+\begin{tabu}{|l|l|}
+\hline
+\taburowcolors{gray!25..white}
+\multicolumn{2}{|l|}{Should} \\
+\hline
+\taburowcolors {}
+FR8 & \parbox[t]{105mm}{The user should be able to see different user habit
+   statistics in a separate part of the client UI. Dimensions: at least search
+   terms, web browsers and platforms (operating systems) and their respective
+   popularity among HashTux users.} \\
+\hline
+FR9 & \parbox[t]{105mm}{The user should be able to view different periods of the
+   user habit statistics dimensions.} \\
+\hline
+FR10 & \parbox[t]{105mm}{The user should be able to search (free-text) in the
+   statistics part of the client UI for keywords in each dimension.} \\
+\hline
+\taburowcolors{gray!25..white}
+\multicolumn{2}{|l|}{Could}  \\
+\hline
+\taburowcolors{}
+FR11 & \parbox[t]{105mm}{On the front page or wherever appropriate, the user
+   should be able to see current trends in social media and in the search habits
+   of users to get some inspiration on what to search for.} \\
+\hline
+\taburowcolors{gray!25..white}
+\multicolumn{2}{|l|}{Wont}   \\
+\hline
+\taburowcolors{}
+FR12 & \parbox[t]{105mm}{The user should be able to chat with other users of the
+   application.} \\
+\hline
+\end{tabu}}
+
+% Quality Reqs and Secenario Analysis
+\section{Quality Requirements and Scenario Analysis}
+Quality requirements for our project in order of significance (most important
+first). Quality scenarios are provided for each quality attribute as well as a
+brief description. For tactics addressing the QA mentioned, see
+\hyperlink{tactics}{Tactics}.
+
+%Availability
+\subsection{Availability}
+Our goal for the product is to have an uptime of 99.999\%. This value is
+expected when running the full server-side component stack on 3 servers or more.
+For a lower number of servers running the stack, we expect an uptime of the
+system of 99\%.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=1\textwidth]{availability_scenario.png}
+  \caption{Availabilty Scenerio}
+\end{figure}
+
+% Performance
+\subsection{Performance}
+The system needs to respond quickly enough for the user not to be discouraged
+from using our product. On average requests should be processed in less than
+5sec. Database operations should be performed, on average, in less than 1sec.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=1\textwidth]{performance_scenario.png}
+  \caption{Performance Scenerio}
+\end{figure}
+
+% Modifiabilty
+\subsection{Modifiability}
+The system should be designed to support easy modification. This requires aiming
+for having loosely coupled modules and a clear separation of concerns. For
+example, adding new modules to support different social media services should
+require low effort from the development team.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=1\textwidth]{modifiability_scenario.png}
+  \caption{Modifiability Scenerio}
+\end{figure}
+
+\newpage
+
+% Usability
+\subsection{Usability}
+The system should be easy to use in an intuitive way. This is hard to quantify,
+but we want our application to be as easy to use as the social media services we
+get content from, i.e. the typical user shouldn't have to consult a user manual
+to understand the provided features and options.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=1\textwidth]{usability_scenario.png}
+  \caption{Usability Scenerio}
+\end{figure}
+
+% Security
+\subsection{Security}
+The system should have security mechanisms to prevent DDoS attacks and
+unauthorised access to our databases. Security is not our primary concern
+because we do not store or deal in any way with sensitive data like user login
+credentials or bank accounts. However, to guarantee availability, we must aim to
+minimize security vulnerabilities, both when designing, implementing and
+deploying our system.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=1\textwidth]{security_scenario.png}
+  \caption{Usability Scenerio}
+\end{figure}
+
+% Utility Tree
+\section{Utility Tree (Tabular Form)}
+{\tabulinesep=1.4mm
+\begin{tabu}{|c|c|c|c|}
+\hline
+\taburowcolors{gray!25..white}
+\parbox[t]{2cm}{\textbf{Quality \\ Attribute}}
+   & \parbox[t]{25mm}{\textbf{Attribute \\ Refinement}}
+   & \parbox[t]{5cm}{\textbf{ASR}}
+   & \parbox[t]{12mm}{\textbf{Impact}} \\
+\hline
+\taburowcolors{}
+\multirow{2}{*}{\parbox[t]{2cm}{Availability}}
+   & \multirow{2}{*}{\parbox[t]{25mm}{H/W or S/W failure}}
+      & \parbox[t]{5cm}{Power outage: requests are redirected to an alternative
+         server in less than 10 sec}
+      &  \parbox[t]{12mm}{(H, M)} \\ \cline{3-4}
+   &  & \parbox[t]{5cm}{Database failure: module responsible for database
+         operations is reconfigured to use an alternative database in less
+         than 3 sec}
+      & \parbox[t]{12mm}{(H, M)} \\
+\hline
+\multirow{2}{*}{\parbox[t]{2cm}{Performance}}
+   & \parbox[t]{25mm}{Perform search}
+      & \parbox[t]{5cm}{Search is performed and results are displayed in less
+         than 5 sec}
+      & \parbox[t]{12mm}{(M, M)} \\ \cline{2-4}
+      & \parbox[t]{25mm}{Check \\ statistics}
+      & \parbox[t]{5cm}{Statistics are fetched from database and displayed in
+         less than 5 sec}
+      & \parbox[t]{12mm}{(M, M)} \\
+\hline
+\parbox[t]{2cm}{Modifiability}
+   & \parbox[t]{25mm}{Add new social media service}
+   & \parbox[t]{5cm}{Integrate a new social media service in less than 2 weeks
+      (80 man-hours)}
+   & \parbox[t]{12mm}{(M, M)} \\
+\hline
+\parbox[t]{2cm}{Usability}
+   & \parbox[t]{25mm}{User wants to change grid size}
+   & \parbox[t]{5cm}{The grid size is changed within 2 min of experimentation}
+   & \parbox[t]{12mm}{(M, L)} \\
+\hline
+\parbox[t]{2cm}{Security}
+   & \parbox[t]{25mm}{Database integrity}
+   & \parbox[t]{5cm}{Unauthorised access to the database is denied}
+   & \parbox[t]{12mm}{(L, L)} \\
+\hline
+\end{tabu}}
+
+%% Tactics
+\hypertarget{tactics}{
+\section{Tactics - Risks, Tradeoffs and Sensitivity Points}}
+The tactics applied to achieve the above mentioned quality attributes are
+elaborated here and some risks, tradeoffs and sensitivity points are discussed.
+
+\subsection{Availability}
 \section{Constraints}
-\section{Tactics}
-\subsection{Risks, Tradeoff and Sensitivity Points}
 
-\chapter{Architectural Mechanisms}
-\section{Analysis, Design and Implementation Mechanisms}
-
+\label{scc}
 \chapter{System Characteristics and Challenges}
 \section{Characteristics}
 [Resource Sharing, Opennes, Cuncurrency, Scalability,
@@ -111,17 +434,30 @@ Fault Tolerance, Transparency]
 [Security, Privacy, Performance, Heterogeneity, Integrity,
 Reliability, Availability]
 
+\label{ucv}
 \chapter{Use Case View}
 \section{Significant Use Cases (Use Case Diagram and descriptions)}
 \section{Use Cases realization (Sequence State Diagrams)}
 
+\label{lv}
 \chapter{Logical View}
 \section{Presentation Layer}
 \section{Services Layer}
 \section{Data Layer}
 
+\label{deploymentv}
 \chapter{Deployment View}
 
+\label{datav}
 \chapter{Data View}
+
+\label{toolsandframeworks}
+\chapter{Tools and Frameworks}
+
+\hypertarget{future}{
+\chapter{Future}}
+
+\label{appendix}
+\chapter{Appendix}
 
 \end{document}
