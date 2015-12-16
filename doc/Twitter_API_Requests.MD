@@ -6,9 +6,9 @@ HashTux requests to Twitter API are handled in the module `twitter_search.erl`. 
 The Twitter API accepts authenticated requests sent by Twitter Applications. To create a new app, go to [apps.twitter.com](https://apps.twitter.com) and follow the instructions. To generate authentication keys for your application, follow the instructions provided [here](https://dev.twitter.com/oauth/overview/application-owner-access-tokens).
 
 ##External Dependencies
-* [erlang-oauth](https://github.com/tim/erlang-oauth/): erlang client used to generate signed request parameters.
-* [ibrowse](https://github.com/cmullaparthi/ibrowse): HTTP Erlang client.
-* [jsx](https://github.com/talentdeficit/jsx): used to parse a json text (utf8 encoded binary) and convert it into erlang terms.
+* [tim/erlang-oauth](https://github.com/tim/erlang-oauth/): erlang client used to generate signed request parameters.
+* [cullaparthi/ibrowse](https://github.com/cmullaparthi/ibrowse): HTTP Erlang client.
+* [talentdeficit/jsx](https://github.com/talentdeficit/jsx): used to parse a json text (utf8 encoded binary) and convert it into erlang terms.
 
 ##To request Twitter statuses
 To send a GET request to the Twitter Search API use `twitter_search:search_hashtag/2`:
