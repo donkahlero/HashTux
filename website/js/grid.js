@@ -171,8 +171,8 @@ function initGrid()
                     " col-fill' style='background-image:url('');' id='tile"+
                     count + "'>" +
                     "<iframe width='100%' height='100%' frameborder='0' src='" +
-                    displayed[count].url + "?autoplay=1&loop=1;enablejsapi=1" +
-                    "' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
+                    displayed[count].url + "?autoplay=1" +
+                    "' id='ytvid' style='object-fit: fill; top: 0; position: absolute;'></iframe>" +
                     "<p class='usernameimage'><a class='greytext' href='" +
                     displayed[count].userlink + "' target='_blank'>@" +
                     displayed[count].username +
