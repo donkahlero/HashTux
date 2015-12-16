@@ -11,11 +11,11 @@ function screenFreeze() {
 		}
 	}
         
-        if(!anyFrozen)
-            freeze();
+        if(anyFrozen)
+            unfreeze();
         
         else
-            unfreeze();
+            freeze();
 }
 // freeze is used to check for a displayed tiles and pause it if its not paused
 // using the
@@ -70,14 +70,10 @@ function tileFreeze(tilenum) {
 // Handles a keyboard input in this case a space.
 // When pressed it trigger screenFreeze() and togglePlay();
 $(document).keypress(function(e) {
-    if ((e.which && e.which == 32) || (e.keyCode && e.keyCode == 32)) {
+    if ((e.which && e.which == 32) && !searchFieldShowing || 
+            (e.keyCode && e.keyCode == 32) && !searchFieldShowing) {
 //        togglePlay();
         screenFreeze();
-        return false;
-    }
-
-    else {
-        return true;
     }
 });
 
