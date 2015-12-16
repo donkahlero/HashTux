@@ -5,10 +5,21 @@
  * @returns	The string, now containing only reasonable characters
  */
 function strip_illegal_characters(str) {
-	var pass1 = str.replace("/#^[A-Za-z0-9_- \u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]/gi", "");
+	var pass1 = str.replace("/^[A-Za-z0-9_- \u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]/gi", "");
 	// Also make sure there's no # character
 	return pass1.replace("#", "");
 }
+
+/**
+ * Check if there are any characters A-Z, 0-9. Used for selecting only trending terms
+ * from twitter that have some western characters. A VERY rough filter but should be
+ * fine for 99 out of 100 terms.
+ */
+function contains_legal_characters(str) {
+	return /[a-zA-Z0-9]/.test(str);
+}
+
+
 
 
 /**
