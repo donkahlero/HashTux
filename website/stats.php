@@ -38,7 +38,7 @@ session_start ();
 		        type: "post",                    
 		        data: JSON.stringify(options),
 				          
-		        success: function (myString) { 
+		        success: function (myString) {  //on success of fetching parse to items and creat table. 
 		            termtype = term;
 		            parse_to_items(myString);
 		            creatTable();
@@ -77,15 +77,14 @@ session_start ();
 			              itemName = items[i].name; 
 			              itemCount = items[i].value;
 			              itemIndex  = [];
-			              itemSum  = [items.length];
-			              itemsEx = [itemIndex,itemName,itemCount,itemSum];
+			              itemsEx = [itemIndex,itemName,itemCount];
 			              
 			              statsItems.push(itemsEx);
-						}
+						}   
 				  
 			   }
-		
-		window.onload =  fetch('search_term_week');	//	search term of the year is shown to start with when the page loads.
+		//	search term of the year is shown to start with when the page loads.
+		window.onload =  fetch('search_term_year');	
 		//	creatTable is function used to creat tables, Each table is created using 
 		//	a library called DataTable. Multiple case statments are used to creat the diffrent tables. 
 		function creatTable() {
@@ -97,20 +96,32 @@ session_start ();
 				 	 // Here the table for search term year is created in tableContainer           
                $('#tableContainer').html("<table class='searchTermTableYear' id='searchTermTableYear' width='100%'></table>");
            			 //	Here the table for search term year is rendered using DataTable
-           			 document.getElementById("test").innerHTML = "Sum of search terms =" +" "+ itemSum;
 					 $('#searchTermTableYear').DataTable( {
 					    	retrieve: true, //	retrieve is a boolean that allows the table to be rendered after initializing. 
 					    	"aaSorting": [[2,'desc'], ],//	aaSorting sorts the count in descending order. 
-					    	"iDisplayLength": 50,     
-					        "fnDrawCallback": function ( oSettings ) {
-					            /* Need to redo the counters if filtered or sorted */
-					            if ( oSettings.bSorted || oSettings.bFiltered )
+					    	"iDisplayLength": 50, //	iDisplayLength sets the table length to 50 values
+					    	"dom": '<"toolbar">frtip',  //creating a toolbar in top of the table 
+					    	// DrawCallback is used to run a function that will be used to number the values in the table  
+					        "fnDrawCallback": function ( oSettings ){
+					            if ( oSettings.bSorted || oSettings.bFiltered )//Need to redo the counters if filtered or sorted. 
 					            {
-					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )// go through the displayed list of values
 					                {
-					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 ); // adding the index column
 					                }
 					            }
+					        },
+					        // footerCallback is used to add the values of the count column. 
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data; //getting the value from the count column
+					             total = api // Total over all pages
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b; //The values are summed  
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);// toolbar is used to display the sum. 
 					        },
 					        data: statsItems, // The table is generated using data from statsItems array. 
 					       	columns: [		  // colums assigns the titles for the table. 	 
@@ -122,14 +133,15 @@ session_start ();
 					    } );
 					    break; 
 			 case 'search_term_month': 
-                             
+				 // Here the table for search term month is created in tableContainer         
                 $('#tableContainer').html("<table class='searchTermTableMonth' id='searchTermTableMonth' width='100%'></table>");
-				
+                //	Here the table for search term month is rendered using DataTable
 			    	 $('#searchTermTableMonth').DataTable( {
 			    		 	retrieve: true,
 			    		 	"zeroRecords": "No matching records found",
 			    		 	"aaSorting": [[2,'desc']],
 			    		 	"iDisplayLength": 50,
+			    			"dom": '<"toolbar">frtip',
 			    		 	 "fnDrawCallback": function ( oSettings ) {
 						            if ( oSettings.bSorted || oSettings.bFiltered )
 						            {
@@ -138,6 +150,18 @@ session_start ();
 						                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 						                }
 						            }
+						        },
+						        "footerCallback": function ( row, data, start, end, display ) {
+						        	 var api = this.api(), data;
+						        	 
+						             total = api
+						                 .column( 2 )
+						                 .data()
+						                 .reduce( function (a, b) {
+						                     return a + b;
+						                 }, 0 );        
+					                 
+						             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 						        },
 				            data: statsItems,
 				            columns: [ 
@@ -151,12 +175,12 @@ session_start ();
 			 case 'search_term_week': 	
 				 		
 				$('#tableContainer').html("<table class='searchTermTableWeek' id='searchTermTableWeek' width='100%'></table>");
-
 					$('#searchTermTableWeek').DataTable( {
 				        	retrieve: true,
 				        	"zeroRecords": "No matching records found",
 				        	"aaSorting": [[2,'desc']],
 			    		 	"iDisplayLength": 50,
+			    		 	"dom": '<"toolbar">frtip',
 			    		 	 "fnDrawCallback": function ( oSettings ) {
 						            if ( oSettings.bSorted || oSettings.bFiltered )
 						            {
@@ -166,22 +190,26 @@ session_start ();
 						                }
 						            }
 						        },
+						        "footerCallback": function ( row, data, start, end, display ) {
+						        	 var api = this.api(), data;
+						        	
+						             total = api
+						                 .column( 2 )
+						                 .data()
+						                 .reduce( function (a, b) {
+						                     return a + b;
+						                 }, 0 );        
+						             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+
+						        },
 				            data: statsItems,
-				            "fnDrawCallback": function ( oSettings ) {
-					            if ( oSettings.bSorted || oSettings.bFiltered )
-					            {
-					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
-					                {
-					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
-					                }
-					            }
-					        },
 				            columns: [
 								{ title: "Index"},	       
 				                { title: "Top search terms for last week" },
 				                { title: "Count" },
 				               
 				            ]
+						            
 				        } );
 				        break; 
 			 case 'search_term_today':
@@ -193,6 +221,7 @@ session_start ();
 				        	"zeroRecords": "No matching records found",
 				        	"aaSorting": [[2,'desc']],
 			    		 	"iDisplayLength": 50,
+			    			"dom": '<"toolbar">frtip',
 			    		 	 "fnDrawCallback": function ( oSettings ) {
 						            if ( oSettings.bSorted || oSettings.bFiltered )
 						            {
@@ -202,16 +231,19 @@ session_start ();
 						                }
 						            }
 						        },
+						        "footerCallback": function ( row, data, start, end, display ) {
+						        	 var api = this.api(), data;
+						        	
+						             total = api
+						                 .column( 2 )
+						                 .data()
+						                 .reduce( function (a, b) {
+						                     return a + b;
+						                 }, 0 );        
+					                 
+						             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+						        },
 				            data: statsItems,
-				            "fnDrawCallback": function ( oSettings ) {
-					            if ( oSettings.bSorted || oSettings.bFiltered )
-					            {
-					                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
-					                {
-					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
-					                }
-					            }
-					        },
 				            columns: [
 								{ title: "Index"},	
 				                { title: "Top search terms for the last 24 Hours" },
@@ -229,6 +261,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -237,6 +270,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					        	 
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -255,6 +300,7 @@ session_start ();
 			        	retrieve: true,
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -264,7 +310,18 @@ session_start ();
 					                }
 					            }
 					        },
-			        	"iDisplayLength": 50,
+					     "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					        	
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					        },
 			            data: statsItems,
 			            columns: [
 							{ title: "Index"},	        
@@ -283,6 +340,7 @@ session_start ();
 				        	"zeroRecords": "No matching records found",
 				        	"aaSorting": [[2,'desc']],
 			    		 	"iDisplayLength": 50,
+			    			"dom": '<"toolbar">frtip',
 			    		 	 "fnDrawCallback": function ( oSettings ) {
 						            if ( oSettings.bSorted || oSettings.bFiltered )
 						            {
@@ -291,6 +349,18 @@ session_start ();
 						                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 						                }
 						            }
+						        },
+						        "footerCallback": function ( row, data, start, end, display ) {
+						        	 var api = this.api(), data;
+						   
+						             total = api
+						                 .column( 2 )
+						                 .data()
+						                 .reduce( function (a, b) {
+						                     return a + b;
+						                 }, 0 );        
+					                 
+						             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 						        },
 				            data: statsItems,
 				            columns: [
@@ -310,6 +380,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -318,6 +389,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					       
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -337,6 +420,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -345,6 +429,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					        
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -364,6 +460,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -372,6 +469,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					      
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -391,6 +500,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -399,6 +509,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					        	 
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -418,6 +540,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -426,6 +549,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					         
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -446,6 +581,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -454,6 +590,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					        
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -473,6 +621,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -481,6 +630,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					         
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -500,6 +661,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -508,6 +670,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					        	  
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -527,6 +701,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -535,6 +710,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					   
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -554,6 +741,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -562,6 +750,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					        	  
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -581,6 +781,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -589,6 +790,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					        
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -608,6 +821,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -616,6 +830,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					        	  
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -635,6 +861,7 @@ session_start ();
 			        	"zeroRecords": "No matching records found",
 			        	"aaSorting": [[2,'desc']],
 		    		 	"iDisplayLength": 50,
+		    			"dom": '<"toolbar">frtip',
 		    		 	 "fnDrawCallback": function ( oSettings ) {
 					            if ( oSettings.bSorted || oSettings.bFiltered )
 					            {
@@ -643,6 +870,18 @@ session_start ();
 					                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
 					                }
 					            }
+					        },
+					        "footerCallback": function ( row, data, start, end, display ) {
+					        	 var api = this.api(), data;
+					        	 
+					             total = api
+					                 .column( 2 )
+					                 .data()
+					                 .reduce( function (a, b) {
+					                     return a + b;
+					                 }, 0 );        
+				                 
+					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -668,9 +907,7 @@ session_start ();
 	<div class="container">
 		<nav class="navbar navbar-inverse">
 			<div class="container-fluid">
-				<div class="navbar-header">
-					<a class="navbar-brand" href=""></a>
-				</div>
+				<div class="navbar-header"></div>
 				<div>
 					<ul class="nav navbar-nav ">
 						<li><a class="btn" onclick="changeType('search_term')">Search Term</a></li>
@@ -688,20 +925,24 @@ session_start ();
 							data-toggle="dropdown" href="#">Period <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li class="btn" onclick="changePeriod('today')">Last 24 Hours</li>
-								<li	class="btn" onclick="changePeriod('week')">Last Week</li>
-								<li	class="btn" onclick="changePeriod('month')">Last Month</li>
-								<li	class="btn" onclick="changePeriod('year')">Last Year</li>
+								<li class="btn" onclick="changePeriod('week')">Last Week</li>
+								<li class="btn" onclick="changePeriod('month')">Last Month</li>
+								<li class="btn" onclick="changePeriod('year')">Last Year</li>
 							</ul>
+					
 					</ul>
 				</div>
 			</div>
 	
 	</div>
 	<div class="container">
-				<div class="row" id="tableContainer"></div>
-						<div class="space"id="test"></div>
+		<div class="row" id="tableContainer"></div>
+
+		<div class="space"></div>
 	</div>
 	</header>
 </body>
 </body>
 </html>
+
+
