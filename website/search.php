@@ -48,6 +48,7 @@
             var refreshTimer;
             
             var screenFrozen = false;
+            var searchFieldShowing = false;
             
             var items = [];         // An array to store all items fetched
             var displayed = [];     // An array to temporarily store the currently displayed items
@@ -310,6 +311,8 @@
                 $('#searchField').fadeIn(500);      // Fade in the text field
                 $('#searchBtn').hide();             // Hide the search button
                 
+                searchFieldShowing = true;
+                
                 $('#searchField').click(function(e) {
                     e.stopPropagation();        // Ignore hover events
                 });
@@ -333,6 +336,8 @@
                 $('#searchBtn').show();
                 $('#menuBtn').fadeIn(200);
                 $('#actionsBtn').fadeIn(200);
+                
+                searchFieldShowing = false;
             }
             
             // A function to show the actions menu
