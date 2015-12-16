@@ -598,7 +598,7 @@
             </div>
             
             <div class="alert-warning gridalert" id="invalidterm">
-                You did not enter a hashtag, please try again!
+                Invalid search term, please try again!
             </div>
             
             <div class="center-container">
