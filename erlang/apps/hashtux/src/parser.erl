@@ -200,10 +200,6 @@ parse_tweet_details(HashTag, Status) ->
 
     Feed_URL = build_tweet_url(binary_to_list(Tweet_ID)),
 
-    io:format("FEED URL is ~p~n", [Feed_URL]),
-
-    %%StringDate = extract_from_node(<<"created_at">>, Status),
-
     StringDate = list_to_binary(format_twitter_string_date(extract_from_node(<<"created_at">>, Status))),
 
     Date = case extract(<<"created_at">>, Status) of
@@ -313,13 +309,11 @@ build_tweet_url(TweetID) ->
 
 %% @doc Format string date to be displayed in front end
 format_twitter_string_date(StringDate) ->   
-    io:format("String DATE ~p~n", [StringDate]),
 
     [DayName, Month, DayNum, Time, _, Year] = string:tokens(binary_to_list(StringDate), " "),
 
     [Hour, Minute, _] = string:tokens(Time, ":"),
     NewTimeString = Hour ++ ":" ++ Minute,
-    io:format("FORMATTED TIME STRING ~p~n", [NewTimeString]),
 
     NewTimeString ++ " - " ++ DayName ++ " " ++ DayNum ++ " " ++ Month ++ " " ++ Year.
     
