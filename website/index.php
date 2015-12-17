@@ -10,13 +10,12 @@
     
     <title>HashTux</title>
     
-    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/hashtux.css" rel="stylesheet">
     
     <link href="images/favicon.ico" rel="shortcut icon">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
     <script src="js/frontpagegrid.js"></script>
     <script src="js/general.js"></script>    
     <script src="js/popular.js"></script>    
