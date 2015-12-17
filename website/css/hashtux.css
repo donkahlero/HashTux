@@ -2,10 +2,6 @@ a {
     color: #cccccc;
 }
 
-body {
-    font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;
-}
-
 .logo {
     width: 100%;
     margin-top: 30px;
@@ -172,14 +168,12 @@ body {
 }
 
 .smalltext {
-    font-size: 8px;
+    font-size: 7px;
 }
 
 .topbar {
     padding-top: 15px;
     padding-bottom: 15px;
-    padding-left: 50px;
-    padding-right: 50px;
     margin: 0;
     width: 100%;
     display: none;
@@ -210,6 +204,14 @@ body {
 }
 .commercial_use_section {
 	margin: 40px;
+}
+
+.trending {
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .optionspanel {
