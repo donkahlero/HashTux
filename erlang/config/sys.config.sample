@@ -11,9 +11,9 @@
 {instagram_account, [
 	{access_token, "2253641420.43956b9.2ce7ad96329647ffa756501b24fbed3e"}
 	]},
-{twitter_account, [{access_token, "3947085676-R5GaAeZAz2ns7wEcfZZ9Fw4Npt62kS4irnkgHcT"},
-		{access_token_secret, "W1raFk3kqVEj38QFjDus2qCfk8IU8ilWgfTqAgk3T5Lv6"},
-		{consumer_key, "8zASL19iVZ6IpMa0imBbRDJlo"},
-		{consumer_key_secret, "u4BL8BIGb6NllmZJwlnO2zpf0H5vzv2wMP4s5aYquZvBFEd0ux"}]},
-{youtube_account, [{server_key, "AIzaSyAT27JOYa8DAQKFK_2vPfxWagLxMXqbXFY"}]}
+{twitter_account, [{access_token, "4503552935-ZiLzNi8fsnh7QwG1qFP3LbBWF6OaIfhTUtPtqrw"},
+		{access_token_secret, "qCPMqMchiXzNtSAxv6JS5r9Z8cxiBhoTh3ApiNosmvdks"},
+		{consumer_key, "jsxLUB5sgzgGmYSg8FcwsZeps"},
+		{consumer_key_secret, "Aje76OuifQLAm4gnjusAdj0anZZRnuXLZRzdBKfPNHnDHNJP7O"}]},
+{youtube_account, [{server_key, "AIzaSyBZKIiFHPBEUvHjK1boPndnGtkNeV5kkCc"}]}
 ].
