@@ -90,15 +90,6 @@
                     items.push(incItem);    // Add the new item to the end of items
 
                 }
-
-//                debug += "\n\n";
-//                
-//                for(k = 0; k < items.length; k++)
-//                {
-//                    debug += items[k].service + " ";
-//                }
-//                
-//                alert(debug);
             }
         
     function checkInput(input)
@@ -136,34 +127,29 @@
     
   </head>
   
-  <body style="background-color: #000">
+  <body style="background-color: #FFF">
       
-    <div class="container con-fill header mainpagegrid" id="grid"></div>
+    <div class="container con-fill header mainpagegrid hidden-xs" id="grid"></div>
       
     <div class="container con-fill-hor">
 
         <div class="row" style="margin: 0;">
             
-            <div class="col-md-3 hidden-xs col-fill text-center">
-                <div class="trending greytext">
-                    <b>Popular searches</b><br />
-                    <div id="trending">Loading...</div>
-                </div>
-            </div>
+            <div class="col-sm-3 col-fill hidden-xs"></div>
 
-            <div class="col-md-6 col-fill">
+            <div class="col-sm-6 col-fill">
                 
                 <div class="text-center">
                   
                     <div class="logo">
-                        <img src="images/logotext.png" height="30%">
+                        <img src="images/darkhash.png" height="30%">
                     </div>
 
                     <div class="search">
 
-                        <p class="greytext" align="center">Please search for a keyword!</p>
+                        <p class="darkgreytext largetext" align="center"><b>PLEASE ENTER A KEYWORD</b></p>
 
-                        <form action="search.php" method="get" id="searchform" onsubmit="
+                        <form style="margin: 0;" action="search.php" method="get" id="searchform" onsubmit="
                             searchterm = strip_illegal_characters(document.getElementById('search').value);
                             
                             if (checkInput(searchterm) == true) 
@@ -171,11 +157,25 @@
                                     window.location.href = searchterm;
                                 } return false; ">
 
-                            <input type="text" class="searchfield" id="search" name="search" style="width: 100%;"/>
+                            <input type="text" class="searchfieldfrontpage largetext" id="search" name="search" />
                         </form>
-
+                        
                         <div class="alert-warning fixalert" id="input-error">
                             You did not enter a hashtag, please try again!
+                        </div>
+                        
+                        <div class="trending darkgreytext hidden-sm hidden-xs">
+                            <b>POPULAR</b><br>
+                            <div class="mediumtext">Popular on HashTux</div>
+                            <br />
+                            <div id="trending">Loading...</div>
+                        </div>
+                        
+                        <div class="trendingtwitter darkgreytext hidden-sm hidden-xs">
+                            <b>TRENDING</b><br>
+                            <div class="mediumtext">Based on Twitter trends</div>
+                            <br />
+                            <div id="trending-twitter">Loading...</div>
                         </div>
 
                     </div>
@@ -232,7 +232,7 @@
                             </form>
                         </div>
 
-                        <p class="greytext" align="center">
+                        <p class="darkgreytext" align="center">
                             HashTux is free for personal use. For commercial use, <button type="button" class="btn btn-link linkbtn" onclick="showCommercialUseInfo();">click here to read more</button>.
                             <br>
                             If you like the product and would like to support us, you can throw a 
@@ -245,13 +245,8 @@
                     </div>
                 </div>
             </div>
-                
-            <div class="col-md-3 hidden-xs col-fill text-center">
-                <div class="trending greytext">
-                    <b>Suggestions based on<br />Twitter Trends</b><br />
-                    <div id="trending-twitter">Loading...</div>
-                </div>
-            </div>
+                 
+            <div class="col-sm-3 col-fill hidden-xs"></div>
           
         </div>
 
