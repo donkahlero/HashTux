@@ -16,10 +16,9 @@
     <link href="images/favicon.ico" rel="shortcut icon">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <script src="js/frontpagegrid.js"></script>
     <script src="js/general.js"></script>    
-    <script src="js/popular.js"></script>    
-
 
     <script>
         
@@ -48,10 +47,43 @@
     window.onload = function() {
     	initialize();       // Run the initialize function
     	loadTrendingHT();
-			loadTrendingTwitter();
 		};
     
+		// Fetch and render trending terms info from HashTux
+		function loadTrendingHT() {
+        $.ajax({
+            url: "/ajax_post.php?search=search_term_week",
+            type: "post",
+            data: JSON.stringify({request_type:"stats"}),
+
+            success: function (trendingJSON) {
+                data = JSON.parse(trendingJSON); 
+								result = "";
+
+								// Sort search terms by their popularity
+								data = data.sort(compare);
+								
+								// Concatenate together some HTML with 5 links to the most popular searches
+								for (i = 0; i < data.length && i < 5; i++) {
+									result += "<a href='" + data[i].key + "'>" + data[i].key + "</a><br />";	
+								}
+								
+								$("#trending").html(result);
+            }
+       });
+		}
 	
+		// Compare trending terms from HashTux (by value, which is search occurences/popularity)
+		function compare(item1, item2) {
+			// All other browsers than Firefox need a 1, 0 or -1 as return value here
+			if (item1.value < item2.value) {
+				return 1;
+			} 
+			return -1;	
+		}
+	
+	
+
     function initialize() {
 
         $.ajax({
@@ -143,8 +175,15 @@
     <div class="container con-fill-hor">
 
         <div class="row" style="margin: 0;">
+            
+            <div class="col-md-3 hidden-xs col-fill text-center">
+                <div class="trending greytext">
+                    <b>Popular searches</b><br />
+                    <div id="trending">Loading...</div>
+                </div>
+            </div>
 
-            <div class="col-xs-12 col-fill">
+            <div class="col-md-6 col-fill">
                 
                 <div class="text-center">
                   
@@ -157,13 +196,14 @@
                         <p class="greytext" align="center">Please search for a keyword!</p>
 
                         <form action="search.php" method="get" id="searchform" onsubmit="
-															searchterm = strip_illegal_characters(document.getElementById('search').value);
-                                if (checkInput(searchterm) == true) 
-                                    {					
-                                    	window.location.href = searchterm;
-                                    } return false; ">
+                            searchterm = strip_illegal_characters(document.getElementById('search').value);
+                            
+                            if (checkInput(searchterm) == true) 
+                                {					
+                                    window.location.href = searchterm;
+                                } return false; ">
 
-                            <input type="text" class="searchfield" id="search" name="search" style="width: 50%;"/>
+                            <input type="text" class="searchfield" id="search" name="search" style="width: 100%;"/>
                         </form>
 
                         <div class="alert-warning fixalert" id="input-error">
@@ -180,45 +220,35 @@
 		                    <h4 align="center">Commercial Use</h4>
 		
 		                    <hr />
-							<p>
-								HashTux is free for personal use. For commercial use, please purchase either a <i>Lifetime Access License</i>, or a <i>1 Year License</i>.
-							</p>
-		
-							<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-							<input type="hidden" name="cmd" value="_s-xclick">
-							<input type="hidden" name="hosted_button_id" value="V6UA6S9LKLTKL">
-							
-							<div class="commercial_use_section">
-								<input type="hidden" name="on0" value="License:">License:
-								<select name="os0">
-									<option value="Lifetime License">Lifetime License €29,99 EUR</option>
-									<option value="1 Year License">1 Year License €9,99 EUR</option>
-								</select> 
-							</div>
-							<div class="commercial_use_section">
-								<input type="hidden" name="currency_code" value="EUR">
-								<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
-								<img alt="" border="0" src="https://www.paypalobjects.com/sv_SE/i/scr/pixel.gif" width="1" height="1">
-							</div>
-							</form>
+                                    
+                                    <p>
+                                        HashTux is free for personal use. For commercial use, please purchase either a <i>Lifetime Access License</i>, or a <i>1 Year License</i>.
+                                    </p>
+
+                                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                                    <input type="hidden" name="cmd" value="_s-xclick">
+                                    <input type="hidden" name="hosted_button_id" value="V6UA6S9LKLTKL">
+
+                                    <div class="commercial_use_section">
+                                        <input type="hidden" name="on0" value="License:">License:
+                                        <select name="os0">
+                                                <option value="Lifetime License">Lifetime License €29,99 EUR</option>
+                                                <option value="1 Year License">1 Year License €9,99 EUR</option>
+                                        </select> 
+                                    </div>
+                                    <div class="commercial_use_section">
+                                        <input type="hidden" name="currency_code" value="EUR">
+                                        <input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+                                        <img alt="" border="0" src="https://www.paypalobjects.com/sv_SE/i/scr/pixel.gif" width="1" height="1">
+                                    </div>
+                                    </form>
 		
 		                    <button type="button" class="btn btn-default savebutton"
-		                            data-toggle="tooltip" data-placement="top" title="Save all options (Grid will be refreshed)"
-		                            id="save" onclick="hideCommercialUseInfo()">Close</button>		
+                                        data-toggle="tooltip" data-placement="top" title="Save all options (Grid will be refreshed)"
+                                        id="save" onclick="hideCommercialUseInfo()">Close</button>		
 		                </div>
 		
 		            </div>
-
-		
-						<div style="text-align: center; color: white; margin-top: 150px; font-size: 10px;">
-							<b>Try these popular searches:</b><br />
-							<div id="trending">Loading...</a>
-						</div>
-
-						<div style="text-align: center; color: white; margin-top: 10px; font-size: 10px;">
-							<b>Currently trending on Twitter:</b><br />
-							<div id="trending-twitter">Loading...</a>
-						</div>
 
 
 
@@ -226,16 +256,16 @@
                     <div class="footer">
 
                         <div class="donationbtn" id="donationbtn">
-                                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                                <input type="hidden" name="cmd" value="_s-xclick">
-                                <input type="hidden" name="hosted_button_id" value="EUPGXJH6CA6BL">
-                                <input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
-                                <img alt="" border="0" src="https://www.paypalobjects.com/sv_SE/i/scr/pixel.gif" width="1" height="1">
-                                </form>
+                            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                            <input type="hidden" name="cmd" value="_s-xclick">
+                            <input type="hidden" name="hosted_button_id" value="EUPGXJH6CA6BL">
+                            <input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+                            <img alt="" border="0" src="https://www.paypalobjects.com/sv_SE/i/scr/pixel.gif" width="1" height="1">
+                            </form>
                         </div>
 
                         <p class="greytext" align="center">
-    HashTux is free for personal use. For commercial use, <button type="button" class="btn btn-link linkbtn" onclick="showCommercialUseInfo();">click here to read more</button>.
+                            HashTux is free for personal use. For commercial use, <button type="button" class="btn btn-link linkbtn" onclick="showCommercialUseInfo();">click here to read more</button>.
                             <br>
                             If you like the product and would like to support us, you can throw a 
                             <button type="button" class="btn btn-link linkbtn" onclick="showDonationBtn()">donation</button> our way. Every little bit helps!
@@ -245,6 +275,13 @@
                         </p>
 
                     </div>
+                </div>
+            </div>
+                
+            <div class="col-md-3 hidden-xs col-fill text-center">
+                <div class="trending greytext">
+                    <b>Suggestions based on<br />Twitter Trends</b><br />
+                    <div id="trending-twitter">Loading...</div>
                 </div>
             </div>
           
