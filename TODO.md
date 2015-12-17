@@ -4,7 +4,6 @@
 - Dennis: integrate and design trending topics lists<br />
 - Dennis: Index page should link to stats page
 - Terms of use text that says "btw we use cookies, and we store information about what users search for to provide a better user experience".<br />
-- Aman or Niklas: add a total that is the total number av searches for the given interval [Done]<br />
 - Posts should have higher chance of appearing in RECENT the newer they are<br />
 - Error report / defect backlog - maybe link "click here to report problems"<br />
 - In main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
