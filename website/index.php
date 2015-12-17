@@ -19,6 +19,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/frontpagegrid.js"></script>
     <script src="js/general.js"></script>    
+    <script src="js/popular.js"></script>    
 
     <script>
         
@@ -47,41 +48,8 @@
     window.onload = function() {
     	initialize();       // Run the initialize function
     	loadTrendingHT();
-		};
-    
-		// Fetch and render trending terms info from HashTux
-		function loadTrendingHT() {
-        $.ajax({
-            url: "/ajax_post.php?search=search_term_week",
-            type: "post",
-            data: JSON.stringify({request_type:"stats"}),
-
-            success: function (trendingJSON) {
-                data = JSON.parse(trendingJSON); 
-								result = "";
-
-								// Sort search terms by their popularity
-								data = data.sort(compare);
-								
-								// Concatenate together some HTML with 5 links to the most popular searches
-								for (i = 0; i < data.length && i < 5; i++) {
-									result += "<a href='" + data[i].key + "'>" + data[i].key + "</a><br />";	
-								}
-								
-								$("#trending").html(result);
-            }
-       });
-		}
-	
-		// Compare trending terms from HashTux (by value, which is search occurences/popularity)
-		function compare(item1, item2) {
-			// All other browsers than Firefox need a 1, 0 or -1 as return value here
-			if (item1.value < item2.value) {
-				return 1;
-			} 
-			return -1;	
-		}
-	
+	loadTrendingTwitter();
+	};
 	
 
     function initialize() {

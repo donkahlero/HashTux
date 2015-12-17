@@ -914,7 +914,7 @@ session_start ();
 						<li><a class="btn" onclick="changeType('browser')">Browser</a></li>
 						<li><a class="btn" onclick="changeType('platform')">Platform</a></li>
 						<li class="dropdown"><a class="dropdown-toggle"
-							data-toggle="dropdown" href="#">Combinations
+							data-toggle="dropdown" href="#">Combinations<span class="caret"></span></a>
 								<ul class="dropdown-menu">
 									<li><a class="btn" onclick="changeType('platform_browser')">Platform/Browser</a></li>
 									<li><a class="btn" onclick="changeType('browser_version')">Browser/Version</a></li>
