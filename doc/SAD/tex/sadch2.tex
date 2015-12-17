@@ -249,7 +249,7 @@ used together with the \textit{Bound Queue Sizes} tactic. For our miner server,
 which is responsible for spawning workers to process requests, we have a queue
 size limit set to 1000. If the limit has been reached and the current request
 cannot be processed, the miner server sends a message back to the PHP
-application, that notifies it that there are currently too many requests served
+application to notify it that there are currently too many requests served
 and an alternative server should be tried. \\ \\
 \textbf{Introduce Concurrency} - a key tactic used in our system. It helps for
 parallel execution of operations and reduces the overall latency of serving
