@@ -1,0 +1,136 @@
+% LaTeX layout by Jonas Kahler, jonas@derkahler.de
+% HashTux SAD Document
+% Group Tux:
+% Aman Dirar, Jerker Ersare, Jonas Kahler, Dennis Karlberg
+% Niklas le Comte, Marco Trifance, Ivo Vryashkov
+% Chapter 4 - System Characteristics and Challenges
+\label{systemcharacteristics}
+\chapter[System Characteristics and Challanges]
+   {System Characteristics and\\ Challanges}
+
+%% Characteristics
+\section{Characteristics}
+How \textit{HashTux} relates to the characteristics of distributed systems:
+
+%%% Resource Sharing
+\subsection{Resource Sharing}
+Since we don’t have any particular scarce resource that we need to share, this
+is not very relevant to our system. Our components can run anywhere and wherever
+we choose to run our backend server, it can connect to the external APIs.
+
+%%% Concurrency
+\subsection{Concurrency}
+In the database component several processes run at the same time: for each
+request to the database a new worker is spawned and appended to the responsible
+supervisor. This is done by a dispenser gen\textunderscore server which returns
+the reference to the requesting process. \newline
+For caching summarizations of the user habit data, we also use a concurrent
+approach. First, a map function is executed by CouchDB. Later, workers are
+spawned that run in parallel for reducing the data and saving the cached results
+it into our database.
+
+%%% Scalability
+\subsection{Scalability}
+Regarding scalability, it is easy to add more server tiers if more requests need
+to be handled. It is a matter of installing any combination of the PHP
+application (and Apache web server), backend server and CouchDB on the machine
+and changing the config files. \newline
+Right now each of our server tiers hosts runs the whole stack of server side
+components, but it is also possible to run just one component on each server
+tier respectively (the PHP application, the backend server and CouchDB).
+
+%%% Fault Tolerance
+\subsection{Fault Tolerance}
+Right now \textit{HashTux} is deployed on four fully stacked server tiers. Our
+DNS servers are configured with all the IP addresses of our web servers. All
+modern browsers selects one (which also provides load balancing) and check
+automatically if the host is available, otherwise they connect to another.
+\newline
+The PHP application tries to connect to the preferred backend server when a
+request is being processed. If no reply is received within a given time the PHP
+application connects to another node. \newline
+Similarly, in the backend server, the database component automatically connects
+to another CouchDB instance if the primary database is down.
+
+%%% Transparency
+\subsection{Transparency}
+The user will never notice if one of the stacks are not currently available
+because the user will be redirected to one that is running. If an instance of
+the backend server or CouchDB ever becomes unavailable, the next following
+search request may take slightly longer to process from a user perspective while
+the PHP application or backend server is noticing the timeout and reconfiguring,
+but the user will see a loading bar during this time and we are confident that
+this can not be distinguished from the normal delays that sometimes occur on the
+internet.
+
+%% Challanges
+\section{Challanges}
+In this section, we discuss how we have handled or considered the common
+challenges of distributed system when developing \textit{HashTux}.
+
+%%% Security
+\subsection{Security}
+To make sure that nobody except a specific user is allowed to read and write
+from the database, we enabled the HTTP authentication feature in CouchDB, which
+uses the HTTP header for passing authentication credentials. This is a very
+basic security mechanism, but enough for our product since our database does not
+contain sensitive data like login credentials. \newline
+We also made sure that we are not using any default config values like the port
+the database is listening on. This is also important for availability.
+
+%%% Privacy
+\subsection{Privacy}
+We do not handle sensitive customer information. However, we collect user habit
+data and use cookies to do so. We have a text that clarifies this to the user,
+that is accessible from a link in the footer of the start page on the client UI.
+\newline
+Also, see the \hyperlink{apilimits}{API Limitations section} for how our product
+is affected by the terms and conditions of the social media APIs we use.
+
+%%% Performance
+\subsection{Performance}
+While developing the module within our database component that is responsible
+for checking which of the CouchDB instances defined in the config file are
+available, we encountered a tradeoff between two quality attributes Performance
+and Availability. \newline
+To check if the databases are available, it would have been necessary to ping
+the databases very often or checking the connection each time it is requested by
+the connector (a lot of requests are coming in within a short time which should
+all be handled correctly). This would have decreased the performance of our
+system significantly (this module would have been a bottleneck for our system).
+\newline
+Because we are using Erlang, this tradeoff could be solved in a nice way: when
+the supervisor structure of our database component starts up all the CouchDB
+instances are pinged once to check which ones are available. As soon as one of
+the databases become unavailable, any subsequent request will fail to be handled
+correctly and the database dispenser server will crash. This causes the whole
+supervisor to restart, again evaluating which CouchDB instances available. With
+this solution, the performance is not decreasing while the systems availability
+and fault-tolerance is increasing.
+
+%%% Heterogeneity
+\subsection{Heterogeneity}
+For this project we used several programming languages (Erlang, JavaScript and
+PHP). This can provide a challenge for example in terms of communication. For
+sharing data between our different components, we consistently use JSON and this
+has been a very effective way to minimize the impact of this challenge.
+
+%%% Reliability
+\subsection{Reliability}
+From the development perspective, we have tried to make each of our components
+as resilient and fault-tolerant as possible. This is also one of the strong
+sides of Erlang. \newline
+From the deployment perspective: right now, our server side components are
+deployed both at a professional virtual host hotel, and at three hobby server
+tiers at our homes. The latter ones will probably have a low reliability when
+everything such as the risk for power outages and consumer ISP reliability is
+considered. \newline
+However, it should be pointed out that we consider overall availability to be
+more important than reliability of specific components or tiers, which is why we
+generally have focused a lot on availability tactics in this project.
+
+%%% Availability
+\subsection{Availability}
+This is a very important area for us, and has been discussed extensively in
+other parts of this document, such as in the \hyperlink{tactics}{Tactics
+section}.
