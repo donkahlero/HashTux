@@ -33,7 +33,7 @@ search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp
 
 			% Check if client requested specific language
 			case lists:member(Language, LangParams) of
-				%% Query API and Filter Result
+				%% Query API and Filter Result by Language
 				true -> 
 					io:format("YOUTUBE: Client requested specific language\n"),
 					API_Res = query_youtube_API(HashTag, 30, HistoryTimestamp),
@@ -42,7 +42,7 @@ search(HashTag, [{content_type, Types}, {language, Language}, {history_timestamp
 					io:format("YOUTUBE: Filtered Search returned ~p elements ~n", [Res_Length]),
 					[{filtered, Filtered_Res}, {unfiltered, API_Res}];											% return result	
 				
-				%% Query API (no filter)
+				%% Query API (no language-filter)
 				false -> 
 					io:format("YOUTUBE: Client requested ALL languages\n"),
 					Result = query_youtube_API(HashTag, 10, HistoryTimestamp),
