@@ -76,19 +76,11 @@ When decoded to erlang by JSX, the option part looks like this:
 ```
 
 ##Format of user statistics data requests to the Erlang backend
-The above section applies, except the available options. In the options object, set the request_type option to "stats". Use "/" as the path/search term, it will be ignored. The available options when requesting statistics are:
-
-- TODO,
-- TODO
-
-NOTE: I will separate the build_request_data function so that user habits are created in a separate function, which can also be used by a new function I'm going to create, custom_request_data, where you can insert your own options associative array (then it appends the user habit data and packages it into an object)
-So:
-
-- build_request_data works like it does now = takes parameters and makes an option object, but uses get_habit_data, and wraps into a correct object.
-- custom_request_data takes (path, options), appends get_habit_data object, and wraps into the correct object 
-
+The above section applies, except the available options. In the options object, set the request_type option to "stats". Use "/" as the path/search term, it will be ignored. The limit option (integer) can also be set.
 
 ##Ajax requests to the Erlang backend
-We make AJAX requests through our web server, by querying ajax.php (via HTTP GET). By doing this, we can let the web server append some information to the request that we otherwise could not get without first sending them to the client (such as the users IP adress and PHP session ID). The file ajax.php then sends a proper HTTP POST request with the correct format. Right now these parameters are supported.
-- search: The search term. (If passing from the user, please make sure to sanitize in some way from special characters so it can actually be passed as an HTTP parameter)
-- request_type: Use "search", "update" or "heartbeat". 
+We make AJAX requests through our PHP application. This allows user habit data to be appended and the PHP application also keeps track of which backend server is preferred and available. Currently we have two different interfaces that forward requests to the backend server.
+###ajax.php
+By querying ajax.php via HTTP GET, which enables setting the request_type option as a GET parameter. (The file ajax.php then sends a HTTP POST request with the correct format that the backend server expects. Right now these parameters are supported:
+###ajax_post.php
+By querying ajax_post.php via HTTP POST, with the option object in the POST body, you can make a more customized request. This is recommended for any requests except the most simple ones. Note that this requires specifying at least the request_type parameter in the options object! The user habit data will be appended before the request is sent to the backend server.
