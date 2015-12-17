@@ -416,6 +416,7 @@ deploying our system.
 \hline
 \end{tabu}}
 
+\newpage
 %% Tactics
 \hypertarget{tactics}{
 \section{Tactics - Risks, Tradeoffs and Sensitivity Points}}
@@ -423,6 +424,93 @@ The tactics applied to achieve the above mentioned quality attributes are
 elaborated here and some risks, tradeoffs and sensitivity points are discussed.
 
 \subsection{Availability}
+\textbf{Timeout} - this tactic is used to detect if the backend server is
+available to serve requests. If the time exceeds the configured value, the web
+application tries to connect to an alternative backend server. This helps to
+ensure that each instance of our PHP application can establish a connection with
+an available backend server. \newline
+A tradeoff for this tactic is a certain latency in responding to a search
+request when the currently preferred backend server goes down
+(see Reconfiguration for how we handle this). \\ \\
+\textbf{Active Redundancy} - for our application we have servers standing by
+(up and running live) and waiting to serve requests at any time. This also
+ensures the mentioned uptime of the system. \\ \\
+\textbf{State Resynchronisation} - used to provide a synchronised state of the
+collected user habit data across all available databases. This process takes
+place every minute. \\ \\
+\textbf{Reconfiguration} - we use this in two areas:
+\begin{itemize}
+  \item We use this tactic to maintain availability when writing and reading to
+     the database. If at any point the current database used for operations goes
+     down, the module responsible for database procedures is reconfigured to use
+     an alternative database.
+  \item When a backend server fails to respond to a request in time, it will be
+     marked in the web application’s list of servers as down (with a timestamp
+     of the incident). The web application will re-evaluate which backend server
+     to connect to, and remember this decision. After a certain configurable
+     time period, the incident will be “forgotten”, so that the original server
+     may be brought back to service (provided that it is now responding).
+\end{itemize}
+
+% Performance
+\subsection{Performance}
+\textbf{Limit Event Responses} - this tactic is used when handling requests in
+the backend server to provide the required performance rates. This tactic is
+used together with the \textit{Bound Queue Sizes} tactic. For our miner server,
+which is responsible for spawning workers to process requests, we have a queue
+size limit set to 1000. If the limit has been reached and the current request
+cannot be processed, the miner server sends a message back to the PHP
+application, that notifies it that there are currently too many requests served
+and an alternative server should be tried. \\ \\
+\textbf{Introduce Concurrency} - a key tactic used in our system. It helps for
+parallel execution of operations and reduces the overall latency of serving
+requests. Concurrency is used in the backend server for managing clients, i.e.
+new threads are created for each request. Each request to the social media APIs
+are also handled in parallel. The same goes for database operations. \newline
+A risk of race condition when using concurrency is possible. This can occur
+especially when reducing the re-reduced results for caching the user statistics.
+Therefore, we created a custom pmap function that avoids these race conditions.
+\\ \\
+\textbf{MapReduce} - this tactic is used when caching summarizations of various
+user statistics for our statistics page. The user habits we collect generate a
+large amount of data and the use of MapReduce helps with precaching the
+statistics. The cached data is generated and stored in a separate database every
+hour and can then be quickly fetched when the client UI needs to display it.
+
+% Modifiability
+\subsection{Modifiability}
+A risk in general for modifiability is increased overhead when using
+intermediaries. This can affect the overall performance of the system. We do not
+identify this to be an issue for our product as it is. However, if the
+application is to be developed further and the size and scope increases, a
+tactic like \textit{Reduce Overhead} should be considered to maintain the agreed
+performance levels. \\ \\
+\textbf{Increase Semantic Coherence} - this tactic addresses the separation of
+concerns. Each module has a clear responsibility and reduces the likelihood of
+side effects and errors when making changes. \\ \\
+\textbf{Restrict Dependencies} - this tactic addresses the concept of coupling
+between modules. Each module can interact with a certain number of other modules
+and low dependencies result in low cost and effort when implementing a change.
+It also keeps the complexity level low.
+
+% Usability
+\subsection{Usability}
+\textbf{Aggregate} - the different options for our application are presented in
+one simple view. This allows easy accessibility (all options are aggregated in
+one place) and reduced time in changing them (no need for the user to search for
+multiple menus containing different alternatives).
+
+% Security
+\subsection{Security}
+\textbf{Authenticate Actors} - default security mechanism provided by the DBMS.
+\\ \\
+\textbf{Change Default Settings} - during deployment, we do not use the default
+settings that come with the different services in use. For example, CouchDB
+listens by default on port 5984 which we changed. \\ \\
+\textbf{Firewall} - from a deployment point of view, we see it as natural to
+use firewalls on each server.
+
+% Constraints
 \section{Constraints}
 
 \label{scc}
