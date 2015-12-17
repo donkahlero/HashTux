@@ -30,8 +30,8 @@ The format of the document is the following (written in Erlang compatible with P
 {<<"tags">>, [The Tags]}]
 ```
 
-##Format of search requests to the Erlang backend
-A php file called request.php can be used to generate a properly structured request by first using the build_request_data() function and then making the actual request via the request() function.
+##Format of search requests to the backend server
+The functions provided in the file /website/include/request.php can be used to generate a properly structured request by first using the build_request_options() function if needed and then making the actual request via the request() function. However, for frontend development, we recommend simply accessing the ajax interfaces discussed below. 
 
 Here is the format of the request:
  - Use HTTP POST requests.
@@ -41,17 +41,18 @@ Here is the format of the request:
 Options - a JSON object with the following key-value pairs:
  - request_type: "search" for initial search (more results) or "update" for subsequent (ajax) requests. Use "heartbeat" to trigger precaching.
  - service: a list, any combination of "twitter", "instagram", "youtube". Omitting this options means allow all.
- - history_timestamp, an epoch timestamp which the history search will center around.
+ - history_timestamp, an epoch timestamp which the history search will center around. Omitting this options means search for recent content.
  - content_type: a list, any combination of "image", "text", "video".  Omitting this options means allow all.
  - language: two lowercase characters representation. Omitting this options means allow all.
 
-User Habit Data - a JSON object with the following key-value pairs:
+User Habit Data - a JSON object with user habit data.
+Currently we let the PHP application supply the following key-value pairs. (The backend server should not care very much about what we throw in here, if we decide to connect from a new kind of client - but now this is what is used for the statistics page as well).
  - timetamp: Unix epoch time, number
  - session_id: PHP session string
  - ip_address: String
  - platform: Platform, free text
  - browser: Web browser, free text
- - browserversion: Web browser version, free text
+ - browser_version: Web browser version, free text
 
 Example of the whole [options, user_habit_data] request body: 
 ```json
