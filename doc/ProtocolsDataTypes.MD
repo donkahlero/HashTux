@@ -77,7 +77,7 @@ When decoded to erlang by JSX, the option part looks like this:
 ```
 
 ##Format of user statistics data requests to the Erlang backend
-The above section applies, except the available options. In the options object, set the request_type option to "stats". Use "/" as the path/search term, it will be ignored. The limit option (integer) can also be set.
+The above section applies, except the available options. In the options object, set the request_type option to "stats". Use "/" followed by the document name (example: "/search_term_year") as the term. 
 
 ##Ajax requests to the Erlang backend
 We make AJAX requests through our PHP application. This allows user habit data to be appended and the PHP application also keeps track of which backend server is preferred and available. Currently we have two different interfaces that forward requests to the backend server.
