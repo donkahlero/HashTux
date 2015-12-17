@@ -1,6 +1,6 @@
 %% @author Marco Trifance <marco.trifance@gmail.com>
 %% @doc A parser for decoded JSON Items. Handle information conversion 
-%%      and formatting from decoded Twitter and Youtube FEEDS into internal representation format
+%%      and formatting from decoded Twitter and Youtube feeds into internal representation format
 
 -module(parser).
 
@@ -72,8 +72,8 @@ build_youtube_embedded_link(VideoId) ->
 
 %% @doc Convert a decoded Youtube Video resource to internal representation
 parse_youtube_video(Video, HashTag) -> 
-	
-	%% Register the time the document was sent to DB
+
+    %% Register the time the document was sent to DB
     Timestamp = dateconv:get_timestamp(),
 
     case extract(<<"items">>, Video) of
@@ -126,7 +126,24 @@ parse_youtube_video(Video, HashTag) ->
             ChannelTitle = null
     end,
 
-    A = [{<<"search_term">>, list_to_binary(HashTag)}, {<<"service">>, <<"youtube">>}, {<<"insert_timestamp">>, Timestamp}, {<<"timestamp">>, PubDate}, {<<"date_string">>, Date}, {<<"content_type">>, <<"video">>}, {<<"service_id">>, Id}, {<<"text">>, Description}, {<<"language">>, Language}, {<<"view_count">>, ViewCount}, {<<"likes">>, LikeCount}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Embed_URL}, {<<"resource_link_low">>, Resource_URL}, {<<"username">>, ChannelTitle}, {<<"profile_link">>, Channel_URL}, {<<"user_id">>, ChannelId}],
+    A = [{<<"search_term">>, list_to_binary(HashTag)}, 
+        {<<"service">>, <<"youtube">>}, 
+        {<<"insert_timestamp">>, Timestamp}, 
+        {<<"timestamp">>, PubDate},
+        {<<"date_string">>, Date},
+        {<<"content_type">>, <<"video">>},
+        {<<"service_id">>, Id},
+        {<<"text">>, Description},
+        {<<"language">>, Language},
+        {<<"view_count">>, ViewCount},
+        {<<"likes">>, LikeCount},
+        {<<"tags">>, Tags},
+        {<<"resource_link_high">>, Embed_URL},
+        {<<"resource_link_low">>, Resource_URL},
+        {<<"username">>, ChannelTitle},
+        {<<"free_text_name">>, ChannelTitle},
+        {<<"profile_link">>, Channel_URL},
+        {<<"user_id">>, ChannelId}],
 
     %% Remove empty fields from parsed Youtube video item
     clean_result(A).
@@ -181,7 +198,9 @@ parse_tweet_details(HashTag, Status) ->
         not_found -> null
     end,
 
-    StringDate = extract_from_node(<<"created_at">>, Status),
+    Feed_URL = build_tweet_url(binary_to_list(Tweet_ID)),
+
+    StringDate = list_to_binary(format_twitter_string_date(extract_from_node(<<"created_at">>, Status))),
 
     Date = case extract(<<"created_at">>, Status) of
         {found, X2} -> 
@@ -235,7 +254,27 @@ parse_tweet_details(HashTag, Status) ->
 
     UserID = convert_user_ID(extract_from_node(<<"id">>, UserInfo)),
 
-    A = [{<<"search_term">>, list_to_binary(HashTag)},{<<"service">>, <<"twitter">>}, {<<"service_id">>, Tweet_ID}, {<<"timestamp">>, Date}, {<<"date_string">>, StringDate}, {<<"insert_timestamp">>, Timestamp}, {<<"text">>, Text}, {<<"language">>, Language}, {<<"view_count">>, Retweet_Count}, {<<"likes">>, Favorited}, {<<"location">>, Coordinates}, {<<"tags">>, Tags}, {<<"resource_link_high">>, Media_URL}, {<<"resource_link_low">>, Media_URL}, {<<"content_type">>, Media_Type}, {<<"free_text_name">>, UserName}, {<<"username">>, ScreenName}, {<<"profile_link">>, User_Profile_Link}, {<<"profile_image_url">>, User_Profile_Image_Url}, {<<"user_id">>, UserID}],
+    A = [{<<"search_term">>, list_to_binary(HashTag)},
+        {<<"service">>, <<"twitter">>},
+        {<<"service_id">>, Tweet_ID},
+        {<<"timestamp">>, Date},
+        {<<"date_string">>, StringDate},
+        {<<"insert_timestamp">>, Timestamp},
+        {<<"text">>, Text},
+        {<<"language">>, Language},
+        {<<"view_count">>, Retweet_Count},
+        {<<"likes">>, Favorited},
+        {<<"location">>, Coordinates},
+        {<<"tags">>, Tags},
+        {<<"resource_link_high">>, Media_URL},
+        {<<"resource_link_low">>, Feed_URL},
+        {<<"content_type">>, Media_Type},
+        {<<"free_text_name">>, UserName},
+        {<<"username">>, ScreenName},
+        {<<"profile_link">>, User_Profile_Link},
+        {<<"profile_image_url">>, User_Profile_Image_Url},
+        {<<"user_id">>, UserID}],
+    
     %% Remove empty fields from parsed Tweet item
     clean_result(A).
 
@@ -262,6 +301,22 @@ build_tweet_profile_link(null) -> null;
 build_tweet_profile_link(Screen_Name) -> 
     A = lists:append("https://twitter.com/", binary_to_list(Screen_Name)),
     list_to_binary(A).
+
+%% @doc Create a URL link to the a specific Tweet
+build_tweet_url(TweetID) -> 
+    A = "https://twitter.com/statuses/" ++ TweetID,
+    list_to_binary(A).
+
+%% @doc Format string date to be displayed in front end
+format_twitter_string_date(StringDate) ->   
+
+    [DayName, Month, DayNum, Time, _, Year] = string:tokens(binary_to_list(StringDate), " "),
+
+    [Hour, Minute, _] = string:tokens(Time, ":"),
+    NewTimeString = Hour ++ ":" ++ Minute,
+
+    NewTimeString ++ " - " ++ DayName ++ " " ++ DayNum ++ " " ++ Month ++ " " ++ Year.
+    
 
 %% @doc Returns ONLY the FIRST media element information (URL and Type).
 format_media_entity([]) -> {null, null};
