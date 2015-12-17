@@ -10,7 +10,7 @@ session_start ();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" type="text/css"
 	href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.css">
-<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/stats.css" rel="stylesheet">
 <link href="css/hashtux.css" rel="stylesheet">
 <script src="js/userstats_fetcher.js"></script>
@@ -207,7 +207,7 @@ session_start ();
 								{ title: "Index"},	       
 				                { title: "Top search terms for last week" },
 				                { title: "Count" },
-				               
+	 			               
 				            ]
 						            
 				        } );
