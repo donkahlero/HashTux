@@ -469,7 +469,7 @@
                 if (!document.fullscreenElement && !document.mozFullScreenElement &&
                         !document.webkitFullscreenElement && !document.msFullscreenElement ) {
                     
-                    $('#fullscreenBtn').html("<img src='images/options.png' width='40px' height='40px'>");
+                    $('#fullscreenBtn').html("<img src='images/fullscreenoff.png' width='40px' height='40px'>");
                     $('#fullscreenBtn').attr('data-original-title', 'Click here to exit fullscreen mode');
                         
                     if (document.documentElement.requestFullscreen)
@@ -485,7 +485,7 @@
                 
                 else {
                     
-                    $('#fullscreenBtn').html("<img src='images/freeze.png' width='40px' height='40px'>");
+                    $('#fullscreenBtn').html("<img src='images/fullscreenon.png' width='40px' height='40px'>");
                     $('#fullscreenBtn').attr('data-original-title', 'Click here to enter fullscreen mode');
                     
                     if (document.exitFullscreen)
@@ -525,7 +525,7 @@
                     
                     <div class="col-sm-8">
                         <button type="submit" class="backbtn" id="backBtn" onclick="goBack()">
-                            <img src="images/options.png" width="30px" height="30px">
+                            <img src="images/backbtn.png" width="30px" height="30px">
                         </button>
                         <ol class="breadcrumb searchlabel">
                             <li id="searchlabel"><script>document.write("#" + searchterm);</script></li>
@@ -559,7 +559,7 @@
                     
                     <div class="col-sm-3"> 
                         <button type="submit" class="backbtn" id="backBtn" onclick="goBack()">
-                            <img src="images/options.png" width="30px" height="30px">
+                            <img src="images/backbtn.png" width="30px" height="30px">
                         </button>
                         <ol class="breadcrumb searchlabel">
                             <li id="searchlabel"><script>document.write("#" + searchterm);</script></li>
@@ -576,7 +576,7 @@
                         <button type="submit" class="iconbtn fullscreenbtn" id="fullscreenBtn"
                                 data-toggle="tooltip" data-placement="bottom" 
                                 title="Click here to enter fullscreen mode" onclick="fullScreen()">
-                            <img src="images/freeze.png" width="40px" height="40px"/>
+                            <img src="images/fullscreenon.png" width="40px" height="40px"/>
                         </button>
                         <button type="submit" class="iconbtn freezebtn" id="freezeBtn"
                                 data-toggle="tooltip" data-placement="bottom" 
