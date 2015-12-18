@@ -924,10 +924,10 @@ session_start ();
 						<li class="dropdown"><a class="dropdown-toggle"
 							data-toggle="dropdown" href="#">Period <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li class="btn" onclick="changePeriod('today')">Last 24 Hours</li>
-								<li class="btn" onclick="changePeriod('week')">Last Week</li>
-								<li class="btn" onclick="changePeriod('month')">Last Month</li>
-								<li class="btn" onclick="changePeriod('year')">Last Year</li>
+								<li><a class="btn" onclick="changePeriod('today')">Last 24 Hours</a></li>
+								<li><a class="btn" onclick="changePeriod('week')">Last Week</a></li>
+								<li><a class="btn" onclick="changePeriod('month')">Last Month</a></li>
+								<li><a class="btn" onclick="changePeriod('year')">Last Year</a></li>
 							</ul>
 					
 					</ul>
