@@ -17,6 +17,7 @@
         <link href="images/favicon.ico" rel="shortcut icon">
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
         <script src="js/jquery.tweet-linkify.js"></script>
         <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
         
@@ -115,7 +116,6 @@
                     data: JSON.stringify(options),
                     
                     success: function (myString) {
-//                        $('#debug').html("<p>" + myString + "</p>");
                         parse_to_items(myString);   // Parse the JSON to items
                         initDisplayed();            // Run the initDisplayed function
                         initGrid();                 // Initialize the grid
@@ -130,8 +130,6 @@
                 
                
                 var newTerm = strip_illegal_characters($('#searchField').val());
-                
-//                alert("New Search: " + newTerm);
                 
                 if(newTerm === "")
                 {
@@ -207,7 +205,7 @@
 
             function parse_to_items(json) {
                 
-                if(json === "[]")
+                if(json === "[]" && displayed.length === 0)
                 {
                     showNoResults();    // Show the "No Results" message
                 }
@@ -539,7 +537,7 @@
                             <img src="images/options.png" width="30px" height="30px"/>
                         </button>
                         
-                        <input type="text" class="searchfield searchfieldgrid" 
+                        <input type="text" class="searchfieldgrid" 
                                id="searchField" onkeypress="runScript(event)" onsubmit="">
                             
                         <button type="submit" class="iconbtn" id="searchBtn"
@@ -547,10 +545,6 @@
                                 title="Click here to enter a new search term" onmouseover="showField()">
                             <img src="images/search.png" width="30px" height="30px"/>
                         </button>
-<!--                        <div class="center-container" id="player" style="opacity: 1;">
-                            <img id="pause" src="http://codropspz.tympanus.netdna-cdn.com/codrops/wp-content/uploads/2010/01/pause1-150x150.png" width="100" height="100" style="display:none;"/>
-                            <img id="play" src="http://codropspz.tympanus.netdna-cdn.com/codrops/wp-content/uploads/2010/01/play1-150x150.png" width="100" height="100" style="display:none;"/>  
-                        </div>-->
                         
                     </div>
                 </div>
