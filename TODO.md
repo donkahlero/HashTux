@@ -1,31 +1,23 @@
 #TODO
-<b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
 
-Make twitter posts conform to their guidelines <br />
-
-Stats: switching graphs and timeframes should work<br />
-Move youtube and twitter configs to config file<br />
-Popup if you click commercial use, with license and pay button // Mr. Jerk-Off<br />
-Front end: videos tweaked<br />
-For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
-Front end: visible button for freezing all<br />
-Front end: clarify that it's TILE SIZE that is small/medium/large or otherwiese clarify so it makes sense (size: large can almost feel like you're saying you have a large screen, so more tiles would fit). I'd almost rather have it named something else, like tile amount... but can't come up with the best term right now // J<br />
-Close button at top right in options meny?<br />
-
-Front end: maybe list of trending things on the first page<br />
-Error report / defect backlog - maybe link "click here to report problems"<br />
-"Back to front page" button and icon in top menu<br />
-In stats and possibly in main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
-
-Safari: timescroll blinks while hovering <br />
-Instagram timescroll is not working, pictures from yesterday are showing up when you set it to i.e. 1 week ago.<br />
+- <b>Get feedback during the mid of the sprint from Garbiele and Imed about the SAD and other documents we will hand in</b><br />
+- Dennis: integrate and design trending topics lists<br />
+- Dennis: Index page should link to stats page
+- Terms of use text that says "btw we use cookies, and we store information about what users search for to provide a better user experience".<br />
+- Posts should have higher chance of appearing in RECENT the newer they are<br />
+- Error report / defect backlog - maybe link "click here to report problems"<br />
+- In main UI, show RELATED searches (users that searched for X also searched for Y1-Y5).<br />
+- For history especially, maybe all the time though, posts should have a higher chance of appearing if they have more likes.<br />
+- Fix indentation in index.php, search.php etc
+- Remove twitter_popular.php from htaccess
 
 #Documentation:
 Make a point that the project is well defined in scope<br />
 Make a point that the project is simple/intuitive by design choise in terms of UI etc<br />
 Maybe combine the options datatype with the database options list and clarify which can be used where.<br />
+Remember to discuss the libraries used in php (libs/ folder)<br />
 
-*fix the redeployment diagram 
+*fix the redeployment diagram (done)<br /> 
 -->arrows<br /> 
 -->external service<br />
 -->naming servers properly <br />
@@ -35,3 +27,10 @@ Stats final visual touch<br />
 Check the testing/validations lecture slides, and check that all servers are configured properly and that shutting down apache or erlang on 1-3 servers does not bring down the system from a user perspective<br />
 Code review <br/>
 Add links to our social media profiles: facebook, insta, twitter<br />
+Instagram: Fix the location to be proper format<br/>
+
+#Privacy Policy
+Information obtained from Instagram is displayed and stored according to the Instagram's Terms and Policies. We do not store any sensitive information like users credentials or similar. Content displayed in our application, like pictures and comments, is the one publicly accessible in the users' accounts.  
+
+
+
