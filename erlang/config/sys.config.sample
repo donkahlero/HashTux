@@ -1,0 +1,19 @@
+% 
+% Check the correct port for localhost.
+% Then add other DB instances as new tuples in the "external" list.
+%
+[
+{listener_conf, [{listen_port, 8080}]},
+{db_conf,[
+	{localdb,{"http://localhost:1994/", "hashtux", "grouptux"}},
+	{external, [{"http://jonas.hashtux.com:1994/", "hashtux", "grouptux"},
+		{"http://svu.hashtux.com:1986/", "hashtux", "grouptux"}]}]},
+{instagram_account, [
+	{access_token, "2253641420.43956b9.2ce7ad96329647ffa756501b24fbed3e"}
+	]},
+{twitter_account, [{access_token, "4503552935-ZiLzNi8fsnh7QwG1qFP3LbBWF6OaIfhTUtPtqrw"},
+		{access_token_secret, "qCPMqMchiXzNtSAxv6JS5r9Z8cxiBhoTh3ApiNosmvdks"},
+		{consumer_key, "jsxLUB5sgzgGmYSg8FcwsZeps"},
+		{consumer_key_secret, "Aje76OuifQLAm4gnjusAdj0anZZRnuXLZRzdBKfPNHnDHNJP7O"}]},
+{youtube_account, [{server_key, "AIzaSyBZKIiFHPBEUvHjK1boPndnGtkNeV5kkCc"}]}
+].
