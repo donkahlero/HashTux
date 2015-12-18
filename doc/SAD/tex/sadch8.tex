@@ -5,7 +5,8 @@
 % Niklas le Comte, Marco Trifance, Ivo Vryashkov
 % Chapter 8 - Data View
 \chapter{Data View}
-This chapter gives a summary of what is stored in databases.
+This chapter gives a summary of what is stored in the databases of our
+application.
 
 %% Social Media Post Document Format
 \section{Social Media Post Document Format}
@@ -134,27 +135,33 @@ content\textunderscore type & \parbox[t]{97mm}{Any combination of content types
    i.e. image, video or text (omitted if no services were filtered out).} \\
 \hline
 language & \parbox[t]{97mm}{The language the request was filtered through
-   (omitted if no language chosen was chosen).} \\
+   (omitted if no language was chosen).} \\
+\hline
+histroy\textunderscore timestamp & \parbox[t]{97mm}{The timestamp around which
+the history search results are centered} \\
 \hline
 \end{tabu}}
 
 %% Cached User Habit Data Document Format
 \section{Cached User Habit Data Document Format}
 Stored in the \textit{``hashtux\textunderscore userstats\textunderscore
-cached\textunderscore data''} database. \newline
+cached\textunderscore data''} database. \\
+
 CouchDB is not very efficient when executing MapReduce functions on large amount
 of data. To increase performance for the statistics page in the client UI, we
 use the \textit{``hashtux\textunderscore userstats\textunderscore
 cached\textunderscore data''} where we store documents consisting of map reduced
 summarizations of the data in our \textit{``hashtux\textunderscore userstats''}
-database. The documents contain \{key, value\} pairs where the key (string) is
-e.g. search term, and value (int) is the amount of documents in the
-\textit{``hashtux\textunderscore userstats''} database that have that key.
-\newline
+database. The documents contain \{key, value\} pairs where the key is a string
+such as a search term, and value is the amount of documents in the
+\textit{``hashtux\textunderscore userstats''} database that have that key. \\
+
 The documents have predefined names that consist of two parts, first the
 dimension and then the interval e.g. ``search\textunderscore term\textunderscore
-year''.  Each dimension name can be combined with any of the intervals.\newline
+year''.  Each dimension name can be combined with any of the intervals.\\
+
 Available dimensions: ``search\textunderscore term'', ``browser'', ``platform'',
 ``platform\textunderscore browser'' (a combination of the fields platform and
-browser), ``browser\textunderscore version''. \newline
+browser), ``browser\textunderscore version''. \\
+
 Available intervals: ``today'' (last 24 hours), ``week'', ``month'', ``year''.

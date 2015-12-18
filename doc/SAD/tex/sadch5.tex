@@ -9,24 +9,24 @@
 \begin{figure}[ht]
   \centering
   \includegraphics[width=1\textwidth]{uc_hashtux.png}
-  \caption{Use Case Diagram HashTux}
+  \caption{HashTux Use Case Diagram}
 \end{figure}
 
 %% Make Search
 \section{Make Search}
-The user wants to search for a term to see result from the different social
-medias. See the corresponding sequence diagrams in
+The user wants to search for a term to see content from the different social
+media services. See the corresponding sequence diagrams in
 \hyperlink{logicalview}{Logical View}.
 \begin{enumerate}
   \item Basic Flow
   \begin{enumerate}
     \item The user enters a search term.
-    \item The user can see the results.
+    \item The user can see the content.
   \end{enumerate}
   \item Alternative Flow
   \begin{enumerate}
     \item Starts at 1.a.
-    \item There are no results for the given search term.
+    \item There is no content for the given search term.
     \item The user enters a new search term
     \item Continues on 1.b.
   \end{enumerate}
@@ -48,12 +48,12 @@ Precodition: \newline
 Make search must have happened.
 
 %%% Look at Past Posts
-\section{Look at Past Posts}
+\section{Make History Search}
 The user wants to look at posts from the past.
 \begin{enumerate}
 \item Basic Flow
   \begin{enumerate}
-    \item The user selects the time-scroll menu.
+    \item The user selects the actions menu.
     \item The user selects the preferred timeline.
     \item The user can see the new results.
   \end{enumerate}
@@ -67,14 +67,14 @@ The user wants to freeze (pause) a post.
 \begin{enumerate}
   \item Basic Flow
   \begin{enumerate}
-    \item The user selects on the post's freeze feature.
-    \item The user can see that the post is frozen (paused).
+    \item The user selects the post's freeze feature.
+    \item The user can see that the post is frozen.
   \end{enumerate}
   \item Alternative Flow
   \begin{enumerate}
     \item The user selects the actions menu.
     \item The user selects the freeze feature.
-    \item The user can see that the post is frozen (paused).
+    \item The user can see that the post is frozen.
   \end{enumerate}
 \end{enumerate}
 
@@ -85,24 +85,24 @@ The user wants to see user habit statistics.
   \item Basic Flow
   \begin{enumerate}
     \item The user enters the statistics page.
-    \item The user can see the result.
+    \item The user can see the statistics.
   \end{enumerate}
   \item Alternative Flow
   \begin{enumerate}
     \item Starts after 1.a.
-    \item The user selects the prefered field.
+    \item The user selects the prefered dimension.
     \item Continues at 1.b.
   \end{enumerate}
 \end{enumerate}
 
 %%% Change Statistics Options
 \section{Change Statistics Options}
-The user wants to change time frame.
+The user wants to change the options for how the statistics are shown.
 \begin{enumerate}
   \item Basic Flow
   \begin{enumerate}
-    \item The user selects a time frame.
-    \item The user can see the result.
+    \item The user selects the preferred options.
+    \item The user can see the results.
   \end{enumerate}
 \end{enumerate}
 Precondition: \newline
