@@ -6,11 +6,12 @@
   {applications,
    [kernel,
     stdlib,
-	cowboy
+		inets,
+		ssl,
+		cowboy,
+		ibrowse
    ]},
-  {env,[]},
   {modules, []},
-
   {contributors, []},
   {licenses, []},
   {links, []}
