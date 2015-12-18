@@ -1,0 +1,167 @@
+% LaTeX layout by Jonas Kahler, jonas@derkahler.de
+% HashTux SAD Document
+% Group Tux:
+% Aman Dirar, Jerker Ersare, Jonas Kahler, Dennis Karlberg
+% Niklas le Comte, Marco Trifance, Ivo Vryashkov
+% Chapter 8 - Data View
+\chapter{Data View}
+This chapter gives a summary of what is stored in the databases of our
+application.
+
+%% Social Media Post Document Format
+\section{Social Media Post Document Format}
+Stored in the \textit{``hashtux''} database. \\ \\
+{\tabulinesep=1.4mm
+\begin{tabu}{|l|l|}
+\hline
+\taburowcolors{gray!25..white}
+Field & Purpose \\
+\hline
+\taburowcolors{}
+search\textunderscore term & \parbox[t]{88mm}{The search term.} \\
+\hline
+service & \parbox[t]{88mm}{Social media service where it was posted i.e.
+   Twitter, Instagram or YouTube.} \\
+\hline
+insert\textunderscore timestamp & \parbox[t]{88mm}{The time the internal data
+   object was created.} \\
+\hline
+service\textunderscore id & \parbox[t]{88mm}{External item ID, as retrieved
+   from social media service.} \\
+\hline
+timestamp & \parbox[t]{88mm}{The time the feed was posted on the social media
+   service.} \\
+\hline
+text & \parbox[t]{88mm}{The text content of the post.} \\
+\hline
+language & \parbox[t]{88mm}{The language of the post (omitted by Instagram, not
+   supported).} \\
+\hline
+view\textunderscore count & \parbox[t]{88mm}{The view count of the post on the
+   social media (not applicable for Instagram).} \\
+\hline
+likes & \parbox[t]{88mm}{Amount of likes retrieved from social media.} \\
+\hline
+tags & \parbox[t]{88mm}{A list of tags related to the post.} \\
+\hline
+resource\textunderscore link\textunderscore high & \parbox[t]{88mm}{URL to
+   high-definition resource (Instagram provides two image resolutions. Where not
+   applicable, put the available resource link in both fields).} \\
+\hline
+resource\textunderscore link\textunderscore low & \parbox[t]{88mm}{URL to
+   low-definition resource (Instagram provides two image resolutions. Where not
+   applicable, put the available resource link in both fields).} \\
+\hline
+content\textunderscore type & \parbox[t]{88mm}{The content type of the post
+   i.e. text, image or video.} \\
+\hline
+free\textunderscore text\textunderscore name & \parbox[t]{88mm}{Display name if
+   it is separate to the username on that service (currently only applicable to
+   Twitter).} \\
+\hline
+username & \parbox[t]{88mm}{The username of the poster.} \\
+\hline
+user\textunderscore id & \parbox[t]{88mm}{User ID as retrieved from social
+   media.} \\
+\hline
+\end{tabu}}
+%%%%% Page break %%%%%
+{\tabulinesep=1.4mm
+\begin{tabu}{|l|l|}
+\hline
+\taburowcolors{gray!25..white}
+Field & Purpose \\
+\hline
+\taburowcolors{}
+\hline
+profile\textunderscore link & \parbox[t]{90mm}{URL to the user's profile.} \\
+\hline
+profile\textunderscore image\textunderscore url & \parbox[t]{90mm}{URL to the
+   user's profile picture (only applicable to Twitter).} \\
+\hline
+date\textunderscore string & \parbox[t]{90mm}{Formatted date of when the post
+   was made (only applicable to Twitter).} \\
+\hline
+location & \parbox[t]{90mm}{Data is social media service specific and can vary
+but in general is a tuple of the form \{latitude, longitude\}. Can include
+additional information if provided by the social media service.} \\
+\hline
+\end{tabu}}
+
+%% User Habit Data Document Format
+\section{User Habit Data Document Format}
+Stored in the \textit{``hashtux\textunderscore userstats''} database. \\ \\
+{\tabulinesep=1.4mm
+\begin{tabu}{|l|l|}
+\hline
+\taburowcolors{gray!25..white}
+Field & Purpose \\
+\hline
+\taburowcolors{}
+\hline
+term & \parbox[t]{92mm}{The search term the habit data belongs to.} \\
+\hline
+timestamp & \parbox[t]{92mm}{The time it was collected.} \\
+\hline
+session\textunderscore id & \parbox[t]{92mm}{The session id of the user.} \\
+\hline
+ip\textunderscore address & \parbox[t]{92mm}{The IP address of the user.} \\
+\hline
+browser & \parbox[t]{92mm}{The browser that was used.} \\
+\hline
+browser\textunderscore version & \parbox[t]{92mm}{The version of the used
+   browser.} \\
+\hline
+platform & \parbox[t]{92mm}{The platform (OS) that was used.} \\
+\hline
+\end{tabu}} \\ \\ \\
+In addition, all the options that were used for the request are also appended
+when storing user habit data. They may include the following: \\ \\
+{\tabulinesep=1.4mm
+\begin{tabu}{|l|l|}
+\hline
+\taburowcolors{gray!25..white}
+Field & Purpose \\
+\hline
+\taburowcolors{}
+\hline
+request\textunderscore type & \parbox[t]{97mm}{The type of request the user made
+   i.e. search, update, heartbeat or stats. Required.} \\
+\hline
+services & \parbox[t]{97mm}{Any combination of services i.e. twitter, instagram
+   or youtube (omitted if no services were filtered out).} \\
+\hline
+content\textunderscore type & \parbox[t]{97mm}{Any combination of content types
+   i.e. image, video or text (omitted if no services were filtered out).} \\
+\hline
+language & \parbox[t]{97mm}{The language the request was filtered through
+   (omitted if no language was chosen).} \\
+\hline
+histroy\textunderscore timestamp & \parbox[t]{97mm}{The timestamp around which
+the history search results are centered} \\
+\hline
+\end{tabu}}
+
+%% Cached User Habit Data Document Format
+\section{Cached User Habit Data Document Format}
+Stored in the \textit{``hashtux\textunderscore userstats\textunderscore
+cached\textunderscore data''} database. \\
+
+CouchDB is not very efficient when executing MapReduce functions on large amount
+of data. To increase performance for the statistics page in the client UI, we
+use the \textit{``hashtux\textunderscore userstats\textunderscore
+cached\textunderscore data''} where we store documents consisting of map reduced
+summarizations of the data in our \textit{``hashtux\textunderscore userstats''}
+database. The documents contain \{key, value\} pairs where the key is a string
+such as a search term, and value is the amount of documents in the
+\textit{``hashtux\textunderscore userstats''} database that have that key. \\
+
+The documents have predefined names that consist of two parts, first the
+dimension and then the interval e.g. ``search\textunderscore term\textunderscore
+year''.  Each dimension name can be combined with any of the intervals.\\
+
+Available dimensions: ``search\textunderscore term'', ``browser'', ``platform'',
+``platform\textunderscore browser'' (a combination of the fields platform and
+browser), ``browser\textunderscore version''. \\
+
+Available intervals: ``today'' (last 24 hours), ``week'', ``month'', ``year''.

@@ -116,7 +116,3 @@ receive {Ref, Result} -> Result end.
 ```
 * Adds ONE document to the user habit data database
 * Content is a JSX JSON Obj.
-
-##ToDo
-* Support for more specific searches (limit amount of posts, service [Twitter, Insta, YT], timestamp, etc.)
-* Add Userdata support
