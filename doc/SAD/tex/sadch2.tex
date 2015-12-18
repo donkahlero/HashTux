@@ -18,22 +18,22 @@
 \taburowcolors{}
 FR1 & \parbox[t]{105mm}{The user must be able to search for a term and get
    matching results in the form of multimedia content from social media services
-   (initially we focus on Twitter, Instagram and Youtube). The way in which the
+   (initially we focus on Twitter, Instagram and YouTube). The way in which the
    content is displayed must conform to the terms and conditions for each social
    media API respectively.} \\
 \hline
 FR2 & \parbox[t]{105mm}{The user must be able to select different options when
-   searching for a term. Options are which services to search for (eg only
-   twitter), content type (eg only images and videos), languages (eg only
+   searching for a term. Options are which services to search for (e.g. only
+   twitter), content type (e.g. only images and videos), languages (e.g. only
    french).} \\
 \hline
 FR3 & \parbox[t]{105mm}{The user must be able to select different options for
    how the content is displayed, such as tile size for displayed results
-   (eg small) and refresh rate for updating the grid (eg fast).} \\
+   (eg small) and refresh rate for updating the grid (e.g. fast).} \\
 \hline
-FR4 & \parbox[t]{105mm}{The user can`freeze'' (and then `unfreeze'') a certain
-   media item (tile in the grid), which means it will not be swapped out for a
-   more recent media item in subsequent updates while it is `frozen''.} \\
+FR4 & \parbox[t]{105mm}{The user can ``freeze'' (and then ``unfreeze'') a
+   certain media item (tile in the grid), which means it will not be swapped out
+   for a more recent media item in subsequent updates while it is ``frozen''.}\\
 \hline
 FR5 & \parbox[t]{105mm}{The user must be able to search for content that is
    non-recent, for example content from two days ago.} \\
@@ -57,7 +57,7 @@ FR7 & \parbox[t]{105mm}{The client UI must be optimized for full-screen view and
 \taburowcolors {}
 FR8 & \parbox[t]{108mm}{The user should be able to see different user habit
    statistics in a separate part of the client UI. Dimensions: at least search
-   terms, web browsers and platforms (operating systems) and their respective
+   terms, web browsers, platforms (operating systems) and their respective
    popularity among HashTux users.} \\
 \hline
 FR9 & \parbox[t]{108mm}{The user should be able to view different periods of the
@@ -106,7 +106,8 @@ system of 99\%.
 \subsection{Performance}
 The system needs to respond quickly enough for the user not to be discouraged
 from using our product. On average requests should be processed in less than
-5sec. Database operations should be performed, on average, in less than 1sec.
+5sec. Database operations should be performed, on average, in less than 1
+second.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=1\textwidth]{performance_scenario.png}
@@ -168,21 +169,21 @@ deploying our system.
 \multirow{2}{*}{\parbox[t]{2cm}{Availability}}
    & \multirow{2}{*}{\parbox[t]{25mm}{H/W or S/W failure}}
       & \parbox[t]{5cm}{Power outage: requests are redirected to an alternative
-         server in less than 10 sec}
+         server in less than 10 seconds}
       &  \parbox[t]{12mm}{(H, M)} \\ \cline{3-4}
    &  & \parbox[t]{5cm}{Database failure: module responsible for database
          operations is reconfigured to use an alternative database in less
-         than 3 sec}
+         than 3 seconds}
       & \parbox[t]{12mm}{(H, M)} \\
 \hline
 \multirow{2}{*}{\parbox[t]{2cm}{Performance}}
    & \parbox[t]{25mm}{Perform search}
       & \parbox[t]{5cm}{Search is performed and results are displayed in less
-         than 5 sec}
+         than 5 seconds on average}
       & \parbox[t]{12mm}{(M, M)} \\ \cline{2-4}
       & \parbox[t]{25mm}{Check \\ statistics}
       & \parbox[t]{5cm}{Statistics are fetched from database and displayed in
-         less than 5 sec}
+         less than 5 seconds}
       & \parbox[t]{12mm}{(M, M)} \\
 \hline
 \parbox[t]{2cm}{Modifiability}
@@ -192,8 +193,9 @@ deploying our system.
    & \parbox[t]{12mm}{(M, M)} \\
 \hline
 \parbox[t]{2cm}{Usability}
-   & \parbox[t]{25mm}{User wants to change grid size}
-   & \parbox[t]{5cm}{The grid size is changed within 2 min of experimentation}
+   & \parbox[t]{25mm}{User wants to change tile size}
+   & \parbox[t]{5cm}{The grid size is changed within 2 minutes of
+      experimentation}
    & \parbox[t]{12mm}{(M, L)} \\
 \hline
 \parbox[t]{2cm}{Security}
@@ -214,10 +216,11 @@ elaborated here and some risks, tradeoffs and sensitivity points are discussed.
 
 \subsection{Availability}
 \textbf{Timeout} - this tactic is used to detect if the backend server is
-available to serve requests. If the time exceeds the configured value, the web
-application tries to connect to an alternative backend server. This helps to
-ensure that each instance of our PHP application can establish a connection with
-an available backend server. \newline
+available to serve requests. If the time to handle a request exceeds the
+configured value, the web application tries to connect to an alternative backend
+server. This helps to ensure that each instance of our PHP application can
+establish a connection with an available backend server. \\
+
 A tradeoff for this tactic is a certain latency in responding to a search
 request when the currently preferred backend server goes down
 (see Reconfiguration for how we handle this). \\ \\
@@ -234,10 +237,10 @@ place every minute. \\ \\
      down, the module responsible for database procedures is reconfigured to use
      an alternative database.
   \item When a backend server fails to respond to a request in time, it will be
-     marked in the web applicationâs list of servers as down (with a timestamp
+     marked in the web applications list of servers as down (with a timestamp
      of the incident). The web application will re-evaluate which backend server
      to connect to, and remember this decision. After a certain configurable
-     time period, the incident will be âforgottenâ, so that the original server
+     time period, the incident will be forgotten so that the original server
      may be brought back to service (provided that it is now responding).
 \end{itemize}
 
@@ -249,16 +252,17 @@ used together with the \textit{Bound Queue Sizes} tactic. For our miner server,
 which is responsible for spawning workers to process requests, we have a queue
 size limit set to 1000. If the limit has been reached and the current request
 cannot be processed, the miner server sends a message back to the PHP
-application to notify it that there are currently too many requests served
+application to notify it that there are currently too many requests being served
 and an alternative server should be tried. \\ \\
 \textbf{Introduce Concurrency} - a key tactic used in our system. It helps for
 parallel execution of operations and reduces the overall latency of serving
 requests. Concurrency is used in the backend server for managing clients, i.e.
 new threads are created for each request. Each request to the social media APIs
-are also handled in parallel. The same goes for database operations. \newline
+are also handled in parallel. The same applies for database operations. \\
+
 A risk of race condition when using concurrency is possible. This can occur
 especially when reducing the re-reduced results for caching the user statistics.
-Therefore, we created a custom pmap function that avoids these race conditions.
+Therefore, we created a custom pmap function to avoid these race conditions.
 \\ \\
 \textbf{MapReduce} - this tactic is used when caching summarizations of various
 user statistics for our statistics page. The user habits we collect generate a
@@ -285,8 +289,8 @@ It also keeps the complexity level low.
 %%% Usability
 \subsection{Usability}
 \textbf{Aggregate} - the different options for our application are presented in
-one simple view. This allows easy accessibility (all options are aggregated in
-one place) and reduced time in changing them (no need for the user to search for
+one simple view. This increases accessibility (all options are aggregated in
+one place) and reduces time in changing them (no need for the user to search for
 multiple menus containing different alternatives).
 
 %%% Security
@@ -295,22 +299,21 @@ multiple menus containing different alternatives).
 \\ \\
 \textbf{Change Default Settings} - during deployment, we do not use the default
 settings that come with the different services in use. For example, CouchDB
-listens by default on port 5984 which we changed. \\ \\
-\textbf{Firewall} - from a deployment point of view, we see it as natural to
-use firewalls on each server.
+listens by default on port 5984, which we have changed in our configuration.
+\\ \\
+\textbf{Firewall} - from a deployment point of view, we consider it elementary
+to use firewalls on each server.
 
 %% Constraints
 \section{Constraints}
 
-%%% Overall Contstraints
-\subsection {Overall Constraints}
 According to the assignment definition, our application needs to\dots
 \begin{itemize}
   \item be distributed.
   \item consist of at least three tiers.
 \end{itemize}
-We were also encouraged to use a non-relational database management system.
-\newline
+We were also encouraged to use a non-relational database management system. \\
+
 All of the above affect the architecture significantly. So does the following
 details of our product vision:
 \begin{itemize}
@@ -321,42 +324,39 @@ details of our product vision:
 %% API Limitations
 \hypertarget{apilimits}{
 \section{API Limitations}}
-Requests to Instagram, Twitter and Youtube Data APIs represent a central part in
-most of the use cases described in this document. However, APIs impose rules and
-limitations on how to use and render the retrieved data on third-party
+Requests to Instagram, Twitter and YouTube APIs represent a central part in
+most of the use cases described in this document. However, the APIs come with
+rules and limitations on how to use and render the retrieved data on third-party
 applications. You can find a list of references to the relevant documents in
-\hyperlink{refapis}{Appendix}. \newline
-Although these rules are mandatory and cannot be ignored, they do not seem to
-affect the architecture of the system as a whole. For this reason we decided to
-discuss this aspect of the implementation separately from the architectural
-drivers described in the previous section. In this section we briefly discuss
-the limitations that have been considered relevant in the planning phase and the
-solutions we undertook during implementation.
+\hyperlink{refapis}{Appendix}. \\
+
+In this section we briefly discuss the limitations that have been considered
+relevant in the planning phase and the solutions we undertook during
+implementation.
 
 %%% Display Requirements
 \subsection{Display Requirements}
 \subsubsection{Instagram}
-No limitations imposed by Instagram regarding displaying of content.
+No limitations imposed by Instagram regarding display of content.
 \subsubsection{Twitter}
 \underline{Limitation}: Tweets rendered in third-party web applications must
-comply with the Twitter Display Requirements. In details, Twitter identifies a
-minimum set of items (such as date, text, profile picture\dots) that must be
-displayed and sets some rules on the positions and links provided by these
-items. \newline
-\underline{Solution}: The use of embedded tweets ensures compliance with the
-display requirements discussed above. However, being our application focused
-primarily on the media content of retrieved feeds, we opted for a new display
-format that is fairly homogeneous among feeds coming from different
-social-medias. Moreover, the use of embedded tweets is limited to 10 million
-tweets per-day. Although the limit seems to be fairly high for our application,
-the choice of rendering tweet objects in our own format makes \textit{HashTux}
-not subject to this kind of limitation.
+comply with the Twitter Display Requirements. In detail, Twitter identifies a
+minimum set of items (such as date, text and profile picture) and set some rules
+on how they are displayed.\\ \\
+\underline{Solution}: The use of so-called embedded tweets would ensure
+compliance with the display requirements discussed above. However, as our
+application focuses primarily on the media content of retrieved feeds, we opted
+for a custom display format that that fit in well with the other social media
+content. Moreover, the use of embedded tweets is limited to 10
+million tweets per day. Although the limit may seem fairly high for our
+application, the choice of rendering tweets in our own format makes
+\textit{HashTux} not subject to this kind of limitation.
 \subsubsection{YouTube}
 \underline{Limitation}: \textit{``[\dots] any YouTube logo used within an
 application must link back to YouTube content or to a YouTube component of
-that application.''} \newline
+that application.''} \\ \\
 \underline{Solution}: We decided not to use any logo or trademark for rendered
-YouTube feeds.
+YouTube content.
 
 %%% Search Limitations
 \subsection{Search Limitations}
@@ -367,8 +367,8 @@ They make use of pagination and each results page has a unique id that can be
 used later to retrieve results before or after a certain page id. The problem is
 that they have no connection between page id and the timeframe that this page
 represents. For example, if we want to fetch content posted 2 days ago, there is
-no way to obtain the page that holds results for that time period to display
-when a history search is performed. \newline
+no practical way to know which page holds the results for that time period.
+\newline
 \underline{Solution}: We decided to exclude Instagram from the history search
 function. For now we search only Twitter and YouTube for non-recent content.
 

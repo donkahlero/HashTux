@@ -15,7 +15,8 @@ These are the components we need to deploy:
 \end{itemize}
 The three server-side components could run on three different hosts, which would
 result in a four-tier deployment of our components since the client can also be
-seen as a tier. \newline
+seen as a tier. \\
+
 However, we are running the full stack of server-side components on each
 physical server node (four in total), so the application could actually run even
 if up to three servers are down at any given moment. \\ \\
@@ -25,12 +26,12 @@ In addition, we interact with external APIs:
   \item Instagram
   \item YouTube
 \end{itemize}
-So in total, we can say our solution needs at least 5 tiers (Client, Server
-(PHP application, backend server, CouchDB), and the three external API servers),
+So in total, we can say our solution needs at least 5 tiers: Client, Server
+(PHP application, backend server, CouchDB), and the three external API hosts,
 but is currently deployed with a redundancy of servers.
 \newpage
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.6\textwidth]{deployment.png}
-  \caption{Deployment Diagram HashTux}
+  \caption{HashTux Deployment Diagram}
 \end{figure}
