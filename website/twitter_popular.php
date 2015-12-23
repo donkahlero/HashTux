@@ -9,18 +9,41 @@
 	use TwitterOauth\TwitterOAuth;
 	date_default_timezone_set('UTC');
 
-	// Instantiate TwitterOAuth class with API tokens
-	$connection = new TwitterOAuth($config['twitter_api_key']);
-	// Get an application-only token
-	$bearer_token = $connection->getBearerToken();
+	$cache_filename = "state/twitter_trends";
+	$trends_json = "";
 
-	$params = array(
-		 'id' => 1, // Means the whole world
-		 'exclude' => true // Means exclude the # sign
-	);
-	$response = $connection->get('trends/place', $params);
+	// First check if cache file exists and is fairly recent 
+	// (modification time < half an hour ago)
+	if (file_exists($cache_filename) && filemtime($cache_filename) > time() - 1800) {
+		
+		// Simply read from cache file
+		$trends_json = file_get_contents($cache_filename);
 	
-	// json_encode in this context is not used to TURN IT INTO JSON, it already
-	// is, but rather to encode any special characters in a way that they're JSON-compliant.
-	echo json_encode($response);
+	} else {
+		// Otherwise, read from Twitter and write to the cache file
+
+		// Instantiate TwitterOAuth class with API tokens
+		$connection = new TwitterOAuth($config['twitter_api_key']);
+		// Get an application-only token
+		$bearer_token = $connection->getBearerToken();
+
+		$params = array(
+			 'id' => 1, // Means the whole world
+			 'exclude' => true // Means exclude the # sign
+		);
+		// Ask for the trends
+		$response = $connection->get('trends/place', $params);
+	
+		// json_encode in this context is not used to TURN IT INTO JSON, it already
+		// is, but rather to encode any special characters so they won't cause any
+		// trouble when being written 
+		$trends_json = json_encode($response);
+
+		// Write to the cache file
+		file_put_contents($cache_filename, $trends_json);	
+	}
+
+	echo $trends_json;
+
+
 ?>
