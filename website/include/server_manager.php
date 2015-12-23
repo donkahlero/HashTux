@@ -75,7 +75,7 @@ class backend_server {
 class server_manager {
 	var $server_array = [];
 	var $servers_tried = 1;
-	var $server_filename = "servers.order";
+	var $server_filename = "state/servers.order";
 	
 	
 	/**
