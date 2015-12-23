@@ -6,7 +6,7 @@ We use Apache with a dedicated vhost for the HashTux web application.
 - The cURL module for PHP is required.
 - mod_rewrite for Apache is needed, and AllowOverride needs to be set to all in the root folder of the web server, so our .htaccess file works properly.
 - The folder in "website" should be set as the root folder of the web server.
-- Make sure the web server has write access to this folder.
+- Make sure the web server has write access to the "website/state" folder.
 - Copy the config.php.sample config file to config.php (located in in webiste/conf).
 - Make all necessary changes to the config file to suit your needs. The proposed settings should work for everything, except the array $config['backend_servers'], which should be changed to contain addresses to all Erlang backend servers, including port numbers (example: "dev.hashtux.com:8080").
 
