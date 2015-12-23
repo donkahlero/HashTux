@@ -16,6 +16,8 @@
 -export([reduce/1]).
 
 %% @doc General reduce function. See main doc.
+reduce([]) ->
+    [];
 reduce([_, _, {_, L}]) ->
     reduce(L);
 reduce(L) ->
