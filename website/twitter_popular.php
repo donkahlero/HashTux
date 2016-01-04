@@ -1,7 +1,13 @@
 <?php
-	// Uses TwitterOauth library and a major part of this file is borrowed from the example
-	// at https://github.com/ricardoper/TwitterOAuth/blob/v1/Example_app-only.php
-	// Just wanted a quick way to get the popular searches on twitter : )) // J
+	/**
+	 * Fetches Twitter trending searches. 
+	 * Uses TwitterOauth library and a major part of this file is borrowed from the example
+	 * at https://github.com/ricardoper/TwitterOAuth/blob/v1/Example_app-only.php
+	 * 
+	 * I just wanted a quick way to get the popular searches from Twitter, without having
+	 * to mess with introducing a completely new task for the backend server  : )) // J
+	 */
+	 
 	require_once "lib/TwitterOAuth/TwitterOAuth.php";
 	require_once "lib/TwitterOAuth/Exception/TwitterException.php";	
 	require_once "conf/config.php";
@@ -36,7 +42,7 @@
 	
 		// json_encode in this context is not used to TURN IT INTO JSON, it already
 		// is, but rather to encode any special characters so they won't cause any
-		// trouble when being written 
+		// trouble when being output
 		$trends_json = json_encode($response);
 
 		// Write to the cache file
@@ -44,6 +50,4 @@
 	}
 
 	echo $trends_json;
-
-
 ?>
