@@ -3,7 +3,7 @@
 %
 -module(aux_functions).
 
--export([bin_to_atom/1, get_value/2, get_youtube_keys/0, get_twitter_keys/0, ignore_request_type/1]).
+-export([bin_to_atom/1, get_value/2, ignore_request_type/1]).
 
 
 
@@ -25,24 +25,6 @@ get_value(Key, List)  ->
 		{_K, V}	-> V;
 		false 	-> []
 	end.
-
-%%
-%% @doc Gets the Youtube Data API 'SERVER KEY'
-%%
-get_youtube_keys() ->
-	{ok, Account} = application:get_env(youtube_account, server_key),
-	Account.
-
-%%
-%% @doc Gets the Twitter API Keys
-%%
-get_twitter_keys() ->
-	{ok, AccessToken} = application:get_env(twitter_account, access_token),
-	{ok, AccessTokenSecret} = application:get_env(twitter_account, access_token_secret),
-	{ok, ConsumerKey} = application:get_env(twitter_account, consumer_key),
-	{ok, ConsumerKeySecret} = application:get_env(twitter_account, consumer_key_secret),
-
-	{AccessToken, AccessTokenSecret, ConsumerKey, ConsumerKeySecret}.
 	
 
 %%
