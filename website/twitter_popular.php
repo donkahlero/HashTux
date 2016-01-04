@@ -38,13 +38,13 @@
 			 'exclude' => true // Means exclude the # sign
 		);
 		// Ask for the trends
-		$response = $connection->get('trends/place', $params);
-	
+		$trends_json = $connection->get('trends/place', $params);
+		
 		// json_encode in this context is not used to TURN IT INTO JSON, it already
 		// is, but rather to encode any special characters so they won't cause any
 		// trouble when being output
-		$trends_json = json_encode($response);
-
+		$trends_json = json_encode($trends_json);
+		
 		// Write to the cache file
 		file_put_contents($cache_filename, $trends_json);	
 	}
