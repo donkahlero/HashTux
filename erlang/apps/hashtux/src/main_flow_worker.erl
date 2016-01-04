@@ -1,11 +1,10 @@
-%% @author jerker
+%% @author Jerker Ersare <jerker@soundandvision.se>
 %% @doc 
-%
-% The main flow workers are responsible for processing a request correctly once it is
-% received from the HTTP interface, by contacting the DB and miners as approperiate,
-% and then returning a response to the HTTP interface to be returned to the Apache
-% server. 
-% (Based the server-worker structure on Ivos structure for miner server and miner workers.)
+%% The main flow workers are responsible for processing a request correctly once it is
+%% received from the HTTP interface, by contacting the DB and miners as approperiate,
+%% and then returning a response to the HTTP interface to be returned to the Apache
+%% server. 
+%% (Based the server-worker structure on Ivos structure for miner server and miner workers.)
 
 -module(main_flow_worker).
 
@@ -20,6 +19,8 @@
 %%% PUBLIC API
 %%% =======================================================
 
+
+%% @doc Starts the worker.
 start_link() ->
 	gen_server:start_link(?MODULE, [], []).
 
@@ -29,40 +30,36 @@ start_link() ->
 %%% =======================================================
 
 
-%% ========================================================
+%% @doc Init, just write some informative text.
 init([]) -> 
 	io:format("main_flow_worker: started, PID: ~p~n",  [self()]),
 	{ok, []}.
 
 
-%% ========================================================
-%terminate({'EXIT', _From, _Reason}, _State) ->
-% 	io:format("received exit signal in worker~n"),
-%	ok;
+%% @doc Stops the worker, no action taken. 
 terminate(_Reason, _State) ->
 	ok.
 
 
-%% ========================================================
+%% @doc Code upgrade, not implemented. 
 code_change(_PrevVersion, _State, _Extra) -> 
 	ok.
 
 
-%% ========================================================
-
+%% @doc Can occur if a reply is received after a timeout in the code below.
+%% We ignore the info received.
 handle_info(Msg, State) -> 
 	io:format("main_flow_worker: Received info too late: ~p~n", [Msg]),
 	{noreply, State}.
 
-%% ========================================================
 
+%% @doc Not used.
 handle_call(_Msg, _From, State) ->
 	{noreply, State}.
 
 
-%% ========================================================
-
-% Cast: stats
+%% @doc Handles requests.
+%% First we match for stats requests:
 handle_cast({stats, SourcePID, Term, Options}, State) ->
 	io:format("main_flow_worker: Stats request: ~p~n", [Term]),
 	
@@ -72,7 +69,7 @@ handle_cast({stats, SourcePID, Term, Options}, State) ->
 	% Stop this worker 
 	{stop, normal, State};
 
-% Cast: heartbeat
+%% heartbeat requests:
 handle_cast({heartbeat, SourcePID, Term, Options}, State) -> 
 	% Heartbeat from client means miners should cache data for this
 	% request, that the client can "pick up" later. No data should be 
@@ -86,7 +83,7 @@ handle_cast({heartbeat, SourcePID, Term, Options}, State) ->
 	% Stop this worker 
 	{stop, normal, State};
 
-% Cast: search or update
+%% search or update requests:
 handle_cast({_RequestType, SourcePID, Term, Options}, State) -> 
 	io:format("main_flow_worker: Term: ~p~nmain_flow_worker: "
 			 ++ "Options:~p~n", [Term, Options]),
@@ -116,10 +113,12 @@ handle_cast({_RequestType, SourcePID, Term, Options}, State) ->
 	{stop, normal, State}.
 
 
-%% ========================================================
+%%% =======================================================
+%%% HELPER FUNCTIONS
+%%% =======================================================
 
 
-% Helper function for querying the DB for statistical user habit data.
+%% @doc Helper function for querying the DB for statistical user habit data.
 stats_query(Term, Options) ->
 	Ref = gen_server:call(db_serv, {get_stats, Term, Options}),
 	receive 
@@ -131,8 +130,8 @@ stats_query(Term, Options) ->
 	end.
 
 
-% Helper functions that checks if there is anything cached in the DB very recently
-% (such as the last minute) by the heartbeat mechanism 
+%% @doc Helper function that checks if there is anything cached in the DB very recently
+%% (such as the last minute) by the heartbeat mechanism 
 cache_query(Term, Options) ->
 	% TODO: Good candidate for storing in a config file on refactoring
 	% The amount of seconds for which we consider cached data to still
@@ -159,12 +158,12 @@ cache_query(Term, Options) ->
 	end.
 
 
-% Helper function for heartbeat request to miner
+%% @doc Helper function for heartbeat request to miner
 miner_heartbeat(Term, Options) ->	
 	miner_server:heartbeat(Term, Options).
 
 
-% Helper function for sending a miner request. Returns results.
+%% @doc Helper function for sending a miner request. Returns results.
 miner_query(Term, Options) ->
 	% Make a miner call for the term
 	Reply =  miner_server:search(Term, Options),
