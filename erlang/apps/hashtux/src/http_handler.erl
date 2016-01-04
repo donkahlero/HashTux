@@ -49,7 +49,7 @@ handle(Req, State) ->
 	[Options, UserHabitData] = jsx:decode(RequestBody, [{labels, atom}]),
 
 	% Store user habit data - includes the options
-	user_habits:store(Term, Options, UserHabitData),
+	user_habits:store(Options, UserHabitData),
 	
 	% Send the search term, request type and the options to the main flow by making a call
 	% to main flow server - get the PID of the worker back and wait for a reply from it
