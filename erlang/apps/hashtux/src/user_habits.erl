@@ -1,7 +1,7 @@
-%% @author jerker
-%% @doc This module handles extracting relevant user habit data from
-%%		a request to the http_handler and giving it as a json object
-%%		to our DB.
+%% @author Jerker Ersare <jerker@soundandvision.se>
+%% @doc This module contains a helper function to forward user habit data
+%% (concatenated with request options) to the user habit database.
+%% NOTE this file has shrunk lately, could be refecatored away probably :)
 
 
 -module(user_habits).
@@ -21,17 +21,8 @@ store(Term, Options, UserHabitData) ->
 		{Ref, _} ->
 			% Regardless of what is returned from this DB worker, return ok
 			ok
-		after 1000 ->
+		after 1500 ->
 			% Timeout also means we move on.
-			% Is there a risk of messages clogging up? I could do a flush in
-			% this method but maybe that would affect usign code.
-			% Maybe later it could be better to have this module as a server,
-			% right now it's very small though so let's wait with this
+			% (TODO: Consider the risk of messages clogging up on timeout!)
 			ok
 	end.
-
-
-
-%% ====================================================================
-%% Internal functions
-%% ====================================================================
