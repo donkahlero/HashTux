@@ -64,8 +64,8 @@ handle_call({RequestType, Term, Options}, From,
 	{reply, {ok, Pid}, NewS};
 
 %% When limit of workers is reached, just return immediately.
-handle_call({RequestType, Term, Options}, From, 
-						S=#state{limit=N, refs=R}) when N =< 0 ->	
+handle_call({_RequestType, _Term, _Options}, _From, 
+						S=#state{limit=N, refs=_R}) when N =< 0 ->	
 	{reply, no_alloc, S}.
 
 
