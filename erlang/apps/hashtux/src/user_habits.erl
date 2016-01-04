@@ -9,7 +9,7 @@
 %% ====================================================================
 %% API functions
 %% ====================================================================
--export([store/3]).
+-export([store/2]).
 
 store(Options, UserHabitData) ->
 	% Concatenate the two lists UserHabitData and Options
