@@ -36,7 +36,7 @@ search_hash_tag(Keyword, [{content_type, Types}, {language, Lang}, {history_time
     TypeFilter = [binary_to_list(Z) || Z <- Types],  
 
     % Get Authorization Credentials
-    {AccessToken, AccessTokenSecret, ConsumerKey, ConsumerKeySecret} = aux_functions:get_twitter_keys(),
+    {AccessToken, AccessTokenSecret, ConsumerKey, ConsumerKeySecret} = apis_aux:get_twitter_keys(),
     Consumer = {ConsumerKey, ConsumerKeySecret, hmac_sha1},  
 
     % Use oauth:sign/6 to generate a list of signed OAuth parameters, 
