@@ -11,7 +11,7 @@
 %% ====================================================================
 -export([store/3]).
 
-store(Term, Options, UserHabitData) ->
+store(Options, UserHabitData) ->
 	% Concatenate the two lists UserHabitData and Options
 	FullHabitData = lists:append(UserHabitData, Options),
 
