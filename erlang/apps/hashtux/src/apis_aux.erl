@@ -3,13 +3,22 @@
 %%      (keyword, language, content-type) into Twitter and Youtube API request parameters.
 -module(apis_aux).
 
--export([generate_twitter_q_param/2]).
--export([youtube_to_epoch/1, datetime_to_rfc_339/1, youtube_get_after_param/0, youtube_get_after_before_params/1,
+-export([get_twitter_keys/0, generate_twitter_q_param/2]).
+-export([get_youtube_keys/0, youtube_to_epoch/1, datetime_to_rfc_339/1, youtube_get_after_param/0, youtube_get_after_before_params/1,
         format_keyword/1]).
 
 %% ================================= 
 %%  TWITTER API AUX FUNCTIONS        
 %% ================================= 
+
+%% @doc Gets the Twitter API Keys
+get_twitter_keys() ->
+	{ok, AccessToken} = application:get_env(twitter_account, access_token),
+	{ok, AccessTokenSecret} = application:get_env(twitter_account, access_token_secret),
+	{ok, ConsumerKey} = application:get_env(twitter_account, consumer_key),
+	{ok, ConsumerKeySecret} = application:get_env(twitter_account, consumer_key_secret),
+
+	{AccessToken, AccessTokenSecret, ConsumerKey, ConsumerKeySecret}.
 
 %% @doc Create a Twitter Search API 'q' parameter with since and until operators
 generate_twitter_q_param (HashTag, [])-> HashTag;
@@ -60,6 +69,11 @@ generate_twitter_timeframe(Timestamp) ->
 %% =================================
 %%	YOUTUBE DATA API AUX FUNCTIONS
 %% =================================
+
+%% @doc Gets the Youtube Data API 'SERVER KEY'
+get_youtube_keys() ->
+	{ok, Account} = application:get_env(youtube_account, server_key),
+	Account.
 
 %% @doc Concatenate multiple words to be used in a Youtube Data API Search request
 format_keyword(HashTag) -> 
