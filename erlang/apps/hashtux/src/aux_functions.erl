@@ -1,3 +1,6 @@
+%
+% @doc This module contains some helper functions that are seen as useful throughout the application.
+%
 -module(aux_functions).
 
 -export([bin_to_atom/1, get_value/2, get_youtube_keys/0, get_twitter_keys/0, ignore_request_type/1]).
