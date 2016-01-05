@@ -10,12 +10,19 @@
 % of the keys may be protected by privacy licenses which means we've got to remove these from the 
 % sample file if we want to make our repository public.
 %
+% All Group Tux dbs setup as of January 2016:
+% svu.hashtux.com:1986
+% jonas.hashtux.com:1994
+% dev.hashtux.com:1994
+% ivo.hashtux.com:1984
+
 [
 {listener_conf, [{listen_port, 8080}]},
 {db_conf,[
-	{localdb,{"http://localhost:1994/", "hashtux", "grouptux"}},
+	{localdb,{"http://localhost:1986/", "hashtux", "grouptux"}},
 	{external, [{"http://jonas.hashtux.com:1994/", "hashtux", "grouptux"},
-		{"http://svu.hashtux.com:1986/", "hashtux", "grouptux"}]}]},
+		{"http://dev.hashtux.com:1994/", "hashtux", "grouptux"},
+		{"http://ivo.hashtux.com:1984/", "hashtux", "grouptux"}]}]},
 {instagram_account, [
 	{access_token, "2253641420.43956b9.2ce7ad96329647ffa756501b24fbed3e"}
 	]},
