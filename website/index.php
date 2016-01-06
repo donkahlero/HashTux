@@ -200,7 +200,7 @@
                                 <button type="button" class="btn btn-link linkbtn" onclick="showDonationBtn()">donation</button> our way. Every little bit helps!
                                 <br>
                                 <br>
-                                <a class="bluelink" href="/stats">Statistics Page</a> | <a class="bluelink" href="bugzilla.hashtux.com">Report bugs here</a> | © 2015 HashTux
+                                <a class="bluelink" href="/stats">Statistics Page</a> | <a class="bluelink" href="http://bugzilla.hashtux.com">Report bugs here</a> | © 2015 HashTux
                             </p>
 
                         </div>
