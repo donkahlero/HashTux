@@ -24,8 +24,8 @@
 	$trends_json = "";
 
 	// If there is no recent cache file, try reading from twitter 
-	// (By recent we currently mean modification time < half an hour ago)
-	if (!(file_exists($cache_filename) && filemtime($cache_filename) > time() - 1800)) {
+	// (By recent we currently mean modification time < an hour ago)
+	if (!(file_exists($cache_filename) && filemtime($cache_filename) > time() - 3600)) {
 
 		// Read from Twitter and write to the cache file		
 		try {
