@@ -1,5 +1,5 @@
 <?php
-	/*
+	/**
 	 * See ajax.php for more details. This is a specialised version of that
 	 * file that allows a more general query (not only search queries).
 	 * Any options supplied as json will be sent straight through to the

@@ -1,8 +1,16 @@
 <?php
-	// This sample file should be renamed to config.php
+	/**
+	 * This sample file should be renamed to config.php
+	 * All Group Tux servers as of January 2016:
+	 * dev.hashtux.com:8080
+	 * taco.hashtux.com:8090
+	 * ivo.hashtux.com:8080
+	 * svu.hashtux.com:8080
+	 * jonas.hashtux.com:8080
+	 */
 
 	// Supply all the available Erlang HashTux applications below
-	$config['backend_servers'] = ["http://localhost:8080", "http://taco.hashtux.com:8080", "http://ivo.hashtux.com:8080"];
+	$config['backend_servers'] = ["http://localhost:8080", "http://dev.hashtux.com:8080", "http://taco.hashtux.com:8090", "http://jonas.hashtux.com:8080", "http://ivo.hashtux.com:8080"];
 
 	// Timeout in seconds before chosing another server
 	$config['backend_timeout'] = 7;
