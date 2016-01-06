@@ -1,7 +1,5 @@
 #TODO
 
-- Dennis: Index page should link to stats page, AND bugzilla (click here to report problems)
-- Fix indentation in index.php, search.php etc
 - Terms of use text that says "btw we use cookies, and we store information about what users search for to provide a better user experience" - and also the Privacy Policy info from Instagram as below.<br />
 - Posts should have higher chance of appearing in RECENT the newer they are<br />
 - In main UI, show RELATED searches (users that searched for X also searched for Y1-Y5). This is a big one, should maybe be it's own user story.<br />
