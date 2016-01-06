@@ -614,9 +614,7 @@
                 <div class="panel optionspanel" id="optionsPanel">
 
                     <hr />
-
                     <h4 align="center">GRID OPTIONS</h4>
-
                     <hr />
 
                     <div class="optiontext" align="center">Tile Size</div> 
@@ -652,9 +650,7 @@
                     </div>
 
                     <hr />
-
                     <h4 align="center">CONTENT OPTIONS</h4>
-
                     <hr />
 
                     <div class="optiontext" align="center">Media Type</div>
