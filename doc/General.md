@@ -18,4 +18,6 @@ Our DNS solution means that a connecting client's web browser will connect to on
 Our web applications PHP code, through which all codes to the backend servers are made (even AJAX calls), will notice a timeout if the local or otherwise preferred backend server does not respond in time. It will then connect to an alternative backend server specified in its configuration.<br />
 The backend server may also reply with "no_alloc" if the miners are too busy to handle the request. This will also cause the web application to connect to the next available backend server. A backend server considered as unavailable by the web application will be taken back into use again after a configureable interval if it becomes available.
 ###Database
-(Jonas please write here)
+All database management systems in our cluster share a common database - the user habit data. This is because we want to earn money with this data, so backups are essential. <br />
+The other databases are just for caching purposes, so they need no mirroring. <br />
+If a database goes down the Erlang backend notices that as soon as it tries to make an operation on the database. The responsible gen_server goes down and gets restarted. After the restart it evaluates all databases in the config and creates a new list of available databases.
