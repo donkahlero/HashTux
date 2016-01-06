@@ -118,11 +118,11 @@ function initGrid()
                         "<a class='twitterlink' href='" + displayed[count].userlink + "' target='_blank'>" + 
                         displayed[count].displayname + " (@" + displayed[count].username + ")" + "</a>" +
                         "</div>" + "<p class='tweet'>" + displayed[count].text + "</p>" +
-                        "<div class='smalltext'><a href='" + displayed[count].userlink + "' target='_blank'>" +
+                        "<div class='smalltext'><a href='" + displayed[count].posturl + "' target='_blank'>" +
                         displayed[count].postdate + "</a><br />" + 
-                        "<a href='https://twitter.com/intent/like?tweet_id=463440424141459456'>like</a> | " +
-                        "<a href='https://twitter.com/intent/retweet?tweet_id=463440424141459456'>retweet</a> | " +
-                        "<a href='https://twitter.com/intent/tweet?in_reply_to=463440424141459456'>reply</a>" +"</div></div>" +
+                        "<a href='https://twitter.com/intent/like?tweet_id=" + displayed[count].serviceid + "'>like</a> | " +
+                        "<a href='https://twitter.com/intent/retweet?tweet_id=" + displayed[count].serviceid + "'>retweet</a> | " +
+                        "<a href='https://twitter.com/intent/tweet?in_reply_to=" + displayed[count].serviceid + "'>reply</a>" +"</div></div>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
                         "freeze' onclick='tileFreeze(" + count + ")'>" +
                         "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
@@ -147,11 +147,11 @@ function initGrid()
                         "<a class='twitterlink' href='" + displayed[count].userlink + "'target='_blank'>" + 
                         displayed[count].displayname + " (@" + displayed[count].username + ")" + "</a>" +
                         "</div>" + "<p class='tweet'>" + displayed[count].text + "</p>" + 
-                        "<div class='smalltext'><a href='" + displayed[count].userlink + "' target='_blank'>" +
+                        "<div class='smalltext'><a href='" + displayed[count].posturl + "' target='_blank'>" +
                         displayed[count].postdate + "</a><br />" + 
-                        "<a href='https://twitter.com/intent/like?tweet_id=463440424141459456'>like</a> | " +
-                        "<a href='https://twitter.com/intent/retweet?tweet_id=463440424141459456'>retweet</a> | " +
-                        "<a href='https://twitter.com/intent/tweet?in_reply_to=463440424141459456'>reply</a>" +"</div></div>" +
+                        "<a href='https://twitter.com/intent/like?tweet_id=" + displayed[count].serviceid + "'>like</a> | " +
+                        "<a href='https://twitter.com/intent/retweet?tweet_id=" + displayed[count].serviceid + "'>retweet</a> | " +
+                        "<a href='https://twitter.com/intent/tweet?in_reply_to=" + displayed[count].serviceid + "'>reply</a>" +"</div></div>" +
                         "<button type='submit' class='itemfreezebtn' id='tile" + count +
                         "freeze' onclick='tileFreeze(" + count + ")'>" +
                         "<img src='images/freeze.png' width='30px' height='30px'>" + "</button>" +
