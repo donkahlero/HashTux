@@ -113,6 +113,8 @@ function refresh()
 
                         $(randTile).animate({height: "100%", opacity: "1"}, 1000);
                     }
+                    
+                    $('p.tweet').tweetLinkify();
                 }
                 
                 else if(newItem.service === "youtube")
@@ -145,8 +147,6 @@ function refresh()
                 newItem.tile = "tile" + randTileNum;
                 displayed.push(newItem);
                 items.splice(newIndex, 1);
-                
-                $('p.tweet').tweetLinkify();
             }
 
             else
