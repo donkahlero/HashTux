@@ -14,6 +14,7 @@ function strip_illegal_characters(str) {
 	return pass2.replace("#", "");
 }
 
+
 /**
  * Check if there are any characters A-Z, 0-9. Used for selecting only trending terms
  * from twitter that have some western characters. A VERY rough filter but should be
@@ -22,8 +23,6 @@ function strip_illegal_characters(str) {
 function contains_legal_characters(str) {
 	return /[a-zA-Z]/.test(str);
 }
-
-
 
 
 /**

@@ -19,7 +19,6 @@ require_once ("conf/config.php");
  * This simple datatype class will wrap the information needed to keep track of
  * backend servers, and methods for comparing.
  * No heavy encapsulation motivated here.
- * @author Jerker
  */
 class backend_server {
 	var $address;
@@ -68,9 +67,6 @@ class backend_server {
  * code can call preferred_server_down() to tell this module to adjust the order of the
  * list of backend servers. The list will be stored to file between executions of this
  * script.
- * 
- * @author jerker
- *
  */
 class server_manager {
 	var $server_array = [];

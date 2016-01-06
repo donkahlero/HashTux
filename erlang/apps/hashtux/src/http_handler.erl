@@ -1,39 +1,23 @@
-%% @author jerker
-%% @doc 
-%
-% This module handles requests from the frontend web server.
-% It logs user habit detals about the request and then lets main_flow modules take
-% care of the request. It then returns the reply from main_flow to the web server.
-%
-% The request from the web server supplies a number of details about the user, session
-% and client options.
-%
-% The code in http_handler and main_flow* is very agnostic about what is in the options or 
-% user habit data. The only thing that matters is that we can get the request_type value 
-% from the options.
-%
-% Options (appended at the end of user habit data as well before sent to db)
-% 	language
-%	limit (post count in response) (also stored as user habit right now)
-%	services (twitter, instagram, youtube) (also stored as user habit right now)
-%	content_type ()
-%
-% User habit related:
-% 	timetamp
-%	session_id
-%	ip_address
-%	platform
-%	browser
-%	browserversion
-%
-% Notes on cowboy:
-% URL: the full url, including http://
-% {URL, _} =  cowboy_req:url(Req),	
-% QueryString: all the query stuff after the ?
-% {Qs, _} = cowboy_req:qs(Req),
-%	
-%	TODO: try/catch on malformed jsx?
-%	TODO: Check spaces in search terms
+%% @author Jerker Ersare <jerker@soundandvision.se>
+%% @doc This module handles requests from the frontend web server.
+%%
+%% It logs user habit detals about the request and then lets main_flow modules take
+%% care of the request. It then returns the reply from main_flow to the web server.
+%%
+%% The request from the web server supplies a number of details about the user, session
+%% and client options.
+%%
+%% The code in http_handler and main_flow* is very agnostic about what is in the options or 
+%% user habit data. The only thing that matters is that we can get the request_type value 
+%% from the options.
+%%
+%% Notes on cowboy:
+%% URL: the full url, including http://
+%% {URL, _} =  cowboy_req:url(Req),	
+%% QueryString: all the query stuff after the ?
+%% {Qs, _} = cowboy_req:qs(Req),
+%%	
+%% TODO: try/catch on malformed jsx?
 
 
 -module(http_handler).
@@ -46,11 +30,12 @@
 -export([init/3, handle/2, terminate/3]).
 
 
+%% @doc Leaving the init function as proposed by Cowboy example code.
 init(_Type, Req, []) ->
    {ok, Req, undefined}.
 
 
-
+%% @doc Handles a HTTP request.
 handle(Req, State) ->	
 	% Extract the request path (a string starting with /, we then remove this character)
 	{Path, _} = cowboy_req:path(Req),
@@ -64,7 +49,7 @@ handle(Req, State) ->
 	[Options, UserHabitData] = jsx:decode(RequestBody, [{labels, atom}]),
 
 	% Store user habit data - includes the options
-	user_habits:store(Term, Options, UserHabitData),
+	user_habits:store(Options, UserHabitData),
 	
 	% Send the search term, request type and the options to the main flow by making a call
 	% to main flow server - get the PID of the worker back and wait for a reply from it
@@ -89,13 +74,6 @@ handle(Req, State) ->
 	{ok, Req2, State}.
 
 
+%% @doc No particular action taken. We don't keep a state in this module.
 terminate(_Reason, _Req, _State) ->
     ok.
-
-
-
-%% ====================================================================
-%% Internal functions
-%% ====================================================================
-
-
