@@ -1,13 +1,14 @@
 %%%-------------------------------------------------------------------
-%% @doc This module starts the cowboy HTTP server.
-%% @end
+%% @author Jerker Ersare <jerker@soundandvision.se>
+%% @doc This module starts the cowboy HTTP server and defines 
+%% http_handler as it's handler module.
 %%%-------------------------------------------------------------------
 
 -module('http_cowboy').
 
 -export([start/0]).
 
-%% @doc Start the cowboy HTTP server, handler is defined in http_handler.erl.
+%% @doc Starts the cowboy HTTP server. The handler is defined in http_handler.erl.
 start() ->
 	%% Check the configuration for which port to listen to
 	{ok, Port} = application:get_env(listener_conf, listen_port),

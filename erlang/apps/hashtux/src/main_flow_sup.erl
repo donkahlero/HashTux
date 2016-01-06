@@ -1,8 +1,6 @@
-%% @author jerker
-%% @doc 
-%
-% Supervisor for the main flow server. See the source files of main_flow_worker
-% and main_flow_server for more comments. 
+%% @author Jerker Ersare <jerker@soundandvision.se>
+%% @doc Supervisor for the main flow. See the source files of main_flow_worker
+%% and main_flow_server for more comments. 
 
 -module(main_flow_sup).
 
@@ -22,6 +20,8 @@
 %% API functions
 %% ===================================================================
 
+
+%% @doc Starts the main flow supervisor
 start_link() ->
 	io:format("main_flow_sup: Started the main flow supervisor.~n"),
   supervisor:start_link({local, ?MODULE}, ?MODULE, []).
@@ -31,9 +31,9 @@ start_link() ->
 %% Supervisor callbacks
 %% ===================================================================
 
-init([]) ->
-	% Start the main flow server and the main flow worker supervisor
-	% for now. 
+
+%% @doc Initializes the server and the worker supervisor.
+init([]) ->	
 	MainFlowServChild = {main_flow_server, 
 							 {main_flow_server, start_link, []},
 						 		permanent, 
