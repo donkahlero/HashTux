@@ -336,8 +336,16 @@ function changeService(id) {
 function changeLanguage(id) {
     if(language === id)
     {
-        $('#' + language).attr('class', 'btn btn-default btn-md');
+        $('#' + id).attr('class', 'btn btn-default btn-md');
         language = "";
+    }
+    
+    else if(language !== "")
+    {
+        $('#' + language).attr('class', 'btn btn-default btn-md');
+        
+        $('#' + id).attr('class', 'btn btn-primary btn-md');
+        language = id;
     }
     
     else
