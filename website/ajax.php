@@ -1,5 +1,5 @@
 <?php
-	/*
+	/**
 	 * Used for making AJAX calls to the Erlang backend. By querying this file
 	 * and therefore using the request method defined in request.php instead of
 	 * directly connecting to the backend, we can append some details
