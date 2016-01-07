@@ -157,8 +157,6 @@ function saveOptions() {
     $('#saved').fadeTo(3000, 500).slideUp(500, function() {
         $('#saved').alert('close');
     });
-    
-    alert(JSON.stringify(options));
 
     hideOptions();      // Hide the options menu
     reinitialize();     // Reinitialize the grid
@@ -336,13 +334,25 @@ function changeService(id) {
 }
 
 function changeLanguage(id) {
-    if(language !== "")
+    if(language === id)
+    {
+        $('#' + id).attr('class', 'btn btn-default btn-md');
+        language = "";
+    }
+    
+    else if(language !== "")
     {
         $('#' + language).attr('class', 'btn btn-default btn-md');
+        
+        $('#' + id).attr('class', 'btn btn-primary btn-md');
+        language = id;
     }
-
-    $('#' + id).attr('class', 'btn btn-primary btn-md');
-    language = id;
+    
+    else
+    {
+        $('#' + id).attr('class', 'btn btn-primary btn-md');
+        language = id;
+    }
 }
 
 function showOptions() {
