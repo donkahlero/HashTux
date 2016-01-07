@@ -1,0 +1,34 @@
+% 
+% listener_conf:
+% listener_port is used for specifying the port at which this backend server listens for requests.
+%
+% db_conf:
+% localdb defines the address including port number to the primary db.
+% external defines a list of addresses to other db instances.  
+%
+% The API keys should normally not be changed as long as we are deploying this, and note that some
+% of the keys may be protected by privacy licenses which means we've got to remove these from the 
+% sample file if we want to make our repository public.
+%
+% All Group Tux dbs setup as of January 2016:
+% svu.hashtux.com:1986
+% jonas.hashtux.com:1994
+% dev.hashtux.com:1994
+% ivo.hashtux.com:1984
+
+[
+{listener_conf, [{listen_port, 8080}]},
+{db_conf,[
+	{localdb,{"http://localhost:1986/", "hashtux", "grouptux"}},
+	{external, [{"http://jonas.hashtux.com:1994/", "hashtux", "grouptux"},
+		{"http://dev.hashtux.com:1994/", "hashtux", "grouptux"},
+		{"http://ivo.hashtux.com:1984/", "hashtux", "grouptux"}]}]},
+{instagram_account, [
+	{access_token, "2253641420.43956b9.2ce7ad96329647ffa756501b24fbed3e"}
+	]},
+{twitter_account, [{access_token, "4503552935-ZiLzNi8fsnh7QwG1qFP3LbBWF6OaIfhTUtPtqrw"},
+		{access_token_secret, "qCPMqMchiXzNtSAxv6JS5r9Z8cxiBhoTh3ApiNosmvdks"},
+		{consumer_key, "jsxLUB5sgzgGmYSg8FcwsZeps"},
+		{consumer_key_secret, "Aje76OuifQLAm4gnjusAdj0anZZRnuXLZRzdBKfPNHnDHNJP7O"}]},
+{youtube_account, [{server_key, "AIzaSyBZKIiFHPBEUvHjK1boPndnGtkNeV5kkCc"}]}
+].
