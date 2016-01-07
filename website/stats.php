@@ -121,7 +121,7 @@ session_start ();
 					                     return a + b; //The values are summed  
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);// toolbar is used to display the sum. 
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);// toolbar is used to display the sum. 
 					        },
 					        data: statsItems, // The table is generated using data from statsItems array. 
 					       	columns: [		  // colums assigns the titles for the table. 	 
@@ -161,7 +161,7 @@ session_start ();
 						                     return a + b;
 						                 }, 0 );        
 					                 
-						             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+						             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 						        },
 				            data: statsItems,
 				            columns: [ 
@@ -199,7 +199,7 @@ session_start ();
 						                 .reduce( function (a, b) {
 						                     return a + b;
 						                 }, 0 );        
-						             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+						             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 
 						        },
 				            data: statsItems,
@@ -241,7 +241,7 @@ session_start ();
 						                     return a + b;
 						                 }, 0 );        
 					                 
-						             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+						             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 						        },
 				            data: statsItems,
 				            columns: [
@@ -281,7 +281,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count: </b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -320,7 +320,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -360,7 +360,7 @@ session_start ();
 						                     return a + b;
 						                 }, 0 );        
 					                 
-						             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+						             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 						        },
 				            data: statsItems,
 				            columns: [
@@ -400,7 +400,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -440,7 +440,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -480,7 +480,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -520,7 +520,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -560,7 +560,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -601,7 +601,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -641,7 +641,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -681,7 +681,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -721,7 +721,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -761,7 +761,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -801,7 +801,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -841,7 +841,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
@@ -881,7 +881,7 @@ session_start ();
 					                     return a + b;
 					                 }, 0 );        
 				                 
-					             $("div.toolbar").html('<b>Total searches =</b>' +" "+ total);
+					             $("div.toolbar").html('<b>Total count:</b>' +" "+ total);
 					        },
 			            data: statsItems,
 			            columns: [
