@@ -79,7 +79,6 @@ a {
 
 .bluelink {
     color: #337ab7;
-    margin-top: 10px;
 }
 
 .linkbtn {
@@ -229,15 +228,7 @@ a {
     color: #000;
 }
 
-/* The commercial use panel also uses .optionspanel, just some minor differences */
-.commercial_use_panel {
-    margin: auto;
-    width: 50%;
-    height: 70%;
-    overflow: auto !important;
-}
-
-.commercial_use_section {
+.licenses {
     margin: 40px;
 }
 
@@ -322,6 +313,9 @@ a {
     margin-top: 20px;
     border: none; 
     border-radius: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
 
 .gridalert {
