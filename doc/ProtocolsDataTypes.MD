@@ -31,6 +31,7 @@ The format of the document is the following (written in Erlang compatible with P
 ```
 
 ##Format of search requests to the backend server
+Requests to the backend server are REST-like, except that for practical reasons we use POST rather than GET for all requests because we have quite a lot of options and data sent from the web application (that we send as JSON in the POST body), that would otherwise result in a very long query string.<br />
 The functions provided in the file /website/include/request.php can be used to generate a properly structured request by first using the build_request_options() function if needed and then making the actual request via the request() function. However, for frontend development, we recommend simply accessing the ajax interfaces discussed below. 
 
 Here is the format of the request:
