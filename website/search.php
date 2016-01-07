@@ -61,15 +61,17 @@
             // object which in this case is a representation of the JSON objects
             // retreived from the backend.
             
-            function item(type, service, url, text, username, displayname, profilepic, postdate, userlink, frozen, tile) {
+            function item(type, service, serviceid, url, text, username, displayname, profilepic, postdate, posturl, userlink, frozen, tile) {
                 this.type = type;                   // The content type
                 this.service = service;             // The service the content is from
+                this.serviceid = serviceid;
                 this.url = url;                     // URL (img/video)
                 this.text = text;                   // Text content (twitter)
                 this.username = username;           // The username of content poster
                 this.displayname = displayname;     // The full display name of the poster (twitter)
                 this.profilepic = profilepic;       // The porfile picture of the poster (twitter)
                 this.postdate = postdate;           // The date the post was made (twitter)
+                this.posturl = posturl;
                 this.userlink = userlink;           // The link to the profile/channel page, depending on the service
                 this.frozen = frozen;               // A boolean to check if the content is frozen (frozen will not refresh)
                 this.tile = tile;                   // Corresponding to the tile ID if the content is being displayed
@@ -225,11 +227,18 @@
                     // Construct an item object.
                     
                     var incItem = new item(
-                                jsonobj[i].content_type, jsonobj[i].service,
-                                jsonobj[i].resource_link_high, jsonobj[i].text,
-                                jsonobj[i].username, jsonobj[i].free_text_name,
-                                jsonobj[i].profile_image_url, jsonobj[i].date_string,
-                                jsonobj[i].profile_link, false, "");
+                                jsonobj[i].content_type, 
+                                jsonobj[i].service,
+                                jsonobj[i].service_id,
+                                jsonobj[i].resource_link_high, 
+                                jsonobj[i].text,
+                                jsonobj[i].username, 
+                                jsonobj[i].free_text_name,
+                                jsonobj[i].profile_image_url, 
+                                jsonobj[i].date_string,
+                                jsonobj[i].post_url,
+                                jsonobj[i].profile_link, 
+                                false, "");
                                 
                     var ignore = false;     // A boolean to keep track of whether to insert the item or not
 
@@ -605,9 +614,7 @@
                 <div class="panel optionspanel" id="optionsPanel">
 
                     <hr />
-
                     <h4 align="center">GRID OPTIONS</h4>
-
                     <hr />
 
                     <div class="optiontext" align="center">Tile Size</div> 
@@ -643,9 +650,7 @@
                     </div>
 
                     <hr />
-
                     <h4 align="center">CONTENT OPTIONS</h4>
-
                     <hr />
 
                     <div class="optiontext" align="center">Media Type</div>
