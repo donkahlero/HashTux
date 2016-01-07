@@ -1,0 +1,219 @@
+% LaTeX layout by Jonas Kahler, jonas@derkahler.de
+% HashTux Project Summary
+% Group Tux:
+% Aman Dirar, Jerker Ersare, Jonas Kahler, Dennis Karlberg
+% Niklas le Comte, Marco Trifance, Ivo Vryashkov
+% Work Distribution and Personal Reflections
+\chapter{Work Distribution and Personal Reflections}
+\section{Jerker Ersare}
+I'm happy to have learned enough Erlang to pass the certification exam, and to
+get to know some nice libraries and learn about JSON. I generally like having an
+overview and understanding of large parts of projects, and in this particular
+project I handled the communication between the front end and the back end,
+which allowed and required me to understand a lot of what everybody else was
+working on. \\ \\
+Worked on:
+\begin{itemize}
+  \item Rebar configuration (initializes basic application source code and
+        folder structure), dependencies, created the top-level supervisor
+        structure.
+  \item The PHP to Erlang communication, including a HTTP handler in Erlang
+        using Cowboy (http\textunderscore handler.erl), and PHP code (ajax*.php,
+        request.php, server\textunderscore manager.php) that connects to the
+        HTTP interface of an available Erlang backend server, which provides an
+        interface for the client code, for example through AJAX requests.
+  \item ''Main flow´´ server/worker structure responsible for the overarching
+        business logic in the backend server such as routing a request to miners
+        when appropriate (copied the structure skeleton from Ivos miner
+        server/workers!) (main\textunderscore flow\textunderscore *.erl).
+  \item Assisted Dennis with URL rewrites, jQuery requests and gave some hints
+        about parsing JSON.
+  \item A number of fixes and small features on the front end, such as: Made
+        forward and backward browser buttons work, proper browser history
+        handling. Made checks on frontend for illegal characters in search
+        terms. Made a popup window for paying with an integrated Paypal button
+        with different price alternatives.
+  \item The feature of showing trending searches on HashTux + Twitter trends on
+        the front page (programming-wise) (twitter\textunderscore popular.php,
+        popular.js).
+\end{itemize}
+\newpage
+
+\section{Aman Ghezai}
+Working in this project was a challenge but as the same time educative and
+interesting. It was challenging because I needed to learn new technologies and
+adapt them as fast as possible in order to implement them in the project. The
+fact that we were seven people working in a single project was also a new
+experience and had its challenges for example having to distribute equal amount
+of task that is motivating and engaging to everyone. During this project I was
+mainly working in the frontend design and functionality with Dennis and also in
+handling the statistics and delivering the statistics. This give me the
+opportunity to learn working with JSON objects and external libraries, handling
+HTTP requests and web development in general. \\ \\
+Worked on:
+\begin{itemize}
+  \item Handling the jQuery requests and parsing into javascript objects for the
+        User Habits Statistics.
+  \item The design of the stats page (stats.css).
+  \item Processing the user habit statistics and presenting it in a table format
+        with the option of time frame in (stats.php).
+  \item Page freezing functionality in (freeze.js) where all the freezing
+        functionalities for the grid and tiles in the (search.php) are handled.
+  \item Worked with sending HTTP request from PHP to Erlang during the first
+        sprints with Jerker, which was then further developed by Jerker in later
+        sprints.
+\end{itemize}
+\newpage
+
+\section{Jonas Kahler}
+Looking back, I am very happy about the project and it’s outcome. As in previous
+projects, I had the chance to work on my favorite part - the database/data
+storage. Especially the custom connector Niklas and me wrote is making me very
+proud. \\
+Working with Erlang and CouchDB was a great choice and I think the experience
+will be helpful for later employment. \\
+Another thing I really enjoyed was getting into the fault-tolerant mindset of
+Erlang which allowed me to write the database address server in the way it is
+written. \\ \\
+Worked on:
+\begin{itemize}
+  \item Database setup on the Linux nodes including basic installation of
+        CouchDB as well as configuring the installation.
+  \item Database connector modules handling the REST connection to the database
+        as well as the operations for the database (couch\textunderscore
+        connector.erl, couch\textunderscore operations.erl).
+  \item Database redundancy for having multiple copies of our user habit data
+        (db\textunderscore replicator.erl).
+  \item Database cleanup for assuring compact database files (db\textunderscore
+        cleaner.erl, db\textunderscore eraser.erl).
+  \item Supervisor structure of the database module with different supervisors
+        as well as worker skeletons (db\textunderscore sup.erl,
+        db\textunderscore worker\textunderscore sup.erl).
+  \item Dispenser for handling the database requests (db\textunderscore
+        serv.erl).
+  \item Map functions for fetching results from the database (db\textunderscore
+        designdocs.erl).
+  \item Filtering results from the database (db\textunderscore
+        options\textunderscore handler.erl, db\textunderscore filter.erl).
+  \item MapReduce module which is capable of rereducing with spawned processes
+        for parsing the statistics (db\textunderscore reduce.erl).
+  \item Module for converting Twitter dates into an epoch timestamp
+        (dateconv.erl).
+  \item Module for checking database connections (db\textunderscore
+        addr\textunderscore serv). This gen\textunderscore server also orders
+        the databases (the first one available first, second one second, \ldots).
+\end{itemize}
+\newpage
+
+\section{Dennis Karlberg}
+For me this project was very interesting and enjoyable to work on. Even though
+Erlang is a very interesting language, I decided to mainly focus on the
+front-end design during this project, but always making sure that I understood
+what was going on in the back-end. This was due to the fact that within this
+field, web-development is what interests me the most and this was the only
+project where I would have the chance to work with it in this program. In terms
+of responsibilities; I was in charge of the front-end design and functionalities
+i.e. fetching of data through the PHP connector, grid generation and
+functionalities, menus etc. One of the more challenging and interesting features
+that I developed was the grid representation of our data and all of its
+functionalities. We did not find any external library that suited our vision so
+I decided to develop one from scratch using JavaScript. \\ \\
+Worked on:
+\begin{itemize}
+  \item The visual grid representation of the all data (grid.js, refresh.js,
+        freeze.js, frontpagegrid.js).
+  \item The design of the front page and grid page i.e. HTML/CSS (search.php,
+        index.php, hashtux.css).
+  \item Fetching data through the PHP connector (search.php, index.php).
+  \item All icons, buttons and logos used across all pages (images/*).
+  \item Front-end filtering and option functionalities (options.js).
+  \item Front-end history search functionality (search.php).
+  \item Making sure that we met all display requirements set by the API's we
+        use.
+\end{itemize}
+\newpage
+
+\section{Niklas le Comte}
+This project was really interesting to work on. For this project I was mainly
+working on the database part of the project with Jonas where we started of with
+pair-programming with the connector to CouchDB and the first operations. Since I
+have not worked on this part in previous projects it was fun to learn another
+area of software development. The most fun and frustrating things was erlang.
+Sometimes there was more struggling moments and sometimes it was going great,
+but it was really nice to see how efficient erlang is as a language and how much
+you can improve your own code. I really think that the project turned out great
+and the teamwork was good within the team. \\ \\
+Worked on:
+\begin{itemize}
+  \item Database connector modules handling the REST connection to the database
+        as well as the operations for the database (couch\textunderscore
+        connector.erl, couch\textunderscore operations.erl).
+  \item Caching user habit data every hour so that the request for the
+        statistics is retrieved faster with already sorted data
+        (db\textunderscore cacher.erl).
+  \item All the database workers doing the different operations on the database
+        (db\textunderscore hash\textunderscore reader.erl, db\textunderscore
+        hash\textunderscore writer.erl, db\textunderscore
+        userstats\textunderscore reader.erl, db\textunderscore
+        userstats\textunderscore writer.erl).
+  \item Initial state of the db\textunderscore options\textunderscore handler
+        that Jonas modified later while I worked on something else
+        (db\textunderscore options\textunderscore handler.erl).
+  \item Helped with the statistics page making sure that the query worked for
+        the user habit data and made the JSON into an array of JavaScript
+        objects (stats.php, userstats\textunderscore fetcher.js).
+\end{itemize}
+\newpage
+
+\section{Marco Trifance}
+I consider this project as a good opportunity to learn about distributed systems
+and Software Architecture. I was mainly responsible for querying the Twitter API
+and Youtube Data API and for the conversion of fetched data into our internal
+representation format. This gave me the chance to expand my knowledge in Erlang
+and the OTP framework, reuse of external dependencies, handle queries to
+external APIs and finally work with JSON objects. One of the most interesting
+activities was working with the APIs. Adjusting the API queries to the
+parameters provided by our application while ensuring that our quality
+requirements were not affected was sometimes challenging but entertaining.
+Finally, the investigation of the Terms of Use gave me a broader understanding
+and awareness of the implications and limitations deriving from working with
+external APIs. \\ \\
+Worked on:
+\begin{itemize}
+  \item Set up Twitter and Youtube applications to allow API queries.
+  \item Handling Twitter API search requests (twitter\textunderscore search.erl,
+        apis\textunderscore aux.erl).
+  \item Handling Youtube Data API search requests (youtube\textunderscore
+        search.erl, apis\textunderscore aux.erl).
+  \item Processing and filtering the JSON objects returned by the APIs into our
+        internal format - (parser.erl).
+  \item Identify requirements for compliance to APIs Terms of Use.
+\end{itemize}
+\newpage
+
+\section{Ivo Vryashkov}
+I found this project very interesting and educational. It was a challenge
+because of the new way we had to think about a software system - its
+architecture and making it distributed. I got to work on the middle layer and
+connecting to the different social media services APIs. This helped me very much
+in learning Erlang as well as working with external APIs. Furthermore, I learned
+JSON and how CouchDB works which I consider valuable skills. \\ \\
+Worked on:
+\begin{itemize}
+  \item Miner module structure - all miner\textunderscore *.erl files making the
+        overall structure tree (top supervisor for the miner module and
+        consequent workers and other supervisors) - responsible for handling
+        requests for searching the different social media services.
+  \item Introduced a queue limit for the number of workers processing search
+        requests that can be running on a single server - used to distribute
+        workload (miner\textunderscore server.erl).
+  \item Handling Instagram search requests - ig\textunderscore search.erl - and
+        processing and filtering the returned results from the API into an
+        acceptable internal (HashTux) format.
+  \item Handling the returned search results (filtered/unfiltered) from all
+        social media services and sending them back to the main\textunderscore
+        flow\textunderscore worker, respective, writing them to the database
+        (miner\textunderscore dbwriter.erl).
+  \item Database and application installation and management of one of the
+        physical servers (ivo.hashtux.com).
+\end{itemize}
