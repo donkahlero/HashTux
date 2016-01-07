@@ -1,5 +1,9 @@
 # Main flow
 =================================================================
+(maybe this file is totally unccessesary.... very thin right now anyway)
+(maybe this file is totally unccessesary.... very thin right now anyway)
+(maybe this file is totally unccessesary.... very thin right now anyway)
+
 ##To start the main flow server/worker structure
 Start its main supervisor:
 ```erlang
