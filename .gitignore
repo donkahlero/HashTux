@@ -65,7 +65,6 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
->>>>>>> e6d5b403f05bbae2e6222973183c2b697a53f168
 
 ##VP
 *.vpp~*
@@ -76,7 +75,6 @@ _build/*
 _build/
 rebar.lock
 
-<<<<<<< HEAD
 ##TeX
 ## Core latex/pdflatex auxiliary files:
 auto/*
@@ -226,8 +224,8 @@ pythontex-files-*/
 # endfloat
 *.ttt
 *.fff
-=======
+
 ##Website
+twitter_trends
 config.php
 servers.order
->>>>>>> 23e4b00467a54cbd0530f28222db2e774736f0ad
