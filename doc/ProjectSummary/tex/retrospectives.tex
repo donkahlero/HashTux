@@ -1,0 +1,163 @@
+% LaTeX layout by Jonas Kahler, jonas@derkahler.de
+% HashTux Project Summary
+% Group Tux:
+% Aman Dirar, Jerker Ersare, Jonas Kahler, Dennis Karlberg
+% Niklas le Comte, Marco Trifance, Ivo Vryashkov
+% Retrospectives Summary
+\chapter{Retrospectives Summary}
+\section{Sprint 1}
+During sprint one we had a lot of discussions concerning our product and what
+features it should have. Initially we were informed we would start with a two
+week sprint, but in the middle of the sprint due to unexpected changes we were
+asked to move to the other slot so our first sprint ended up being only one week
+long. \\
+
+During the sprint meetings we learned that we need to ensure that anyone who is
+absent is updated in what we’ve been discussing concerning priorities, business
+case and any other important decisions. We decided to solve this by writing logs
+of any meetings. We also learned that we need to be better at dividing user
+stories into tasks and assigning the responsibility of each task’s completion to
+a team member. \\
+
+We did not get done that much during this sprint due to the time change
+mentioned, and the fact that we had two other ongoing courses at the same time.
+The main accomplishment during sprint one was deciding all the details of the
+product vision.
+
+\section{Sprint 2}
+During sprint two we started different learning tasks we created. As Imed
+suggested during the previous sprint meeting, we included knowledge acquisition
+tasks into our backlog, all related to problems and decisions such as which DBMS
+to use.We held a meeting during the second week of the sprint where we all
+introduced each other to what we had learned. This also meant that after this
+sprint we had a lot of technical subjects to put down on the lessons learned
+report. \\
+
+We didn’t start to produce any serious code during this sprint, most of our time
+was dedicated to knowledge acquisition, experimentation and research on external
+packages and APIs. We got briefly acquainted with things like CouchDB, the
+Cowboy HTTP library, the Bootstrap web framework, and rebar3. \\
+
+During this sprint we were also more consistent with taking notes during
+meetings, also including taking photos of notes on design decisions on our
+whiteboard.
+
+\section{Sprint 3}
+During the planning for this sprint we had a meeting with our supervisor, who
+was concerned about our progress as we were still just transitioning into the
+coding phase. \\
+At this meeting we split up the group into different subteams, and the
+development into different areas:
+\begin{itemize}
+  \item Dennis and Aman: frontend design and functionality
+  \item Jerker: mid layer and communication between frontend and backend
+  \item Ivo and Marco: mid layer and connecting to social media service APIs
+  \item Jonas and Niklas: database connection and logic
+\end{itemize}
+
+We also created tasks for the first user story we started working on, Twitter
+search. Since our application has relatively large user stories and centers
+around a few features that involve the whole application, we worked on this user
+story in the following sprint as well. \\
+
+Within the subteams we started out doing some pair programming to make sure that
+everybody was familiar with the area they were going to work on. This was a good
+way to share knowledge between those who would keep working closely together
+during the project. \\
+
+We met and worked every day, either on the project or an assignment from another
+course. A small problem we had during this sprint was that a lot of time went
+into discussions about the different aspects of the product, which could have
+been used to do some more productive things. \\
+
+One thing that we took from the sprint meeting with Imed is that we as a group
+needed to define more clearly what ''done´´ means. Since then, we wrote
+acceptance criteria for all tasks. \\
+
+This was a really productive sprint for the group, maybe because we were
+well-prepared from our earlier sprints, every subteam got a lot done.
+
+\section{Sprint 4}
+In this sprint we mainly focused on implementation. We managed to integrate
+distinct parts together and have a first working version, which was important
+for us because we had a bit of a slow start. We had surprisingly few problems
+when integrating the different parts (client UI, PHP application + HTTP handler
+in Erlang, ''miners´´, and database logic). \\
+
+One thing we learned during this sprint was that we need to address group
+related problems and talk about them. We had a discussion session and talked
+about the work distribution and contributions. In particular we had one member
+of the team that we felt was hard to involve to the same extent as everybody
+else. We decided to bring this issue up during the sprint meeting, but also
+reached some conclusions on our own, such as that all of us need to make sure
+everyone is involved and active in choosing tasks (that are within reach and
+that is motivating for each person) for each sprint. \\
+
+Despite that three members in our team were often busy with supervision session
+for first year students, we still managed to meet regularly, adjusting our
+schedule to meet everyone's needs. This is one of our groups strengths: that we
+can communicate in a good way and find a solution that fits all of us. \\
+
+We finished everything except a few minor details for the Twitter search user
+story. Simultaneously, we worked on the Instagram search and Youtube search user
+stories. Since the main infrastructure was now somewhat in place, these user
+stories were completed with less effort than the Twitter search user story, as
+was expected.
+
+\section{Sprint 5}
+This sprint we put more effort into deciding on tasks suitable for each member
+of the team and it worked out well. During this sprint we finally had a lot of
+time to commit to our project. This resulted in good progress in terms of
+tangible features. During the second week of this sprint we had members of the
+group that could not be present at the university for our daily meetings due to
+illness or other personal reasons. This did not disrupt our progress
+significantly. \\
+
+At this point we had implemented most of the promised features, which felt nice,
+but there were still a few features left to create, and we knew we were going to
+have to spend time solving some bugs, making general improvements and finishing
+the SAD document. \\
+
+At the end of this sprint we got the news that we would be assigned a new
+supervisor and product owner. This change required the team to meet with the new
+product owner to present the current state of the project and receive any hints
+or new requirement that could be requested by the new owner. Since the new
+product owner did not require any major addition or modification to the existing
+system, we proceeded in our implementation as planned.
+
+\section{Sprint 6}
+During this sprint we worked remotely for three days and used Skype, Facebook
+Messenger and a TODO list in our repository to communicate. This worked really
+well for us because everyone knew what to do. We had a remote sprint meeting
+each day where each member presented what they were working on and how it was
+going. After meeting almost every day in the university it was nice to have a
+more relaxed period when we could work from home. \\
+
+We also reviewed the terms of use for the different social media APIs closely.
+This research required some features to be redesigned. For example, we modified
+the outlook of the tweets (Twitter posts) rendered in our frontend to be
+compliant with the display requirements. \\
+
+During this sprint almost all the implementation work was done and only minor
+fixes were left, except for the frontend where naturally some features were
+still not implemented. We felt that we were close to the finish line and started
+to talk about what we can do to improve the product in the future.
+
+\section{Sprint 7}
+This sprint was about finishing up the project - finding and fixing bugs,
+finishing the statistics page and the SAD document. We were meeting almost every
+day during this sprint to wrap it up. Learning from our experience from the last
+project where we started to produce the documentation too late, in this project
+we planned it from the beginning and made sure that the main architectural
+decisions were reflected in our documentation. This way of handling
+documentation allowed all the team members to always be updated on major changes
+and to have a clear understanding of the main flow and structure of the
+system. \\
+
+We split up the work so that a few of us worked on tweaking, resolving bugs,
+creating the last small features and finishing the product. The rest worked on
+documentation. This worked well and was efficient because we minimized the risk
+for merge conflicts or integration problems when we had fewer people working on
+the product, and the half of the team that worked on documentation could prepare
+drafts that the other half could later easily review, so that in the end
+everybody had left their points of view in the documentation.
