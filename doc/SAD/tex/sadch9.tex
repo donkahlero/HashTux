@@ -1,0 +1,64 @@
+% LaTeX layout by Jonas Kahler, jonas@derkahler.de
+% HashTux SAD Document
+% Group Tux:
+% Aman Dirar, Jerker Ersare, Jonas Kahler, Dennis Karlberg
+% Niklas le Comte, Marco Trifance, Ivo Vryashkov
+% Chapter 9 - Validation
+\label{toolsanddeps}
+\chapter{Validation}
+Throughout the development, we have been testing the user interface and common
+features of the application manually. In the end of the development process, we
+were mostly interested in testing our redundancy mechanisms. We divided up the
+testing into three parts.
+\begin{itemize}
+  \item We tried shutting down every web server except one, letting each one be
+        the only available web server at a given time. This was to test how the
+        DNS-based distribution works. \\
+
+        We found that when we shut down other servers than our first DNS entry,
+        the application was always available. When we shutdown the server at our
+        first DNS entry, it was client-specific whether the client tried to
+        connect to an alternative web server or not. \\
+
+        We actually expected virtually all clients to handle this better, and
+        were a bit surprised by this. However, we know our main web server is
+        professionally hosted and has an uptime of at least 99\%. Within the
+        scope of the project, we will not try to solve this issue. An example of
+        a possible way to handle it would be to run custom DNS servers with a
+        lower ''time to live´´ value for all entries, that also regularly
+        evaluates which web servers are available. \\
+
+        The current DNS solution does however provide a degree of load
+        balancing, as a significant share of clients will connect to other web
+        servers than the first entry.
+  \item We tried shutting down every backend server except one to see how the
+        system behaves and if our availability and performance thresholds hold
+        under unusual circumstances. Our tests proved successful and the system
+        was able to maintain the proposed response times mentioned in the
+        quality requirements. There was no obvious delay visible to the user in
+        serving the search requests. \newpage
+  \item We tried shutting down every CouchDB server except one to validate that
+        the backend servers connected to that database. We let each instance be
+        the only one available at a given time. \\
+
+        We observed that the mechanism worked fine, but the time it took for the
+        backend server to realize several instances were unavailable was
+        unacceptably high. We changed a connection timeout value from 5 to
+        2.5 seconds as a result of this. It should be noted however that we were
+        testing the extreme case where only one of four servers were available,
+        which is very unlikely to occur.
+\end{itemize}
+
+
+The summarized result of the testing was positive and we got the chance to test
+the worst case situation. With some minor changes the system responded properly
+to what we wanted, except for the client-specific DNS behaviour explained above.
+In our eyes, the system as a whole can be classified as fault-tolerant based on
+the results of the testing and with the 4 different physical machines running
+the system it will have a very high availability. \\
+
+For the performance aspect, we considered using some sort of automated test for
+seeing how the system behaves under heavy load, but lacking time near the end of
+the project, considered this out of scope. Instead, we manually applied as much
+load as possible by connecting and doing repeated searches simultaneously from
+all our devices. We noticed no particular delay.
