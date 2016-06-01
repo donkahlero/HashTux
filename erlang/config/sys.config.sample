@@ -1,0 +1,26 @@
+% listener_conf:
+% listener_port is used for specifying the port at which this backend server listens for requests.
+%
+% db_conf:
+% localdb defines the address including port number to the primary db.
+% external defines a list of addresses to other db instances.
+%
+% The API keys should normally not be changed as long as we are deploying this, and note that some
+% of the keys may be protected by privacy licenses which means we've got to remove these from the 
+% sample file if we want to make our repository public.
+
+[
+{listener_conf, [{listen_port, 8080}]},
+{db_conf,[
+	{localdb,{"http://localhost:PORT/", "USER", "PASSWORD"}},
+	{external, [{"http://your.database.one:PORT/", "USER", "PASSWORD"},
+		{"http://your.database.two:PORT/", "USER", "PASSWORD"}]}]},
+{instagram_account, [
+	{access_token, "your_access_token"}
+	]},
+{twitter_account, [{access_token, "your_access_token"},
+		{access_token_secret, "your_access_token_secret"},
+		{consumer_key, "your_consumer_key"},
+		{consumer_key_secret, "your_consumer_key_secret"}]},
+{youtube_account, [{server_key, "your_server_key"}]}
+].
