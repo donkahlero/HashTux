@@ -1,0 +1,28 @@
+<?php
+	/**
+	 * This sample file should be renamed to config.php
+	 * All Group Tux servers as of January 2016:
+	 * dev.hashtux.com:8080 (Not in production config!)
+	 * taco.hashtux.com:8090
+	 * ivo.hashtux.com:8080
+	 * svu.hashtux.com:8080
+	 * jonas.hashtux.com:8080
+	 */
+
+	// Supply all the available Erlang HashTux applications below
+	$config['backend_servers'] = ["http://yourt.erlang.one:PORT", "http://your.erlang.two:PORT"];
+
+	// Timeout in seconds before chosing another server
+	$config['backend_timeout'] = 7;
+
+	// Instances of known downtime will be forgotten and servers will be considered for use again
+	// after this interval in seconds
+	$config['backend_reconsider_time'] = 3600;
+
+	// Twitter API key. Used to fetch trends on twitter.
+	$config['twitter_api_key'] = array(
+ 	   'consumer_key'       => 'your_consumer_key', // API key
+ 	   'consumer_secret'    => 'your_consumer_secret', // API secret
+ 	   'oauth_token'        => '', // not needed for app only
+ 	   'oauth_token_secret' => '');
+?>
